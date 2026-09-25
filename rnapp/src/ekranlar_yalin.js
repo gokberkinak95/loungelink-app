@@ -32,7 +32,7 @@ import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR} from "./theme";
-import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma } from "./ui";
+import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
@@ -288,7 +288,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
             r.lounge_name || null,
           ].filter(Boolean).join(" · ");
           return (
-          <View key={r.id} style={[S.card, { padding: 0, overflow: "hidden" }, isBest && { borderColor: C.gold }]}>
+          <View key={r.id} style={[S.card, { padding: 0, overflow: "hidden" }, isBest && { borderColor: "transparent" }]}>
             {/* #26: MVP sira seridi — en iyi eslesme altin, digerleri gri */}
             {r.status === "pending" && (isBest ? (
               <View style={{ backgroundColor: C.goldBtn, paddingVertical: SP[1], paddingHorizontal: SP[3], flexDirection: "row", justifyContent: "space-between" }}>
@@ -1331,37 +1331,41 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                   EYLEMİN VURGULANACAK BİR ŞEYİ KALMAZ."**
 
                   Köşe de tasarımdaki gibi: 16, kuyruk köşesi 5. */}
-              <View style={{
-                backgroundColor: mine ? (C.balonBen || C.goldSoft) : C.surface,
-                // `.bal.ben{border-color:var(--altinIz)}` — 0.13, `goldLine` 0.28 değil.
-                borderWidth: 1, borderColor: mine ? (C.goldTrace || C.goldLine) : C.line,
-                borderTopLeftRadius: 16, borderTopRightRadius: 16,
-                borderBottomRightRadius: mine ? 5 : 16, borderBottomLeftRadius: mine ? 16 : 5,
-                paddingVertical: ARA[12], paddingHorizontal: ARA[14],
-              }}>
-                {/* 🔴 8. tur — KENDİ MESAJIMIN METNİ ALTINDI, TASARIMDA DEĞİL.
-                    `.bal p{font-size:14px;line-height:1.52}` — renk YOK,
-                    yani gövde rengini miras alıyor; `.bal.ben` yalnız
-                    ZEMİNİ değiştiriyor. Metni de altın yapınca balon
-                    tümüyle altın bir blok oluyordu ve "vurgu rengini en
-                    geniş alana verme" dersini, bir tur önce zeminde
-                    düzeltip metinde tekrarlamışım.
-                    Kontrast ölçüldü: body 9.36:1 (altın 7.96:1) — okunurluk
-                    da düşmüyor, artıyor. */}
-                <Text style={{ color: C.body, fontSize: FS.base,
-                               lineHeight: Math.round(FS.base * 1.52) }}>{m.body}</Text>
-                {/* Saat balonun İÇİNDE ve MONO — tasarımda `.bal time`.
-                    Dışarıdayken her balonun altında ayrı bir satır
-                    açıyordu; üç mesajda üç boş satır demek. */}
-                {/* Tasarım `.bal time{display:block;margin-top:7px}` —
-                    blok, yani HER İKİ balonda da SOLA hizalı. Kendi
-                    mesajımda sağa yaslamak, balonun iki farklı okuma
-                    yönü olduğunu söylüyordu. */}
-                <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: C.dim,
-                               marginTop: ARA[6], textAlign: "left" }}>
-                  {m.created_at ? new Date(m.created_at).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : ""}
-                </Text>
-              </View>
+              {/* ══════════════════════════════════════════════════════
+                  v6.0.0 · İKİ MALZEME, ÇİZGİ YOK
+                  Host'un sesi DUMANLI CAM (`rgba(20,18,17,.55)` + 32px
+                  bulanıklık): salonun loş havası. Misafirin sesi MAT
+                  ŞAMPANYA: üst kenarında ince bir iç parlama, mürekkep
+                  koyu. Çevre çizgisi kalktı; iki taraf rengiyle değil
+                  MALZEMESİYLE ayrılıyor.
+                  ⚠️ Bu, 30 Ağustos'taki "vurguyu en geniş alana verme"
+                  kararını bilerek geri çeviriyor (brief v6). Şampanya
+                  MAT tutuldu — düğmelerin parlak gradyanı yok — ki asıl
+                  eylem yine düğmede kalsın.
+                  ══════════════════════════════════════════════════════ */}
+              {(() => {
+                const hostMu = reqFull?.host_id ? m.from_id === reqFull.host_id : !mine;
+                const kose = {
+                  borderTopLeftRadius: 18, borderTopRightRadius: 18,
+                  borderBottomRightRadius: mine ? 6 : 18, borderBottomLeftRadius: mine ? 18 : 6,
+                };
+                const ic = (
+                  <>
+                    {!hostMu && <View pointerEvents="none" style={{ position: "absolute", left: 14, right: 14, top: 0,
+                                                                   height: 1, backgroundColor: C.btnUstIsik }} />}
+                    <Text style={{ color: hostMu ? C.body : C.onGold, fontSize: FS.base,
+                                   lineHeight: Math.round(FS.base * 1.52) }}>{m.body}</Text>
+                    <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: hostMu ? C.dim : C.onGoldSoluk,
+                                   marginTop: ARA[6], letterSpacing: 0.6 }}>
+                      {m.created_at ? new Date(m.created_at).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : ""}
+                    </Text>
+                  </>
+                );
+                const dolgu = { paddingVertical: ARA[12], paddingHorizontal: ARA[14] };
+                return hostMu
+                  ? <DumanliCam stil={[kose, dolgu]}>{ic}</DumanliCam>
+                  : <View style={[kose, dolgu, { backgroundColor: C.goldBtn, overflow: "hidden" }]}>{ic}</View>;
+              })()}
             </View>
           );
         })}
@@ -1403,7 +1407,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
       {sess && sess.status === "active" && (isHost ? sess.guest_status : sess.host_status) ? (
         <TouchableOpacity hitSlop={TAP.slop} onPress={() => onLiveStatus && onLiveStatus(sess.id)}
           style={{ flexDirection: "row", alignItems: "center", gap: SP[2], backgroundColor: C.greenBg,
-                   borderTopWidth: 1, borderColor: C.green + "30", paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
+                   borderTopWidth: 1, borderColor: "transparent", paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
           <Ikon ad="konum" boy={22} renk={C.mutedAA} />
           <Text style={{ flex: 1, color: C.greenInk, fontSize: FS.sm, fontWeight: "600" }}>
             {shortName(otherName)}: {isHost ? sess.guest_status : sess.host_status}
@@ -1659,7 +1663,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           <View>
             {/* #37: MVP oturum-aktif dili — durum + süre + çift onay kutusu */}
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: SP[2] }}>
-              <View style={{ backgroundColor: C.greenBg, borderWidth: 2, borderColor: C.green, borderRadius: R.xl, paddingVertical: ARA[6], paddingHorizontal: ARA[18], alignItems: "center" }}>
+              <View style={{ backgroundColor: C.greenBg, borderWidth: 2, borderColor: "transparent", borderRadius: R.xl, paddingVertical: ARA[6], paddingHorizontal: ARA[18], alignItems: "center" }}>
                 <Text style={{ color: C.greenInk, fontSize: FS.micro, fontWeight: "700", letterSpacing: 1.5 }}>{t.sessActiveShort}</Text>
                 <Text style={{ color: C.greenInk, fontSize: FS.lg, fontWeight: "700" }}>
                   {sess.started_at ? (() => { const m = Math.max(0, Math.floor((Date.now() - new Date(sess.started_at).getTime()) / 60000)); return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); })() : "00:00"}
@@ -1787,12 +1791,12 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                    🆕 SINIF: "BİR ŞEYİ ORTALAYAN KAP, İÇİNDEKİ KENDİ
                    YÜKSEKLİĞİNİ DOLDURUYORSA ORTALAMA GÖRÜNMEZ."
                    `flex: 1` kalktı; genişlik `paddingHorizontal` ile korunuyor. */
-                style={{ flex: 1, minHeight: TAP.minHeight, paddingHorizontal: SP[2], backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40", borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
+                style={{ flex: 1, minHeight: TAP.minHeight, paddingHorizontal: SP[2], backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
                 <Text numberOfLines={1} style={{ textAlign: "center", textAlignVertical: "center", color: C.tealInk, fontWeight: "700", fontSize: FS.sm }}>{t.sessWhereShort}</Text>
               </TouchableOpacity>
               <TouchableOpacity hitSlop={TAP.slop} onPress={() => (onReport ? onReport(otherId, otherName) : onSafety && onSafety())}
                 accessibilityRole="button" accessibilityLabel={t.reportIssue}
-                style={{ flex: 1, minHeight: TAP.minHeight, paddingHorizontal: SP[2], backgroundColor: C.redBg, borderWidth: 1, borderColor: C.red + "40", borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
+                style={{ flex: 1, minHeight: TAP.minHeight, paddingHorizontal: SP[2], backgroundColor: C.redBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
                 <IkonMetin ad="uyari" renk={C.redInk} stilMetin={{ textAlign: "center", textAlignVertical: "center", color: C.redInk, fontWeight: "700", fontSize: FS.sm }} metin={t.sessReportShort} />
               </TouchableOpacity>
             </View>
@@ -1810,8 +1814,11 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 puanlama formuyla AYNI ANDA görünür — önce yalnız puanlama
                 bittikten sonra çıkıyordu, yani kullanıcı kazandığı puanı
                 görmeden puan vermek zorundaydı. */}
-            <View style={{ backgroundColor: C.goldBg, borderRadius: R.sm, padding: SP[3], marginTop: ARA[10] }}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="puan" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm }}>{t.youEarned}</Text></View>
+            {/* v6.0.0 — oturum sonu blokları: çerçevesiz, dumanlı cam,
+                obsidyenden yükselen gölgeyle. Renkli zemin (goldBg/greenBg/
+                purpleBg) yok; anlam mürekkepte. */}
+            <DumanliCam stil={{ borderRadius: R.lg, padding: SP[4], marginTop: SP[3], borderTopWidth: 1, borderTopColor: C.parlama, shadowColor: C.golgeRenk, shadowOpacity: 0.45, shadowRadius: 22, shadowOffset: { width: 0, height: 10 }, elevation: 8 }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="puan" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.xs, letterSpacing: 1.2 }}>{BUYUK(t.youEarned)}</Text></View>
               <View style={{ flexDirection: "row", justifyContent: "space-around", marginTop: ARA[6] }}>
                 <View style={{ alignItems: "center" }}>
                   <Text style={{ fontSize: FS.title, fontWeight: "700", color: C.ink, fontFamily: MONO[600] }}>{isHost ? 500 : 200}</Text>
@@ -1822,10 +1829,10 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                   <Text style={{ fontSize: FS.xs, color: C.mut }}>{t.sessionWord}</Text>
                 </View>
               </View>
-            </View>
+            </DumanliCam>
 
             {!rated ? (
-              <View style={{ marginTop: ARA[10] }}>
+              <DumanliCam stil={{ borderRadius: R.lg, padding: SP[4], marginTop: SP[3], borderTopWidth: 1, borderTopColor: C.parlama, shadowColor: C.golgeRenk, shadowOpacity: 0.45, shadowRadius: 22, shadowOffset: { width: 0, height: 10 }, elevation: 8 }}>
                 <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.rateTitle} {shortName(otherName)}</Text>
                 <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: SP[2] }}>
                   {/* 🔴 Yıldızlar tek tek dokunulabilir ama ekran okuyucuda hepsi
@@ -1856,14 +1863,14 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 <Text style={S.label}>{t.comment}</Text>
                 <TextInput style={S.input} value={comment} onChangeText={setComment} placeholder={t.commentPh} placeholderTextColor={C.dim} />
                 <Btn label={t.submitRating} onPress={doRate} disabled={!stars} style={{ marginTop: ARA[10], opacity: stars ? 1 : 0.5 }} />
-              </View>
+              </DumanliCam>
             ) : (
               /* v1.81: puanlama bitince ikinci bir "Kazandın" kartı GÖSTERİLMEZ —
                  üstteki tek kart zaten kazancı yazıyordu, ekranda ÜÇ aynı kart
                  birikiyordu (Gokberk'in 6. maddesi). Burada sadece teşekkür. */
-              <View style={{ backgroundColor: C.greenBg, borderRadius: R.sm, padding: SP[3], marginTop: SP[2] }}>
-                <IkonMetin ad="tamam" renk={C.greenInk} stilMetin={{ color: C.greenInk, fontWeight: "700", fontSize: FS.sm }} metin={t.rateThanks} />
-              </View>
+              <DumanliCam stil={{ borderRadius: R.lg, padding: SP[4], marginTop: SP[3], borderTopWidth: 1, borderTopColor: C.parlama, shadowColor: C.golgeRenk, shadowOpacity: 0.45, shadowRadius: 22, shadowOffset: { width: 0, height: 10 }, elevation: 8 }}>
+                <IkonMetin ad="tamam" renk={C.fildisi} stilMetin={{ color: C.fildisi, fontWeight: "600", fontSize: FS.sm }} metin={t.rateThanks} />
+              </DumanliCam>
             )}
 
             {/* MVP: puanlama zorunluluğu uyarısı — puanlamadan devam edilmemeli */}
@@ -1874,7 +1881,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                  "stretch"): ikon iki satırlık metnin tepesine yapışıyordu.
                  Ayrıca ikonun sağ boşluğu da yoktu — 12 Eylül'de kapattığım
                  sınıfın bir örneği daha. */
-              <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: C.goldLine, borderRadius: R.xs, padding: SP[3], marginTop: SP[3], flexDirection: "row", alignItems: "center" }}>
+              <View style={{ paddingVertical: SP[3], paddingHorizontal: SP[1], marginTop: SP[2], flexDirection: "row", alignItems: "center" }}>
                 <Ikon ad="uyari" boy={FS.sm} renk={C.goldText} stil={{ marginRight: ARA[8] }} />
                 <Text style={{ color: C.goldText, fontSize: FS.sm, lineHeight: 17, flex: 1, minWidth: 0 }}>{t.ratePrompt}</Text>
               </View>
@@ -1886,8 +1893,8 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             <Btn v="teal" sm label={t.goHomeBtn} onPress={() => { setPanelOpen(false); onBack && onBack(); }} style={{ marginTop: SP[3] }} />
 
             {/* MVP: 🤝 Stay in touch? — oturumdaki diğer kişiyle bağlantı kur */}
-            <View style={{ backgroundColor: C.purpleBg, borderWidth: 1, borderColor: C.purple + "30", borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="elSikisma" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.purpleInk, fontWeight: "700", fontSize: FS.sm }}>{t.stayInTouchTitle}</Text></View>
+            <DumanliCam stil={{ borderRadius: R.lg, padding: SP[4], marginTop: SP[3], borderTopWidth: 1, borderTopColor: C.parlama, shadowColor: C.golgeRenk, shadowOpacity: 0.45, shadowRadius: 22, shadowOffset: { width: 0, height: 10 }, elevation: 8 }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="elSikisma" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.ink, fontWeight: "600", fontSize: FS.base, letterSpacing: 0.2 }}>{t.stayInTouchTitle}</Text></View>
               <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 16, marginTop: SP[1], marginBottom: connState === "connected" ? 0 : 10 }}>
                 {t.stayInTouchBody.replace("{name}", otherName || "")}
               </Text>
@@ -1902,7 +1909,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                   label={t.connectWith.replace("{name}", (otherName || "").split(" ")[0])} sagAd="sag"
                   a11yLabel={t.connectWith.replace("{name}", (otherName || "").split(" ")[0])} />
               )}
-            </View>
+            </DumanliCam>
             {/* MVP: bağlantı kutusunun altında ikincil çıkış — puanlama zorunlu değil,
                 24 saat içinde puanlanabilir (sunucu kuralı: itiraz penceresi). */}
             {!rated && onBack && (
@@ -1913,7 +1920,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             {/* #6: oturum sonrası davet CTA — kullanıcı en mutlu anında viral döngü */}
             {rated && onReferral && (
               <TouchableOpacity hitSlop={TAP.slop} onPress={onReferral}
-                style={{ flexDirection: "row", alignItems: "center", backgroundColor: C.purpleBg, borderWidth: 1, borderColor: C.purple + "30", borderRadius: R.sm, padding: SP[3], marginTop: ARA[10] }}>
+                style={{ flexDirection: "row", alignItems: "center", gap: ARA[12], backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.parlama, borderRadius: R.lg, padding: SP[4], marginTop: SP[3] }}>
                 <Ikon ad="davet" boy={22} renk={C.mutedAA} />
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: C.purpleInk, fontWeight: "700", fontSize: FS.sm }}>{t.inviteAfterTitle}</Text>
@@ -2069,11 +2076,11 @@ export function KimlikDogrula({ t, session, onBack, onDone }) {
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 20, marginBottom: ARA[14] }}>{t.kycBody}</Text>
         {durum === null ? <Load /> : st === "approved" ? (
-          <View style={[S.card, { borderColor: C.gold, borderWidth: 1.5 }]}>
+          <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5 }]}>
             <Text style={{ color: C.goldText, fontSize: FS.lg, fontWeight: "700" }}>{t.kycApproved}</Text>
           </View>
         ) : st === "submitted" ? (
-          <View style={[S.card, { borderColor: C.teal, borderWidth: 1.5 }]}>
+          <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5 }]}>
             <Text style={{ color: C.tealInk, fontSize: FS.sm, fontWeight: "600" }}>
               {(t.kycPending || "{d}").replace("{d}", durum.submitted_at ? new Date(durum.submitted_at).toLocaleDateString() : "")}
             </Text>
@@ -2260,7 +2267,7 @@ export function VerifyPhone({ t, session, onDone, onBack }) {
               <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[2], lineHeight: 20 }}>
                 {t.verifyEmailWhy || t.phoneWhy}
               </Text>
-              <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40",
+              <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                              borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
                 <Text style={{ color: C.tealInk, fontSize: FS.sm, fontWeight: "700" }}>{myEmail}</Text>
               </View>
@@ -2742,7 +2749,7 @@ export function Marketplace({ t, session, onBack }) {
       </View>
 
       {/* MVP: puan sona erme uyarısı */}
-      <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "25", borderRadius: R.sm, padding: SP[3], marginTop: SP[1], marginBottom: SP[3] }}>
+      <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginTop: SP[1], marginBottom: SP[3] }}>
         <IkonMetin ad="uyari" renk={C.amberInk} stilMetin={{ fontSize: FS.xs, color: C.amberInk, lineHeight: 16 }} metin={t.pointsExpire} />
       </View>
 
@@ -3233,7 +3240,7 @@ export function LiveStatusPicker({ t, sess, isHost, uid }) {
       </View>
       <View style={{ padding: ARA[14] }}>
         {savedOther ? (
-          <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "30", borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
+          <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
             <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.tealInk, letterSpacing: 1, marginBottom: SP[1] }}>{t.otherPartySays}</Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="konum" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ fontSize: FS.sm, color: C.ink, fontWeight: "600" }}>{savedOther}</Text></View>
           </View>
@@ -3404,7 +3411,7 @@ export function HaberVer({ t, lang, airport, date }) {
       {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
 
       {ok && (
-        <View style={{ backgroundColor: C.tealTint, borderWidth: 1, borderColor: C.green,
+        <View style={{ backgroundColor: C.tealTint, borderWidth: 1, borderColor: "transparent",
                        borderRadius: R.sm, padding: SP[3], marginTop: ARA[10] }}>
           <Text style={{ color: C.greenInk, fontSize: FS.sm, fontWeight: "700" }}>{t.notifySaved}</Text>
           <Text style={{ color: C.ink, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>
@@ -3866,7 +3873,7 @@ export function RateReminder({ t, lang, onRate }) {   // v2.65: ölü `session` 
   if (!items.length) return null;
   const it = items[0];
   return (
-    <View style={[S.card, { borderColor: C.gold, borderWidth: 1.5, marginBottom: SP[3] }]}>
+    <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
       {/* 19 Eylül — "Sonra" düşerse kullanıcı sebebi görüyor. */}
       {!!erteleHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{erteleHatasi}</Text></View>}
       {/* 🔴 v2.66 (Gökberk madde 12, ikinci tur) — BAŞLIK ARTIK OLAYI SÖYLER.
@@ -3967,7 +3974,7 @@ export function HediyeBolumu({ t, onDone }) {
                 <TouchableOpacity key={k.user_id} onPress={() => setSecili(on ? null : k.user_id)}
                   accessibilityRole="button" accessibilityState={{ selected: on }}
                   style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center" },
-                          on && { borderColor: C.teal, backgroundColor: C.tealBg }]}>
+                          on && { borderColor: "transparent", backgroundColor: C.tealBg }]}>
                   <Text style={{ fontSize: FS.sm, color: on ? C.teal : C.ink, fontWeight: on ? "700" : "400" }}>
                     {shortName(k.name)}
                   </Text>
@@ -4161,7 +4168,7 @@ export function Wallet({ t, session, onBack }) {
       <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[10] }}>{t.walletPacksIntro}</Text>
       {(paket?.paketler || []).map(p => (
         <View key={p.kod} style={[S.card, { flexDirection: "row", alignItems: "center", opacity: 0.75 },
-                                  p.one_cikan && { borderColor: C.gold, borderWidth: 1.5 }]}>
+                                  p.one_cikan && { borderColor: "transparent", borderWidth: 1.5 }]}>
           <View style={{ flex: 1, minWidth: 0, marginRight: ARA[10] }}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.lg }}>
               {p.ad}
@@ -4186,7 +4193,7 @@ export function Wallet({ t, session, onBack }) {
           kullanıcı hesaplayıp bulmasın diye BİZ söylüyoruz. Gizlenen bir
           fiyat farkı, bulunduğu gün güveni bitirir. */}
       {!!paket?.abonelik_ipucu && (
-        <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "35", borderRadius: R.sm, padding: SP[3], marginTop: SP[1] }}>
+        <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginTop: SP[1] }}>
           <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 18, fontWeight: "600" }}>
             {String(t.walletSubHint)
               .replace("{plan}", String(paket.abonelik_ipucu.plan || ""))
@@ -4398,7 +4405,7 @@ export function HostApply({ t, session, onBack, onDone }) {
         </View>
       ) : app.status === "rejected" ? (
         <>
-          <View style={[S.card, { backgroundColor: C.hataBg, borderColor: C.red }]}>
+          <View style={[S.card, { backgroundColor: C.hataBg, borderColor: "transparent" }]}>
             <Text style={{ fontWeight: "700", color: C.redInk, fontSize: FS.base }}>{t.hostApplyRejTitle}</Text>
             {!!app.review_note && (
               <Text style={{ color: C.redInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{app.review_note}</Text>
@@ -4418,7 +4425,7 @@ export function HostApplyForm({ t, src, setSrc, cap, setCap, note, setNote, subm
   return (
     <>
       {!phoneOk && (
-        <View style={[S.card, { backgroundColor: C.hataBg, borderColor: C.red }]}>
+        <View style={[S.card, { backgroundColor: C.hataBg, borderColor: "transparent" }]}>
           <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 18 }}>{t.hostApplyNeedPhone}</Text>
         </View>
       )}
@@ -4681,7 +4688,7 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
       {!!hosts && hosts.count > 0 && (
         <TouchableOpacity hitSlop={TAP.slop}
           onPress={() => (girisYok ? (onKayit && onKayit()) : (onDiscover && onDiscover({ airport: ap.code })))}
-          style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40",
+          style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                    borderRadius: R.sm, padding: ARA[14], marginTop: ARA[6] }}>
           <Text style={{ fontSize: FS.base, fontWeight: "700", color: C.tealInk }}>
             {t.guideHostsCta.replace("{n}", String(hosts.count)).replace("{ap}", ap.code)}
@@ -5008,7 +5015,7 @@ export function HostDaveti({ t, onBecomeHost, onBack }) {
   return (
     <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
       {/* EN ÜSTTE ÇERÇEVE — ödül değil, KARAR. */}
-      <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "35",
+      <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                      borderRadius: R.sm, padding: SP[4], marginBottom: ARA[14] }}>
         <Text style={{ color: C.tealInk, fontSize: FS.micro, letterSpacing: 1.6, fontWeight: "700" }}>
           {BUYUK(t.hdEyebrow || "")}
@@ -5023,7 +5030,7 @@ export function HostDaveti({ t, onBecomeHost, onBack }) {
 
       {/* EN SOMUT KARŞILIK EN ÜSTTE: 30 gün ücretsiz üst plan. */}
       {!!ph.esik && (
-        <View style={{ backgroundColor: C.goldBg, borderWidth: 1.5, borderColor: C.gold,
+        <View style={{ backgroundColor: C.goldBg, borderWidth: 1.5, borderColor: "transparent",
                        borderRadius: R.sm, padding: SP[4], marginBottom: ARA[14] }}>
           <Text style={{ color: C.goldText, fontSize: FS.micro, letterSpacing: 1.6, fontWeight: "700" }}>
             {BUYUK(t.hdGiftEyebrow || "")}
@@ -5088,7 +5095,7 @@ export function HostDaveti({ t, onBecomeHost, onBack }) {
           üründe bulamayan kullanıcı iki ayrı şey görür. */}
       {/* GERÇEK TALEP — sayı sıfırsa satır yok. Boş bir söz vermiyoruz. */}
       {!!talep && (
-        <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "35",
+        <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                        borderRadius: R.sm, padding: SP[3], marginTop: ARA[20] }}>
           <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 18, textAlign: "center" }}>
             {String(t.waitingDemand || "")

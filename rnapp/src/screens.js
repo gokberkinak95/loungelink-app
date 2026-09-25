@@ -829,7 +829,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               onLayout={(e) => { kartY.current[r.id] = e.nativeEvent.layout.y; }}
               style={[S.card,
                       yayindaDegil && { opacity: 0.62, borderColor: C.line },
-                      odakId === r.id && { borderColor: C.gold, borderWidth: 2, backgroundColor: C.goldSoft }]}>
+                      odakId === r.id && { borderColor: "transparent", borderWidth: 2, backgroundColor: C.goldSoft }]}>
               {/* 🔴 v2.95 (Gökberk madde 3) — "CANLI ibaresi alanın dışına taşıyor".
                   Ölçtüm: satır `space-between` ama salon adında NE `flex: 1` NE
                   `numberOfLines` vardı. RN'de esnetilmemiş bir Text kendi doğal
@@ -1554,7 +1554,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
       contentContainerStyle={{ padding: ARA[20], paddingTop: bnt.ustBosluk + SP[4],
                                paddingBottom: ARA[40] }}>
       {!!err && (
-        <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: C.red,
+        <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: "transparent",
                        borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
           <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 18 }}>{err}</Text>
         </View>
@@ -1564,7 +1564,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               kartın içinde sayılıyor. */}
           {kisit && kisit.kisitli && (
             <View style={{ backgroundColor: C.redBg || C.hataBg, borderWidth: 1,
-                           borderColor: C.red, borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
+                           borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
               <Text style={{ color: C.redInk, fontWeight: "700", fontSize: FS.sm }}>
                 {kisit.baslik || t.restrictedTitle}
               </Text>
@@ -1780,7 +1780,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
 
           {/* Cikis — MVP'de menunun EN ALTINDA, kirmizi, tek yerde */}
           <TouchableOpacity hitSlop={TAP.slop}
-            style={{ backgroundColor: C.redBg, borderRadius: R.sm, borderWidth: 1, borderColor: C.red + "40",
+            style={{ backgroundColor: C.redBg, borderRadius: R.sm, borderWidth: 1, borderColor: "transparent",
                      paddingVertical: ARA[14], paddingHorizontal: ARA[14], marginTop: ARA[6], marginBottom: SP[2],
                      flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
             onPress={() => { setLogoutMsg(""); setConfirmOut(true); }}>
@@ -1924,11 +1924,17 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
                 const on = sel === a.id;
                 return (
                 <TouchableOpacity key={a.id} disabled={full} onPress={() => setSel(a.id)}
+                  accessibilityRole="radio" accessibilityState={{ selected: on, disabled: full }}
                   style={[S.chip, { width: "100%", marginBottom: SP[2], opacity: full ? 0.5 : 1,
-                    borderColor: on ? C.gold : C.line, backgroundColor: on ? C.goldSoft : C.card }]}>
-                  <Text style={{ color: on ? C.gold : C.ink, fontSize: FS.sm, fontWeight: "700" }}>
-                    {a.lounge_name || a.airport_code} · {a.airport_code}
-                  </Text>
+                    borderTopColor: on ? C.parlamaGuc : C.parlama, backgroundColor: on ? C.goldSoft : C.card }]}>
+                  {/* v6 — seçim çizgiyle değil: altın nokta (konum kanalı) + aydınlık kadife (ışık kanalı) */}
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View style={{ width: 6, height: 6, borderRadius: R.full, marginRight: ARA[8],
+                                   backgroundColor: on ? C.gold : "transparent" }} />
+                    <Text style={{ color: on ? C.gold : C.ink, fontSize: FS.sm, fontWeight: "600", letterSpacing: 0.2 }}>
+                      {a.lounge_name || a.airport_code} · {a.airport_code}
+                    </Text>
+                  </View>
                   <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[2] }}>
                     {fmtLongDate(a.avail_date, lang)}
                     {a.time_from ? ` · ${String(a.time_from).slice(0,5)}–${String(a.time_to).slice(0,5)}` : ""}
@@ -2292,7 +2298,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
         <Head>{t.stDanger}</Head>
         {/* #22: Cikis Yap KALDIRILDI (Profil'de zaten var); Hesabi Sil onay ister */}
         {!!delErr && (
-          <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: C.red, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] }}>
+          <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] }}>
             <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 18 }}>
               {t.deleteFailed} {delErr}
             </Text>
@@ -2493,7 +2499,7 @@ export function AddVisit({ t, session, onBack, onDone, suggest }) {
             "bu nereden geldi?" der. İkisi de kötü: ilki yanlış veriyi
             onaylatır, ikincisi güveni sarsar. */}
         {suggest ? (
-          <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40",
+          <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: ARA[10], marginTop: SP[2] }}>
             <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 18 }}>{t.tripPrefilled}</Text>
           </View>
@@ -2659,7 +2665,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
       <Hdr t={t} ustBilgi={t.sceneListing} title={t.editAvail} onBack={onBack} />
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {kilitli ? (
-          <View style={[S.card, { borderColor: C.gold, borderWidth: 1.5, marginBottom: SP[3] }]}>
+          <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.editLockedTitle}</Text>
             <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.editLockedBody}</Text>
           </View>
@@ -2698,7 +2704,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
           ))}
         </View>
         {cabin === "business" && (
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40",
+          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
             <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
           </View>
@@ -3147,7 +3153,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
           <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>• {t.hostSetupStep}</Text>
         </View>
         {!!hiddenWhy && (
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
+          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
             <IkonMetin ad="uyari" renk={C.amberInk} stilMetin={{ color: C.amberInk, fontWeight: "700", fontSize: FS.sm }} metin={t.availHiddenDisc} />
           </View>
         )}
@@ -3256,7 +3262,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
         {cabin === "business" && (
           /* Resmî kural: Business bileti misafir hakkı VERMEZ. Yumuşak
              not — engellemiyoruz, yanlış beklentiyi baştan düzeltiyoruz. */
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40",
+          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
             <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
           </View>
@@ -3337,7 +3343,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
             hakkı > uçuş şartsız > ücretli. */}
         {!!kartOneri && (
           <View style={{ marginTop: -2, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3],
-                         borderWidth: 1, borderColor: C.gold, backgroundColor: C.goldBg }}>
+                         borderWidth: 1, borderColor: "transparent", backgroundColor: C.goldBg }}>
             <Text style={{ ...T.label, color: C.muted, marginBottom: SP[1] }}>
               {BUYUK(t.whichCardTitle || "")}
             </Text>
@@ -3491,7 +3497,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
         {!phoneOk && (
           <TouchableOpacity onPress={onVerify}
             accessibilityRole="button" accessibilityLabel={t.haPhoneCta}
-            style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40", borderRadius: R.sm, padding: SP[3], minHeight: TAP.minHeight, justifyContent: "center", marginTop: SP[3] }}>
+            style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], minHeight: TAP.minHeight, justifyContent: "center", marginTop: SP[3] }}>
             <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 19 }}>
               {t.haPhoneNeeded}{" "}
               <Text style={{ fontWeight: "700" }}>{t.haPhoneCta}</Text>

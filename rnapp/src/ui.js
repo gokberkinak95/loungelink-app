@@ -224,8 +224,18 @@ temaYenidenKur(() => {
 // `full={false}` artık gerçekten satır içi çalışıyor: `alignSelf` da
 // serbest bırakıldı, yoksa esnek bir satırda germeye devam ediyordu.
 // ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
+// v6.0.0 · HAP ZANAATI
+// Birincil düğme artık ekranı boydan boya kesmiyor: yalnız etiketini sarar
+// ve ortada durur (`full` varsayılanı false). Etiket 500 ağırlık, harf
+// aralığı punto × 0.12 — editoryal dergi kapağının nefesi. Tam genişlik
+// isteyen çağrı yeri `full` der; yan yana iki düğme `style={{flex:1}}` ile
+// eskisi gibi paylaşır.
+// Dokununca düğmenin ARKASINDAN şampanya ışığı sızar (gölge %6 → %12):
+// malzemenin ışığı yutup geri vermesi. Tavan %12 — parlama değil sızıntı.
+// ══════════════════════════════════════════════════════════════════════
 export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled,
-                     full = true, style, a11yLabel, busy, sol, sag, solAd, sagAd }) {
+                     full = false, style, a11yLabel, busy, sol, sag, solAd, sagAd }) {
   // 🔴 `busy` DÜĞMENİN KENDİ İŞİ — 30 EKRAN AYRI AYRI YAZIYORDU.
   // Her çağrı yeri şunu tekrarlıyordu:
   //     {busy ? <ActivityIndicator color="#fff" /> : <Text>{etiket}</Text>}
@@ -274,8 +284,9 @@ export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled
   const bas = useRef(new Animated.Value(0)).current;
   const parlak = bas.interpolate({ inputRange: [0, 1], outputRange: [1, 2.1] });
   const isikPay = Math.round(yuk / 2) + 2;   // hapın düz üst kenarı yarıçaptan sonra başlar
-  const basla = () => Animated.timing(bas, { toValue: 1, duration: 120, useNativeDriver: true }).start();
-  const bitir = () => Animated.timing(bas, { toValue: 0, duration: 220, useNativeDriver: true }).start();
+  const [sizinti, setSizinti] = useState(false);
+  const basla = () => { setSizinti(true); Animated.timing(bas, { toValue: 1, duration: 120, useNativeDriver: true }).start(); };
+  const bitir = () => { setSizinti(false); Animated.timing(bas, { toValue: 0, duration: 220, useNativeDriver: true }).start(); };
   return (
     <TouchableOpacity onPress={disabled ? undefined : onPress} activeOpacity={0.75}
       onPressIn={disabled || !anaEylem ? undefined : basla}
@@ -290,15 +301,18 @@ export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled
         // `width` anahtarı aşağıda ikinci kez yazılıp `undefined`a eziliyordu
         // (ölçüldü: geri dairesi 28×38). Tek `width`. Kenar tasarımdaki
         // `.ust-eylem` gibi 1px.
-        borderWidth: anaEylem ? 0 : daire ? 1 : 1.5, borderColor: disabled ? C.line : st.bd,
-        borderRadius: yariCap, paddingHorizontal: daire ? 0 : (cip || mini) ? 12 : 18,
+        borderWidth: 0,
+        borderRadius: yariCap, paddingHorizontal: daire ? 0 : (cip || mini) ? 12 : sm ? 24 : 34,
         minHeight: yuk, height: yuk, justifyContent: "center",
         alignItems: "center", flexDirection: "row",
         width: full ? "100%" : daire ? yuk : undefined,
-        alignSelf: full ? undefined : "flex-start",
+        alignSelf: full ? undefined : (cip || mini || daire) ? "flex-start" : "center",
         overflow: "hidden",
         opacity: disabled ? 0.65 : 1,
-      }, anaEylem && BOY.golge, style]}>
+      }, anaEylem && BOY.golge,
+         anaEylem && { shadowColor: C.isikSizinti || C.goldGolge, shadowOpacity: sizinti ? 0.12 : 0.06,
+                       shadowRadius: sizinti ? 30 : 20, elevation: sizinti ? 10 : 8 },
+         style]}>
       {/* ══════════════════════════════════════════════════════════════
           🔴 30 AĞUSTOS — "TIRTIKLI" DÜĞMELER. İKİ SEBEP, İKİSİ DE BU
           DOSYADA ZATEN ÇÖZÜLMÜŞTÜ — SADECE BURAYA UYGULANMAMIŞTI.
@@ -417,9 +431,9 @@ export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled
                 Aralık açıldığında aynı genişlikte AZ HARF durur ve
                 düğme "bağıran" değil "kesin" okunur. */}
             {label == null || label === "" ? null : (
-              <Text style={{ color: disabled ? C.dimAA : st.fg, fontWeight: "600",
+              <Text style={{ color: disabled ? C.dimAA : st.fg, fontWeight: "500",
                              fontSize: (cip || mini) ? 11.5 : sm ? 11.5 : 13.5,
-                             letterSpacing: (cip || mini) ? 0.6 : 1.1 }}>{label}</Text>
+                             letterSpacing: (cip || mini) ? 0.8 : ((sm ? 11.5 : 13.5) * 0.12) }}>{label}</Text>
             )}
             {!!sag && <View style={daire ? null : { marginLeft: ARA[6] }}>{sag}</View>}
             {!!sagAd && <Ikon ad={sagAd} boy={sm || cip || mini ? 15 : 17}
@@ -530,8 +544,9 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
                                 : { selected: !!secili, disabled: !!disabled }}
       style={[{
         backgroundColor: secili ? secZemin : bosZemin,
-        borderWidth: (secili && dolu) ? 0 : (kart || radyo ? 1.5 : 1),
-        borderColor: secili ? T2.bd : C.line,
+        borderWidth: 0,
+        // v6 — seçili hâl çizgiyle değil IŞIKLA: üst kenar parlaması ikiye katlanır
+        borderTopWidth: 1, borderTopColor: secili ? (C.parlamaGuc || "transparent") : (C.parlama || "transparent"),
         borderRadius: yariCap,
         paddingVertical: dikey, paddingHorizontal: yatay,
         flexDirection: kart ? "column" : "row",
@@ -563,7 +578,8 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
           style={{
             fontSize: cip ? FS.sm : kart ? FS.base : FS.sm,
             color: secili ? secMetin : (kart ? C.ink : C.body),
-            fontWeight: secili ? "700" : (kart ? "700" : "400"),
+            fontWeight: secili ? "600" : (kart ? "600" : "400"),
+            letterSpacing: cip || segment ? 0.3 : 0,
             textAlign: segment ? "center" : "left",
           }}>{etiket}</Text>
         {!!alt && (
@@ -709,7 +725,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
     <View style={[{ height: 26, borderRadius: R.full, paddingHorizontal: ARA[12],
                     flexDirection: "row", alignItems: "center", alignSelf: "flex-start",
                     backgroundColor: zemin,
-                    borderWidth: 1, borderColor: renk },
+                    borderWidth: 0 },
                   kabartma ? {
                     shadowColor: "#000000", shadowOpacity: 0.38, shadowRadius: 6,
                     shadowOffset: { width: 0, height: 2 }, elevation: 3,
@@ -726,7 +742,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
       {ikon ? <View style={{ marginRight: ARA[4] }}>{ikon}</View> : null}
       {isaret ? <Ikon ad={isaret} boy={12} kutu={12} renk={renk} stil={{ marginRight: ARA[4] }} /> : null}
       <Text numberOfLines={1} style={{ fontSize: 10.5, fontWeight: "600", lineHeight: 14,
-                                       letterSpacing: kabartma ? 0.3 : 0,
+                                       letterSpacing: 0.6,
                                        color: secili ? C.goldText : renk }}>{etiket}</Text>
     </View>
   );
@@ -1719,9 +1735,9 @@ export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ust
 export function Row({ label, value, onPress, last, danger, icon }) {
   const body = (
     <View style={{
-      flexDirection: "row", alignItems: "center", paddingVertical: SP[3],
+      flexDirection: "row", alignItems: "center", paddingVertical: SP[4],
       minHeight: TAP.minHeight,
-      borderBottomWidth: last ? 0 : 1, borderBottomColor: C.line,
+      // v6 — satırlar çizgiyle değil boşlukla ayrılır (16pt dikey nefes)
     }}>
       {icon ? <Text style={{ fontSize: FS.lg, marginRight: ARA[10] }}>{icon}</Text> : null}
       <Text style={{ flex: 1, fontSize: FS.base, color: danger ? C.red : C.ink }}>{label}</Text>
@@ -2472,15 +2488,31 @@ export function KararCipi({ t, politika, etiket, onPress, a11yLabel, stil }) {
               onPress={onPress} a11yLabel={a11yLabel || yz} stil={stil} />;
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// v6.0.0 · FİLDİŞİ MÜHÜR
+// Doğrulama ve durum rozetleri çerçevesini bıraktı. Artık bir gümrük
+// mührü gibi arayüze BASILIYOR: kabartmanın üst sırtında ışık, altında
+// bastırılmış gölge, mürekkep fildişi krem. Doğrulama (`ok`) rozeti ilk
+// çizildiğinde `Muhur` ile iner (1.35 → 1, 260ms) — mührün ağırlığı.
+// Aynı listede onlarca kez tekrar eden durum rozetleri (`info`, `cost`)
+// sessiz kalır: her satırda bir damga sesi, damganın anlamını öldürür.
+// ══════════════════════════════════════════════════════════════════════
 export function ToneBadge({ tone = "info", children, style }) {
   const tn = (C.badge && C.badge[tone]) || C.badge.info;
-  return (
-    <View style={[{ backgroundColor: tn.bg, borderColor: tn.bd, borderWidth: 1,
+  const icerik = (
+    <View style={[{ backgroundColor: tn.bg, borderWidth: 0,
                     borderRadius: R.full, paddingHorizontal: ARA[10], paddingVertical: SP[1],
-                    alignSelf: "flex-start" }, style]}>
-      <Text style={{ color: tn.fg, fontSize: FS.xs, fontWeight: "600" }}>{children}</Text>
+                    alignSelf: "flex-start", overflow: "hidden",
+                    shadowColor: C.golgeRenk, shadowOpacity: 0.30, shadowRadius: 4,
+                    shadowOffset: { width: 0, height: 1 } }, style]}>
+      <View pointerEvents="none" style={{ position: "absolute", left: 8, right: 8, top: 0, height: 1,
+                                          backgroundColor: C.kabartmaIsik }} />
+      <View pointerEvents="none" style={{ position: "absolute", left: 8, right: 8, bottom: 0, height: 1,
+                                          backgroundColor: C.kabartmaDip }} />
+      <Text style={{ color: tn.fg, fontSize: FS.xs, fontWeight: "600", letterSpacing: 0.6 }}>{children}</Text>
     </View>
   );
+  return tone === "ok" ? <Muhur>{icerik}</Muhur> : icerik;
 }
 
 export function Load({ dark }) {
@@ -2835,4 +2867,29 @@ export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false }) {
       {!!eylem && <View style={{ marginTop: ARA[14], alignSelf: "stretch" }}>{eylem}</View>}
     </View>
   );
+}
+
+
+// ══════════════════════════════════════════════════════════════════════
+// v6.0.0 · DUMANLI CAM — `rgba(20,18,17,0.55)` + 32px arka bulanıklık
+// iOS'ta `expo-blur` gerçek bulanıklık verir; web'de `backdropFilter`.
+// Android'de bulanıklık pahalı ve düzensiz (`BinisKarti.Cam` ile aynı
+// karar): orada yalnız dumanlı zemin kalır. Çağıran farkı bilmez.
+// ══════════════════════════════════════════════════════════════════════
+let _Bulanik;
+function bulanikBilesen() {
+  if (_Bulanik !== undefined) return _Bulanik;
+  try { _Bulanik = require("expo-blur").BlurView; } catch (e) { _Bulanik = null; }
+  return _Bulanik;
+}
+export function DumanliCam({ children, stil }) {
+  const B = Platform.OS === "ios" ? bulanikBilesen() : null;
+  const zemin = { backgroundColor: C.camKart || "rgba(20,18,17,0.55)", overflow: "hidden" };
+  if (B) {
+    return (
+      <B intensity={60} tint="dark" style={[zemin, stil]}>{children}</B>
+    );
+  }
+  const web = Platform.OS === "web" ? { backdropFilter: "blur(32px)", WebkitBackdropFilter: "blur(32px)" } : null;
+  return <View style={[zemin, web, stil]}>{children}</View>;
 }

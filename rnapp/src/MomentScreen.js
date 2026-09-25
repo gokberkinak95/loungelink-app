@@ -249,7 +249,7 @@ export default function MomentScreen({
         )}
 
         {!!code && (
-          <View style={{ marginTop: ARA[26], borderWidth: 1, borderColor: C.gold + "55",
+          <View style={{ marginTop: ARA[26], borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.sm, paddingVertical: ARA[20], alignItems: "center",
                          backgroundColor: C.goldBg }}>
             <Text style={{ fontSize: FS.xs, letterSpacing: 3, color: C.goldInk, marginBottom: SP[2] }}>{t.entryCode || "GİRİŞ KODU"}</Text>

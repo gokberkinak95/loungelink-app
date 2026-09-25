@@ -1790,9 +1790,20 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           Doğru jeton `C.bg`: gövdeyle aynı zemin, üstünde 1px çizgi.
           Liste `C.surface` kartlarla akıyor; çubuk onların ALTINDAKİ
           zemine oturuyor ve bu ayrımı çizgi yapıyor. */}
-      <View style={{ flexDirection: "row", backgroundColor: C.bg,
-                     borderTopWidth: 1, borderTopColor: C.line,
-                     paddingBottom: ARA[22], paddingTop: ARA[12], paddingHorizontal: ARA[8] }}>
+      {/* ══════════════════════════════════════════════════════════════
+          v6.0.0 · YÜZEN ÇUBUK (Apple Wallet derinliği)
+          Üstteki 1px ayırıcı çizgi kalktı. Çubuk artık sayfaya oturan bir
+          şerit değil, obsidyenin üstünde süzülen bir kadife kapsül: ayrımı
+          çizgi değil DERİNLİK kuruyor (kapsülün gölgesi + üst kenar ışığı).
+          Aktif sekmenin konum göstergesi KALDI — ikinci kanal (renk körü
+          kullanıcı ve yürürken bakış) bir süs değil.
+          ══════════════════════════════════════════════════════════════ */}
+      <View style={{ backgroundColor: C.bg, paddingHorizontal: ARA[14], paddingTop: ARA[6], paddingBottom: ARA[18] }}>
+      <View style={{ flexDirection: "row", backgroundColor: C.surface, borderRadius: ARA[30],
+                     borderTopWidth: 1, borderTopColor: C.parlama || "transparent",
+                     paddingTop: ARA[10], paddingBottom: ARA[10], paddingHorizontal: ARA[6],
+                     shadowColor: C.golgeRenk, shadowOpacity: 0.55, shadowRadius: 24,
+                     shadowOffset: { width: 0, height: 10 }, elevation: 12 }}>
         {tabs.map(([k, ic, lab]) => {
           const on = tab === k;
           return (
@@ -1828,12 +1839,13 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
               <View style={{ width: 22, height: 3, borderRadius: R.full, marginBottom: ARA[6],
                              backgroundColor: on ? C.gold : "transparent" }} />
               <Ikon ad={on ? ic + "Dolu" : ic} boy={21} renk={on ? C.gold : C.dim} />
-              <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: "600",
-                                               letterSpacing: 0.3,
+              <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: on ? "600" : "500",
+                                               letterSpacing: 0.6,
                                                color: on ? C.gold : C.dim, marginTop: ARA[6] }}>{lab}</Text>
             </TouchableOpacity>
           );
         })}
+      </View>
       </View>
       {askApplyModal}
 
@@ -1980,14 +1992,18 @@ function Onboarding({ t, onDone }) {
       duration: 760, easing: Easing.inOut(Easing.cubic), useNativeDriver: true,
     }).start();
     Animated.stagger(160, [
-      Animated.timing(gir1, { toValue: 1, duration: 480, delay: 80,
-                              easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(gir2, { toValue: 1, duration: 520,
-                              easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      // v6.0.0 · İPEKSİ DUMAN — giriş 480 → 760ms, ease-out quint: başlık
+      // "belirmiyor", dumandan çözülüyor. RN metni bulanıklaştıramaz; odak
+      // hissini %1.8'lik ölçek nefesi veriyor (yakından netleşen mercek).
+      Animated.timing(gir1, { toValue: 1, duration: 760, delay: 120,
+                              easing: Easing.out(Easing.poly(5)), useNativeDriver: true }),
+      Animated.timing(gir2, { toValue: 1, duration: 820,
+                              easing: Easing.out(Easing.poly(5)), useNativeDriver: true }),
     ]).start();
   }, [i]);
   const suzul = (v) => ({ opacity: v,
-    transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [14, 0] }) }] });
+    transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [10, 0] }) },
+                { scale: v.interpolate({ inputRange: [0, 1], outputRange: [1.018, 1] }) }] });
   // ══════════════════════════════════════════════════════════════════
   // KAYDIRARAK GEÇİŞ — 12 Eylül · 3. tur
   // Gökberk parallax'ı "kullanıcı sayfaları KAYDIRDIKÇA" diye tarif
@@ -2713,7 +2729,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         <Hdr t={t} brandRight={<LangBtn lang={lang} toggleLang={toggleLang} />}
           title={t.verifySentTitle} onBack={() => { setVerifyWait(false); go("login"); }} />
         <ScrollView contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
-          <View style={{ backgroundColor: C.tealTint, borderWidth: 1, borderColor: C.teal,
+          <View style={{ backgroundColor: C.tealTint, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.sm, padding: SP[4] }}>
             <Ikon ad="eposta" boy={FS.hero} renk={C.mut} />
             <Text style={{ color: C.tealInk, fontWeight: "700", fontSize: FS.base, textAlign: "center" }}>
@@ -2934,7 +2950,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
               {t.refCodeHint}
             </Text>
 
-            <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber, borderRadius: R.xs, padding: SP[3], marginTop: SP[4] }}>
+            <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginTop: SP[4] }}>
               <IkonMetin ad="uyari" renk={C.amberInk} stilMetin={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }} metin={t.noSellWarn} />
             </View>
             {/* 🔴 v2.99 — BU KUTU YOKTU VE HUNININ EN TEPESINDEKI TERK
@@ -3006,7 +3022,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
               accessibilityRole="checkbox" accessibilityLabel={t.consentAll}
               accessibilityState={{ checked: allConsent }}
               style={{ flexDirection: "row", alignItems: "center", gap: ARA[12], minHeight: 52,
-                       backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.gold,
+                       backgroundColor: C.goldSoft, borderWidth: 1, borderColor: "transparent",
                        borderRadius: R.md, paddingHorizontal: ARA[14], marginBottom: ARA[20] }}>
               <Ikon ad={allConsent ? "kutuDolu" : "kutuBos"} boy={19} renk={C.gold} />
               <Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.base, flex: 1 }}>
@@ -3298,7 +3314,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         // 🆕 SINIF: "`flex: 1` BİR İSTEK DEĞİL, EBEVEYNDEN GELEN BİR
         // İZİNDİR — ZİNCİRDEKİ İLK DARALMAYAN KUTU ONU İPTAL EDER."
         // ══════════════════════════════════════════════════════════════
-        <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40", borderRadius: R.sm, padding: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start", flex: 1, minWidth: 0 }}><Ikon ad="telefon" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1], marginTop: ARA[2] }} /><Text style={{ color: C.amberInk, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: 18 }}>{t.phoneWhy}</Text></View>
           <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: SP[2] }}>{t.goVerify}</Text>
         </TouchableOpacity>
@@ -3539,7 +3555,7 @@ function kurSt() {
   inputBare: { paddingVertical: SP[3], fontSize: FS.base, color: C.ink },
   input: { backgroundColor: C.card, borderWidth: 1, borderColor: C.line, borderRadius: R.xs, paddingVertical: SP[3], paddingHorizontal: ARA[14], fontSize: FS.base, color: C.ink , ...ELEV.card },
   chip: { borderWidth: 1, borderColor: C.line, borderRadius: R.md, paddingVertical: SP[2], paddingHorizontal: ARA[14], backgroundColor: C.card , ...ELEV.card },
-  chipOn: { borderColor: C.gold, backgroundColor: C.goldSoft },
+  chipOn: { borderColor: "transparent", backgroundColor: C.goldSoft },
   chipText: { fontSize: FS.sm, color: C.ink },
   chipTextOn: { color: C.goldText, fontWeight: "600" },
   errBox: { backgroundColor: C.hataBg, borderRadius: R.xs, padding: ARA[10], marginTop: ARA[14] },

@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-21 uretildi · 341 dosya · son: 299)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-25 uretildi · 342 dosya · son: 300)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,7 +21,7 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 334 dosyanın 285 tanesi için ayırt edici imza
+-- ÖLÇÜM: 335 dosyanın 286 tanesi için ayırt edici imza
 -- bulundu (%85). Kalan 49 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
@@ -554,6 +554,7 @@ select z.dosya, 'tespit'
   (332, '297_yetki_kapilari.sql', 'fonksiyon', 'yonetici_kapisi'),
   (333, '298_supurge_kisiti_ve_asim_dedektoru.sql', 'tablo', 'supurge_damgasi'),
   (334, '299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql', 'kolon', 'supurge_damgasi.kaynak'),
+  (335, '300_pasif_salon_adlari.sql', 'kisit', 'ck_venue_ad_durum_eki_yok'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -904,6 +905,7 @@ with imza(sira, dosya, tip, ad) as (
   (332, '297_yetki_kapilari.sql', 'fonksiyon', 'yonetici_kapisi'),
   (333, '298_supurge_kisiti_ve_asim_dedektoru.sql', 'tablo', 'supurge_damgasi'),
   (334, '299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql', 'kolon', 'supurge_damgasi.kaynak'),
+  (335, '300_pasif_salon_adlari.sql', 'kisit', 'ck_venue_ad_durum_eki_yok'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

@@ -773,9 +773,9 @@ export const KOYU = {
   //
   // 🆕 SINIF: "BİR ZEMİNİN NÖTR OLDUĞUNU GÖZLE ONAYLAYAMAZSIN —
   // NÖTRLÜK BİR HUE AÇISIDIR VE ANCAK ÖLÇÜLEREK BİLİNİR."
-  bg:         "#0B0A0B",   // sayfa · obsidyen (hue 324° · C* 0.51)
-  surface:    "#141211",   // kart  · sayfadan ΔE 3.02
-  surfaceAlt: "#1B1816",   // kart içi blok · karttan ΔE 3.12
+  bg:         "#0B0A0B",   // sayfa · obsidyen (hue 324° · C* 0.51)   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1877 (v6 katmanı)
+  surface:    "#141211",   // kart  · sayfadan ΔE 3.02   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1878 (v6 katmanı)
+  surfaceAlt: "#1B1816",   // kart içi blok · karttan ΔE 3.12   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1879 (v6 katmanı)
   ink:        "#F4EFE6",   // başlık · sayfa 17.26:1 · blok 15.42:1
   body:       "#D8D0C4",   // gövde · sayfa 12.93:1 · blok 11.56:1
   // 🔴 MERDİVENİ YÜKSELTMEK ÜÇ KADEMELİ METİN HİYERARŞİSİNİ EZDİ.
@@ -836,7 +836,7 @@ export const KOYU = {
   // Pasif rozet: eski `#2E3647` ile AYNI PARLAKLIK (L* 21.8 ↔ 22.6) —
   // görsel ağırlık değişmiyor — ama hue 277° yerine 73°, yani sistemin
   // içinde. Beyaz metinle 12.43:1.
-  pasifRozet: "#3A332C",
+  pasifRozet: "#3A332C",   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1886 (v6 katmanı)
   // Tasarımın "cam izi" yüzeyi: `rgba(255,255,255,.03….035)`. Üç yerde
   // geçiyor (`.btn-cizgi`, `.cip`, `.sabit-serit`) ve üçünde de aynı
   // fikir: zemine değil, ÜSTÜNDEKİ IŞIĞA ait çok ince bir katman.
@@ -854,7 +854,7 @@ export const KOYU = {
   //
   // 🆕 SINIF: "BİR DEGRADEYİ TEK RENGE İNDİRİRKEN UÇLARINDAN BİRİNİ
   // DEĞİL ORTASINI AL — UCU ALMAK, RENGİ SİSTEMLİ OLARAK KAYDIRIR."
-  balonBen:   "#241F19",
+  balonBen:   "#241F19",   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1887 (v6 katmanı)
   // Anlam renkleri koyu zemin için açıldı — hepsi AA tutuyor.
   // 🔴 12 EYLÜL — NEON GİTTİ. Turkuazın kroması C* 45.3, yeşilin 44.5
   // idi: marka altınından bile doymuş. Gökberk'in "fintech havası"
@@ -881,7 +881,7 @@ export const KOYU = {
   //
   // Degrade tek renge indirildi: 145°'lik geçişin orta noktası.
   // (#2B2430 ↔ #1E1A22 ortası = #251F29)
-  avatarBg:   "#1B1816",
+  avatarBg:   "#1B1816",   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1882 (v6 katmanı)
 
   // ── DÜĞMELER — KOYU TEMADA DA BEYAZ MÜREKKEP ─────────────────────
   // 🔴 İLK KARARIM YANLIŞTI VE BEDELİ ÖLÇÜLEBİLİRDİ.
@@ -1327,10 +1327,10 @@ KOYU.goldBg      = "#292312";   // sayfa 1.26:1 · kart 1.19:1
 KOYU.goldTint    = "#261C11";   // sayfa 1.18:1 · kart 1.12:1
 KOYU.greenBg     = "#12281D";   // sayfa 1.27:1 · kart 1.20:1
 KOYU.purpleBg    = "#281D40";   // sayfa 1.26:1 · kart 1.19:1   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1589
-KOYU.redBg       = "#391A1F";   // sayfa 1.26:1 · kart 1.19:1
+KOYU.redBg       = "#391A1F";   // sayfa 1.26:1 · kart 1.19:1   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1884 (v6 katmanı)
 KOYU.tealBg      = "#112724";   // sayfa 1.26:1 · kart 1.19:1
-KOYU.tealTint    = "#0F211D";   // sayfa 1.18:1 · kart 1.12:1
-KOYU.tealTint2   = "#102520";   // sayfa 1.23:1 · kart 1.16:1
+KOYU.tealTint    = "#0F211D";   // sayfa 1.18:1 · kart 1.12:1   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1883 (v6 döngüsü)
+KOYU.tealTint2   = "#102520";   // sayfa 1.23:1 · kart 1.16:1   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1883 (v6 döngüsü)
 
 // ── NÖTR ZEMİN — sıcak gri bloklar (ton taşımaz) ──
 KOYU.warmBlock   = "#1D1A18";   // sayfa 1.14:1
@@ -1338,14 +1338,14 @@ KOYU.warmBlock2  = "#23201E";   // sayfa 1.22:1
 KOYU.warmBlock3  = "#292522";   // sayfa 1.30:1
 
 // ── DOĞRUDAN EŞLEME ──
-KOYU.card        = KOYU.surface;
-KOYU.bgAlt       = KOYU.surfaceAlt;
+KOYU.card        = KOYU.surface;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1880 (v6 katmanı)
+KOYU.bgAlt       = KOYU.surfaceAlt;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1881 (v6 katmanı)
 KOYU.muted       = KOYU.mutedAA;
 KOYU.dim         = KOYU.dimAA;
 KOYU.mut         = KOYU.mutedAA;
 KOYU.paper       = KOYU.bg;
-KOYU.goldSoft    = KOYU.goldBg;
-KOYU.hataBg      = KOYU.redBg;
+KOYU.goldSoft    = KOYU.goldBg;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1886 (v6 katmanı)
+KOYU.hataBg      = KOYU.redBg;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1885 (v6 katmanı)
 
 // ── MÜREKKEP — kendi tonlu zemininde ölçüldü ──
 KOYU.amberInk    = "#FBA13A";   // amberBg 7.62:1 · kart 9.13:1   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1451
@@ -1535,7 +1535,7 @@ KOYU.badgeInk = {
 //
 // 🆕 SINIF: "SAYDAMLIK BİR GÖRÜNÜM DEĞİL BİR ZEMİN DEĞİŞİKLİĞİDİR —
 // ARKASI DEĞİŞEN HER YÜZEYDE MÜREKKEP HİYERARŞİSİ YENİDEN ÖLÇÜLMELİDİR."
-KOYU.camKart  = "rgba(20,18,17,0.55)";
+KOYU.camKart  = "rgba(20,18,17,0.55)";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1897 (v6 katmanı)
 KOYU.camKenar = "rgba(237,231,219,0.16)";
 
 // ── KART KENARI: ÇİZGİ DEĞİL IŞIK ────────────────────────────────────
@@ -1551,10 +1551,10 @@ KOYU.camKenar = "rgba(237,231,219,0.16)";
 //
 // 🆕 SINIF: "BİR ÇİZGİYİ 'İNCE' YAPAN ŞEY KALINLIĞI DEĞİL, ZEMİNİYLE
 // ARASINDAKİ FARKTIR — 1px BİR ÇİZGİ, ΔE 20'DE BİR DUVARDIR."
-KOYU.kabartmaIsik = "rgba(244,239,230,0.055)"; // rozetin üst kenarı · ΔE 5.14
-KOYU.kabartmaDip  = "rgba(0,0,0,0.22)";        // rozetin alt kenarı · ΔE 4.38
+KOYU.kabartmaIsik = "rgba(244,239,230,0.055)"; // rozetin üst kenarı · ΔE 5.14   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1893 (v6 katmanı)
+KOYU.kabartmaDip  = "rgba(0,0,0,0.22)";        // rozetin alt kenarı · ΔE 4.38   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1894 (v6 katmanı)
 KOYU.kartKenar = "rgba(244,239,230,0.035)";   // kart üstünde ΔE 3.91
-KOYU.kartIsik  = "rgba(244,239,230,0.06)";    // üstten 1px ışık · ΔE 6.32
+KOYU.kartIsik  = "rgba(244,239,230,0.06)";    // üstten 1px ışık · ΔE 6.32   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1892 (v6 katmanı)
 KOYU.kartDip   = "rgba(0,0,0,0.30)";          // alttan 1px oturma · ΔE 2.01
 
 KOYU.badge = {
@@ -1811,7 +1811,7 @@ temaYenidenKur(() => {
 // Açık temada bu başlık da koyu kalıyor: bir mesh başlığın altında
 // açık gövde, tasarımın kendi kararı (`.ust` her iki durumda koyu).
 C.meshUst = "#1A1620";
-KOYU.meshUst = "#1A1620";
+KOYU.meshUst = "#1A1620";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1900 (v6 katmanı)
 // 🔴 30 Ağu · 8. tur — "AN" EKRANININ KENDİ TABANI.
 // Tasarımda başlık bandı ile "an" ekranı AYNI zemini kullanmıyor:
 //   .ust.mesh    linear-gradient(180deg, #1A1620 0%, --gece 100%)
@@ -1820,7 +1820,7 @@ KOYU.meshUst = "#1A1620";
 // okunacak veri yok, sahne var. Aynı jetonu iki yerde kullanmak,
 // tasarımın bu ayrımını siler.
 C.meshUst2 = "#241D26";
-KOYU.meshUst2 = "#241D26";
+KOYU.meshUst2 = "#241D26";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1901 (v6 katmanı)
 
 // `.ust-alt` — tasarımda `--sessiz` (#A79B8A). Yeni mesh zeminde ölçtüm:
 // **4.41:1** — AA'nın (4.5) kıl payı altında. Bir tık açtım: **5.19:1**.
@@ -1843,5 +1843,81 @@ C.kabartmaDip  = "rgba(26,31,46,0.10)";
 C.kartKenar = "rgba(26,31,46,0.07)";
 C.kartIsik  = "rgba(255,255,255,0.60)";
 C.kartDip   = "rgba(26,31,46,0.05)";
+
+
+// ══════════════════════════════════════════════════════════════════════
+// v6.0.0 · SESSİZ LÜKS — OBSİDYEN & KADİFE KARAR KATMANI   (25 Eylül)
+//
+// Gökberk'in v6 brief'i: "çamurlu, doygunluğu düşük kahverengi/mor kart
+// zeminleri, kutu kalabalığı ve sert çevreleme çizgileri."
+//
+// ÖLÇÜLDÜ — kahverengi/mor dediği şey tek tek jetonlardı:
+//     goldBg   #292312  (zeytin-kahve)   amberBg #2C2214  (kahve)
+//     goldTint #261C11  (kahve)          purpleBg #281D40 (mor → sonra goldBg)
+//     tealBg   #112724  greenBg #12281D  redBg #391A1F
+//     pasifRozet #3A332C · balonBen #241F19 · meshUst #1A1620 / #241D26 (mor)
+// Her biri "durum" anlatmak için bir ZEMİN rengi kullanıyordu. Sessiz
+// lüksta durum zeminle değil MÜREKKEPLE anlatılır: zemin tek (kadife),
+// anlam metnin renginde ve tipografide.
+//
+// ÇİZGİ YOK: çizgi jetonları şeffaf. Ayrım iki şeyle kuruluyor:
+//   · derinlik: obsidyen (#0B0A0B) → kadife (#141211) → kadife-2 (#181614)
+//   · IŞIK: yalnız ÜST kenarda 1px speküler (`parlama`, %3.5 fildişi) —
+//     saat kasasının elmas kesimli kenarı gibi. Çevre çizgisi değil.
+//
+// ⚠️ ERİŞİLEBİLİRLİK BEDELİ AÇIKÇA: WCAG 1.4.11 etkileşimli öğenin
+// sınırının 3:1 görünmesini ister. Çizgisiz giriş alanı ve seçim hapı bunu
+// ZEMİNLE (kadife üstü obsidyen 1.2:1) karşılamaz; karşılığı: yer tutucu
+// metin + odakta fildişi parıltı + seçilide mürekkep ve ağırlık değişimi.
+// Seçililik hiçbir yerde yalnız renkle anlatılmıyor (radyo noktası kaldı).
+// ══════════════════════════════════════════════════════════════════════
+const V6_KADIFE  = "#141211";
+const V6_KADIFE2 = "#181614";
+const V6_YOK     = "rgba(0,0,0,0)";
+KOYU.bg         = "#0B0A0B";
+KOYU.surface    = V6_KADIFE;
+KOYU.surfaceAlt = V6_KADIFE2;
+KOYU.card       = V6_KADIFE;
+KOYU.bgAlt      = V6_KADIFE2;
+KOYU.avatarBg   = V6_KADIFE2;
+for (const k of ["goldBg", "amberBg", "goldTint", "greenBg", "purpleBg", "tealBg", "tealTint", "tealTint2"]) KOYU[k] = V6_KADIFE2;
+// Seçili yüzey: kadifenin bir basamak AYDINLIĞI (kahve değil — ton aynı,
+// yalnız ışık fazla). Çerçeve kalkınca seçimi çizgi değil bu ışık taşır.
+KOYU.goldSoft   = "#1E1B19";
+KOYU.redBg      = "#1A1413";          // SOS/engel: kadifenin yalnız bir tık sıcağı — alarm mürekkepte
+KOYU.hataBg     = KOYU.redBg;
+KOYU.pasifRozet = V6_KADIFE2;
+KOYU.balonBen   = V6_KADIFE2;
+for (const k of ["line", "line2", "kartKenar", "goldLine", "amberLine", "tealLine",
+                 "purpleLine", "camKenar", "goldTrace", "hataLine", "warmLine"]) KOYU[k] = V6_YOK;
+KOYU.parlama    = "rgba(244,239,230,0.035)";   // brief'in değeri — üst kenar ışığı
+KOYU.parlamaGuc = "rgba(244,239,230,0.07)";    // basılı / seçili hâlde ışık iki katı
+KOYU.kartIsik   = KOYU.parlama;
+KOYU.kabartmaIsik = "rgba(244,239,230,0.09)";  // rozet mührü: kabartmanın üst sırtı
+KOYU.kabartmaDip  = "rgba(0,0,0,0.30)";        // … ve bastırılmış alt gölgesi
+KOYU.fildisi    = "#EDE7DB";                   // mühür mürekkebi (fildişi krem)
+KOYU.muhurZemin = "rgba(237,231,219,0.06)";
+KOYU.camKart    = "rgba(20,18,17,0.55)";       // dumanlı cam (host balonu)
+KOYU.isikSizinti = "#C9B693";                  // ortam ışığı — dokununca sızar (≤ %12)
+KOYU.onGoldSoluk = "rgba(23,18,11,0.62)";       // şampanya balon üstünde saat
+KOYU.meshUst    = "#12100F";                   // mor mesh → sıcak obsidyen
+KOYU.meshUst2   = "#171412";
+// Rozetler: çerçeve yok, zemin tek, anlam mürekkepte. Nane yeşili ve
+// turuncu (fintech) mühür diline çekildi: onay = fildişi, ücret = şampanya.
+KOYU.badgeInk = { ok: "#EDE7DB", cost: "#D6C3A0", unknown: "#B0A296", block: "#D9A9A4", info: "#DDD6CD" };
+KOYU.badge = {
+  ok:      { fg: KOYU.badgeInk.ok,      bg: KOYU.muhurZemin, bd: V6_YOK },
+  cost:    { fg: KOYU.badgeInk.cost,    bg: "rgba(214,195,160,0.06)", bd: V6_YOK },
+  unknown: { fg: KOYU.badgeInk.unknown, bg: "rgba(176,162,150,0.06)", bd: V6_YOK },
+  block:   { fg: KOYU.badgeInk.block,   bg: "rgba(217,169,164,0.07)", bd: V6_YOK },
+  info:    { fg: KOYU.badgeInk.info,    bg: KOYU.muhurZemin, bd: V6_YOK },
+};
+C.parlama = "rgba(255,255,255,0.60)";
+C.parlamaGuc = "rgba(255,255,255,0.80)";
+C.fildisi = "#1A1F2E";
+C.muhurZemin = "rgba(26,31,46,0.05)";
+C.isikSizinti = "#C9B693";
+C.onGoldSoluk = "rgba(255,255,255,0.70)";
+C.golgeRenk = "#1A1F2E";
 
 temaUygula("koyu");

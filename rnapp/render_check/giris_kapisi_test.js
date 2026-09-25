@@ -131,7 +131,7 @@ STUBS["react-native"] = new Proxy({}, {
     if (k === "Easing") return {
       linear: (x) => x, ease: (x) => x, cubic: (x) => x, quad: (x) => x,
       out: (f) => (f || ((x) => x)), in: (f) => (f || ((x) => x)),
-      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x), back: (x) => x,
+      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x), back: () => ((x) => x), poly: () => ((x) => x),
     };
     if (k === "Appearance") return { getColorScheme: () => "light", addChangeListener: () => ({ remove() {} }) };
     if (k === "__esModule") return true;

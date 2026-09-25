@@ -107,13 +107,14 @@ function kurS() {
   // GÖRÜNMEDİĞİNİ ÖLÇ — GÖRÜNMEYEN BİR SINIRI SAVUNMAK, OLMAYAN BİR
   // ŞEYİ KAYBETMEKTEN KORKMAKTIR."
   // ══════════════════════════════════════════════════════════════════
-  input: { backgroundColor: C.bgAlt, borderRadius: R.lg,
+  input: { backgroundColor: C.bgAlt, borderRadius: R.lg, borderWidth: 0,
            paddingVertical: SP[3], paddingHorizontal: SP[4] - 2, ...T.lg, color: C.ink },
   // 🔴 12 EYLÜL — KART KENARI `C.warmLine`DAN `C.kartKenar`A GEÇTİ.
   // Ölçüm: eski kenar kartın kendi zemini üstünde ΔE 20.36 (sıcak sarı
   // bir çizgi), yenisi ΔE 3.91. Tek satır, ama bu stili 100+ kart
   // kopyalıyor — yani "kutu cümbüşü"nün en büyük tek kalemi burası.
-  card: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.kartKenar, borderRadius: R.lg,
+  // v6 — kadife kart: çevre çizgisi yok; yalnız ÜST kenarda 1px speküler ışık
+  card: { backgroundColor: C.surface, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || C.kartKenar, borderRadius: R.lg,
           // tasarım `.kart{padding:17px;margin-bottom:13px}` — 16/12 en
           // yakın ölçek basamağı (ARA 2'nin katları). 10'du; kartlar
           // arası boşluk tasarımdakinden dardı.
@@ -129,8 +130,8 @@ function kurS() {
   // birinin yanlış olanı seçmesini garanti ediyordu.
   // 🆕 SINIF: "AYNI İŞİN İKİ TANIMI VARSA, BİRİ ÇAĞRILMIYOR OLSA BİLE
   // TEHLİKELİDİR — ÇÜNKÜ BİR GÜN ÇAĞRILACAKTIR."
-  empty: { padding: SP[6] - 6, alignItems: "center", borderWidth: 1, borderColor: C.line,
-           borderStyle: "dashed", borderRadius: R.lg },
+  empty: { padding: SP[6], alignItems: "center", backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", ...ELEV.card,
+           borderRadius: R.lg },
   // 🔴 v2.78 — ÇİPLERİN DOKUNMA HEDEFİ 44pt'NİN ALTINDAYDI.
   // Ölçüm: `paddingVertical: SP[2]` = 8 → yaklaşık 32pt. 33 çip düğmesinden
   // yalnız 2'si satırında `minHeight` ekliyordu; yani 31 çip standardın
@@ -160,18 +161,18 @@ function kurS() {
   //
   // `S.chip` denetim olarak KALDI (44px, dokunulabilir).
   // `S.roz` kart içi etiket olarak eklendi.
-  chip: { borderWidth: 1, borderColor: C.line, borderRadius: R.full, paddingVertical: SP[2],
+  chip: { borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", borderRadius: R.full, paddingVertical: SP[2],
           paddingHorizontal: ARA[14], backgroundColor: C.surface,
           minHeight: TAP.minHeight, justifyContent: "center",
           marginRight: SP[2], marginBottom: SP[2] },
   // Tasarımdaki `.roz` — kart içi durum etiketi. Gölge YOK: rozet
   // kartın düzleminde duruyor, üstünde yüzmüyor.
-  roz: { borderWidth: 1, borderColor: C.line2 || C.line, borderRadius: R.full,
+  roz: { borderWidth: 0, borderRadius: R.full,
          paddingVertical: ARA[6], paddingHorizontal: ARA[10],
          backgroundColor: "transparent", justifyContent: "center" },
-  chipOn: { borderColor: C.gold, backgroundColor: C.goldSoft },
+  chipOn: { borderTopColor: C.parlamaGuc || C.gold, backgroundColor: C.surfaceAlt },
   err: { backgroundColor: C.hataBg, borderRadius: R.xs, padding: SP[3] - 1, marginTop: SP[3] },
-  pickBtn: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: R.sm,
+  pickBtn: { backgroundColor: C.surface, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", borderRadius: R.sm,
              paddingVertical: SP[3] + 1, paddingHorizontal: SP[4] - 2, ...ELEV.card },};
 }
 
@@ -657,7 +658,7 @@ export function RefCodeEntry({ t }) {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   if (done) return (
-    <View style={{ backgroundColor: C.tealTint2, borderWidth: 1, borderColor: C.teal, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
+    <View style={{ backgroundColor: C.tealTint2, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
       <Text style={{ color: C.tealInk, fontSize: FS.sm, fontWeight: "700" }}>{t.refCodeApplied}</Text>
     </View>
   );
@@ -997,7 +998,7 @@ export const PURPOSES = [
 ];
 export function PromiseBox({ t, lounge, f, esik, yogunluk }) {
   return (
-    <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.gold + "40",
+    <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: "transparent",
                    borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
       <Text style={{ color: C.goldText, fontSize: FS.xs, letterSpacing: 1.1, fontWeight: "700" }}>
         {t.promiseTitle}
@@ -1224,7 +1225,7 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
        değiyordu. Ritim `ARA[14]`; boşluk artık iki uçta da var.
        🆕 SINIF: "BOŞLUĞU YALNIZ BİR YÖNE YAZAN İKİ KOMŞU, ARALARINDA
        HİÇ BOŞLUK BIRAKMAZ." */
-    <View style={{ backgroundColor: zemin, borderWidth: 1, borderColor: renk + "40",
+    <View style={{ backgroundColor: zemin, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.kabartmaIsik,
                    borderRadius: R.sm, padding: SP[4], marginTop: SP[3], marginBottom: ARA[14] }}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Ikon ad="bildirimKapali" boy={15} renk={renk} stil={{ marginRight: SP[2] }} />
@@ -1328,7 +1329,7 @@ export function YasOnayi({ t }) {
   };
 
   return (
-    <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: C.gold + "40",
+    <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: "transparent",
                    borderRadius: R.sm, padding: SP[4], marginTop: SP[3] }}>
       <Text style={{ color: C.goldText, fontSize: FS.micro, letterSpacing: 1.6, fontWeight: "700" }}>
         {BUYUK(t.ageGateEyebrow || "")}

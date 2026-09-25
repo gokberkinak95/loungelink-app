@@ -31547,5 +31547,14 @@
     "expire_stale_sessions|+ public.tutulan_kredi(u.id)"
    ]
   ]
+ ],
+ [
+  "300_pasif_salon_adlari.sql",
+  [
+   [
+    "kisit",
+    "ck_venue_ad_durum_eki_yok"
+   ]
+  ]
  ]
 ]

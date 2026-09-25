@@ -983,7 +983,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       {/* TASARIM 02 · `.not.iyi`: "Senin uçuşunda N kişi daha var — …" teal
           çerçeveli kutu, listenin ÜSTÜNDE (kartın içinde değil). */}
       {sameFlight > 0 && rows.length > 0 ? (
-        <View style={{ borderWidth: 1, borderColor: C.teal, borderRadius: R.md,
+        <View style={{ borderWidth: 1, borderColor: "transparent", borderRadius: R.md,
                        backgroundColor: C.tealTint, paddingVertical: ARA[10], paddingHorizontal: ARA[14],
                        marginBottom: ARA[14] }}>
           <Text style={{ color: C.teal, fontSize: FS.xs, fontWeight: "600", lineHeight: 16 }}>
@@ -1071,7 +1071,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           {/* Marketing: boş liste = kayıp değil, talep sinyali. Seyahati olan guest
               zaten 056 ile host gelince bildirim alacak — bunu ona söyle. */}
           {onAddTrip && (
-            <View style={{ marginTop: ARA[14], backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "30", borderRadius: R.sm, padding: SP[3], alignSelf: "stretch" }}>
+            <View style={{ marginTop: ARA[14], backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], alignSelf: "stretch" }}>
               <IkonMetin ad="kutlama" renk={C.tealInk} stilMetin={{ color: C.tealInk, fontWeight: "700", fontSize: FS.sm, textAlign: "center" }} metin={t.notifyWhenHostTitle} />
               <Text style={{ color: C.mutedAA, fontSize: FS.sm, textAlign: "center", marginTop: SP[1], lineHeight: 16 }}>{t.notifyWhenHostBody}</Text>
               <Btn v="teal" sm label={t.notifyWhenHostCta} onPress={onAddTrip} style={{ marginTop: ARA[10] }} />
@@ -1114,7 +1114,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 Kullanici "hicbir sey olmuyor" diye okur — ve hakli.
                 Artik DOKUNULAN kartin icinde aciliyor. */}
             {badgeInfo && badgeInfo.id === r.id && (
-              <View style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.gold,
+              <View style={{ backgroundColor: C.card, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlamaGuc,
                              borderRadius: R.sm, padding: SP[3], marginBottom: ARA[10] , ...ELEV.card }}>
                 <Text style={{ ...T.label, color: C.goldText, marginBottom: SP[1] }}>{badgeInfo.label}</Text>
                 <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>{badgeInfo.info}</Text>
@@ -1482,7 +1482,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                               canAsk: !!badges[r.id].can_ask_host })}
                       style={{ alignItems: "flex-end", alignSelf: "flex-end", maxWidth: "100%" }}>
                       <View style={{ backgroundColor: C.redBg || C.hataBg, borderWidth: 1,
-                                     borderColor: C.red + "40", borderRadius: R.xs,
+                                     borderColor: "transparent", borderRadius: R.xs,
                                      paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
                         <Text style={{ color: C.redInk, fontSize: FS.xs, fontWeight: "600", textAlign: "right" }}>
                           {t.cannotApply}
@@ -1515,7 +1515,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       // HÜKMÜNDEDİR."
                       onPress={() => { if (!phoneOk && onVerify) onVerify(); else if (!r.has_trip && onAddTrip) onAddTrip(r); }}
                       style={{ alignItems: "flex-end", alignSelf: "flex-end" }}>
-                      <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.gold + "40", borderRadius: R.xs, paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
+                      <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
                         <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600" }}>
                           {!phoneOk ? t.gateVerifyNow : t.gateAddTripNow}
                         </Text>
@@ -1555,7 +1555,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 Metin yeni yazılmadı: `safetyBar` zaten TR ve EN olarak
                 vardı, yalnız yanlış yerde duruyordu.
                 ═══════════════════════════════════════════════════════ */}
-            <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "33",
+            <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                            borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                 <Ikon ad="guvenlik" boy={15} renk={C.tealInk} stil={{ marginRight: SP[2], marginTop: SP[1] }} />
@@ -1617,7 +1617,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 reddi bire bir ortusur. Onceden hicbir uyari yoktu:
                 kullanici Gonder'e basip ham hata aliyordu. */}
             {target && !target.has_trip && (
-              <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber, borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
+              <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
                 <IkonMetin ad="uyari" boy={13} renk={C.amberInk} metin={t.reqNoTripTitle}
                   stilMetin={{ color: C.amberInk, fontWeight: "700", fontSize: FS.sm }} />
                 <Text style={{ color: C.amberInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>
@@ -1643,7 +1643,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
               if (phoneOk && idOk) adv.push(t.advFullyVerified);
               else if (phoneOk) adv.push(t.advVerified);
               return adv.length > 0 ? (
-                <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: C.gold + "30", borderRadius: R.sm, padding: SP[3], marginTop: SP[1], marginBottom: SP[1] }}>
+                <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginTop: SP[1], marginBottom: SP[1] }}>
                   <IkonMetin ad="kutlama" renk={C.goldText} stilMetin={{ fontSize: FS.xs, fontWeight: "700", color: C.goldText, letterSpacing: 1, marginBottom: SP[2] }} metin={t.advTitle} />
                   {adv.map(a => (
                     <View key={a} style={{ flexDirection: "row", marginBottom: SP[1] }}>
@@ -1676,7 +1676,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 duruyordu; kullanıcı çelişki okuyor. İkisi farklı şeyler
                 (istek escrow'u vs ücretli girişe teşekkür) ama parçalı
                 anlatıldığında bunu kimse çıkaramaz. Tek kutu, tek hesap. */}
-            <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40", borderRadius: R.xs, padding: SP[3], marginTop: ARA[10] }}>
+            <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginTop: ARA[10] }}>
               {/* 🔴 v2.98 (SQL 252 §4b) — BU KUTU SABİT "1" YAZIYORDU.
                   Ölçtüm: `request_precheck_pregate` 'credit_hold' alanını
                   SABİT 1 dolduruyordu, oysa isteği gerçekten ücretlendiren
@@ -2581,7 +2581,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
                 <Ikon ad="sag" boy={16} renk={C.goldText} />
               </TouchableOpacity>
             ) : null}
-            <View style={{ backgroundColor: C.purpleBg, borderWidth: 1, borderColor: C.purple + "35", borderRadius: R.sm, padding: SP[3], marginBottom: ARA[14] }}>
+            <View style={{ backgroundColor: C.purpleBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginBottom: ARA[14] }}>
               <Text style={{ color: C.purpleInk, fontWeight: "700", fontSize: FS.sm }}>{t.connBoxTitle}</Text>
               <Text style={{ color: C.body, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.connBoxBody}</Text>
             </View>
@@ -2717,13 +2717,13 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
                 E-posta dogrulandiysa "E-posta", telefon gercekten
                 dogrulandiysa "Telefon". Ikisi ayri guven sinyali. */}
             {(d.email_verified || d.phone_verified) && (
-              <View style={[S.chip, { backgroundColor: C.greenBg, borderColor: C.green }]}>
+              <View style={[S.chip, { backgroundColor: C.greenBg, borderColor: "transparent" }]}>
                 <Text style={{ color: C.greenInk, fontSize: FS.xs, fontWeight: "600" }}>
                   {d.email_verified ? t.ppEmailOk : t.ppPhoneOk}
                 </Text>
               </View>
             )}
-            {d.id_verified && <View style={[S.chip, { backgroundColor: C.goldBg, borderColor: C.gold }]}><View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="kimlik" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600" }}>{t.ppIdOk}</Text></View></View>}
+            {d.id_verified && <View style={[S.chip, { backgroundColor: C.goldBg, borderColor: "transparent" }]}><View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="kimlik" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600" }}>{t.ppIdOk}</Text></View></View>}
           </View>
         </View>
 
@@ -2808,7 +2808,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
         )}
         {kaldirildi && (
           <View style={{ marginTop: ARA[10], padding: SP[3], borderRadius: R.sm,
-                         backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40" }}>
+                         backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent" }}>
             <Text style={{ color: C.tealInk, fontSize: FS.sm, fontWeight: "600", textAlign: "center" }}>
               {t.ppRemoveDone}</Text>
           </View>
@@ -2888,7 +2888,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
 // ============ PhoneGate kartı (§6) ============
 export function PhoneGate({ t, onVerify }) {
   return (
-    <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber, borderRadius: R.sm, padding: ARA[14], marginVertical: SP[2] }}>
+    <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: ARA[14], marginVertical: SP[2] }}>
       <IkonMetin ad="uyari" boy={15} renk={C.amberInk} metin={t.phoneGate}
         stilMetin={{ color: C.amberInk, fontWeight: "700", fontSize: FS.base }} />
       <Text style={{ color: C.amberInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.phoneGateBody}</Text>
@@ -3142,7 +3142,7 @@ export function Safety({ t, session, onBack, onReport, onTrust, onEditProfile })
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[3] }}>{t.safetySub}</Text>
 
         <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setSosDone(null); setNote(""); setSos(true); }}
-          style={{ backgroundColor: C.redBg, borderWidth: 1.5, borderColor: C.red, borderRadius: R.sm, padding: SP[4], marginBottom: SP[3] }}>
+          style={{ backgroundColor: C.redBg, borderWidth: 1.5, borderColor: "transparent", borderRadius: R.sm, padding: SP[4], marginBottom: SP[3] }}>
           <Text style={{ color: C.redInk, fontWeight: "700", fontSize: FS.lg }}>{t.safetySOS}</Text>
           <Text style={{ color: C.redInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 17 }}>{t.safetySOSBody}</Text>
         </TouchableOpacity>
@@ -3572,7 +3572,7 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
           data.active.map(s => {
             const o = other(s);
             return (
-              <View key={s.id} style={[S.card, { marginBottom: ARA[10], borderColor: C.green, borderWidth: 1.5 }]}>
+              <View key={s.id} style={[S.card, { marginBottom: ARA[10], borderColor: "transparent", borderWidth: 1.5 }]}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={{ width: 36, height: 36, borderRadius: R.full, backgroundColor: C.greenBg, alignItems: "center", justifyContent: "center", marginRight: ARA[10] }}>
                     <Text style={{ color: C.greenInk, fontWeight: "700", fontFamily: F.serif }}>{(o.name || "?").charAt(0).toUpperCase()}</Text>
@@ -3963,7 +3963,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneHost} title={t.accessTitle} onBack={onBack || undefined} />
         <ScrollView contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[40] }}>
-          <View style={[S.card, { borderColor: C.gold, borderWidth: 1.5 }]}>
+          <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5 }]}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.hostOnly}</Text>
             <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginTop: ARA[6] }}>{t.hostOnlyBody}</Text>
             {/* 🔴 v2.99 — DÜĞME ARTIK KOŞULLU ÇİZİLİYOR (yonlendirme_check).
@@ -4037,7 +4037,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
           ); })}
         </View>
         {Array.isArray(srcSummary) && srcSummary.map(sm => (
-          <View key={sm.src} style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "35",
+          <View key={sm.src} style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: SP[3], marginTop: SP[1], marginBottom: ARA[10] }}>
             <View style={{ flexDirection: "row", alignItems: "center", marginBottom: SP[1] }}>
               <Text style={{ ...T.label, color: C.tealInk, flex: 1 }}>{sm.program}</Text>
@@ -4435,7 +4435,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
 
             {/* YENİ KART TASLAĞI */}
             {draftOpen && draft ? (
-              <View style={{ borderWidth: 1.5, borderColor: C.gold, borderRadius: R.xs,
+              <View style={{ borderWidth: 1.5, borderColor: "transparent", borderRadius: R.xs,
                              padding: SP[3], marginBottom: SP[2], backgroundColor: C.goldSoft }}>
                 {/* 🔴 v2.89 (Gökberk md.9) — PROGRAM LİSTESİ KATLANIYOR.
                     20+ program çipi ekranı doldurup altındaki alanları
@@ -4527,7 +4527,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
             {!!cardErr && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{cardErr}</Text></View>}
             {/* Motorun kendi cümlesi — kendi metnimizi yazmıyoruz. */}
             {!!cardNote && (
-              <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "35",
+              <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                              borderRadius: R.xs, padding: SP[3], marginTop: SP[2] }}>
                 <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>{cardNote}</Text>
               </View>
@@ -4705,7 +4705,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, tamEkran, tazele 
           : soru ? t.anRuleQuestion
           : t.anWantsConnect + (niyet ? " · " + niyet : "");
         return (
-        <View key={it.id} style={[S.card, { borderColor: accent, borderWidth: 1.5 }]}>
+        <View key={it.id} style={[S.card, { borderTopColor: C.parlamaGuc }]}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View style={{ width: 36, height: 36, borderRadius: R.full, backgroundColor: accentBg, alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[10] }}>
               {it.from_photo ? <Image source={{ uri: it.from_photo }} style={{ width: 36, height: 36 }} />
@@ -5066,7 +5066,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
         </View>
 
         {form.gender === "female" && (
-          <View style={{ backgroundColor: C.card, borderWidth: 1.5, borderColor: C.purple, borderRadius: R.sm, padding: ARA[14], marginBottom: ARA[14], flexDirection: "row", alignItems: "flex-start" , ...ELEV.card }}>
+          <View style={{ backgroundColor: C.card, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlamaGuc, borderRadius: R.sm, padding: ARA[14], marginBottom: ARA[14], flexDirection: "row", alignItems: "flex-start" , ...ELEV.card }}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: FS.sm, color: C.purple, fontWeight: "700", marginBottom: SP[1] }}>{t.stWomenMode}</Text>
               <Text style={{ fontSize: FS.xs, color: C.mutedAA, lineHeight: 16 }}>{t.epWomenModeBody}</Text>
@@ -5782,7 +5782,7 @@ export function EditTrip({ t, visit, onBack, onDone }) {
       <Hdr t={t} ustBilgi={t.scenePlan} title={t.editTrip} onBack={onBack} />
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {kilitli ? (
-          <View style={[S.card, { borderColor: C.gold, borderWidth: 1.5, marginBottom: SP[3] }]}>
+          <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
             <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18 }}>{t.editTripLocked}</Text>
           </View>
         ) : null}
@@ -6294,7 +6294,7 @@ export function HomeConnections({ t, session, onOpenChat, tamEkran, tazele }) {
     <View>
       {!!sohbetHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{sohbetHatasi}</Text></View>}
       {rows.map(r => (
-        <View key={r.crId} style={[S.card, { flexDirection: "row", alignItems: "center", borderColor: C.purple + "40" }]}>
+        <View key={r.crId} style={[S.card, { flexDirection: "row", alignItems: "center", borderColor: "transparent" }]}>
           <View style={{ width: 38, height: 38, borderRadius: R.full, backgroundColor: C.purpleBg, alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[10] }}>
             {r.photo ? <Image source={{ uri: r.photo }} style={{ width: 38, height: 38 }} />
               : <Text style={{ fontWeight: "700", color: C.purpleInk }}>{shortName(r.name).charAt(0)}</Text>}
@@ -6319,7 +6319,7 @@ export function HomeConnections({ t, session, onOpenChat, tamEkran, tazele }) {
     <Katlanir baslik={t.myConnections} sayi={rows.length} ozet={ozetMetni}>
       {!!sohbetHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{sohbetHatasi}</Text></View>}
       {rows.map(r => (
-        <View key={r.crId} style={[S.card, { flexDirection: "row", alignItems: "center", borderColor: C.purple + "40" }]}>
+        <View key={r.crId} style={[S.card, { flexDirection: "row", alignItems: "center", borderColor: "transparent" }]}>
           <View style={{ width: 38, height: 38, borderRadius: R.full, backgroundColor: C.purpleBg, alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[10] }}>
             {r.photo ? <Image source={{ uri: r.photo }} style={{ width: 38, height: 38 }} />
               : <Text style={{ fontWeight: "700", color: C.purpleInk }}>{shortName(r.name).charAt(0)}</Text>}
@@ -6429,7 +6429,7 @@ export function FindHostCard({ t, session, onDiscover }) {
       /* v2.02: kart, ustundeki ilan listesine yapisik duruyordu — iki farkli
          is (kendi ilanlarim / misafir olarak host bul) arasinda gorsel nefes
          yoktu. marginTop ile ayrildi. */
-      style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40",
+      style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                borderRadius: R.sm, padding: SP[4], marginTop: ARA[18], marginBottom: ARA[14] }}>
       {/* 🔴 MARKA_RUHU §9 — İKON ÇİPİ GRAMERİ. Site ve IG'de kartlar
           sessiz çip + başlık + somut ayrıntı düzeninde; app'te başlığın
@@ -6453,7 +6453,7 @@ export function FindHostCard({ t, session, onDiscover }) {
       {!loading && !failed && has && stat.airports.length > 0 && (
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginTop: ARA[10] }}>
           {stat.airports.slice(0, 6).map(a => (
-            <View key={a} style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.teal + "30", borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: SP[2] , ...ELEV.card }}>
+            <View key={a} style={{ backgroundColor: C.card, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: SP[2] , ...ELEV.card }}>
               <Text style={{ color: C.tealInk, fontSize: FS.xs, fontWeight: "600" }}>{a} · {stat.byAp[a]}</Text>
             </View>
           ))}

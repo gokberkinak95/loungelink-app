@@ -219,7 +219,7 @@ STUBS["react-native"] = new Proxy({}, {
     if (k === "Easing") return {
       linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x,
       out: (f) => (f || ((x) => x)), in: (f) => (f || ((x) => x)),
-      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x),
+      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x), poly: () => ((x) => x), back: () => ((x) => x),
     };
     if (k === "NativeModules") return {};
     if (k === "UIManager") return { getViewManagerConfig: () => null };
@@ -822,7 +822,10 @@ try {
   // aynı ders ikinci kez çarptı.
   const KOYU_IM  = [tema.KOYU.bg, tema.KOYU.surface, tema.KOYU.bgAlt, tema.KOYU.ink,
                     tema.KOYU.mutedAA, tema.KOYU.dimAA, tema.KOYU.goldBtn,
-                    tema.KOYU.line].map(s => String(s).toUpperCase());
+                    tema.KOYU.line,
+                    // v6 — çizgi jetonları şeffaflaştı; koyu temanın izi artık
+                    // altın gradyanın alt ucu ve üst kenar ışığında da duruyor.
+                    tema.KOYU.goldBtn2, tema.KOYU.parlama].map(s => String(s).toUpperCase());
   // Açık temanın YALNIZ ona ait yüzey değerleri (koyuda karşılığı başka)
   // 🔴 ÜÇ YÜZEY YETMİYORMUŞ. Bu liste yalnız kart/blok/sayfa zeminini
   // içeriyordu; DÜĞME zeminleri yoktu. `ui.js`teki `BTN` tablosu tema

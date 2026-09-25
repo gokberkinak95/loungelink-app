@@ -1668,5 +1668,10 @@
   "299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql",
   "kolon",
   "supurge_damgasi.kaynak"
+ ],
+ [
+  "300_pasif_salon_adlari.sql",
+  "kisit",
+  "ck_venue_ad_durum_eki_yok"
  ]
 ]

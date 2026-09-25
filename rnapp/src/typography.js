@@ -47,7 +47,7 @@
 // PostScript adından, Android dosya adından çözüyor. İkisi ayrışırsa
 // font bir platformda sessizce düşer ve bunu ancak cihazda görürsün.
 // ============================================================
-import React from "react";
+import React, { useState } from "react";
 import { Text, TextInput, StyleSheet } from "react-native";
 
 // 🔴 30 AĞUSTOS — GECE SİSTEMİ: GÖVDE AİLESİ PLUS JAKARTA SANS.
@@ -127,5 +127,39 @@ export function sansUygula() {
 
   const a = yama(Text, "Text");
   const b = yama(TextInput, "TextInput");
+  isikliGiris(TextInput);
   return a || b;
 }
+
+
+// ══════════════════════════════════════════════════════════════════════
+// v6.0.0 · IŞIKLI GİRİŞ — çizgisiz alan, odakta fildişi parıltı
+// Giriş alanlarının kenar çizgisi kalktı (v6 katmanı `C.line` şeffaf).
+// Alanın "şu an yazıyorsun" hâlini çizgi değil IŞIK söylüyor: odaklanınca
+// arkasından fildişi bir hale (gölge %14, 18pt yarıçap) ve zemin bir tık
+// aydınlanıyor. 50+ ekrandaki her `TextInput` bunu kendiliğinden alır —
+// tek tek çağrı yerine yazılsaydı biri mutlaka unutulurdu.
+// Hook kullanımı güvenli: yamalanan `render`, TextInput'un KENDİ forwardRef
+// bileşeninin çizimi içinde çağrılıyor; sıra her çizimde aynı.
+// ══════════════════════════════════════════════════════════════════════
+function isikliGiris(Bilesen) {
+  if (!Bilesen || typeof Bilesen.render !== "function" || Bilesen.__llIsik) return;
+  const eski = Bilesen.render;
+  Bilesen.__llIsik = true;
+  Bilesen.render = function (props, ...rest) {
+    const [odak, setOdak] = useState(false);
+    if (!props || props.__isiksiz) return eski.call(this, props, ...rest);
+    const yeni = {
+      ...props,
+      onFocus: (e) => { setOdak(true); props.onFocus && props.onFocus(e); },
+      onBlur: (e) => { setOdak(false); props.onBlur && props.onBlur(e); },
+      style: [props.style, odak ? ODAK_ISIK : null],
+    };
+    return eski.call(this, yeni, ...rest);
+  };
+}
+const ODAK_ISIK = {
+  shadowColor: "#EDE7DB", shadowOpacity: 0.14, shadowRadius: 18,
+  shadowOffset: { width: 0, height: 0 },
+  backgroundColor: "#181614",
+};

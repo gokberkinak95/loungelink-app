@@ -210,8 +210,12 @@ IDDIALAR = [
      # `C.goldSoft` → `C.balonBen`: tasarımın degradesinin ORTASI ölçülerek
      # tek renge indirildi (bkz. theme.js). İddia değişmedi — "dolu altın
      # değil tint" — ama kanıtın adı değişti.
-     "ekranlar_yalin.js", r"backgroundColor: mine \? \(C\.balonBen \|\| C\.goldSoft\)",
-     "dolu altın değil tint — vurgu en geniş alana verilmez"),
+     # 🔴 25 EYLÜL · v6.0.0 — İDDİA BİLEREK DEĞİŞTİ. Gökberk'in v6 brief'i:
+     # "host balonları dumanlı cam, misafir balonları mat şampanya." Tint
+     # kararı geri çevrildi; kanıt artık iki malzemenin kurulmuş olması.
+     # Şampanya MAT (gradyansız) — asıl eylemin parlaklığı düğmede kalıyor.
+     "ekranlar_yalin.js", r"hostMu[\s\S]{0,400}?DumanliCam[\s\S]{0,200}?backgroundColor: C\.goldBtn",
+     "v6: host dumanlı cam, misafir mat şampanya — iki malzeme, çizgi yok"),
 
     ("balon saati mono ve içeride",
      r"\.bal time\{[^}]*JetBrains Mono",
