@@ -1,0 +1,49 @@
+# ============================================================
+# LoungeLink app · .gitignore
+#
+# 🔴 NEDEN VAR (29 Ağustos 2026):
+# Bu dosya PAKETTE YOKTU. `npx eas-cli build` "git deposu yok" deyip
+# `git init` teklif etti, Gökberk kabul etti, ve ilk commit
+# `node_modules/`i (on binlerce dosya) eklemeye çalışırken KİLİTLENDİ.
+# Ekranda hata yoktu — sadece hiç bitmeyen bir "Initial commit".
+#
+# 🆕 SINIF: **"BİR ARAÇ SENİN ADINA `git init` TEKLİF EDİYORSA, O
+# KLASÖRDE `.gitignore` OLMAMASI BİR EKSİK DEĞİL, KURULMUŞ BİR TUZAKTIR."**
+#
+# EAS depoyu projenin sınırını belirlemek için kullanır: `.gitignore`
+# yoksa yüklenecek arşive node_modules de girer.
+# ============================================================
+
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Native build çıktıları
+android/
+ios/
+*.apk
+*.aab
+*.ipa
+
+# Gizli — pakette zaten yok, yine de kapı kapalı dursun
+.env
+.env.local
+.env.*.local
+*.keystore
+!debug.keystore
+google-services.json
+GoogleService-Info.plist
+
+# Araç çıktıları
+render_check/
+__pycache__/
+*.pyc
+/tmp/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+.DS_Store
+*.tsbuildinfo

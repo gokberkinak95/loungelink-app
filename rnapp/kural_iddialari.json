@@ -1,0 +1,48 @@
+{
+  "_not": "VİTRİNDE (site/app) BİR PROGRAM HAKKINDA YAPILAN HER KURAL İDDİASI BURADA KAYITLI. kural_uyum_check.py her iddiayı motorun tablosuyla karşılaştırır. Yeni bir cümle yazıp buraya eklemezsen denetim 'kayıtsız iddia' der; cümleyi değiştirip iddiayı güncellemezsen 'metin kaydı ile uyuşmuyor' der.",
+  "_neden": "v0.17'de site 'Priority Pass · DragonPass — Havayolu şartı yok' diyordu; motor DragonPass için same_flight uyguluyordu. Vitrin ürünü yalanlıyordu ve bunu hiçbir denetim görmüyordu. Rakip (Lounge Surf) bugün hâlâ aynı hatayı yapıyor: 'Priority Pass, DragonPass & LoungeKey. No airline restrictions.'",
+  "iddialar": [
+    {
+      "yer": "website/lib/content.js",
+      "program": "PRIORITY_PASS",
+      "iddia_coupling": "any",
+      "aranan": "Priority Pass'te havayolu şartı yok",
+      "aciklama": "Aynı terminaldeysen eşleşirsin — motorda guest_flight_coupling='any'."
+    },
+    {
+      "yer": "website/lib/content.js",
+      "program": "DRAGONPASS",
+      "iddia_coupling": "same_flight",
+      "aranan": "DragonPass'te misafirin seninle AYNI UÇUŞTA olmalı",
+      "aciklama": "DragonPass md.7.15.7. Rakibin birleştirdiği yer tam burası."
+    },
+    {
+      "yer": "website/lib/content.js",
+      "program": "STAR_GOLD",
+      "iddia_coupling": "same_alliance",
+      "aranan": "Gold üyesinin misafiri 2021'den beri aynı uçakta olmak zorunda",
+      "aciklama": "Star Alliance Gold — motorda same_alliance; kart metni aynı uçak vurgusu yapıyor."
+    },
+    {
+      "yer": "website/lib/content.js",
+      "program": "LOUNGEKEY",
+      "iddia_coupling": "any",
+      "aranan": "Havayolu ve kabin fark etmez",
+      "aciklama": "v0.38'de kendi kartını aldı — nöbetçi 'kayıtsız iddia' diye yakaladı ve kayda alındı."
+    },
+    {
+      "yer": "website/lib/content.js",
+      "program": "TK_MS",
+      "iddia_coupling": "same_carrier",
+      "aranan": "Elite ve Elite Plus, her uçuşta ailesini ya da bir misafirini",
+      "aciklama": "Miles&Smiles — misafir aynı taşıyıcıda olmalı."
+    },
+    {
+      "yer": "website/lib/content.js",
+      "program": "BUSINESS_TICKET",
+      "iddia_coupling": "same_carrier",
+      "aranan": "Business bileti seni salona sokar ama misafir hakkı vermez",
+      "aciklama": "Bilet hakkı misafir vermez — motorda guest_default='not_allowed'."
+    }
+  ]
+}

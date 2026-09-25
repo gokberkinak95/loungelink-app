@@ -1,0 +1,57 @@
+// web_sahne/Galeri.js — SENARYO SEÇİCİ. `?sahne=ad` okur, fikstürü kurar,
+// GERÇEK App'i çizer. Bu dosya yalnız LL_SAHNE=1 web export'unda App.js
+// yerine geçer (metro.config.js). Cihazda hiç yüklenmez.
+//
+// Web'de fontlar `expo-font` eklentisiyle GÖMÜLMEZ (o yalnız iOS/Android
+// derlemesine girer); burada `loadAsync` ile aynı aile adlarıyla
+// yükleniyor ki ekran cihazdaki fontla çizilsin. Aile adları
+// `src/typography.js` ve `theme.js`teki adlarla BİREBİR aynı olmak
+// zorunda — aksi hâlde web sahnesi sistem fontuyla çizer ve cihazı
+// yansıtmaz.
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+import * as Font from "expo-font";
+import App from "../App";
+import { sahneKur } from "./sahneler";
+
+const q = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+const SAHNE = q.get("sahne") || "karsilama";
+sahneKur(SAHNE, q);
+
+const FONTLAR = {
+  "CormorantGaramond-Light": require("../assets/fonts/CormorantGaramond-Light.ttf"),
+  "CormorantGaramond-SemiBold": require("../assets/fonts/CormorantGaramond-SemiBold.ttf"),
+  "CormorantGaramond-Bold": require("../assets/fonts/CormorantGaramond-Bold.ttf"),
+  "Archivo-Regular": require("../assets/fonts/Archivo-Regular.ttf"),
+  "Archivo-Medium": require("../assets/fonts/Archivo-Medium.ttf"),
+  "Archivo-SemiBold": require("../assets/fonts/Archivo-SemiBold.ttf"),
+  "Archivo-Bold": require("../assets/fonts/Archivo-Bold.ttf"),
+  "PlusJakartaSans-Regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
+  "PlusJakartaSans-Medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
+  "PlusJakartaSans-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
+  "PlusJakartaSans-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
+  "JetBrainsMono-Medium": require("../assets/fonts/JetBrainsMono-Medium.ttf"),
+  "JetBrainsMono-SemiBold": require("../assets/fonts/JetBrainsMono-SemiBold.ttf"),
+};
+
+export default function Galeri() {
+  const [hazir, setHazir] = useState(false);
+  useEffect(() => {
+    Font.loadAsync(FONTLAR)
+      .catch((e) => console.warn("font yüklenemedi", String(e)))
+      .then(() => setHazir(true));
+  }, []);
+  useEffect(() => {
+    if (!hazir) return;
+    const t = setTimeout(() => {
+      if (typeof window !== "undefined") {
+        // Sahne betiği varsa (sekme tıklama vb.) onu koşturur, sonra hazır der.
+        const p = (typeof globalThis.__SAHNE_SONRA === "function") ? globalThis.__SAHNE_SONRA() : null;
+        Promise.resolve(p).then(() => { window.__LL_HAZIR = true; });
+      }
+    }, 1800);
+    return () => clearTimeout(t);
+  }, [hazir]);
+  if (!hazir) return <View style={{ flex: 1, backgroundColor: "#0B0A0F" }} />;
+  return <App />;
+}

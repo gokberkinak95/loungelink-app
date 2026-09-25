@@ -1,0 +1,38 @@
+# ============================================================
+# LoungeLink app · .easignore
+#
+# EAS build sunucusuna YÜKLENMEYECEK dosyalar. `.gitignore`dan ayrı:
+# bunlar depoda DURSUN (geçmiş, denetim, üreteçler) ama build kabına
+# gitmesinin anlamı yok — yükleme süresi ve build maliyeti boşa gider.
+#
+# ⚠️ `src/`, `assets/`, `app.json`, `app.config.js`, `package.json`,
+# `babel.config.js`, `index.js`, `App.js` BURAYA ASLA GİRMEZ — onlar
+# uygulamanın kendisi.
+# ============================================================
+
+# Denetim ve üreteç betikleri (build'de çalışmazlar)
+*.py
+check.js
+verify.js
+pyrun.js
+render_check/
+__pycache__/
+
+# Bütçe ve denetim verileri
+*_butce.json
+kural_iddialari.json
+tanitim_metinleri.json
+sema_kolonlari.txt
+kural_programlari.txt
+
+# Belgeler
+*.md
+
+# Mockup ve tanıtım görselleri (uygulamaya dahil değil, kökte duruyorlar)
+_*.png
+tema_onizleme.png
+brand/
+mockup.py
+
+# SQL
+*.sql

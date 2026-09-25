@@ -1,0 +1,72 @@
+{
+  "App.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 0,
+    "sembol": 0,
+    "serif": 2
+  },
+  "src/FlightField.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 0,
+    "sembol": 1,
+    "serif": 0
+  },
+  "src/MomentScreen.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 0,
+    "sembol": 0,
+    "serif": 1
+  },
+  "src/atmosfer.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 11,
+    "sembol": 0,
+    "serif": 0
+  },
+  "src/ekranlar_ana.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 0,
+    "sembol": 1,
+    "serif": 2
+  },
+  "src/ekranlar_yalin.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 2,
+    "sembol": 0,
+    "serif": 0
+  },
+  "src/ikon.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 0,
+    "sembol": 1,
+    "serif": 0
+  },
+  "src/ortak.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 1,
+    "sembol": 1,
+    "serif": 0
+  },
+  "src/screens.js": {
+    "emoji": 0,
+    "kose": 0,
+    "renk": 0,
+    "sembol": 1,
+    "serif": 1
+  },
+  "src/ui.js": {
+    "emoji": 0,
+    "kose": 7,
+    "renk": 6,
+    "sembol": 0,
+    "serif": 0
+  }
+}

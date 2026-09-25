@@ -1,0 +1,43 @@
+-- ============================================================================
+-- LoungeLink · 210a_PRE_plan_enum.sql                  (18 Ağustos 2026)
+--
+-- 🔴 TEK İŞİ VAR: `plan_type` enum'una üç değeri EKLEMEK VE İŞLEMİ
+--    KAPATMAK. Başka hiçbir şey yapmıyor ve yapmamalı.
+--
+-- NEDEN AYRI DOSYA — Gökberk canlıda şunu aldı:
+--     ERROR 55P04: unsafe use of new value "yolcu" of enum type plan_type
+--     HINT: New enum values must be committed before they can be used.
+--
+-- PostgreSQL kuralı: `alter type ... add value` ile eklenen bir değer,
+-- AYNI İŞLEM içinde kullanılamaz (enum'un kendisi o işlemde
+-- yaratılmadıysa). psql her ifadeyi ayrı işlemde çalıştırdığı için
+-- harness'ta hiç görünmüyor; Supabase SQL Editor betiği TEK İŞLEM
+-- olarak sardığı için orada patlıyor.
+--
+-- ── VE BU TUZAĞI ÖNCEDEN YAZMIŞIM ───────────────────────────────────
+-- 210'un kendi yorumunda, kelimesi kelimesine şu duruyordu:
+--
+--     "Enum'a yeni değer eklemek `alter type ... add value` ister ve o
+--      değer AYNI işlemde kullanılamaz — psql her ifadeyi ayrı işlemde
+--      çalıştırdığı için burada sorun çıkmıyor, ama BEGIN/COMMIT içine
+--      alınırsa çıkar."
+--
+-- Yani riski biliyordum, yazmıştım ve yine de aynı dosyada bıraktım —
+-- çünkü benim ortamımda hiç kırmızı yanmıyordu. Bir yorumda duran uyarı,
+-- denetime dönüşmediyse uyarı değil, dipnottur. Bu turda 202'de de aynı
+-- şey oldu (099 geçici tablo tuzağını yazmıştı, 202 tekrarladı).
+-- Bu sefer kural yazıldı: `sql_lint.py` artık aynı dosyada enum değeri
+-- ekleyip onu dolar-tırnak DIŞINDA literal olarak kullanan her yeri
+-- kırmızı yakıyor.
+--
+-- NOT — 066 ve 080 de enum'a değer ekliyor ama SORUN ÇIKARMIYOR:
+-- oradaki yeni değerler yalnız fonksiyon gövdelerinin içinde, yani
+-- dolar-tırnaklı bölgede metin olarak geçiyor. Gövde tanımlanırken
+-- değerlendirilmediği için enum kontrolü tetiklenmiyor. Ayrım bu.
+--
+-- KULLANIM: 210'dan ÖNCE, KENDİ BAŞINA çalıştır.
+-- ============================================================================
+
+alter type plan_type add value if not exists 'yolcu';
+alter type plan_type add value if not exists 'sik_ucan';
+alter type plan_type add value if not exists 'kahya';

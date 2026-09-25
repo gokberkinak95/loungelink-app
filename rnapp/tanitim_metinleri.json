@@ -1,0 +1,249 @@
+{
+  "_not": "PAZARLAMA CÜMLELERİMİZİN KAYDI. Her cümle burada; `tanitim_uret.py` yalnız buradan okur, `tanitim_check.py` her birini denetler.",
+  "_neden_kendi_cumlemiz": [
+    "Gökberk 'We find your perfect +1' çok iyi dedi ve haklı: kısa, somut, ürünün ne yaptığını tek nefeste söylüyor.",
+    "Ama o cümle RAKİBİN (Lounge Surf) sitesinde duruyor. Aynısını kullanmak iki ayrı sorun doğurur:",
+    "  1 · MARKA — bir cümleyi ikinci söyleyen taklit sayılır. Aynı pazarda aynı sloganla çıkmak, bizi onların ucuz sürümü yapar. Kazanan çerçeveyi kuran taraf olur, tekrar eden değil.",
+    "  2 · HUKUK — slogan, kullanımla ve/veya tescil ile marka korumasına konu olabilir. TR'de 6769 s. SMK; ABD'de common-law + USPTO. Birebir kopya, en zayıf ihtimalle bir ihtarname, en kötü ihtimalle yayından kaldırma demektir. Bunu ben karara bağlayamam — avukat işidir; ama riski görünmez kılmak da benim işim değil.",
+    "KARAR: '+1' ÇERÇEVESİNİ alıyoruz (çerçeve kimsenin tekelinde değil), CÜMLEYİ kendimiz yazıyoruz. Ve kendi cümlemiz onlarınkinden daha iyi bir şey söylüyor: onlar 'mükemmel +1'i buluruz' diyor — bir vaat. Biz 'kartında bir kişilik yer var' diyoruz — bir GERÇEK. Vaat tartışılır, gerçek tartışılmaz."
+  ],
+  "rakip_cumleleri": [
+    "We find your perfect +1",
+    "We find your perfect +1.",
+    "Priority Pass, DragonPass & LoungeKey. No airline restrictions.",
+    "If you're in the same terminal, you're a match."
+  ],
+  "cumleler": {
+    "kanca": {
+      "tr": "Aktarmadaki üç saati bir ekranla değil, biriyle geçir.",
+      "en": "Spend the three-hour layover with someone, not something.",
+      "not": "ANA CÜMLE. Vaat değil, gerçek: misafir hakkı kartın üstünde zaten yazıyor. Rakibin cümlesiyle aynı çerçeve, aynı uzunluk, farklı iddia."
+    },
+    "kanca_alt": {
+      "tr": "Kartında o koltuk zaten var.",
+      "en": "That seat is already on your card.",
+      "not": "Kancanın ikinci nefesi. Kayıp hissi (boşa giden hak) satın alma sebebinin kendisi."
+    },
+    "soru": {
+      "tr": "Milleri zaten topladın. Sıra o kartın yanındaki koltukta.",
+      "en": "You already collected the miles. Now the seat beside them.",
+      "not": "Instagram için: soru, yorum getirir. '+1' çerçevesini bizim ağzımızda tutar."
+    },
+    "site": {
+      "tr": "Salonlarını gör. Sonra içlerinde kimin olduğunu.",
+      "en": "See your lounges. Then see who's in them.",
+      "not": "Sitede zaten yayında. 'perfect' değil 'right/doğru': kural motoru MÜKEMMELİ değil UYGUNU bulur — ve bunu ölçerek yapar. Kelime farkı, ürün farkı."
+    },
+    "kural": {
+      "tr": "Her kart bir kapı açar. Hepsi aynı kapıyı açmaz.",
+      "en": "Every card opens a door. Not the same door.",
+      "not": "Farkımızın tek cümlesi. Rakip üç programı tek kutuda topluyor; biz ayırıyoruz."
+    },
+    "kural_alt": {
+      "tr": "Motor farkı biliyor. Kapıda öğrenme.",
+      "en": "Our engine knows the difference. Don't learn it at the door.",
+      "not": "Somut zarar: kapıda geri çevrilmek. Soyut 'daha iyi eşleşme'den güçlü."
+    },
+    "guven": {
+      "tr": "Önce tanış. Sonra içeri gir.",
+      "en": "Meet first. Then walk in.",
+      "not": "Güvenlik ve sıra: platform önce bağlantı, sonra oturum. Ürünün akışı bu."
+    },
+    "urun": {
+      "tr": "Aktarma uçuşları bağlar. Biz yolcuları.",
+      "en": "Layovers connect flights. We connect passengers.",
+      "not": "Ürünün kendi sloganı — `i18n.js` içinde tagline1/tagline2. Pazarlama ile ürün aynı cümleyi söylüyor."
+    },
+    "host_kayip": {
+      "tr": "O hakkı kazandın. Takvim geri almak üzere.",
+      "en": "You earned that guest pass. The calendar is about to take it.",
+      "not": "Host'un en somut kaybı. Sitedeki HOST_WHY birinci maddesinin cümlesi."
+    },
+    "host_kayip_alt": {
+      "tr": "Havayolu devretmiyor, geri almıyor, para etmiyor.",
+      "en": "The airline won't transfer it, refund it, or pay for it.",
+      "not": "Üç olumsuzluk arka arkaya — kaybın kesinliğini kurar."
+    },
+    "host_kontrol": {
+      "tr": "Kapıyı sen açıyorsun. Kimi alacağını da sen seçiyorsun.",
+      "en": "You open the door. You also choose who walks in.",
+      "not": "İkinci itiraz: 'yabancı'. Cevabı özellik değil KONTROL."
+    },
+    "host_kontrol_alt": {
+      "tr": "İstek gelir, profile bakarsın. Beğenmezsen reddedersin — kimse sebebini sormaz.",
+      "en": "A request arrives, you read the profile. Decline and no one asks why.",
+      "not": "Reddetme hakkını açıkça söylemek, kabul etmeyi kolaylaştırır."
+    },
+    "host_kademe": {
+      "tr": "Bir kez ağırla. Bir basamak çık.",
+      "en": "Host once. Climb one step.",
+      "not": "Kademeler SQL 206'dan: Yolcu · Ev Sahibi · Kâhya · Konsiyerj."
+    },
+    "host_kademe_alt": {
+      "tr": "Konsiyerj'de kendi isteklerin kredi harcamaz.",
+      "en": "At Concierge, your own requests cost no credit.",
+      "not": "Merdivenin tepesindeki somut ödül — para değil, ürünün kendisinin daha çoğu."
+    },
+    "host_hukuk": {
+      "tr": "Hakkını satmıyorsun. Yanındaki koltuğu açıyorsun.",
+      "en": "You're not selling access. You're opening the seat beside you.",
+      "not": "Üçüncü itiraz. Kısa ve kesin cevap; uzun açıklama gönderinin gövdesinde."
+    },
+    "host_hukuk_alt": {
+      "tr": "Erişim devredilemez. Biz yalnız aynı yerdeki iki kişiyi tanıştırıyoruz.",
+      "en": "Access isn't transferable. We only introduce two people already in the same place.",
+      "not": "SSS'nin ilk sorusunun cevabı — birebir ürünün duruşu."
+    },
+    "host_gizlilik": {
+      "tr": "Numaran sende kalır. Sohbet burada başlar, burada biter.",
+      "en": "Your number stays yours. The chat starts here and ends here.",
+      "not": "HOST_WHY üçüncü maddesi."
+    },
+    "host_gizlilik_alt": {
+      "tr": "İstediğin an bitirirsin — kimse sebebini sormaz.",
+      "en": "End it whenever you like — no one asks why.",
+      "not": ""
+    },
+    "kural_1": {
+      "tr": "Priority Pass · LoungeKey",
+      "en": "Priority Pass · LoungeKey",
+      "not": "Karusel 1/3 başlığı — program adı."
+    },
+    "kural_2": {
+      "tr": "DragonPass",
+      "en": "DragonPass",
+      "not": "Karusel 2/3 başlığı."
+    },
+    "kural_3": {
+      "tr": "Üçünü aynı kutuya koyma.",
+      "en": "Don't put all three in one box.",
+      "not": "Karusel 3/3 — rakibin tam olarak yaptığı hata."
+    },
+    "akis": {
+      "tr": "Uçuşunu yaz. Kapını aç.",
+      "en": "Add your flight. Open your door.",
+      "not": "Akış gönderisi başlığı."
+    },
+    "rakam": {
+      "tr": "Kural tahmin değil. Kayıt.",
+      "en": "A rule isn't a guess. It's a record.",
+      "not": "Sayı kartının başlığı — sayıların NEDEN orada olduğunu söyler."
+    }
+  },
+  "gonderiler": [
+    {
+      "ad": "ig_01_kanca",
+      "cumle": "kanca",
+      "alt": "kanca_alt",
+      "ekran": "02_kesfet"
+    },
+    {
+      "ad": "ig_02_kural",
+      "cumle": "kural",
+      "alt": "kural_alt",
+      "ekran": "03_kural"
+    },
+    {
+      "ad": "ig_03_soru",
+      "cumle": "soru",
+      "alt": "urun",
+      "ekran": "04_eslesme"
+    },
+    {
+      "ad": "ig_04_akis",
+      "cumle": "site",
+      "alt": "kanca_alt",
+      "ekran": "05_tanis"
+    },
+    {
+      "ad": "ig_05_guven",
+      "cumle": "guven",
+      "alt": "urun",
+      "ekran": "08_puanla"
+    }
+  ],
+  "_neden_host": [
+    "HOST, ÜRÜNÜN DAR BOĞAZI. Misafir zaten istekli: kapıda bekliyor, salona girmek istiyor. Host'un ise hiçbir acil ihtiyacı yok — o zaten içeride.",
+    "Bu yüzden host içeriği MİSAFİR içeriğinden farklı çalışmak zorunda: misafire FIRSAT, host'a KAYIP + KONTROL + KADEME anlatılır.",
+    "Üç itiraz var ve üçüne de ayrı gönderi yazıldı: (1) 'bana ne kazandırır' (2) 'yanıma kimi alacağım belli değil' (3) 'bu yasal mı / hakkımı mı satıyorum'.",
+    "Rakamların hepsi üründen: kademeler SQL 206 (Yolcu 0 · Ev Sahibi 1 · Kâhya 5 · Konsiyerj 15), üst plan hediyesi SQL 236 (2 ağırlama → 30 gün), 500 LoungePuan ve 1 kredi sitedeki SSS'den. Pazarlama uydurmuyor, ÜRÜNÜ OKUYOR."
+  ],
+  "gonderiler_host": [
+    {
+      "ad": "ig_h1_kayip",
+      "tip": "soz",
+      "cumle": "host_kayip",
+      "alt": "host_kayip_alt"
+    },
+    {
+      "ad": "ig_h2_kontrol",
+      "tip": "ekran",
+      "cumle": "host_kontrol",
+      "alt": "host_kontrol_alt",
+      "ekran": "12_ana_host"
+    },
+    {
+      "ad": "ig_h3_merdiven",
+      "tip": "merdiven",
+      "cumle": "host_kademe",
+      "alt": "host_kademe_alt"
+    },
+    {
+      "ad": "ig_h4_binis",
+      "tip": "binis",
+      "cumle": "kanca",
+      "alt": "kanca_alt"
+    },
+    {
+      "ad": "ig_h5_hukuk",
+      "tip": "sss",
+      "cumle": "host_hukuk",
+      "alt": "host_hukuk_alt"
+    },
+    {
+      "ad": "ig_h6_gizlilik",
+      "tip": "ekran",
+      "cumle": "host_gizlilik",
+      "alt": "host_gizlilik_alt",
+      "ekran": "06_sohbet"
+    }
+  ],
+  "gonderiler_karusel": [
+    {
+      "ad": "ig_k1_kural",
+      "tip": "karusel",
+      "cumle": "kural_1",
+      "alt": "urun",
+      "ekran": "03_kural"
+    },
+    {
+      "ad": "ig_k2_kural",
+      "tip": "karusel",
+      "cumle": "kural_2",
+      "alt": "urun",
+      "ekran": "03_kural"
+    },
+    {
+      "ad": "ig_k3_kural",
+      "tip": "karusel",
+      "cumle": "kural_3",
+      "alt": "kural_alt",
+      "ekran": "02_kesfet"
+    }
+  ],
+  "gonderiler_genel": [
+    {
+      "ad": "ig_g1_akis",
+      "tip": "ucadim",
+      "cumle": "akis",
+      "alt": "site"
+    },
+    {
+      "ad": "ig_g2_rakam",
+      "tip": "rakam",
+      "cumle": "rakam",
+      "alt": "urun"
+    }
+  ],
+  "_ses": "31 Ağustos 2026 — cümleler SİTENİN DİLİNE çevrildi. Gökberk: \"instagram tanıtımlarındaki textlerde websiteyi tekrar tasarlarken kullandığımız promtdaki dili pek hissedemedim.\" Haklıydı: cümleler DOĞRUYDU ama DÜZDÜ — sitenin dört formülünden hiçbirini kullanmıyorlardı. Uygulanan formüller: (1) 'X yerine Y yap' zıtlığı, (2) 'zaten sende olanı hatırlat', (3) ritim + zıtlık (iki kısa cümle, ikincisi çevirir), (4) kısa eylem kancası. SINIF: 'BİR CÜMLENİN DOĞRU OLMASI, MARKANIN SESİYLE SÖYLENDİĞİ ANLAMINA GELMEZ — DOĞRULUK İÇERİK, SES İSE RİTİMDİR.'"
+}
