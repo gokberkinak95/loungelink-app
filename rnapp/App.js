@@ -40,6 +40,7 @@ sansUygula();
 import { ARA, ELEV, ACCENT, C, F, FS, R, SP, TAP, temaDinle, temaModu, temaYenidenKur, SATIR} from "./src/theme";
 import { temaTercihYukle } from "./src/tema_tercih";
 import { sadeGorunumYukle } from "./src/atmosfer";
+import { yerelGun } from "./src/zaman";
 
 // 🔴 v1.77'de bu satır v1.62'den beri GÜNCELLENMEMİŞTİ — hata kayıtları
 // 15 sürüm boyunca "1.62.0" olarak düşüyordu. O zaman değeri elle
@@ -957,7 +958,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         // Uçuşu zaten varsa hiçbir şey sorulmaz: iş bitmiş demektir.
         if (u?.role === "guest") {
           await AsyncStorage.setItem("ll_access_asked", "1");
-          const today = new Date().toISOString().slice(0, 10);
+          const today = yerelGun();
           // Hata YUTULMAZ: sorgu düşerse var olan uçuşu "yok" sanıp
           // kullanıcıyı zorla forma sokmayız.
           const { data: vs, error: vErr } = await supabase.from("visits")
@@ -1283,7 +1284,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     onTrust={() => { setShowSafety(false); setShowTrust(true); }}
     onEditProfile={() => { setShowSafety(false); setShowEditProf(true); }} />),
     trust: () => (<TrustVisual t={t} session={session} onBack={() => setShowTrust(false)} />),
-    hist: () => (<SessionHistory t={t} session={session} onBack={() => setShowHist(false)} onOpenChat={setChat} onOpenProfile={setPubProfile} onOpenCompanion={(pid, nm) => companionAc(pid, nm, () => setShowHist(false))} />),
+    hist: () => (<SessionHistory t={t} lang={lang} session={session} onBack={() => setShowHist(false)} onOpenChat={setChat} onOpenProfile={setPubProfile} onOpenCompanion={(pid, nm) => companionAc(pid, nm, () => setShowHist(false))} />),
     ref: () => (<Referral t={t} session={session} onBack={() => setShowRef(false)} />),
     // v2.50 — KAYIT SONRASI İLK ADIM: "hangi lounge hakkın var?".
     // Aynı ekranın kendisi (HostAccessSource) kullanılıyor; ayrı bir
@@ -3144,7 +3145,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
       if (role0 === "host") {
         const [{ data: reqs }, { data: avs }, { count: sc }] = await Promise.all([
           supabase.from("requests").select("id, status").eq("host_id", uid),
-          supabase.from("availabilities").select("id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled").eq("host_id", uid).eq("active", true).gte("avail_date", new Date().toISOString().slice(0, 10)).order("avail_date").limit(3),
+          supabase.from("availabilities").select("id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled").eq("host_id", uid).eq("active", true).gte("avail_date", yerelGun()).order("avail_date").limit(3),
           supabase.from("sessions").select("id, requests!inner(host_id)", { count: "exact", head: true }).eq("status", "completed").eq("requests.host_id", uid),
         ]);
         hostStats = {
@@ -3155,7 +3156,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         myAvs = avs || [];
         // #7: bu ayki kazanç görünürlüğü — host motivasyonu
         const monthStart = new Date(); monthStart.setDate(1);
-        const msIso = monthStart.toISOString().slice(0, 10);
+        const msIso = yerelGun(monthStart);
         const [{ count: monthSes }, { data: monthPts }] = await Promise.all([
           supabase.from("sessions").select("id, requests!inner(host_id)", { count: "exact", head: true })
             .eq("status", "completed").eq("requests.host_id", uid).gte("completed_at", msIso),

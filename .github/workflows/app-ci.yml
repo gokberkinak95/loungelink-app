@@ -1,0 +1,27 @@
+name: app-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rnapp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: rnapp/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci --no-audit --no-fund
+      # Statik denetim paketi (check.js + python nöbetçileri)
+      - run: node check.js
+      # Render/mount/deeplink testleri (37 kontrol)
+      - run: npm run render

@@ -39,6 +39,7 @@ import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
 import { ACCESS_SOURCES, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
+import { yerelGun } from "./zaman";
 
 export const timeOk = s => /^\d{2}:\d{2}$/.test(s);
 
@@ -3079,7 +3080,7 @@ export function Degerlendirmeler({ t, lang, session, onBack, onRate, onOpenProfi
             ("Değerlendirmeler") ve haklı — ana sayfada iki ayrı kart,
             bu ekranda tek yer. Ana sayfada hiç görmeyen ya da "şimdi
             değil" diyen kullanıcı artık BURADA bulur. */}
-        {sekme === "bekleyen" && <HikayeDaveti t={t} hepAcik onDone={load} />}
+        {sekme === "bekleyen" && <HikayeDaveti t={t} lang={lang} hepAcik onDone={load} />}
         {loadErr ? <LoadFail t={t} onRetry={load} />
         : rows === null ? <Load />
         : liste.length === 0 ? (
@@ -3280,7 +3281,7 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
 
   useEffect(() => {
     (async () => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = yerelGun();
       const [{ data: trip }, { data: avail }, { data: sess }] = await Promise.all([
         supabase.from("visits").select("*").eq("user_id", uid).gte("visit_date", today).order("visit_date").limit(1).maybeSingle(),
         // #19: host'un aktif ilani da "canli durum"un parcasi
@@ -3620,7 +3621,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
     </Sayfa>
   );
 }
-export function HikayeDaveti({ t, onDone, hepAcik = false }) {
+export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
   const [davet, setDavet] = useState(null);
   const [metin, setMetin] = useState("");
   const [riza, setRiza] = useState(false);
@@ -3807,7 +3808,9 @@ export function HikayeDaveti({ t, onDone, hepAcik = false }) {
     </>
   );
 
-  const altBaslik = [davet.salon, davet.tarih].filter(Boolean).join(" · ");
+  // 25 Eyl — tarih ham ISO ("2026-09-25") basılıyordu; ürünün geri kalanı
+  // "25 Eylül" diyor. Aynı ekranda iki biçim, iki ayrı ürün gibi okunur.
+  const altBaslik = [davet.salon, davet.tarih && fmtLongDate(davet.tarih, lang)].filter(Boolean).join(" · ");
 
   // 🔴 12 EYLÜL (Gökberk md.1) — "ağırlaman nasıl geçti alanı daraltılıp
   // genişletilebilir olmalı."

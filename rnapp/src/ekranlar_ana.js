@@ -41,6 +41,7 @@ import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, Text, 
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
 import { ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
+import { yerelGun } from "./zaman";
 
 export { C, F, ACCENT } from "./theme";
 
@@ -181,7 +182,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     if (scope?.sortTrip || !session?.user?.id) return;
     let canli = true;
     (async () => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = yerelGun();
       const { data, error } = await supabase.from("visits")
         .select("airport_code, visit_date, time_from")
         .eq("user_id", session.user.id).gte("visit_date", today)
@@ -2210,7 +2211,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   useEffect(() => {
     havalimanlariniGetir().then((data) => setAirports((data || []).map(a => a.code)));
     (async () => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = yerelGun();
     })();
   }, [uid]);
   useEffect(() => { load(); }, [load]);
@@ -2251,7 +2252,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   const PersonCard = ({ p, action, sameFlight, onAc, ikinci }) => {
     const flightTag = sameFlight || (p.same_flight ? p.flight_number : null);
     // tasarım 05: "TK1979 · IST" — tarih yalnız bugünden farklıysa eklenir
-    const bugun = new Date().toISOString().slice(0, 10);
+    const bugun = yerelGun();
     const dateTxt = p.visit_date && String(p.visit_date).slice(0, 10) !== bugun
       ? fmtLongDate(String(p.visit_date).slice(0, 10), lang) : null;
     const rota = [p.flight_number, p.airport || p.host_airport].filter(Boolean).join(" · ")
@@ -3437,7 +3438,7 @@ export function TrustVisual({ t, session, onBack }) {
 // olduğunu anlatmaya yeter ve "bilinmiyor" hücrelerini kapatır.
 // Rapor kuralı OTOMATİK DEĞİŞTİRMEZ — BO'da insan okur (SQL 087 kararı).
 // ============================================================
-export function SessionHistory({ t, session, onBack, onOpenChat, onOpenProfile, onOpenCompanion }) {
+export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenProfile, onOpenCompanion }) {
   const uid = session?.user?.id;
   const [tab, setTab] = useState("sessions");
   const [data, setData] = useState(null);
@@ -3542,7 +3543,7 @@ export function SessionHistory({ t, session, onBack, onOpenChat, onOpenProfile, 
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: FS.sm, fontWeight: "700", color: C.ink }}>{abbrevName(o.name) || "—"}</Text>
-                    <Text style={{ fontSize: FS.xs, color: C.dim }}>{s.started_at ? new Date(s.started_at).toLocaleDateString("tr-TR") : ""}</Text>
+                    <Text style={{ fontSize: FS.xs, color: C.dim }}>{s.started_at ? fmtLongDate(yerelGun(new Date(s.started_at)), lang) : ""}</Text>
                   </View>
                   <View style={{ backgroundColor: C.greenBg, borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: SP[2] }}>
                     <Text style={{ color: C.greenInk, fontSize: FS.xs, fontWeight: "600" }}>{t.completedWord}</Text>
@@ -6094,7 +6095,7 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
       const [vRes, { data, error }] = await Promise.all([
         uid ? supabase.from("visits")
           .select("airport_code, visit_date").eq("user_id", uid)
-          .gte("visit_date", new Date().toISOString().slice(0, 10))
+          .gte("visit_date", yerelGun())
           .order("visit_date").limit(1)
           : Promise.resolve({ data: null, error: null }),
         supabase.rpc("havalimani_nabzi", { p_gun: 14 }),
@@ -6127,7 +6128,7 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
           bul". Seyahat yoksa eski sakin-gün cümlesi. */}
       <Text style={{ color: C.ink, fontSize: FS.lg + 3, fontWeight: "700", marginTop: SP[2] }}>
         {yakin && yakin.visit_date
-          ? `${yakin.airport_code} · ${(() => { const g = Math.max(0, Math.round((new Date(yakin.visit_date) - new Date(new Date().toISOString().slice(0, 10))) / 86400000)); return g === 0 ? BUYUK(t.calmEyebrow || "") : String(t.planGiftLeft || "{n} gün").replace("{n}", String(g)); })()}`
+          ? `${yakin.airport_code} · ${(() => { const g = Math.max(0, Math.round((new Date(yakin.visit_date) - new Date(yerelGun())) / 86400000)); return g === 0 ? BUYUK(t.calmEyebrow || "") : String(t.planGiftLeft || "{n} gün").replace("{n}", String(g)); })()}`
           : t.calmTitle}
       </Text>
       {yakin && yakin.visit_date ? (
@@ -6363,7 +6364,7 @@ export function FindHostCard({ t, session, onDiscover }) {
 
   const load = useCallback(async () => {
     if (!uid) return;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = yerelGun();
     // Yaklaşan (SÜRESİ GEÇMEMİŞ) en yakın seyahat — bağlam + ön filtre
     // 🔴 v3.9 — ÜÇ TUR TEK DALGAYA. Seyahat · rol · ilan listesi:
     // üçü de yalnız `uid`/sabit parametrelerle çalışıyor, hiçbiri

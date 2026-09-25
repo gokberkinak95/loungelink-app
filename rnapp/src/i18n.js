@@ -2085,6 +2085,7 @@ export const D = {
     stAppLang: "Uygulama Dili",
     stDeleteAccount: "Hesabı Sil",
     stVisEveryone: "Herkes",
+    stVisTrusted: "Güvenilir üyeler",   // 25 Eyl — "Trusted+" ham değeri TR arayüzde görünüyordu
     stVisConnections: "Yalnızca bağlantılar",
     stPwPlaceholder: "En az 8 karakter",
     stPwRepeat: "Şifreyi tekrarla",
@@ -3759,6 +3760,7 @@ export const D = {
     stAppLang: "App Language",
     stDeleteAccount: "Delete Account",
     stVisEveryone: "Everyone",
+    stVisTrusted: "Trusted members",
     stVisConnections: "Connections only",
     stPwPlaceholder: "At least 8 characters",
     stPwRepeat: "Repeat password",

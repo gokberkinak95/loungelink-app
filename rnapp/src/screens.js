@@ -36,6 +36,7 @@ export * from "./ortak";
 export * from "./ekranlar_yalin";
 export * from "./ekranlar_ana";
 import { ActionNeeded, Campaigns, CompanionChat, ConfirmModal, Discovery, EditProfile, FindHostCard, HomeConnections, HostAccessSource, LoungePicker, Meet, PhoneGate, PublicProfile, Referral, Safety, SakinGun, SessionHistory, SeyahatFormu, KisiSayisi, TimeInput, TrustVisual, visOpts } from "./ekranlar_ana";
+import { yerelGun } from "./zaman";
 
 export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt }) {
   const uid = session?.user?.id;
@@ -82,7 +83,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
   const load = useCallback(async () => {
     // 🔴 Süresi GEÇMİŞ seyahatler listede kalmamalı — "30 Temmuz 14-16"
     // biter bitmez o kartın ve ona bağlı host-bul bağlamının düşmesi gerekir.
-    const today = new Date().toISOString().slice(0, 10);
+    const today = yerelGun();
     const { data, error } = await supabase.from("visits").select("*")
       .eq("user_id", uid).gte("visit_date", today).order("visit_date");
     if (error) { setLoadErr(true); return; }
@@ -445,7 +446,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
 // GÖSTERİLİRSE, KULLANICI DÜZELTEBİLECEĞİ ŞEYLE DÜZELTEMEYECEĞİNİ AYIRT
 // EDEMEZ."
 export function ilanDurumu(r) {
-  const bugun = new Date().toISOString().slice(0, 10);
+  const bugun = yerelGun();
   const gecti = String(r?.avail_date || "") < bugun;
   if (gecti) return "gecmis";
   return r?.active ? "canli" : "pasif";
@@ -1425,10 +1426,10 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
       // 5 Eylül — banttaki "meslek · şehir": sıradaki seyahatin, yoksa sıradaki
       // ilanın havalimanı şehri (airports.city). İkisi de yoksa şehir yazılmaz.
       supabase.from("visits").select("airport_code, airports(city)").eq("user_id", uid)
-        .gte("visit_date", new Date().toISOString().slice(0, 10)).order("visit_date").limit(1)
+        .gte("visit_date", yerelGun()).order("visit_date").limit(1)
         .then(r => r.data).catch(() => null),
       supabase.from("availabilities").select("airport_code, airports(city)").eq("host_id", uid).eq("active", true)
-        .gte("avail_date", new Date().toISOString().slice(0, 10)).order("avail_date").limit(1)
+        .gte("avail_date", yerelGun()).order("avail_date").limit(1)
         .then(r => r.data).catch(() => null),
     ]);
     {
@@ -1832,7 +1833,7 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
   const load = useCallback(async () => {
     const [{ data: av }, { data: v }] = await Promise.all([
       supabase.from("availabilities").select("id, lounge_name, airport_code, avail_date, time_from, time_to, slots, filled, featured_until")
-        .eq("host_id", uid).eq("active", true).gte("avail_date", new Date().toISOString().slice(0, 10)).order("avail_date"),
+        .eq("host_id", uid).eq("active", true).gte("avail_date", yerelGun()).order("avail_date"),
       supabase.from("verifications").select("phone_verified").eq("user_id", uid).maybeSingle(),
     ]);
     setAvails(av || []);
@@ -2134,7 +2135,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
   const VIS = ["Everyone", "Trusted+", "Connections"];
   // Anahtarlar SUNUCU değerleri (değişmez); etiketler i18n'den gelir.
-  const VIS_TR = { Everyone: t.stVisEveryone, "Trusted+": "Trusted+", Connections: t.stVisConnections };
+  const VIS_TR = { Everyone: t.stVisEveryone, "Trusted+": t.stVisTrusted, Connections: t.stVisConnections };
 
   // 🔴 v2.65 · İKİZ BİLEŞEN KALDIRILDI.
   // Burada Toggle ve Row'un YEREL kopyaları vardı (ui.js'te de var,
@@ -2185,7 +2186,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
               (onVerify buraya kadar geliyordu ama hiç okunmuyordu). */}
           <Row label={t.stPhone}
             right={<>
-              <Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{me.phone || t.stPhoneUnset}</Text>
+              <Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{me.phone || (me.phone_verified ? t.hwVerified : t.stPhoneUnset)}</Text>
               {me.phone_verified
                 ? <Ikon ad="tamam" boy={FS.xs} renk={C.greenInk} />
                 : <ToneBadge tone="unknown" style={{ marginLeft: ARA[6] }}>{t.phoneNotYetVerified}</ToneBadge>}
@@ -2198,7 +2199,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
         <Head>{t.stPrivacy}</Head>
         <View style={{ backgroundColor: C.card, borderRadius: R.sm, borderWidth: 1, borderColor: C.line, marginBottom: SP[4], overflow: "hidden" , ...ELEV.card }}>
-          <Row label={t.stVisibility} right={<Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{VIS_TR[prof?.profile_visibility] || "Trusted+"}</Text>}
+          <Row label={t.stVisibility} right={<Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{VIS_TR[prof?.profile_visibility] || t.stVisTrusted}</Text>}
             onPress={() => setEditor("visibility")} />
           <Row label={t.stShowDiscovery} right={<SwitchCell a11yLabel={t.stShowDiscovery} on={prof?.show_on_discovery !== false} onPress={() => patch({ show_on_discovery: !(prof?.show_on_discovery !== false) })} />} />
           <Row label={t.stLocation} sub={t.stLocationSub}
