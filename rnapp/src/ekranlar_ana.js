@@ -6760,8 +6760,8 @@ export function KuralKarari({ t, avail, skor, onBack, onSend }) {
                        color: C.gold, marginTop: ARA[26] }}>
           {BUYUK(t.ruleEyebrow)}
         </Text>
-        <Text style={{ fontSize: FS.hero, fontWeight: "700", letterSpacing: -1,
-                       lineHeight: Math.round(FS.hero * 1.06), color: C.ink, marginTop: ARA[8] }}>
+        <Text style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, letterSpacing: -0.4,
+                       lineHeight: SATIR(FS.hero + 2, "serif"), color: C.ink, marginTop: ARA[8] }}>
           {String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
         </Text>
         {/* 13 Eylül md.4 — sayıyı sıfırlayan/kısan şartı adıyla söyle. */}
