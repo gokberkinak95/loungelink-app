@@ -32,6 +32,7 @@ create schema if not exists extensions;
 -- yeri, taklidin kendisi kadar onemli.
 create extension if not exists pgcrypto schema extensions;
 create extension if not exists "uuid-ossp" schema extensions;
+grant usage on schema extensions to anon, authenticated, service_role;
 
 do $$ begin
   create role anon nologin;
@@ -46,9 +47,6 @@ do $$ begin
   create role supabase_auth_admin nologin;
 exception when duplicate_object then null; end $$;
 
--- 25 EYLÜL — bu satır rollerden ÖNCE duruyordu; temiz bir kümede
--- `role "anon" does not exist` ile bootstrap düşüyordu.
-grant usage on schema extensions to anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated, service_role;
 grant usage on schema auth to anon, authenticated, service_role;
 

@@ -822,6 +822,10 @@ export function ayniBaslik(a, b) {
   return !!a && !!b && n(a) === n(b);
 }
 
+// 🔴 v6.1 (Gökberk onayı, 26 Eylül) — BAŞLIK SESİ SERİF. Önizleme
+// (uygulama_basliklari_once_sonra.jpg) onaylandı: ekran başlıkları
+// Cormorant SemiBold. Gövde, düğme, etiket ve sayı sans/mono kalıyor —
+// serif yalnız "ekranın adı" ve "insanın adı" için.
 export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, ustPay = 0 }) {
   const eyebrow0 = ustBilgi || scene || null;
   const eyebrow = eyebrow0 && !ayniBaslik(eyebrow0, typeof title === "string" ? title : "") ? eyebrow0 : null;
@@ -849,8 +853,8 @@ export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, u
               {BUYUK(String(eyebrow))}
             </Text>
           ) : null}
-          <Text numberOfLines={3} style={{ fontSize: FS.hero, fontWeight: "700", color: C.ink,
-                    letterSpacing: -1, lineHeight: SATIR(FS.hero) }}>
+          <Text numberOfLines={3} style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, color: C.ink,
+                    letterSpacing: -0.4, lineHeight: SATIR(FS.hero + 2, "serif") }}>
             {title}
           </Text>
           {sub ? <Text numberOfLines={2} style={{ fontSize: FS.sm, color: C.muted, marginTop: ARA[6],
@@ -917,10 +921,10 @@ export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, u
             AZ HARF DEĞİL, DAHA ÇOK SATIRDIR." */}
         <Text numberOfLines={kahraman ? 3 : 2}
               style={kahraman
-                ? { fontSize: FS.hero, fontWeight: "700", color: C.ink,
-                    letterSpacing: -1, lineHeight: SATIR(FS.hero) }
-                : { fontSize: FS.title, fontWeight: "700", color: C.ink,
-                    letterSpacing: -0.5, lineHeight: Math.round(FS.title * 1.2) }}>
+                ? { fontSize: FS.hero + 2, fontFamily: F.serifGosterim, color: C.ink,
+                    letterSpacing: -0.4, lineHeight: SATIR(FS.hero + 2, "serif") }
+                : { fontSize: FS.title + 3, fontFamily: F.serifGosterim, color: C.ink,
+                    letterSpacing: -0.2, lineHeight: SATIR(FS.title + 3, "serif") }}>
           {title}
         </Text>
         {sub ? <Text numberOfLines={2} style={{ fontSize: FS.sm, color: C.muted, marginTop: 0,
@@ -1656,8 +1660,8 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                   dört ayrı Text var, her biri kendi ölçeğini seçseydi
                   gölge asıl metinden kayardı. Uzun başlık artık bandı
                   BÜYÜTÜYOR (minHeight sayesinde), küçültülmüyor. */}
-              <GolgeliMetin satir={2} style={{ fontSize: FS.bant, lineHeight: SATIR(FS.bant),
-                                     fontWeight: "700", letterSpacing: -1.2,
+              <GolgeliMetin satir={2} style={{ fontSize: FS.bant + 4, lineHeight: SATIR(FS.bant + 4, "serif"),
+                                     fontFamily: F.serifGosterim, letterSpacing: -0.4,
                                      color: C.foto.baslik }}>
                 {baslik}
               </GolgeliMetin>

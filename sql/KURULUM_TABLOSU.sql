@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-26 uretildi · 344 dosya · son: 302)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-26 uretildi · 348 dosya · son: 305)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,8 +21,8 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 337 dosyanın 288 tanesi için ayırt edici imza
--- bulundu (%85). Kalan 49 tanesi BİLİNMİYOR olarak
+-- ÖLÇÜM: 340 dosyanın 291 tanesi için ayırt edici imza
+-- bulundu (%86). Kalan 49 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
 -- ════════════════════════════════════════════════════════════════════════
@@ -434,7 +434,7 @@ select z.dosya, 'tespit'
   (212, '190_salon_tekillestirme_ve_bolum.sql', 'fonksiyon', 'brand_key'),
   (213, '191_kaynak_celiskileri_ve_bosluklar.sql', 'kolon', 'availabilities.cabin_class'),
   (214, '192a_PRE_charter_tabanda.sql', '', ''),
-  (215, '192_on_kontrol_kapi_hizalama.sql', 'govde', 'request_precheck|,    coalesce(nullif(d ->>'),
+  (215, '192_on_kontrol_kapi_hizalama.sql', 'govde', 'request_precheck|Bu ilana misafir alınamıyor'),
   (216, '193_kart_etiketi_ve_kabin_yazma.sql', 'fonksiyon', 'save_host_card'),
   (217, '194_bekleme_listesi.sql', 'kisit', 'wl_role_chk'),
   (218, '195_ucus_alanlari_ve_kod_paylasimi.sql', 'kolon', 'flight_cache.airline'),
@@ -554,16 +554,20 @@ select z.dosya, 'tespit'
   (332, '297_yetki_kapilari.sql', 'fonksiyon', 'yonetici_kapisi'),
   (333, '298_supurge_kisiti_ve_asim_dedektoru.sql', 'tablo', 'supurge_damgasi'),
   (334, '299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql', 'kolon', 'supurge_damgasi.kaynak'),
-  (335, '300_pasif_salon_adlari.sql', 'kisit', 'ck_venue_ad_durum_eki_yok'),
-  (336, '301_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
-  (337, '302_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
+  (335, '300_uctan_uca_denetim.sql', 'indeks', 'idx_messages_from'),
+  (336, '301_guven_ve_akis_tamamlama.sql', 'kolon', 'blocks.sebep'),
+  (337, '302_test_hesaplarini_gorenler.sql', 'tablo', 'test_gorunurlugu'),
+  (338, '303_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
+  (339, '304_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
+  (340, '305_erisim_kaynagi_etiketleri.sql', 'fonksiyon', 'erisim_kaynagi_etiketle'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
   (904, 'SEED4_KURAL_VITRINI.sql', 'sayi', 'availabilities|host_id in (select id from users where email = ''host1@seed.loungelink.test'')|10'),
   (905, 'SEED5_BASVURU_AKISLARI.sql', 'satir', 'users.email=guest3@seed.loungelink.test'),
   (906, 'SEED6_TEST_DUNYASI.sql', 'satir', 'users.email=deniz@sahne.loungelink.test'),
-  (907, 'SEED7_TEZGAH.sql', 'sayi', 'invites|status = ''accepted''|1')
+  (907, 'SEED7_TEZGAH.sql', 'sayi', 'invites|status = ''accepted''|1'),
+  (908, 'SEED8_AKIS_TEZGAHI.sql', 'satir', 'users.email=akis.host@seed.loungelink.test')
   ) as z(sira, dosya, tip, ad)
  where public.kurulum_imzasi_var(z.tip, z.ad) is true
 on conflict (dosya) do nothing;
@@ -787,7 +791,7 @@ with imza(sira, dosya, tip, ad) as (
   (212, '190_salon_tekillestirme_ve_bolum.sql', 'fonksiyon', 'brand_key'),
   (213, '191_kaynak_celiskileri_ve_bosluklar.sql', 'kolon', 'availabilities.cabin_class'),
   (214, '192a_PRE_charter_tabanda.sql', '', ''),
-  (215, '192_on_kontrol_kapi_hizalama.sql', 'govde', 'request_precheck|,    coalesce(nullif(d ->>'),
+  (215, '192_on_kontrol_kapi_hizalama.sql', 'govde', 'request_precheck|Bu ilana misafir alınamıyor'),
   (216, '193_kart_etiketi_ve_kabin_yazma.sql', 'fonksiyon', 'save_host_card'),
   (217, '194_bekleme_listesi.sql', 'kisit', 'wl_role_chk'),
   (218, '195_ucus_alanlari_ve_kod_paylasimi.sql', 'kolon', 'flight_cache.airline'),
@@ -907,16 +911,20 @@ with imza(sira, dosya, tip, ad) as (
   (332, '297_yetki_kapilari.sql', 'fonksiyon', 'yonetici_kapisi'),
   (333, '298_supurge_kisiti_ve_asim_dedektoru.sql', 'tablo', 'supurge_damgasi'),
   (334, '299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql', 'kolon', 'supurge_damgasi.kaynak'),
-  (335, '300_pasif_salon_adlari.sql', 'kisit', 'ck_venue_ad_durum_eki_yok'),
-  (336, '301_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
-  (337, '302_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
+  (335, '300_uctan_uca_denetim.sql', 'indeks', 'idx_messages_from'),
+  (336, '301_guven_ve_akis_tamamlama.sql', 'kolon', 'blocks.sebep'),
+  (337, '302_test_hesaplarini_gorenler.sql', 'tablo', 'test_gorunurlugu'),
+  (338, '303_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
+  (339, '304_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
+  (340, '305_erisim_kaynagi_etiketleri.sql', 'fonksiyon', 'erisim_kaynagi_etiketle'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
   (904, 'SEED4_KURAL_VITRINI.sql', 'sayi', 'availabilities|host_id in (select id from users where email = ''host1@seed.loungelink.test'')|10'),
   (905, 'SEED5_BASVURU_AKISLARI.sql', 'satir', 'users.email=guest3@seed.loungelink.test'),
   (906, 'SEED6_TEST_DUNYASI.sql', 'satir', 'users.email=deniz@sahne.loungelink.test'),
-  (907, 'SEED7_TEZGAH.sql', 'sayi', 'invites|status = ''accepted''|1')
+  (907, 'SEED7_TEZGAH.sql', 'sayi', 'invites|status = ''accepted''|1'),
+  (908, 'SEED8_AKIS_TEZGAHI.sql', 'satir', 'users.email=akis.host@seed.loungelink.test')
 ),
 ham as (
   select i.sira, i.dosya, i.tip, i.ad,

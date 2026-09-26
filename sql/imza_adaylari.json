@@ -31549,16 +31549,338 @@
   ]
  ],
  [
-  "300_pasif_salon_adlari.sql",
+  "300_uctan_uca_denetim.sql",
   [
    [
-    "kisit",
-    "ck_venue_ad_durum_eki_yok"
+    "indeks",
+    "idx_messages_from"
+   ],
+   [
+    "indeks",
+    "idx_ratings_rater"
+   ],
+   [
+    "indeks",
+    "idx_invites_avail_status"
+   ],
+   [
+    "indeks",
+    "idx_credit_ledger_ref_reason"
+   ],
+   [
+    "tetikleyici",
+    "trg_visit_0_beyan_temizle"
+   ],
+   [
+    "fonksiyon",
+    "profil_karti"
+   ],
+   [
+    "fonksiyon",
+    "kesifte_gorun"
+   ],
+   [
+    "fonksiyon",
+    "trg_visit_0_beyan_temizle"
+   ],
+   [
+    "govde",
+    "trg_visit_0_beyan_temizle|loungelink.motor"
+   ],
+   [
+    "govde",
+    "kesifte_gorun|not_authenticated"
+   ],
+   [
+    "govde",
+    "profil_karti|not_authenticated"
+   ],
+   [
+    "govde",
+    "respond_request|availability_expired"
+   ],
+   [
+    "govde",
+    "confirm_session|perform public.hesap_kapisi(v_uid);"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|, completed_at = now(), cancel_reason ="
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|v_bal + public.tutulan_kredi(r.id),"
+   ],
+   [
+    "govde",
+    "create_request_impl|already_requested"
+   ],
+   [
+    "govde",
+    "trg_bakiye_negatife_dusemez|Bu satır bakiyeyi negatife düşürürdü; 299/B1 reddetti."
+   ],
+   [
+    "govde",
+    "trg_visit_0_beyan_temizle|new.flight_source       := null;"
+   ],
+   [
+    "govde",
+    "kesifte_gorun|show_on_discovery"
+   ],
+   [
+    "govde",
+    "profil_karti|linkedin_verified"
+   ],
+   [
+    "govde",
+    "respond_request|if not coalesce(v_av.active, true)"
+   ],
+   [
+    "govde",
+    "confirm_session|not_authenticated"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|and (s.id is null"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|and (public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now()"
+   ],
+   [
+    "govde",
+    "create_request_impl|raise exception 'already_requested';"
+   ],
+   [
+    "govde",
+    "trg_bakiye_negatife_dusemez|using detail = format('kullanıcı %s: bakiye %s, denenen %s (%s)',"
+   ],
+   [
+    "govde",
+    "trg_visit_0_beyan_temizle|new.flight_checked_at   := null;"
+   ],
+   [
+    "govde",
+    "kesifte_gorun|where user_id = v_uid;"
+   ],
+   [
+    "govde",
+    "profil_karti|where u.id = p_user;"
+   ],
+   [
+    "govde",
+    "respond_request|perform public.hesap_kapisi(v_uid);"
+   ],
+   [
+    "govde",
+    "confirm_session|session_not_found"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|and s.guest_started_at is null))"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|values (r.guest_id, public.tutulan_kredi(r.id), 'request_stale_refund', r.id,"
+   ],
+   [
+    "govde",
+    "create_request_impl|update requests set idempotency_key = null"
+   ],
+   [
+    "govde",
+    "trg_bakiye_negatife_dusemez|hint   = 'Bu satır bakiyeyi negatife düşürürdü; 299/B1 reddetti.';"
+   ],
+   [
+    "govde",
+    "trg_visit_0_beyan_temizle|new.scheduled_departure := null;"
    ]
   ]
  ],
  [
-  "301_ertelenen_puan_ana_sayfadan_duser.sql",
+  "301_guven_ve_akis_tamamlama.sql",
+  [
+   [
+    "kolon",
+    "blocks.sebep"
+   ],
+   [
+    "kisit",
+    "requests_visit_id_fkey"
+   ],
+   [
+    "tetikleyici",
+    "trg_mesaj_engel"
+   ],
+   [
+    "fonksiyon",
+    "engelle"
+   ],
+   [
+    "fonksiyon",
+    "engeli_kaldir"
+   ],
+   [
+    "fonksiyon",
+    "gelmedi_esigi"
+   ],
+   [
+    "fonksiyon",
+    "gelmedi_bildir"
+   ],
+   [
+    "fonksiyon",
+    "engellediklerim"
+   ],
+   [
+    "fonksiyon",
+    "trg_mesaj_engel"
+   ],
+   [
+    "fonksiyon",
+    "seed_test_hesabi"
+   ],
+   [
+    "fonksiyon",
+    "test_hesabi_gizli_mi"
+   ],
+   [
+    "govde",
+    "seed_test_hesabi|or coalesce(p_email, '') like '%@e2e.test';"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "engelle|not_authenticated"
+   ],
+   [
+    "govde",
+    "engeli_kaldir|not_authenticated"
+   ],
+   [
+    "govde",
+    "engellediklerim|order by b.created_at desc;"
+   ],
+   [
+    "govde",
+    "trg_mesaj_engel|declare v_diger uuid;"
+   ],
+   [
+    "govde",
+    "gelmedi_bildir|)::int from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "gelmedi_esigi|)::int from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "guide_hosts_today|and not public.test_hesabi_gizli_mi(a.host_id)),"
+   ],
+   [
+    "govde",
+    "request_precheck|, coalesce(nullif(d ->>"
+   ],
+   [
+    "govde",
+    "is_visible|from users where id = p_user), false)"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|and not public.test_hesabi_gizli_mi(a.host_id)"
+   ],
+   [
+    "govde",
+    "create_availability|kendi_ilanlarin_cakisiyor"
+   ],
+   [
+    "govde",
+    "seyahat_sil|if public.seyahate_bagli_basvuru(p_id) > 0 then"
+   ],
+   [
+    "govde",
+    "blok_gecmisi_kapat|declare v_r record;"
+   ],
+   [
+    "govde",
+    "seed_test_hesabi|or coalesce(p_email, '') like '%@sahne.loungelink.test'"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|from users x where x.id = auth.uid()), false);"
+   ],
+   [
+    "govde",
+    "engelle|cannot_block_self"
+   ],
+   [
+    "govde",
+    "engeli_kaldir|get diagnostics v_n = row_count;"
+   ],
+   [
+    "govde",
+    "engellediklerim|where b.blocker = auth.uid()"
+   ],
+   [
+    "govde",
+    "trg_mesaj_engel|if v_diger is null then"
+   ],
+   [
+    "govde",
+    "gelmedi_bildir|not_authenticated"
+   ],
+   [
+    "govde",
+    "gelmedi_esigi|select coalesce((select (value #>> '{}')::int from beta_settings where key = 'gelmedi_bekleme_dk'), 15)"
+   ],
+   [
+    "govde",
+    "guide_hosts_today|and not public.test_hesabi_gizli_mi(a.host_id)));"
+   ],
+   [
+    "govde",
+    "request_precheck|, coalesce(nullif(j ->>"
+   ]
+  ]
+ ],
+ [
+  "302_test_hesaplarini_gorenler.sql",
+  [
+   [
+    "tablo",
+    "test_gorunurlugu"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|and not exists (select 1 from test_gorunurlugu g where g.user_id = auth.uid());"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|from users x where x.id = auth.uid()), false)"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|and not coalesce((select public.seed_test_hesabi(x.email) or coalesce(x.is_staff, false)"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|and exists (select 1 from users u where u.id = p_hedef and public.seed_test_hesabi(u.email))"
+   ],
+   [
+    "govde",
+    "test_hesabi_gizli_mi|select coalesce((select f.enabled from feature_flags f where f.key = 'test_hesaplarini_gizle'), true)"
+   ]
+  ]
+ ],
+ [
+  "303_ertelenen_puan_ana_sayfadan_duser.sql",
   [
    [
     "govde",
@@ -31639,7 +31961,7 @@
   ]
  ],
  [
-  "302_kesfet_engelinin_gercek_sebebi.sql",
+  "304_kesfet_engelinin_gercek_sebebi.sql",
   [
    [
     "govde",
@@ -31760,6 +32082,119 @@
    [
     "govde",
     "discovery_rule_badges|select * into r from availabilities where id = avail_id;"
+   ]
+  ]
+ ],
+ [
+  "305_erisim_kaynagi_etiketleri.sql",
+  [
+   [
+    "fonksiyon",
+    "erisim_kaynagi_etiketle"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|Kredi Kartı Avantajı"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|Havayolu Statüsü"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|Banka / Özel Bankacılık"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|where btrim(x) <> ''"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|select e, min(sira) as ilk"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|select case lower(btrim(x))"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'lounge_key'       then 'LoungeKey'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'loungekey'        then 'LoungeKey'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'dragon_pass'      then 'DragonPass'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'dragonpass'       then 'DragonPass'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'priority_pass'    then 'Priority Pass'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'business_class'   then 'Business Class'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'ticket_class'     then 'Business Class'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'airline_status'   then 'Havayolu Statüsü'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'alliance_status'  then 'Havayolu Statüsü'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'airline status'   then 'Havayolu Statüsü'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'corporate'        then 'Kurumsal Seyahat'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|select nullif(string_agg(e, ', ' order by ilk), '')"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'credit_card'      then 'Kredi Kartı Avantajı'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'bank_card'        then 'Kredi Kartı Avantajı'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'card_membership'  then 'Kredi Kartı Avantajı'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'kredi kartı'      then 'Kredi Kartı Avantajı'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'credit card'      then 'Kredi Kartı Avantajı'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'private_bank'     then 'Banka / Özel Bankacılık'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|when 'private_banking'  then 'Banka / Özel Bankacılık'"
+   ],
+   [
+    "govde",
+    "erisim_kaynagi_etiketle|from unnest(string_to_array(coalesce(p, ''), ',')) with ordinality as u(x, sira)"
    ]
   ]
  ]

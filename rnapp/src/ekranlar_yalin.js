@@ -37,7 +37,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, erisimKaynaklari, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -4395,7 +4395,7 @@ export function HostApply({ t, session, onBack, onDone }) {
           <IkonMetin ad="bekliyor" renk={C.goldInk} stilMetin={{ fontWeight: "700", color: C.goldInk, fontSize: FS.base }} metin={t.hostApplyPendingTitle} />
           <Text style={{ color: C.goldInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.hostApplyPendingBody}</Text>
           <Text style={{ color: C.goldInk, fontSize: FS.sm, marginTop: SP[2] }}>
-            {app.access_source} · {app.guest_capacity} {t.hostApplyGuestUnit}
+            {erisimKaynaklari(app.access_source).map(k => erisimEtiketi(t, k)).join(", ")} · {app.guest_capacity} {t.hostApplyGuestUnit}
           </Text>
         </View>
       ) : app.status === "rejected" ? (
@@ -4434,7 +4434,7 @@ export function HostApplyForm({ t, src, setSrc, cap, setCap, note, setNote, subm
         {ACCESS_SOURCES.map(a => (
           <TouchableOpacity key={a} onPress={() => setSrc(a)}
             style={[S.chip, src === a && S.chipOn, { marginBottom: SP[2] }]}>
-            <Text style={{ color: src === a ? C.gold : C.ink, fontSize: FS.sm }}>{a}</Text>
+            <Text style={{ color: src === a ? C.gold : C.ink, fontSize: FS.sm }}>{erisimEtiketi(t, a)}</Text>
           </TouchableOpacity>
         ))}
       </View>

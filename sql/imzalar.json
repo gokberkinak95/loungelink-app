@@ -1072,7 +1072,7 @@
  [
   "192_on_kontrol_kapi_hizalama.sql",
   "govde",
-  "request_precheck|,    coalesce(nullif(d ->>"
+  "request_precheck|Bu ilana misafir alınamıyor"
  ],
  [
   "193_kart_etiketi_ve_kabin_yazma.sql",
@@ -1670,18 +1670,33 @@
   "supurge_damgasi.kaynak"
  ],
  [
-  "300_pasif_salon_adlari.sql",
-  "kisit",
-  "ck_venue_ad_durum_eki_yok"
+  "300_uctan_uca_denetim.sql",
+  "indeks",
+  "idx_messages_from"
  ],
  [
-  "301_ertelenen_puan_ana_sayfadan_duser.sql",
+  "301_guven_ve_akis_tamamlama.sql",
+  "kolon",
+  "blocks.sebep"
+ ],
+ [
+  "302_test_hesaplarini_gorenler.sql",
+  "tablo",
+  "test_gorunurlugu"
+ ],
+ [
+  "303_ertelenen_puan_ana_sayfadan_duser.sql",
   "govde",
   "pending_ratings|and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])"
  ],
  [
-  "302_kesfet_engelinin_gercek_sebebi.sql",
+  "304_kesfet_engelinin_gercek_sebebi.sql",
   "govde",
   "discovery_rule_badges|v_key := 'carrier_bad';   v_boost := -1000;"
+ ],
+ [
+  "305_erisim_kaynagi_etiketleri.sql",
+  "fonksiyon",
+  "erisim_kaynagi_etiketle"
  ]
 ]

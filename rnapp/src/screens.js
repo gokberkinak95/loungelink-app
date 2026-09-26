@@ -11,7 +11,7 @@ import { logError, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { MONO } from "./typography";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP } from "./theme";
-import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma } from "./ui";
+import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -2366,29 +2366,31 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
       {/* Editor modal — MVP'deki gibi */}
       {editor && (
         <TouchableOpacity activeOpacity={1} onPress={() => setEditor(null)}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.45)", alignItems: "center", justifyContent: "center", padding: ARA[20] }}>
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center", padding: ARA[20] }}>
+          {/* v6.1 (md.4) — Ayarlar editörü de bulanık perde + ışık kenarlı popup. */}
+          <PerdeBulanik />
           <TouchableOpacity activeOpacity={1} onPress={() => {}}
-            style={{ backgroundColor: C.card, borderRadius: R.sm, padding: ARA[18], width: "100%", maxWidth: 340 }}>
+            style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[18], width: "100%", maxWidth: 340 }}>
             {editor === "password" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[3] }}>{t.stChangePw}</Text>
               <TextInput secureTextEntry placeholder={t.stPwPlaceholder} value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[2], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[2] }]} />
               <TextInput secureTextEntry placeholder={t.stPwRepeat} value={draft2} onChangeText={setDraft2} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={busy ? "…" : t.stPwSave} onPress={savePassword} disabled={busy} a11yLabel={t.stPwSave} />
             </>}
             {editor === "phone" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[1] }}>{t.stPhoneEdit}</Text>
               <Text style={{ fontSize: FS.xs, color: C.mutedAA, marginBottom: SP[3] }}>{t.stPhoneEditSub}</Text>
               <TextInput keyboardType="phone-pad" placeholder="+90 5xx xxx xx xx" value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={busy ? "…" : t.stPhoneSave} onPress={savePhone} disabled={busy} a11yLabel={t.stPhoneSave} />
             </>}
             {editor === "email" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[1] }}>{t.stContactEmail}</Text>
               <Text style={{ fontSize: FS.xs, color: C.mutedAA, marginBottom: SP[3] }}>{t.stEmailSub}</Text>
               <TextInput keyboardType="email-address" autoCapitalize="none" placeholder="email@example.com" value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={t.stEmailSave} onPress={saveEmailField} a11yLabel={t.stEmailSave} />
             </>}
             {editor === "visibility" && <>

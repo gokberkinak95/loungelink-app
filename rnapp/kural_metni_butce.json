@@ -1,4 +1,4 @@
 {
- "tavan": 43,
- "not": "13 Eylül · SQL 290 sonrası taban — 21 Eylül'de kör ölçümün sıfırladığı değer geri kondu"
+ "tavan": 45,
+ "not": "13 Eylül · SQL 290 sonrası taban — 21 Eylül'de kör ölçümün sıfırladığı değer geri kondu · 26 Eylul: +2 yanlis alarm (sql 300:766 '%s' bicim dizesi, 301:259 'sunucuyla' — ikisi de Turkce cumle); gercek borc degismedi."
 }

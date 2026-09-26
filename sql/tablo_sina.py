@@ -115,7 +115,7 @@ SEED = ['SEED_KURAL_SENARYOLARI.sql', 'SEED2_KAYNAK_SENARYOLARI.sql',
         # Yukaridaki yorumun anlattigi hatanin BIREBIR TEKRARI.
         # 🆕 SINIF: "BIR SINAVIN KURDUGU DUNYA, SINADIGI LISTEDEN
         # KISAYSA, SINAV KENDI EKSIGINI URUNE FATURA EDER."
-        'SEED7_TEZGAH.sql']
+        'SEED7_TEZGAH.sql', 'SEED8_AKIS_TEZGAHI.sql']
 
 
 def seed_kur(uri):

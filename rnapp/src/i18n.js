@@ -1333,6 +1333,7 @@ export const D = {
     addAvail: "+ İlan Ekle",
     accessSrc: "ERİŞİM KAYNAĞI",
     accessOpts: ["Priority Pass","LoungeKey","Kredi Kartı","Business Class","Havayolu Statüsü"],
+    accessSrcNames: {},   // TR: kayıttaki etiket aynen gösterilir (EN karşılığı aşağıda)
     live: "• CANLI",
     errDate: "Tarih YYYY-AA-GG biçiminde olmalı (örn. 2026-07-20).",
     errTime: "Saatler SS:DD biçiminde olmalı ve başlangıç bitişten önce gelmeli.",
@@ -3171,6 +3172,11 @@ export const D = {
     addAvail: "+ Add Availability",
     accessSrc: "ACCESS SOURCE",
     accessOpts: ["Priority Pass","LoungeKey","Credit Card","Business Class","Airline Status"],
+    // v6.1 (md.10) — kayıt TR etiketiyle tutulur; İngilizce ekran bunu çevirir.
+    accessSrcNames: {
+      "Kredi Kartı Avantajı": "Credit card benefit", "Havayolu Statüsü": "Airline status",
+      "Banka / Özel Bankacılık": "Bank / private banking", "Kurumsal Seyahat": "Corporate travel",
+    },
     live: "• LIVE",
     errDate: "Date must be YYYY-MM-DD (e.g. 2026-07-20).",
     errTime: "Times must be HH:MM and start must be before end.",

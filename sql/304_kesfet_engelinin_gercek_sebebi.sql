@@ -1,5 +1,5 @@
 -- ============================================================================
--- 302 · KEŞFET ENGELİNİN GERÇEK SEBEBİ                             (26 Eylül)
+-- 304 · KEŞFET ENGELİNİN GERÇEK SEBEBİ                             (26 Eylül)
 --
 -- 🔴 NEDEN (Gökberk md.34 / 34.1 · cihazda görüldü): THY hostunun ilanına
 -- AJet biletli yolcu bakınca liste "Başvuru kapalı · Neden?" diyordu ama
@@ -60,7 +60,7 @@ begin
     end if;
 
     v_boost := 0;
-    -- 302: engelin SEBEBİ ayrı anahtar — farklı havayolu "misafir hakkı yok" değildir.
+    -- 304: engelin SEBEBİ ayrı anahtar — farklı havayolu "misafir hakkı yok" değildir.
     if v_block and coalesce((d ->> 'carrier_ok') = 'false', false) then
                                                      v_key := 'carrier_bad';   v_boost := -1000;
     elsif v_block and coalesce((d ->> 'charter') = 'true', false) then

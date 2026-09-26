@@ -39,7 +39,7 @@ import { BosDurum, ChipIcon, ConfirmModal, Hdr, LoadFail, TOPPAD, Toggle, ToneBa
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ACCESS_SOURCES, erisimKaynaklari, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -4069,7 +4069,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                                 maxWidth: "100%", flexShrink: 1 }]}>
               <Text numberOfLines={2}
                 style={{ color: on ? C.gold : C.ink, fontSize: FS.sm,
-                         fontWeight: on ? "700" : "400", flexShrink: 1 }}>{a}</Text>
+                         fontWeight: on ? "700" : "400", flexShrink: 1 }}>{erisimEtiketi(t, a)}</Text>
             </TouchableOpacity>
           ); })}
         </View>
@@ -5204,7 +5204,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
                 {BUYUK(t.accessSourceRow)}
               </Text>
               <Text numberOfLines={1} style={{ flex: 1, fontSize: FS.sm, color: C.ink, marginTop: SP[1] }}>
-                {erisimKaynaklari(form.access_source).join(", ") || t.stPhoneUnset}
+                {erisimKaynaklari(form.access_source).map(k => erisimEtiketi(t, k)).join(", ") || t.stPhoneUnset}
               </Text>
             </View>
             <Ikon ad="sag" boy={FS.lg} renk={C.dimAA} />

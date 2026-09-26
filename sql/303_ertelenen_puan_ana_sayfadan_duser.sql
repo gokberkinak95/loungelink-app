@@ -1,5 +1,5 @@
 -- ============================================================================
--- 301 · ERTELENEN PUAN ANA SAYFADAN DÜŞER                         (26 Eylül)
+-- 303 · ERTELENEN PUAN ANA SAYFADAN DÜŞER                         (26 Eylül)
 --
 -- 🔴 NEDEN: Ana sayfadaki "Son oturumunu puanla" kartında "Sonra"ya basınca
 -- `defer_rating` oturumu `sessions.rate_deferred_by`e yazıyordu — ama kartı
@@ -43,7 +43,7 @@ begin
       on p.user_id = case when r.host_id = v_uid then r.guest_id else r.host_id end
    where s.status = 'completed'
      and (r.host_id = v_uid or r.guest_id = v_uid)
-     and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])   -- 301
+     and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])   -- 303
      and not exists (select 1 from ratings rt
                       where rt.session_id = s.id and rt.rater_id = v_uid)
    order by s.completed_at desc nulls last

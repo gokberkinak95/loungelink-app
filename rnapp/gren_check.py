@@ -58,7 +58,16 @@ def plato(dosya):
         pencere = a[y0:y1, max(0, x - 30):x + 30]
         if pencere.std(axis=1).mean() > 1.5:
             continue
-        deg = np.where(np.diff(np.round(s)) != 0)[0]
+        # 🔴 26 EYLÜL — YALNIZ BANT ADIMLARI SAYILIR. Bir gradyan şeridi
+        # komşu tona 1–2 birimle geçer; kart kenarı 10+ birim sıçrar.
+        # 03_kural'da x=900 sütununda TOPLAM 3 değişim vardı ve ikisi kart
+        # alt kenarıydı (23→35→10): "medyan plato" düz kart yüzeyinin
+        # boyunu ölçüyordu, şeridi değil (numpy bu makinede ilk kez
+        # kurulunca ortaya çıktı).
+        # 🆕 SINIF: "BİR ŞERİDİ ÖLÇERKEN KENARI DA ADIM SAYARSAN, DÜZ
+        # BİR YÜZEYİ TIRTIKLI SANIRSIN."
+        fark = np.diff(np.round(s))
+        deg = np.where((fark != 0) & (np.abs(fark) <= 2))[0]
         if len(deg) < 3:
             continue                            # tamamen düz: gradyan yok
         m = float(np.median(np.diff(deg)))

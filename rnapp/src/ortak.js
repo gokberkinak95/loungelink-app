@@ -691,6 +691,11 @@ const KAYNAK_KODLARI = {
   "Kredi Kartı": "Kredi Kartı Avantajı", "Credit Card": "Kredi Kartı Avantajı",
   "Airline Status": "Havayolu Statüsü",
 };
+// Ekranda gösterim: kayıt her zaman TR etiketiyle tutulur (sunucu ve
+// kural motoru onu okur); İngilizce arayüz onu `t.accessSrcNames` ile çevirir.
+export function erisimEtiketi(t, etiket) {
+  return (t && t.accessSrcNames && t.accessSrcNames[etiket]) || etiket;
+}
 export function erisimKaynaklari(ham) {
   const liste = String(ham || "").split(",").map(x => x.trim()).filter(Boolean)
     .map(x => KAYNAK_KODLARI[x] || KAYNAK_KODLARI[x.toLowerCase()] || x);

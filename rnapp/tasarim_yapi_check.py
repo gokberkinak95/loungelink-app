@@ -143,10 +143,15 @@ IDDIALAR = [
      "ui.js", r"letterSpacing: 2\.4[\s\S]{0,120}?color: C\.gold",
      "düğüm noktası markanın rengiyle işaretleniyor"),
 
-    ("başlık sans",
-     r"\.ust-h1\{(?![^}]*Cormorant)",
-     "ui.js", r"fontSize: FS\.bant[\s\S]{0,160}?letterSpacing: -1\.2",
-     "serif yalnız `.ust-h1.serif` — o da tek yerde"),
+    # 🔴 26 EYLÜL · v6.1 — İDDİA BİLEREK DEĞİŞTİ. Gökberk önce/sonra
+    # önizlemesini (uygulama_basliklari_once_sonra.jpg) onayladı: ekran
+    # başlıkları artık Cormorant SemiBold. Tasarım dosyasındaki `.ust-h1`
+    # sans kuralı bu kararla geçersiz; kanıt artık bant başlığının SERİF
+    # olduğu. Gövde/düğme/sayı sans-mono kalıyor (başka iddialar ölçüyor).
+    ("başlık serif (v6.1 onay)",
+     r"\.ust-h1\{",
+     "ui.js", r"fontSize: FS\.bant \+ 4[\s\S]{0,160}?fontFamily: F\.serifGosterim",
+     "ekran başlıkları serif — önizleme onaylı (26 Eylül)"),
 
     ("isim serif-ince",
      r"\.ust-h1\.serif\{[^}]*Cormorant",
