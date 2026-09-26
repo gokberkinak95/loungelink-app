@@ -93,7 +93,7 @@ module.exports = {
     View: host("AnimatedView"), Text: host("AnimatedText"), Image: host("AnimatedImage"),
     ScrollView: host("AnimatedScrollView"),
     event: () => () => {},
-    Value: function () { return { setValue() {}, interpolate: () => 0 }; },
+    Value: function () { return { setValue() {}, interpolate: () => 0, addListener: () => "1", removeListener() {} }; },
     timing: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
     spring: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
     sequence: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),

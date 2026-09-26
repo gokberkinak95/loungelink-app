@@ -33,7 +33,7 @@
 // Aynı deseni `ui.js` jiroskop için zaten kullanıyor.
 // ══════════════════════════════════════════════════════════════════════
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Easing, Platform, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Animated, Easing, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
 import { bcbpBul, bcbpCoz, kuralUyum } from "./bcbp";
 import { Ikon } from "./ikon";
 import { mapErr } from "./i18n";
@@ -125,6 +125,9 @@ function Secenek({ ikon, baslik, alt, onPress, disabled, sag }) {
 function Vizor({ t, onKapat, onDize, onHata }) {
   const K = kameraModulu();
   const [izin, setIzin] = useState(null);
+  // v6.1 (Gökberk md.7) — izin kalıcı reddedildiyse sistem bir daha
+  // sormaz; tek çıkış Ayarlar. "Geri"den başka yol göstermiyorduk.
+  const [tekrarSor, setTekrarSor] = useState(true);
   const [okundu, setOkundu] = useState(false);
   const basladi = useRef(Date.now());
   const nabiz = useRef(new Animated.Value(0)).current;
@@ -137,8 +140,8 @@ function Vizor({ t, onKapat, onDize, onHata }) {
         const izinFn = K.Camera && K.Camera.requestCameraPermissionsAsync
           ? K.Camera.requestCameraPermissionsAsync
           : K.requestCameraPermissionsAsync;
-        const { status } = await izinFn();
-        if (canli) setIzin(status === "granted");
+        const { status, canAskAgain } = await izinFn();
+        if (canli) { setIzin(status === "granted"); setTekrarSor(canAskAgain !== false); }
       } catch (e) { if (canli) setIzin(false); }
     })();
     return () => { canli = false; };
@@ -187,7 +190,12 @@ function Vizor({ t, onKapat, onDize, onHata }) {
           {K ? t.bpCamDenied : t.bpCamMissing}
         </Text>
         <View style={{ alignSelf: "stretch", marginTop: ARA[20] }}>
-          <Btn v="ghost" label={t.back} onPress={onKapat} a11yLabel={t.back} />
+          {K && !tekrarSor ? (
+            <Btn v="gold" label={t.bpOpenSettings} solAd="ayarlar"
+              onPress={() => Linking.openSettings && Linking.openSettings().catch(() => {})} />
+          ) : null}
+          <Btn v="ghost" label={t.back} onPress={onKapat} a11yLabel={t.back}
+            style={K && !tekrarSor ? { marginTop: ARA[10] } : undefined} />
         </View>
       </View>
     );

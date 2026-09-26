@@ -263,14 +263,16 @@ export default function MomentScreen({
       </Animated.View>
 
       <View style={{ paddingHorizontal: ARA[30], paddingBottom: ARA[34] }}>
+        {/* v6.1 (md.3 · md.5) — ikincil eylem soluk bir metindi ("Sohbete dön",
+            "Şimdi değil") ve fotoğrafın üstünde kayboluyordu. Artık birincille
+            AYNI genişlikte, ışık kenarlı cam bir hap: hiyerarşiyi dolgu kuruyor
+            (altın = asıl eylem), görünürlüğü değil. */}
         {!!primary && (
-          <Btn v="gold" sm label={primary.label} onPress={primary.onPress} />
+          <Btn v="gold" sm full label={primary.label} onPress={primary.onPress} />
         )}
         {!!secondary && (
-          <TouchableOpacity hitSlop={TAP.slop} onPress={secondary.onPress}
-            style={{ paddingVertical: ARA[14], alignItems: "center" }}>
-            <Text style={{ color: C.paper, opacity: 0.7, fontSize: FS.base }}>{secondary.label}</Text>
-          </TouchableOpacity>
+          <Btn v="ghost" sm full label={secondary.label} onPress={secondary.onPress}
+            style={{ marginTop: ARA[12], backgroundColor: C.camKart }} />
         )}
       </View>
     </View>

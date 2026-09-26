@@ -278,17 +278,17 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                         tam olarak böyle; iki liste ekranının aynı işi
                         farklı yerlerde yapması, kullanıcıya iki ayrı
                         alışkanlık öğretmek olurdu. */}
-                    <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center",
-                                   gap: SP[4], marginTop: ARA[12] }}>
-                      <TouchableOpacity onPress={() => onEditTrip && onEditTrip(r)} hitSlop={TAP.slop}
-                        accessibilityRole="button" accessibilityLabel={t.editTrip}
-                        style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
-                        <Text style={{ color: C.mutedAA, fontSize: FS.sm }}>{t.edit}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={git} hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.findHost}
-                        style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
-                        <Text style={{ color: C.goldText, fontSize: FS.xs + 1, fontWeight: "700", lineHeight: 14 }}>{t.findHost}</Text>
-                      </TouchableOpacity>
+                    {/* 🔴 v6.1 (Gökberk md.22) — "Düzenle" çerçevesiz bir metindi
+                        ve altın metnin yanında sahipsiz duruyordu. Artık iki
+                        gerçek düğme: solda ghost "Düzenle" (kalem), sağda
+                        altın birincil eylem. Sessiz olan solda — ilan
+                        kartıyla aynı düzen. */}
+                    <View style={{ flexDirection: "row", alignItems: "center",
+                                   gap: SP[2], marginTop: ARA[14] }}>
+                      <Btn v="ghost" sm label={t.edit} solAd="duzenle" a11yLabel={t.editTrip}
+                        onPress={() => onEditTrip && onEditTrip(r)} />
+                      <Btn v="gold" sm label={t.findHost} a11yLabel={t.findHost} onPress={git}
+                        style={{ flex: 1 }} />
                     </View>
                   </>
                 );
@@ -722,8 +722,12 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
 
   return (
     <>
+    {/* v6.1 (md.5) — anlar TAM EKRAN katmanda: sekme içinde mutlak konumlu
+        çizildiklerinde alt çubuk üstlerinde kalıyordu ("Eşleştiniz" ekranında
+        sekmeler görünüyordu). Modal, kabuğun tamamını örter. */}
     {!!karsilik && (
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 41 }}>
+      <Modal visible transparent={false} animationType="fade" statusBarTranslucent onRequestClose={karsilikKapat}>
+      <View style={{ flex: 1 }}>
         <MomentScreen t={t}
           kind={karsilik.kind}
           title={karsilik.title}
@@ -736,9 +740,11 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           secondary={{ label: t.close, onPress: karsilikKapat }}
         />
       </View>
+      </Modal>
     )}
     {!!moment && (
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 40 }}>
+      <Modal visible transparent={false} animationType="fade" statusBarTranslucent onRequestClose={() => setMoment(null)}>
+      <View style={{ flex: 1 }}>
         <MomentScreen t={t}
           kind="matched"
           dugum={t.momentMatchEyebrow}
@@ -761,6 +767,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           secondary={{ label: t.momentLater, onPress: () => setMoment(null) }}
         />
       </View>
+      </Modal>
     )}
     <Kaydirma {...(bnt ? bnt.scrollProps : null)} ref={kaydirmaRef} contentContainerStyle={{ padding: ARA[20], paddingTop: (bnt ? bnt.ustBosluk : 0) + SP[4], paddingBottom: ARA[40] }}>
       {!adding && (
@@ -1532,8 +1539,12 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
                   {[p.profession, sehir].filter(Boolean).join(" · ")}
                 </Text>
               ) : null}
-              <View style={{ flexDirection: "row", marginTop: ARA[2] }}>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginTop: ARA[2] }}>
                 <Cip ton={myRole === "host" ? "ok" : "gold"} etiket={`• ${badgeLabel(t, ts.badge)} · ${ts.score ?? 0}`} />
+                {/* v6.1 (Gökberk md.35) — kurucu rozeti kendi profilinde de görünür. */}
+                {p.founding_host_no ? (
+                  <Cip ton="gold" etiket={String(t.foundingBadge || "Kurucu Host #{n}").replace("{n}", String(p.founding_host_no))} />
+                ) : null}
               </View>
             </View>
           </View>
@@ -1614,6 +1625,32 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
                 💳 Plan · 👛 Cuzdan · 🏷 Lounge hakki · 📡 Canli Durum
                 ✦ Host olmak istiyorum  -> hepsi bu listede, tab degil.
               ============================================================ */}
+          {/* 🔴 v6.1 (Gökberk md.8) — durum/biyografi "Çıkış Yap"ın hemen
+              üstündeydi: kimlik bilgisi, hesap kapatma eyleminin yanında.
+              Ayarlara da ait değil (ayar değil, vitrin). Yeri menünün
+              BAŞI: kimlik şeridinin hemen altında, kim olduğunu söyleyen
+              ilk cümle. */}
+          {/* biyografi kartı yalnız biyografi VARSA (yoksa eksik kartı söylüyor) */}
+          {!!p.bio && (
+          <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.8} onPress={onEditProfile}
+            style={[S.card, { marginBottom: ARA[10] }]}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <Text style={{ color: C.ink, fontSize: FS.base, lineHeight: 20, flex: 1, marginRight: SP[2] }}>
+                {p.bio}
+              </Text>
+              <Ikon ad="duzenle" boy={22} renk={C.mutedAA} />
+            </View>
+            {langs.length > 0 && (
+              <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
+                {langs.map(l => (
+                  <View key={l} style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: ARA[10], marginRight: ARA[6], marginBottom: ARA[6] }}>
+                    <Text style={{ fontSize: FS.sm, color: C.mutedAA }}>{l}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </TouchableOpacity>
+          )}
           {[
             // ============================================================
             // MVP PROFİL MENÜSÜ — kaynak birebir (host vs guest ayrı).
@@ -1739,27 +1776,6 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               buton aynı yere gidiyordu. Diller ise BUTON GİBİ görünüp hiçbir
               şey yapmıyordu. Artık bio + diller TEK dokunulabilir blok ve
               sağ üstte ✎ var (Gokberk'in tercihi: düzenlenebilir alanda ✎). */}
-          {/* biyografi kartı yalnız biyografi VARSA (yoksa eksik kartı söylüyor) */}
-          {!!p.bio && (
-          <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.8} onPress={onEditProfile}
-            style={[S.card, { marginBottom: ARA[10] }]}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <Text style={{ color: C.ink, fontSize: FS.base, lineHeight: 20, flex: 1, marginRight: SP[2] }}>
-                {p.bio}
-              </Text>
-              <Ikon ad="duzenle" boy={22} renk={C.mutedAA} />
-            </View>
-            {langs.length > 0 && (
-              <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
-                {langs.map(l => (
-                  <View key={l} style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: ARA[10], marginRight: ARA[6], marginBottom: ARA[6] }}>
-                    <Text style={{ fontSize: FS.sm, color: C.mutedAA }}>{l}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </TouchableOpacity>
-          )}
 
 
           {/* 5 Eylül — "Bakiye" kartı kalktı: kredi banttaki şeritte (dokununca Cüzdan). */}

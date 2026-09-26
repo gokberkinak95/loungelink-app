@@ -174,8 +174,10 @@ temaYenidenKur(() => {
   BTN.purple.bg = BTN.purple.bd = C.goldBtn; BTN.purple.fg = C.onGold;   // 3 Eylül: altın (bkz. harita)
   BTN.rose.bg = BTN.rose.bd = C.red;
   BTN.outline.fg = C.goldText; BTN.outline.bd = C.gold;
-  BTN.ghost.bg = C.bgAlt; BTN.ghost.fg = C.body; BTN.ghost.bd = C.line;
-  BTN.muted.bg = C.bgAlt; BTN.muted.fg = C.mutedAA; BTN.muted.bd = C.line;
+  // v6.1 — hayalet/sessiz düğme zemine karışıyordu ("Sohbete dön", "Şimdi değil").
+  // Blok zemini + ışık kenarı + fildişi mürekkep: ikincil ama NET.
+  BTN.ghost.bg = C.bgAlt; BTN.ghost.fg = C.ink; BTN.ghost.bd = C.kenarIsik || C.line;
+  BTN.muted.bg = C.bgAlt; BTN.muted.fg = C.body; BTN.muted.bd = C.kenarIsik || C.line;
   BTN.goldSoft.bg = C.goldBg;     BTN.goldSoft.fg = C.goldText;   BTN.goldSoft.bd = C.goldLine;
   BTN.purpleSoft.bg = C.purpleBg; BTN.purpleSoft.fg = C.purpleInk; BTN.purpleSoft.bd = C.goldLine;
   BTN.tealSoft.bg = C.tealBg;     BTN.tealSoft.fg = C.tealInk;    BTN.tealSoft.bd = C.teal + "40";
@@ -301,7 +303,8 @@ export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled
         // `width` anahtarı aşağıda ikinci kez yazılıp `undefined`a eziliyordu
         // (ölçüldü: geri dairesi 28×38). Tek `width`. Kenar tasarımdaki
         // `.ust-eylem` gibi 1px.
-        borderWidth: 0,
+        // v6.1 — birincil (altın) çizgisiz; ikincil düğmeler ışık kenarıyla okunur
+        borderWidth: anaEylem ? 0 : 1, borderColor: disabled ? (C.line || "transparent") : (st.bd || C.kenarIsik),
         borderRadius: yariCap, paddingHorizontal: daire ? 0 : (cip || mini) ? 12 : sm ? 24 : 34,
         minHeight: yuk, height: yuk, justifyContent: "center",
         alignItems: "center", flexDirection: "row",
@@ -544,9 +547,9 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
                                 : { selected: !!secili, disabled: !!disabled }}
       style={[{
         backgroundColor: secili ? secZemin : bosZemin,
-        borderWidth: 0,
-        // v6 — seçili hâl çizgiyle değil IŞIKLA: üst kenar parlaması ikiye katlanır
-        borderTopWidth: 1, borderTopColor: secili ? (C.parlamaGuc || "transparent") : (C.parlama || "transparent"),
+        // v6.1 — seçenek bir DOKUNMA yüzeyidir: sessiz ışık kenarı her zaman;
+        // seçilince kenar şampanyaya döner ve zemin bir basamak aydınlanır.
+        borderWidth: 1, borderColor: secili ? (C.goldLine || T2.bd) : (C.line || "transparent"),
         borderRadius: yariCap,
         paddingVertical: dikey, paddingHorizontal: yatay,
         flexDirection: kart ? "column" : "row",
@@ -748,7 +751,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
   );
   if (!onPress) return ic;
   return (
-    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} hitSlop={{ top: 9, bottom: 9, left: 4, right: 4 }}
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }} activeOpacity={0.6}
       accessibilityRole="button" accessibilityLabel={a11yLabel || etiket}
       accessibilityState={{ selected: !!secili }}>
       {ic}
@@ -810,8 +813,18 @@ export function Pill({ label, color = C.gold }) {
 const GERI_ISARET = /[\u2039\u203A]/g;
 function geriEtiketi(t) { return String((t && t.back) || "Geri").replace(GERI_ISARET, "").trim(); }
 
+// 🔴 v6.1 (Gökberk md.26) — "CÜZDAN / Cüzdan", "PROFİL / Profil": üst
+// bilgi başlığı AYNEN tekrar ediyordu. Üst bilginin işi başlığın BAĞLAMINI
+// söylemek (nerede olduğun); başlıkla aynıysa söyleyecek bir şeyi yoktur.
+// Tek kural, tek yerde: aynıysa üst bilgi çizilmez.
+export function ayniBaslik(a, b) {
+  const n = (x) => BUYUK(String(x || "")).replace(/\s+/g, " ").trim();
+  return !!a && !!b && n(a) === n(b);
+}
+
 export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, ustPay = 0 }) {
-  const eyebrow = ustBilgi || scene || null;
+  const eyebrow0 = ustBilgi || scene || null;
+  const eyebrow = eyebrow0 && !ayniBaslik(eyebrow0, typeof title === "string" ? title : "") ? eyebrow0 : null;
   if (kahraman) {
     // 🔴 3 EYLÜL — TASARIM 16/17 (giriş kapısı): tek bir üst satır
     // [geri dairesi] [L O U N G E L I N K] [sağ], altında düğüm + iki
@@ -1363,6 +1376,19 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
                                    extrapolate: "clamp" });
   const bel = kaydir.interpolate({ inputRange: [yol * 0.45, yol], outputRange: [0, 1],
                                    extrapolate: "clamp" });
+  // 🔴 26 EYLÜL (md.d) — "Seyahatlerim/İlanlarım ve Tanış/Bağlantılarım/İstekler
+  // çipleri birkaç dokunuşta ancak algılıyor." Kompakt çubuk bandın ALT 84pt'sini
+  // mutlak konumla kaplıyor ve görünmezken (opaklık 0) bile ağaçta duruyordu;
+  // çipler tam o bölgede. Artık çubuk yalnız görünür olduğunda dokunuş alıyor.
+  // 🆕 SINIF: "GÖRÜNMEZ BİR KATMAN, DOKUNULMAZ DEĞİLDİR — OPAKLIK GÖZÜ, POINTEREVENTS PARMAĞI YÖNETİR."
+  const [kompaktAktif, setKompaktAktif] = useState(false);
+  useEffect(() => {
+    const id = kaydir.addListener(({ value }) => {
+      const a = value > yol * 0.45;
+      setKompaktAktif(p => (p === a ? p : a));
+    });
+    return () => kaydir.removeListener(id);
+  }, [kaydir, yol]);
   return (
     <Animated.View pointerEvents="box-none"
       style={{ position: "absolute", left: 0, right: 0, top: 0, zIndex: 5,
@@ -1371,7 +1397,7 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
         onLayout={olc ? (e) => olc(Math.round(e.nativeEvent.layout.height)) : undefined}>
         {children}
       </Animated.View>
-      <Animated.View pointerEvents="box-none"
+      <Animated.View pointerEvents={kompaktAktif ? "box-none" : "none"}
         style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: BANT_KOMPAKT,
                  opacity: bel, backgroundColor: C.bg,
                  borderBottomWidth: 1, borderBottomColor: C.kartKenar,
@@ -1570,7 +1596,10 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
             bu, bandın yüksekliği içeriğe göre değişince ritmi de
             değiştiriyor — yani iki farklı ekranda iki farklı boşluk.
             Sabit ritim her ekranda aynı. */}
-        <View style={{ marginTop: ARA[34], paddingBottom: ARA[22] }}>
+        {/* v6.1 (Gökberk md.24) — üst bilgi yokken (Profil) marka satırı ile
+            başlık arasında 34pt boş bir kuşak kalıyordu. Boşluk artık
+            taşıdığı şeye göre: üst bilgi varsa 26, yoksa 14. */}
+        <View style={{ marginTop: (ustBilgi && !ayniBaslik(ustBilgi, baslik)) ? ARA[26] : ARA[14], paddingBottom: ARA[22] }}>
           {/* ══════════════════════════════════════════════════════════
               🔴 30 AĞUSTOS · GECE SİSTEMİ — BAŞLIK HİYERARŞİSİ TASARIMDAN.
 
@@ -1596,7 +1625,7 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
               🆕 SINIF: **"BİR TASARIMDA İKİNCİ BİR YAZI AİLESİ VARSA
               O AİLE BİR ROL TAŞIR. HER YERE UYGULARSAN AİLEYİ DEĞİL
               ROLÜ SİLERSİN — VE GERİYE YALNIZ SÜS KALIR."** */}
-          {ustBilgi ? (
+          {(ustBilgi && !ayniBaslik(ustBilgi, baslik)) ? (
             /* 🔴 3 Eylül — `textTransform: "uppercase"` JS'in yerel-bağımsız
                toUpperCase'ini kullanır: "Selin" → "SELIN" (noktasız I).
                Tasarım "SELİN B." yazıyor. Türkçe büyük harf `BUYUK` ile. */
@@ -2147,15 +2176,7 @@ export function Yaprak({ karakter, boy = 16, renk, sabit }) {
   // Alt yarım için metni yarı boy yukarı kaydırıyoruz — metni ikiye
   // bölmek yerine PENCEREYİ bölmek, iki yarımın harf biçimlerinin
   // birebir aynı kalmasını garanti eder.
-  const Yarim = ({ ust, ch }) => (
-    <View style={{ width: g, height: yari, overflow: "hidden" }}>
-      <Text style={[yazi, ust ? null : { marginTop: -yari }]}>{ch}</Text>
-    </View>
-  );
-
   if (sabit) {
-    // ":" gibi ayraçlar dönmez. Gerçek panoda da ayraç bir yaprak
-    // değil, iki yaprak arasındaki boşluğa basılmış sabit bir işarettir.
     return (
       <Text style={[yazi, { width: Math.round(boy * 0.45), color: C.mutedAA || C.mut }]}>
         {karakter}
@@ -2163,47 +2184,30 @@ export function Yaprak({ karakter, boy = 16, renk, sabit }) {
     );
   }
 
-  const kapakUst = {
-    opacity: v.interpolate({ inputRange: [0, 0.49, 0.5, 1], outputRange: [1, 1, 0, 0] }),
-    transform: [{ perspective: 340 },
-                { rotateX: v.interpolate({ inputRange: [0, 0.5, 1], outputRange: ["0deg", "-90deg", "-90deg"] }) }],
+  // 🔴 v6.1 (Gökberk md.16) — "sohbette sayaç bozuk görünüyor".
+  // Eski yaprak, iki yarım karakteri `overflow: hidden` + `rotateX` +
+  // `transformOrigin` ile katlıyordu. Android'de döndürülmüş katman
+  // kırpılmıyor: saniye hanesinde eski ve yeni rakam ÜST ÜSTE çiziliyordu
+  // (cihaz görüntüsü: "4" ile "6" iç içe). Saniyede bir dönen bir hane
+  // için katlanma zaten gürültüydü. Artık dönüşüm yok: eski rakam yukarı
+  // süzülüp solar, yenisi alttan gelir — iki katman da kutunun içinde.
+  const eskiStil = {
+    opacity: v.interpolate({ inputRange: [0, 0.6, 1], outputRange: [1, 0, 0] }),
+    transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, -h * 0.35] }) }],
   };
-  const kapakAlt = {
-    opacity: v.interpolate({ inputRange: [0, 0.49, 0.5, 1], outputRange: [0, 0, 1, 1] }),
-    transform: [{ perspective: 340 },
-                { rotateX: v.interpolate({ inputRange: [0, 0.5, 1], outputRange: ["90deg", "90deg", "0deg"] }) }],
+  const yeniStil = {
+    opacity: v.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 0, 1] }),
+    transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [h * 0.35, 0] }) }],
   };
 
   return (
-    /* 🔴 KÖŞE YOK VE BU BİLEREK. İlk yazımda 3pt yuvarlaklık vardı;
-       `kose_olcek.py` onu ölçek dışı saydı (haklı: 3 ne R.xs=8 ne
-       R.onay=5). Ölçeğe yeni bir basamak eklemek yerine köşeyi
-       KALDIRDIM — ve taklit böylesi daha doğru: gerçek bir pano
-       yaprağı damgalanmış düz bir metal plakadır, yuvarlatılmış bir
-       kart değil. Nöbetçi burada bir kusuru değil, bir gevşekliği
-       yakaladı. */
     <View style={{ width: g, height: h, overflow: "hidden",
                    backgroundColor: C.bgAlt, marginHorizontal: 1 }}>
-      {/* ① sabit üst — YENİ karakter */}
-      <Yarim ust ch={cift.yeni} />
-      {/* ② sabit alt — ESKİ karakter (④ inince örtülür) */}
-      <Yarim ch={cift.eski} />
-      {/* ③ düşen kapak — alt kenarı etrafında */}
-      <Animated.View style={[{ position: "absolute", top: 0, left: 0,
-                               transformOrigin: "50% 100%" }, kapakUst]}>
-        <Yarim ust ch={cift.eski} />
-      </Animated.View>
-      {/* ④ inen kapak — üst kenarı etrafında */}
-      <Animated.View style={[{ position: "absolute", top: yari, left: 0,
-                               transformOrigin: "50% 0%" }, kapakAlt]}>
-        <Yarim ch={cift.yeni} />
-      </Animated.View>
-      {/* Katlanma çizgisi: panonun iki yaprağı arasındaki gölge.
-          `kartDip` zaten paletteki "aşağı doğru gölge" jetonu —
-          buraya yeni bir renk sokmak, palete kaçak bir değer sokmaktır. */}
-      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0,
-                                          top: yari - 0.5, height: 1,
-                                          backgroundColor: C.kartDip }} />
+      {cift.eski !== cift.yeni ? (
+        <Animated.Text style={[yazi, { position: "absolute", top: 0, left: 0 }, eskiStil]}>{cift.eski}</Animated.Text>
+      ) : null}
+      <Animated.Text style={[yazi, { position: "absolute", top: 0, left: 0 },
+                             cift.eski !== cift.yeni ? yeniStil : null]}>{cift.yeni}</Animated.Text>
     </View>
   );
 }
@@ -2620,8 +2624,9 @@ export function Sayfa({ children, tur = "is", ufuk = 56, kaynak, yogunluk, style
 export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, danger, onConfirm, onCancel, busy }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
-      <View style={{ flex: 1, backgroundColor: C.perde, justifyContent: "center", padding: ARA[28] }}>
-        <View style={{ backgroundColor: C.paper, borderRadius: R.md, padding: ARA[22] }}>
+      <View style={{ flex: 1, justifyContent: "center", padding: ARA[28] }}>
+        <PerdeBulanik />
+        <View style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[22] }}>
           <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[2] }}>{title}</Text>
           {!!body && <Text style={{ fontSize: FS.sm, color: C.mut, lineHeight: 19, marginBottom: ARA[18] }}>{body}</Text>}
           {/* 🔴 v2.67 — ETİKETSİZ BUTON ÇİZİLMEZ.
@@ -2685,40 +2690,37 @@ export { Katman };
 // ============================================================================
 // 🔴 20 EYLÜL — Kemer'e geçildi. Eski kanat dosyaları SİLİNMEDİ
 // (assets/mark-gold.png · assets/mark-light.png) — geri dönüş açık.
-const MARKA_ALTIN = require("../assets/mark-kemer-ink.png");
-const MARKA_ACIK = require("../assets/mark-kemer.png");
 
-export function MarkaYukleyici({ boy = 46, koyuZemin = false }) {
-  const don = useRef(new Animated.Value(0)).current;
-
+// 🔴 v6.1 (Gökberk md.25) — "yükleme animasyonu çok küçük; site ve
+// splash'teki gibi yalnız ortadaki uçak kullanılsın mı?" Evet: dönen 46pt
+// kemer, bir yükleyiciden çok düşen bir rozet gibi okunuyordu. Artık
+// yalnız KANAT (splash'in merkezindeki işaret), 96pt, dönmüyor — ufka
+// doğru süzülüp nefes alıyor. Hareket yavaş: telaş değil, süreklilik.
+const MARKA_KANAT = require("../assets/mark-kanat.png");
+export function MarkaYukleyici({ boy = 96, koyuZemin = false }) {
+  const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    // Tek bir 0→1 döngüsü, sonsuz tekrar. `easing` YOK: sabit hızlı dönüş,
-    // bir bekleme turunun kendisi gibi. Değişken hız burada "takılıyor"
-    // gibi okunurdu — göstergenin işi durumu bildirmek, dikkat çekmek değil.
-    const dongu = Animated.loop(
-      Animated.timing(don, {
-        toValue: 1,
-        duration: 2600,          // yavaş: telaş değil, süreklilik
-        useNativeDriver: true,
-      })
-    );
+    const dongu = Animated.loop(Animated.sequence([
+      Animated.timing(v, { toValue: 1, duration: 1400, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      Animated.timing(v, { toValue: 0, duration: 1400, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+    ]));
     dongu.start();
     return () => dongu.stop();
-  }, [don]);
-
-  const aci = don.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
-  // Kanat düz dönerken "yatıyor" gibi görünmesin diye hafif bir eğim:
-  // dönüşün ekseni tam merkez değil, biraz aşağıda — süzülme hissi.
+  }, [v]);
+  const yuk = Math.round(boy * 504 / 1024);
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
+    <View style={{ alignItems: "center", justifyContent: "center" }}
+      accessibilityRole="progressbar" accessible>
       <Animated.Image
-        source={koyuZemin ? MARKA_ACIK : MARKA_ALTIN}
+        source={MARKA_KANAT}
         resizeMode="contain"
-        style={{ width: boy, height: boy, transform: [{ rotate: aci }] }}
-        // Erişilebilirlik: ekran okuyucu bunu bir görsel olarak değil,
-        // bir DURUM olarak duyurmalı.
-        accessibilityRole="progressbar"
-        accessible
+        tintColor={C.goldText}
+        style={{ width: boy, height: yuk,
+                 opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] }),
+                 transform: [
+                   { translateX: v.interpolate({ inputRange: [0, 1], outputRange: [-boy * 0.06, boy * 0.06] }) },
+                   { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [yuk * 0.06, -yuk * 0.06] }) },
+                 ] }}
       />
     </View>
   );
@@ -2834,9 +2836,12 @@ export function GirisSahnesi({ ustBilgi, baslik, sag, children, yaprakUst = 0 })
 // yok", "Eşleşme yok"). Bu bileşen bir `eylem` slotu taşıyor — çünkü
 // boş bir ekranın işi, orayı doldurmanın yolunu göstermektir.
 // ============================================================================
-export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false }) {
+export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala = false }) {
   return (
     <View style={{
+      // v6.1 (Gökberk md.a) — tam ekran boş durum ekranın ORTASINDA durur;
+      // üstte yapışık bir kutu "yarım yüklenmiş" gibi okunuyordu.
+      ...(ortala ? { marginVertical: "auto" } : null),
       alignItems: "center", paddingVertical: sikisik ? 20 : 28, paddingHorizontal: ARA[20],
       borderWidth: 1, borderColor: C.line, borderStyle: "dashed", borderRadius: R.sm,
       backgroundColor: "transparent",
@@ -2893,3 +2898,30 @@ export function DumanliCam({ children, stil }) {
   const web = Platform.OS === "web" ? { backdropFilter: "blur(32px)", WebkitBackdropFilter: "blur(32px)" } : null;
   return <View style={[zemin, web, stil]}>{children}</View>;
 }
+
+
+// ══════════════════════════════════════════════════════════════════════
+// v6.1 · BULANIK PERDE — popup arkası
+// Gökberk: "popup açılınca arka planı biraz blurlayabiliriz." Katılıyorum:
+// bulanıklık hem popup'ı öne çıkarır hem "arkadaki katman şu an pasif"
+// der. iOS'ta gerçek bulanıklık, web'de backdropFilter; Android'de yalnız
+// perde rengi (bulanıklık orada pahalı ve düzensiz — DumanliCam ile aynı karar).
+// Popup'ın arka plan View'ının İLK çocuğu olarak konur (mutlak, dokunmaya kapalı).
+// ══════════════════════════════════════════════════════════════════════
+export function PerdeBulanik() {
+  const B = Platform.OS === "ios" ? bulanikBilesen() : null;
+  const doldur = { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 };
+  const web = Platform.OS === "web" ? { backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" } : null;
+  return (
+    <View pointerEvents="none" style={doldur}>
+      {B ? <B intensity={28} tint="dark" style={doldur} /> : null}
+      <View style={[doldur, { backgroundColor: C.perdeRenk }, web]} />
+    </View>
+  );
+}
+// Popup yüzeyi: bir basamak aydınlık zemin + ışık kenarı + yükselti gölgesi.
+export const POPUP_YUZEY = () => ({
+  backgroundColor: C.popupZemin || C.card, borderWidth: 1, borderColor: C.kenarIsik || C.line,
+  shadowColor: C.golgeRenk, shadowOpacity: 0.55, shadowRadius: 30,
+  shadowOffset: { width: 0, height: 14 }, elevation: 16,
+});

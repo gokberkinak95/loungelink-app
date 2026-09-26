@@ -114,6 +114,7 @@ const STUBS = {
     requestPermissionsAsync: async () => (globalThis.__IZIN || { status: "granted", canAskAgain: true }),
     getExpoPushTokenAsync: async () => {
       if (globalThis.__JETON_HATA === "fcm") throw new Error("Default FirebaseApp is not initialized in this process");
+      if (globalThis.__JETON_HATA === "ag") throw new Error("network request failed");
       return { data: "ExponentPushToken[test]" };
     },
     setNotificationHandler: () => {},
@@ -571,10 +572,14 @@ const CASES = [
     // yazan ama hiçbir şey yapmayan bir düğme, olmayan düğmeden kötüdür.
     // 3 Eylül: cihazdaki izin de KAPALI (kart artık cihaza da bakıyor).
     { icermeli: t.pushOpenSettings, izin: { status: "denied", canAskAgain: false } }],
-  // 3 Eylül — cihazda izin AÇIK ama jeton yok (Firebase kurulu değil):
+  // 3 Eylül — cihazda izin AÇIK ama jeton yok (ağ düştü):
   // kart "Bildirimleri aç" DEMEMELİ; nedeni yazıp "Tekrar dene" vermeli.
   ["UlasilabilirlikKarti-izinAcik", S.UlasilabilirlikKarti, { t, goster: ["kritik", "uyari"] },
-    { icermeli: t.retry, icermemeli: t.pushEnable, izin: { status: "granted", canAskAgain: true }, jeton: "fcm" }],
+    { icermeli: t.retry, icermemeli: t.pushEnable, izin: { status: "granted", canAskAgain: true }, jeton: "ag" }],
+  // v6.1 (Gökberk md.14) — izin açık, bu derlemede FCM yok: kullanıcının
+  // yapacağı bir şey kalmadı, kart ana sayfada HİÇ çizilmemeli.
+  ["UlasilabilirlikKarti-fcmYok", S.UlasilabilirlikKarti, { t, goster: ["kritik", "uyari"] },
+    { bos: true, izin: { status: "granted", canAskAgain: true }, jeton: "fcm" }],
   ["UlasilabilirlikKarti-filtre", S.UlasilabilirlikKarti, { t, goster: ["bilgi"] },
     // Aynı veri, farklı şiddet süzgeci: bu kart HİÇ çizilmemeli.
     { bos: true }],

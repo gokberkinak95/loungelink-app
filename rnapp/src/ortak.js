@@ -233,7 +233,7 @@ export function greeting(t) {
 export function Load({ t, title, onBack }) {
   const gosterge = (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 120 }}>
-      <MarkaYukleyici boy={44} koyuZemin={koyuTemaMi()} />
+      <MarkaYukleyici />
     </View>
   );
   // ══════════════════════════════════════════════════════════════════
@@ -272,16 +272,6 @@ export function Load({ t, title, onBack }) {
       {gosterge}
     </Sayfa>
   );
-}
-
-// Koyu tema mı? Marka işaretinin altın hâli koyu zeminde de okunuyor ama
-// açık hâli daha net; tek ölçüt zeminin parlaklığı (tema modunu ikinci bir
-// yerde tanımlamıyoruz).
-function koyuTemaMi() {
-  const h = String((C && C.bg) || "#FFFFFF").replace("#", "");
-  if (h.length < 6) return false;
-  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
-  return (0.2126 * r + 0.7152 * g + 0.0722 * b) < 128;
 }
 
 // MVP Host Bul filtresi: Sektör CHIP seçenekleri (profession ilike eşleşir)
@@ -682,6 +672,30 @@ export function RefCodeEntry({ t }) {
 }
 export const ACCESS_SOURCES = ["Priority Pass", "LoungeKey", "DragonPass", "Kredi Kartı Avantajı",
   "Havayolu Statüsü", "Business Class", "Banka / Özel Bankacılık", "Kurumsal Seyahat"];
+
+// 🔴 v6.1 (Gökberk md.10) — profilde "airline_status" yazıyordu ve başka
+// seçim yapılınca da kalıyordu. `profiles.access_source` bazı hesaplarda
+// SUNUCU KODUYLA yazılmış (priority_pass, airline_status…); ekran ise
+// yalnız etiket tanıyordu: kod çipe eşlenmiyor, seçimi kaldırılamıyor ve
+// her kayıtta yeniden yazılıyordu. Okurken kodu etikete çeviriyoruz;
+// tanınmayan bir değer düşürülmez ama ham kod da ekrana basılmaz.
+const KAYNAK_KODLARI = {
+  priority_pass: "Priority Pass", lounge_key: "LoungeKey", loungekey: "LoungeKey",
+  dragon_pass: "DragonPass", dragonpass: "DragonPass",
+  credit_card: "Kredi Kartı Avantajı", bank_card: "Kredi Kartı Avantajı", card_membership: "Kredi Kartı Avantajı",
+  airline_status: "Havayolu Statüsü", alliance_status: "Havayolu Statüsü",
+  business_class: "Business Class", ticket_class: "Business Class",
+  private_bank: "Banka / Özel Bankacılık", private_banking: "Banka / Özel Bankacılık",
+  corporate: "Kurumsal Seyahat",
+  // eski etiketler (i18n.accessOpts) → güncel adlar
+  "Kredi Kartı": "Kredi Kartı Avantajı", "Credit Card": "Kredi Kartı Avantajı",
+  "Airline Status": "Havayolu Statüsü",
+};
+export function erisimKaynaklari(ham) {
+  const liste = String(ham || "").split(",").map(x => x.trim()).filter(Boolean)
+    .map(x => KAYNAK_KODLARI[x] || KAYNAK_KODLARI[x.toLowerCase()] || x);
+  return [...new Set(liste)];
+}
 
 // v2.65 — `firstRun` imzada vardı, gövdede hiç okunmuyordu ve App.js'in
 // ilk-çalıştırma dalı normal dalla aynı davranıyordu. Ölü bayrak kaldırıldı.
@@ -1148,6 +1162,12 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
 
   const izinAcik = !!(cihaz && cihaz.durum === "verildi");
   const jetonNeden = cihaz && cihaz.tokenNeden;
+  // 🔴 v6.1 (Gökberk md.14) — "bildirim izni alanı çalışmıyor". İzin
+  // VERİLMİŞ ama bu derlemede FCM yok: kullanıcının yapabileceği hiçbir
+  // şey kalmamışken kart "Yeniden dene" diye duruyordu ve düğme her
+  // dokunuşta aynı cümleyi geri getiriyordu. Kullanıcıya iş çıkarmayan
+  // bir altyapı eksiği ana sayfada kart olmaz.
+  if (izinAcik && jetonNeden === "fcm_yok") return null;
   // İzin açık + jeton yok → "kapalı" değil, "altyapı/kayıt" hâli: sessiz ton.
   const siddet = izinAcik ? "bilgi" : d.siddet;
   const renk = siddet === "kritik" ? C.red : siddet === "uyari" ? C.amber : C.gold;
@@ -1276,7 +1296,7 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
         style={{ backgroundColor: renk, borderRadius: R.sm, paddingVertical: SP[3],
                  minHeight: TAP.minHeight, justifyContent: "center",
                  alignItems: "center", marginTop: SP[3], opacity: bekle ? 0.6 : 1 }}>
-        <Text style={{ color: C.onAccent, fontSize: FS.sm, fontWeight: "700" }}>
+        <Text style={{ color: siddet === "kritik" ? C.onAccent : C.onGold, fontSize: FS.sm, fontWeight: "700" }}>
           {bekle ? (t.loading || "…")
                  : izinAcik ? (t.retry || "Tekrar dene")
                  : ayarGerekli ? (t.pushOpenSettings || "Telefon ayarlarını aç")

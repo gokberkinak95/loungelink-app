@@ -44,6 +44,10 @@ SAHNELER = {
     "18_ana_host1":    ("host1",   []),    # SEED6 dünyası: istekler · aksiyon · davet   # ekran: Home
     "19_ana_guest1":   ("guest1",  []),   # ekran: Home
     "02_kesfet":       ("kaan",    [("dokun", "Keşfet")]),   # Kaan: Deniz'e isteği yok → tasarımdaki "İstek gönder"   # ekran: Discovery
+    # v6.1 — md.33: istek formu, üç katlanır bilgi paneli kapalı
+    "50_istek_gonder": ("kaan",    [("dokun", "Keşfet"), ("dokun", "İstek gönder"), ("bekle", 900)]),   # ekran: Discovery · istek modalı
+    # v6.1 — md.e: kural ekranının altı ("Salon kurallarını oku" resmî kaynağa)
+    "51_kural_alt":    ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("kaydir",), ("bekle", 700)]),   # ekran: KuralKarari
     "14_seyahatler":   ("gokberk", [("dokun", "Planım")]),   # ekran: Trips
     "05_tanis":        ("gokberk", [("dokun", "Tanış")]),   # ekran: Meet
     "05b_baglanti_kur": ("kaan",   [("dokun", "Tanış"), ("dokun_a11y", "Salon"), ("dokun_a11y", "Deniz K.")]),   # ilanı olan kişi → "İlanına git" kısayolu   # ekran: Meet

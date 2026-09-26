@@ -31556,5 +31556,211 @@
     "ck_venue_ad_durum_eki_yok"
    ]
   ]
+ ],
+ [
+  "301_ertelenen_puan_ana_sayfadan_duser.sql",
+  [
+   [
+    "govde",
+    "pending_ratings|and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])"
+   ],
+   [
+    "govde",
+    "pending_ratings|select s.id, r.id,"
+   ],
+   [
+    "govde",
+    "pending_ratings|(r.host_id = v_uid),"
+   ],
+   [
+    "govde",
+    "pending_ratings|left join profiles p"
+   ],
+   [
+    "govde",
+    "pending_ratings|a.airport_code::text,"
+   ],
+   [
+    "govde",
+    "pending_ratings|coalesce(p.name, 'Yolcu'),"
+   ],
+   [
+    "govde",
+    "pending_ratings|a.flight_number, a.carrier"
+   ],
+   [
+    "govde",
+    "pending_ratings|where s.status = 'completed'"
+   ],
+   [
+    "govde",
+    "pending_ratings|declare v_uid uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "pending_ratings|a.avail_date, a.time_from, a.time_to,"
+   ],
+   [
+    "govde",
+    "pending_ratings|join requests r on r.id = s.request_id"
+   ],
+   [
+    "govde",
+    "pending_ratings|order by s.completed_at desc nulls last"
+   ],
+   [
+    "govde",
+    "pending_ratings|and not exists (select 1 from ratings rt"
+   ],
+   [
+    "govde",
+    "pending_ratings|and (r.host_id = v_uid or r.guest_id = v_uid)"
+   ],
+   [
+    "govde",
+    "pending_ratings|coalesce(a.lounge_name, a.airport_code::text),"
+   ],
+   [
+    "govde",
+    "pending_ratings|left join availabilities a on a.id = r.avail_id"
+   ],
+   [
+    "govde",
+    "pending_ratings|where rt.session_id = s.id and rt.rater_id = v_uid)"
+   ],
+   [
+    "govde",
+    "pending_ratings|case when r.host_id = v_uid then r.guest_id else r.host_id end,"
+   ],
+   [
+    "govde",
+    "pending_ratings|on p.user_id = case when r.host_id = v_uid then r.guest_id else r.host_id end"
+   ]
+  ]
+ ],
+ [
+  "302_kesfet_engelinin_gercek_sebebi.sql",
+  [
+   [
+    "govde",
+    "discovery_rule_badges|v_key := 'carrier_bad';   v_boost := -1000;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|v_key := 'charter_block'; v_boost := -1000;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|elsif v_block and coalesce((d ->> 'charter') = 'true', false) then"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|if v_block and coalesce((d ->> 'carrier_ok') = 'false', false) then"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|elsif v_block then                               v_key := 'guest_none';  v_boost := -1000;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|and coalesce(r.flight_number,"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|)) = upper(replace(r.flight_number,"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|then              v_key :="
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|then       v_key :="
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|v_block := true;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|v_block := false;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|else v_key := null;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|sort_boost := v_boost;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|continue when not found;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|info     := b ->> 'info';"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|label    := b ->> 'label';"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|blocks_request := v_block;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|same_flight_match := v_same;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|detail   := d ->> 'headline';"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|order by v.created_at desc limit 1;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|v_key := 'guest_none_soft'; v_boost := -200;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|if (d ->> 'guest_policy') = 'not_allowed' then"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|severity := coalesce(d ->> 'severity','info');"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|or coalesce((d ->> 'charter') = 'true', false);"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|elsif (d ->> 'guest_policy') = 'not_allowed' then"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|select v.flight_number into v_flight from visits v"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|or coalesce((d ->> 'carrier_ok') = 'false', false)"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|r record; d jsonb; b jsonb; v_flight text; v_key text;"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|can_ask_host := public.kural_sorusu_uygun_mu(avail_id);"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|select * into r from availabilities where id = avail_id;"
+   ]
+  ]
  ]
 ]

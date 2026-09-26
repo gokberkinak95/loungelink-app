@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-25 uretildi · 342 dosya · son: 300)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-26 uretildi · 344 dosya · son: 302)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,7 +21,7 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 335 dosyanın 286 tanesi için ayırt edici imza
+-- ÖLÇÜM: 337 dosyanın 288 tanesi için ayırt edici imza
 -- bulundu (%85). Kalan 49 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
@@ -555,6 +555,8 @@ select z.dosya, 'tespit'
   (333, '298_supurge_kisiti_ve_asim_dedektoru.sql', 'tablo', 'supurge_damgasi'),
   (334, '299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql', 'kolon', 'supurge_damgasi.kaynak'),
   (335, '300_pasif_salon_adlari.sql', 'kisit', 'ck_venue_ad_durum_eki_yok'),
+  (336, '301_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
+  (337, '302_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -906,6 +908,8 @@ with imza(sira, dosya, tip, ad) as (
   (333, '298_supurge_kisiti_ve_asim_dedektoru.sql', 'tablo', 'supurge_damgasi'),
   (334, '299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql', 'kolon', 'supurge_damgasi.kaynak'),
   (335, '300_pasif_salon_adlari.sql', 'kisit', 'ck_venue_ad_durum_eki_yok'),
+  (336, '301_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
+  (337, '302_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

@@ -32,12 +32,12 @@ import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR} from "./theme";
-import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam } from "./ui";
+import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -59,8 +59,9 @@ export function Picker({ label, value, options, onPick, t }) {
         <Text style={{ color: value ? C.ink : C.mut, fontSize: FS.lg }}>{value ? value.label : t.select}</Text>
       </TouchableOpacity>
       <Modal visible={open} transparent animationType="slide">
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end" }}>
-          <View style={{ backgroundColor: C.paper, borderTopLeftRadius: 18, borderTopRightRadius: 18, maxHeight: "70%", padding: SP[4] }}>
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <PerdeBulanik />
+          <View style={{ ...POPUP_YUZEY(), borderTopLeftRadius: 18, borderTopRightRadius: 18, maxHeight: "70%", padding: SP[4] }}>
             <AramaKutusu value={q} onChange={setQ} sonuc={gorunen.length} t={t}
               placeholder={t.searchPlaceholder || "Ara…"} />
             <FlatList data={gorunen} keyExtractor={i => i.key}
@@ -229,7 +230,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   // ══════════════════════════════════════════════════════════════════
   if (!inc.length && !sent.length) {
     if (!tamEkran) return null;
-    return <BosDurum ikon="bekliyor" metin={t.flowRequestsEmpty} />;
+    return <BosDurum ikon="bekliyor" metin={t.flowRequestsEmpty} ortala />;
   }
   const bekleyen = inc.filter(r => r.status === "pending").length;
   // 🔴 v2.95 (Gökberk madde 2) — "'X gönderdiğin' yerine 'Gönderdiğin X
@@ -531,6 +532,17 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   // için yukarı kaydırdığında onu aşağı ÇEKMEMEK için tutuluyor.
   const kaydirGovde = useRef(null);
   const dipteMi = useRef(true);
+  // 🔴 v6.1 (Gökberk md.6) — klavye açılınca mesaj alanı bir şeride
+  // iniyordu: başlık + şerit + çipler + yazma kutusu + "Oturumu Başlat"
+  // klavyenin üstünde yan yana kalıyordu. Yazarken yalnız başlık, mesajlar
+  // ve yazma kutusu kalır; geri kalanı klavye kapanınca döner.
+  const [klavye, setKlavye] = useState(false);
+  useEffect(() => {
+    if (!Keyboard || !Keyboard.addListener) return undefined;
+    const a = Keyboard.addListener("keyboardDidShow", () => setKlavye(true));
+    const b = Keyboard.addListener("keyboardDidHide", () => setKlavye(false));
+    return () => { a && a.remove && a.remove(); b && b.remove && b.remove(); };
+  }, []);
   const dibeKaydir = useCallback(() => {
     const r = kaydirGovde.current;
     if (!r || !dipteMi.current) return;
@@ -1013,16 +1025,15 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   const itirazPaneli = (
     <>
       {!itirazAcik && !itirazMsg && (
-        <TouchableOpacity hitSlop={TAP.slop} onPress={() => setItirazAcik(true)}
-          accessibilityRole="button" accessibilityLabel={t.disputeBtn}
-          style={{ minHeight: 44, justifyContent: "center", alignItems: "center", marginTop: SP[1] }}>
-          <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.disputeBtn}</Text>
-        </TouchableOpacity>
+        <Btn v="ghost" sm full label={t.disputeBtn} onPress={() => setItirazAcik(true)}
+          a11yLabel={t.disputeBtn} style={{ marginTop: SP[2] }} />
       )}
+      {/* v6.1 (md.21) — panel katlanır ve kapatılır; açıkken ekranın %42'sini
+          geçmez, içerik kayar. Arkadaki sohbet görünür kalır. */}
       {itirazAcik && (
-        <View style={{ backgroundColor: C.amberBg, borderRadius: R.sm, padding: SP[3], marginTop: SP[2], marginBottom: SP[2] }}>
-          <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "700" }}>{t.disputeTitle}</Text>
-          <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 18, marginTop: ARA[6] }}>{t.disputeBody}</Text>
+        <Katlanir acikBasla buyukBaslik baslik={t.disputeTitle} onKapat={() => setItirazAcik(false)}
+          enFazla={0.42} stil={{ marginTop: SP[2], marginBottom: SP[2] }}>
+          <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 18 }}>{t.disputeBody}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
             {(t.disputeReasons || []).map(([k, lb]) => (
               <Secim key={k} ton="gold" secili={itirazSebep === k} etiket={lb} a11yRol="radio"
@@ -1035,13 +1046,8 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             style={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: C.line, borderRadius: R.xs,
                      padding: SP[3], color: C.body, fontSize: FS.sm, minHeight: 64, marginTop: SP[1] }} />
           <Btn v="gold" sm label={t.disputeSend} disabled={itirazBusy || !itirazSebep} busy={itirazBusy}
-            onPress={itirazGonder} a11yLabel={t.disputeSend} style={{ marginTop: SP[2] }} />
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setItirazAcik(false)}
-            accessibilityRole="button" accessibilityLabel={t.close}
-            style={{ minHeight: 44, justifyContent: "center", alignItems: "center", marginTop: SP[1] }}>
-            <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.close}</Text>
-          </TouchableOpacity>
-        </View>
+            onPress={itirazGonder} a11yLabel={t.disputeSend} style={{ marginTop: SP[3] }} />
+        </Katlanir>
       )}
       {!!itirazMsg && (
         <View style={{ backgroundColor: C.greenBg, borderRadius: R.xs, padding: ARA[10], marginTop: ARA[6], marginBottom: SP[2] }}>
@@ -1112,7 +1118,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         // satırı bir başlık gibi durup hiçbir şey anlatmıyordu.
         meta={`${ctx} · ${t.momentDoneMeta ? t.momentDoneMeta.split("·").pop().trim() : ""}`.replace(/ · $/, "")}
         primary={{ label: t.rateNow, onPress: () => { setMomentSeen(true); setPanelOpenState(true); } }}
-        secondary={{ label: t.momentClose, onPress: () => setMomentSeen(true) }}
+        // v6.1 (md.3) — "Sohbete dön" SOHBETE döner: "Şimdi puanla" ile gelindiyse
+        // puanlama paneli açık başlıyordu ve bu düğme onu kapatmıyordu.
+        secondary={{ label: t.momentClose, onPress: () => { setMomentSeen(true); setPanelOpen(false); } }}
       />
     );
   }
@@ -1156,7 +1164,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           içinde satır (üstten 20, 38 yüksek) ve sabit şerit (üstten 74, 44
           yüksek). Bizde satır `card` zeminde 59pt'te bitiyor, şerit gövdeye
           düşüyordu. Şimdi blok tek parça, ölçüler tasarımın. */}
-      <View style={{ backgroundColor: C.surface, paddingTop: TOPPAD, minHeight: TOPPAD + 132 }}>
+      {/* v6.1 (md.6) — sabit `minHeight` kalktı: şerit yokken (bağlantı
+          sohbeti) başlığın altında 60pt'lik boş bir bant kalıyordu. */}
+      <View style={{ backgroundColor: C.surface, paddingTop: TOPPAD, paddingBottom: ARA[4] }}>
       <View style={{ flexDirection: "row", alignItems: "center", height: 38,
                      marginTop: ARA[20], paddingHorizontal: ARA[18] }}>
         <Btn v="ust" daire a11yLabel={t.back || "Geri"} onPress={onBack}
@@ -1211,6 +1221,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         // tasarım: sağ parça buluşma noktası ("Kapı A12 önü"); paylaşılmadıysa salon
         const yer = bulusma || av.lounge_name || av.airport_code;
         if (!gs && !yer) return null;
+        if (klavye) return null;
         return (
           /* 🔴 31 AĞUSTOS · 8. TUR — ŞERİT TASARIMDA BİR KUTU, BENDE BİR BANT.
              Gökberk: "sohbet sayfasındaki üst alanlar da tasarımdan farklı."
@@ -1426,30 +1437,24 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             label={rated ? t.sessSummaryBtn : t.rateNowBtn} solAd={rated ? undefined : "degerlendirme"}
             a11yLabel={rated ? t.sessSummaryBtn : t.rateNowBtn} />
           {!isHost && kapiOlur && kapiOlur.olur && !kapiAcik && (
-            <TouchableOpacity hitSlop={TAP.slop} onPress={() => setKapiAcik(true)}
-              accessibilityRole="button" accessibilityLabel={t.doorBtn}
-              style={{ minHeight: 44, justifyContent: "center", alignItems: "center", marginTop: SP[1] }}>
-              <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.doorBtn}</Text>
-            </TouchableOpacity>
+            <Btn v="ghost" sm full label={t.doorBtn} onPress={() => setKapiAcik(true)}
+              a11yLabel={t.doorBtn} style={{ marginTop: SP[2] }} />
           )}
+          {/* v6.1 (md.20) — katlanır/kapatılır, en fazla ekranın %42'si. */}
           {kapiAcik && (
-            <View style={{ backgroundColor: C.amberBg, borderRadius: R.sm, padding: SP[3], marginTop: SP[2], marginBottom: SP[2] }}>
-              <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "700" }}>{t.doorTitle}</Text>
-              <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 18, marginTop: ARA[6] }}>
+            <Katlanir acikBasla buyukBaslik baslik={t.doorTitle} onKapat={() => setKapiAcik(false)}
+              enFazla={0.42} stil={{ marginTop: SP[2], marginBottom: SP[2] }}>
+              <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 18 }}>
                 {(kapiOlur && kapiOlur.not) || t.doorBody}
               </Text>
               {[["kural_tutmadi", t.doorReasonRule], ["kapasite_dolu", t.doorReasonFull],
                 ["host_gelmedi", t.doorReasonHost], ["belge_istendi", t.doorReasonDoc],
                 ["diger", t.doorReasonOther]].map(([k, lb]) => (
-                <Btn key={k} v="ghost" sm label={lb} disabled={kapiBusy}
+                <Btn key={k} v="ghost" sm full label={lb} disabled={kapiBusy}
                   onPress={() => kapidaBildir(k)}
-                  style={{ marginTop: SP[2], ...ELEV.card }} />
+                  style={{ marginTop: SP[2] }} />
               ))}
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => setKapiAcik(false)}
-                style={{ minHeight: 44, justifyContent: "center", alignItems: "center", marginTop: SP[1] }}>
-                <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.close}</Text>
-              </TouchableOpacity>
-            </View>
+            </Katlanir>
           )}
           {!!kapiMsg && (
             <View style={{ backgroundColor: C.greenBg, borderRadius: R.xs, padding: ARA[10], marginTop: ARA[6], marginBottom: SP[2] }}>
@@ -1486,6 +1491,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           ══════════════════════════════════════════════════════════════ */}
       {(() => {
         // 4 Eylül — tasarım 06: İKİ çip (ekran_uret: lsGuest3 + lsGuest5).
+        // v6.1 (md.19) — buluşma bitti/iptal: "güvenlikten geçtim" kısayolları anlamsız.
+        if (sess && (sess.status === "completed" || sess.status === "cancelled")) return null;
+        if (klavye) return null;
         const anahtarlar = isHost ? ["lsHost2", "lsHost3"]
                                   : ["lsGuest3", "lsGuest5"];
         const cipler = anahtarlar.map(k => t[k]).filter(Boolean);
@@ -1574,7 +1582,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           onKapat={() => setBpPanel(false)}
           onDogrulandi={async () => { setBpPanel(false); setBpBitti(true); await doStart(); }} />
       )}
-      {sess !== undefined && (!sess || sess.status === "pending" || sess.status === "active") && (
+      {!klavye && sess !== undefined && (!sess || sess.status === "pending" || sess.status === "active") && (
         <View style={{ paddingHorizontal: ARA[22], paddingBottom: ARA[22], backgroundColor: C.card }}>
           {(!sess || sess.status === "pending") ? (
             <>
@@ -1721,7 +1729,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             {/* 🔴 v1.74: MVP'deki kırmızı "Acil Durum SOS" butonu. SOS modalı
                 kodda VARDI ama hiçbir yerden açılmıyordu — oturum sırasındaki
                 tek acil güvenlik aracı erişilemez durumdaydı. */}
-            <Btn v="danger" sm label={t.sosBtn} sol={<Ikon ad="acil" boy={15} renk={C.onAccent} />} onPress={() => setSosOpen(true)} style={{ marginBottom: SP[2] }} />
+            {/* v6.1 (md.18) — SOS panelin TEPESİNDEN alındı: tamamlama akışının
+                birincil eylemiyle yarışıyordu. Güvenlik aracı KALDIRILMADI —
+                aşağıda "Sorun bildir"in yanında, sakin ama her an erişilebilir. */}
 
             {/* v1.74 (Gokberk'in akış tarifi): karşı taraf tamamla'ya bastıysa
                 BEN de görmeliyim — buton hâlâ tıklanabilir kalır, üstünde
@@ -1800,6 +1810,8 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 <IkonMetin ad="uyari" renk={C.redInk} stilMetin={{ textAlign: "center", textAlignVertical: "center", color: C.redInk, fontWeight: "700", fontSize: FS.sm }} metin={t.sessReportShort} />
               </TouchableOpacity>
             </View>
+            <Btn v="redSoft" sm full label={t.sosBtn} solAd="acil" onPress={() => setSosOpen(true)}
+              a11yLabel={t.sosBtn} style={{ marginTop: SP[2] }} />
           </View>
         ) : (
           <View>
@@ -1890,7 +1902,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             {/* v1.81 (Gokberk 6. madde): tamamlandı ekranından hiçbir yere
                 gidilemiyordu. Ana sayfaya dönüş eklendi (paneli kapatır,
                 sohbetten çıkar). */}
-            <Btn v="teal" sm label={t.goHomeBtn} onPress={() => { setPanelOpen(false); onBack && onBack(); }} style={{ marginTop: SP[3] }} />
+            <Btn v="ghost" sm full label={t.goHomeBtn} onPress={() => { setPanelOpen(false); onBack && onBack(); }} style={{ marginTop: SP[3] }} />
 
             {/* MVP: 🤝 Stay in touch? — oturumdaki diğer kişiyle bağlantı kur */}
             <DumanliCam stil={{ borderRadius: R.lg, padding: SP[4], marginTop: SP[3], borderTopWidth: 1, borderTopColor: C.parlama, shadowColor: C.golgeRenk, shadowOpacity: 0.45, shadowRadius: 22, shadowOffset: { width: 0, height: 10 }, elevation: 8 }}>
@@ -1912,10 +1924,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             </DumanliCam>
             {/* MVP: bağlantı kutusunun altında ikincil çıkış — puanlama zorunlu değil,
                 24 saat içinde puanlanabilir (sunucu kuralı: itiraz penceresi). */}
+            {/* v6.1 (md.1) — soluk metin değil, görünür ikincil düğme */}
             {!rated && onBack && (
-              <TouchableOpacity hitSlop={TAP.slop} onPress={onBack} style={{ paddingVertical: SP[3], alignItems: "center" }}>
-                <Text style={{ color: C.mut, fontSize: FS.sm, fontWeight: "600" }}>{t.rateLater}</Text>
-              </TouchableOpacity>
+              <Btn v="muted" sm full label={t.rateLater} onPress={onBack} style={{ marginTop: SP[3] }} />
             )}
             {/* #6: oturum sonrası davet CTA — kullanıcı en mutlu anında viral döngü */}
             {rated && onReferral && (
@@ -1937,8 +1948,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
       )}
       {/* İptal onayı (§23 v7: Cancel → kredi iadeli iptal) */}
       <Modal visible={confirmCancel} transparent animationType="fade" onRequestClose={() => setConfirmCancel(false)}>
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.55)", justifyContent: "center", padding: ARA[28] }}>
-          <View style={{ backgroundColor: C.card, borderRadius: R.md, padding: ARA[20] }}>
+        <View style={{ flex: 1, justifyContent: "center", padding: ARA[28] }}>
+          <PerdeBulanik />
+          <View style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[20] }}>
             <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink }}>
               {(sess && sess.status === "active" && sess.cancel_grace_until && new Date(sess.cancel_grace_until) <= new Date())
                 ? t.cancelLateTitle : t.cancelReq}
@@ -1960,8 +1972,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
 
       {/* SOS (§15: session sırasında güvenlik aracı) */}
       <Modal visible={sosOpen} transparent animationType="fade" onRequestClose={() => setSosOpen(false)}>
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", padding: ARA[30] }}>
-          <View style={{ backgroundColor: C.card, borderRadius: R.md, padding: ARA[22] }}>
+        <View style={{ flex: 1, justifyContent: "center", padding: ARA[30] }}>
+          <PerdeBulanik />
+          <View style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[22] }}>
             <Ikon ad="acil" boy={22} renk={C.mutedAA} />
             <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, textAlign: "center", marginTop: SP[2] }}>{t.safetySOS}</Text>
             <Text style={{ fontSize: FS.sm, color: C.mut, textAlign: "center", marginTop: SP[2], lineHeight: 20 }}>{t.safetySOSBody}</Text>
@@ -3495,10 +3508,8 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
     return (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowQuestions} onBack={onBack} />
-        <View style={S.empty}>
-          <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", lineHeight: 19 }}>
-            {t.questionsEmpty}
-          </Text>
+        <View style={{ flex: 1, justifyContent: "center", padding: ARA[20] }}>
+          <BosDurum ikon="bilgi" metin={t.questionsEmpty} />
         </View>
       </Sayfa>
     );
@@ -3628,6 +3639,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
     </Sayfa>
   );
 }
+const HIKAYE_KAPANAN = new Set();   // md.12 — bu oturumda kapatılan davetler
 export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
   const [davet, setDavet] = useState(null);
   const [metin, setMetin] = useState("");
@@ -3642,7 +3654,9 @@ export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
     (async () => {
       const { data, error } = await supabase.rpc("bekleyen_hikaye_daveti");
       if (error) { logError("hikaye_daveti", error); return; }
-      if (!iptal && Array.isArray(data) && data.length) setDavet(data[0]);
+      // 26 Eyl (md.12) — bu oturumda kapatılan davet yeniden kurulumda geri gelmez
+      const ilk = Array.isArray(data) ? data.find(d => !HIKAYE_KAPANAN.has(d.session_id)) : null;
+      if (!iptal && ilk) setDavet(ilk);
     })();
     return () => { iptal = true; };
   }, []);
@@ -3674,6 +3688,7 @@ export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
     // ARASINDAKİ FARK TEK BİR HATA SATIRIDIR."
     if (error) { logError("host_hikaye_yaz", error); setGonderHatasi(mapErr(t, error.message)); return; }
     setGonderHatasi("");
+    HIKAYE_KAPANAN.add(davet.session_id);
     setBitti(true);
     if (onDone) onDone();
   }
@@ -3687,6 +3702,7 @@ export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
     // bir panelin içine hapsetmek, ertelemenin amacını çürütür. Hata
     // günlüğe düşer; davet bir dahaki açılışta geri gelir.
     if (error) logError("hikaye_davetini_ertele", error);
+    HIKAYE_KAPANAN.add(davet.session_id);   // md.12 — yeniden kurulumda geri gelmesin
     setBitti(true);
     if (onDone) onDone();
   }
@@ -3763,51 +3779,22 @@ export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
       </TouchableOpacity>
 
       <View style={{ flexDirection: "row", gap: SP[2], marginTop: ARA[10] }}>
-        <TouchableOpacity onPress={() => gonder(riza)} disabled={!yeter || busy}
-          accessibilityRole="button" accessibilityLabel={t.storySend}
-          style={{ flex: 2, height: TAP.minHeight, backgroundColor: yeter ? C.goldBtn : C.line,
-                   borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
-          {/* ══════════════════════════════════════════════════════════
-              🔴 13 EYLÜL (Gökberk md.9) — "buradaki butonların textleri
-              üst yapışık gibi."
-              Ölçtüm: metinde `flex: 1` vardı ve düğmenin kabı SÜTUN
-              (RN'de varsayılan `flexDirection: "column"`). Sütun kapta
-              `flex: 1` metni DİKEY olarak gerdiriyor; gerilmiş kutunun
-              içinde yazı üste yapışıyor ve kabın `justifyContent:
-              "center"`i hiçbir şey yapmıyor — çünkü ortalayacak boşluk
-              kalmıyor.
-              Bu sınıfı 24 Ağustos'ta bir kez teşhis etmiştim
-              ("ortalayan kap, içindeki kendi yüksekliğini dolduruyorsa
-              ortalama görünmez") — aynı kusur başka bir ekranda geri
-              gelmiş. Bu yüzden yalnız düzeltmedim, nöbetçisini de
-              yazdım (`check.js` · dikey ortalama denetimi).
-              🆕 SINIF: "BİR KUSURU DÜZELTİP NÖBETÇİSİNİ YAZMAZSAN,
-              TEŞHİSİ DEĞİL YALNIZ O ÖRNEĞİ ÇÖZMÜŞ OLURSUN." */}
-          <Text numberOfLines={1} style={{ minWidth: 0, textAlign: "center", color: C.onAccent, fontWeight: "700", fontSize: FS.sm }}>
-            {busy ? "…" : t.storySend}
-          </Text>
-        </TouchableOpacity>
-        {/* 🔴 18 EYLÜL (md.14) — "ŞİMDİ DEĞİL" ARTIK BİR YERE YAZILIYOR.
-            Eski hâl yalnız `setBitti(true)` idi: panel kayboluyor, sunucu
-            hiçbir şey bilmiyor, `bekleyen_hikaye_daveti` bir sonraki
-            açılışta aynı daveti geri döndürüyordu. Kodun kendi yorumu
-            "kalıcıdır, bir daha sorulmaz" diyordu — ama o yol sunucuda
-            hiç açılmamıştı (SQL 296 açtı). Erteleme 30 gün tutuyor;
-            silmiyor, çünkü host üç ay sonra yazmak isteyebilir. */}
-        <TouchableOpacity onPress={ertele} disabled={busy}
-          accessibilityRole="button" accessibilityLabel={t.storyLater}
-          style={{ flex: 1, height: TAP.minHeight, backgroundColor: C.card, borderWidth: 1,
-                   borderColor: C.line, borderRadius: R.md, alignItems: "center", justifyContent: "center" }}>
-          <Text numberOfLines={1} style={{ minWidth: 0, textAlign: "center", color: C.mutedAA, fontSize: FS.sm }}>
-            {t.storyLater}
-          </Text>
-        </TouchableOpacity>
+        {/* v6.1 — iki elle yazılmış düğme `Btn`e döndü (dugme_check). Gönder
+            koşul sağlanmadan KAPALI görünür (Btn disabled), "Şimdi değil"
+            ghost — ikisi de v6 ışık kenarını ve dokunma tabanını taşır.
+            (Dikey ortalama dersi — md.9 — `Btn`in kendi gövdesinde.) */}
+        <Btn v="gold" sm label={busy ? "…" : t.storySend} a11yLabel={t.storySend}
+          onPress={() => gonder(riza)} disabled={!yeter || busy} style={{ flex: 2 }} />
+        {/* 🔴 18 EYLÜL (md.14) — "ŞİMDİ DEĞİL" bir yere yazılıyor (SQL 296):
+            erteleme 30 gün; silmiyor, host üç ay sonra yazmak isteyebilir. */}
+        <Btn v="ghost" sm label={t.storyLater} a11yLabel={t.storyLater}
+          onPress={ertele} disabled={busy} style={{ flex: 1 }} />
       </View>
       {/* 19 Eylül — gönderim düştüyse sebebi burada; metin kutusu dolu kalıyor. */}
       {!!gonderHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{gonderHatasi}</Text></View>}
       {/* Düğme kapalıysa TAM OLARAK neyin eksik olduğunu yaz (md.14). */}
       {!yeter && (
-        <Text style={{ color: C.mutedAA, fontSize: FS.xs, marginTop: SP[2], lineHeight: 15 }}>
+        <Text style={{ color: C.goldText, fontSize: FS.xs, marginTop: SP[2], lineHeight: 15 }}>
           {metin.trim().length < 20 ? t.storyWhyDisabledText : t.storyWhyDisabledName}
         </Text>
       )}
@@ -3865,15 +3852,21 @@ export function RateReminder({ t, lang, onRate }) {   // v2.65: ölü `session` 
     // ekranda kalıyor, bir daha basıyor, yine kalıyor. Ana sayfanın en
     // üstünde inatçı bir kart. Bir kusuru düzeltirken mutlu yolu
     // düzeltmek, kusurun yarısını düzeltmektir.
+    // 26 Eyl (md.2) — kart dokunuşla HEMEN düşer (iyimser); RPC düşerse geri gelir.
+    // Kök sebep SQL 301'di: pending_ratings ertelenenleri süzmüyordu.
+    const onceki = items;
+    setItems(v => v.filter(x => x.session_id !== sid));
     const { error } = await supabase.rpc("defer_rating", { p_session: sid });
-    if (error) { logError("defer_rating", error); setErteleHatasi(mapErr(t, error.message)); return; }
+    if (error) { logError("defer_rating", error); setItems(onceki); setErteleHatasi(mapErr(t, error.message)); return; }
     setErteleHatasi("");
     load();
   }
   if (!items.length) return null;
   const it = items[0];
+  const baslik = [it.lounge || it.airport_code, it.avail_date ? fmtLongDate(String(it.avail_date).slice(0, 10), lang) : null].filter(Boolean).join(" · ") || t.pendingRate;
+  // v6.1 (md.2) — kart katlanır: kapalıyken tek satır (salon · tarih), açıkken ayrıntı + eylemler.
   return (
-    <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
+    <Katlanir acikBasla baslik={t.pendingRate} ozet={baslik} stil={{ marginBottom: SP[3] }}>
       {/* 19 Eylül — "Sonra" düşerse kullanıcı sebebi görüyor. */}
       {!!erteleHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{erteleHatasi}</Text></View>}
       {/* 🔴 v2.66 (Gökberk madde 12, ikinci tur) — BAŞLIK ARTIK OLAYI SÖYLER.
@@ -3884,11 +3877,7 @@ export function RateReminder({ t, lang, onRate }) {   // v2.65: ölü `session` 
             başlık   → salon · tarih   (hangi ilan)
             alt satır → "X ile · TK1234"  (kiminle, hangi uçuş)
           Veriler pending_ratings'te zaten vardı; okumamak tercih değil hataydı. */}
-      <Text style={{ color: C.mut, fontSize: FS.xs, letterSpacing: 1, fontWeight: "600" }}>{t.pendingRate}</Text>
-      <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base, marginTop: SP[1] }}>
-        {[it.lounge || it.airport_code, it.avail_date ? fmtLongDate(String(it.avail_date).slice(0, 10), lang) : null].filter(Boolean).join(" · ") || t.pendingRate}
-      </Text>
-      <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[2] }}>
+      <Text style={{ color: C.mut, fontSize: FS.sm }}>
         {[it.other_name ? String(t.rateWithWho).replace("{name}", it.other_name) : null,
           it.flight_number || it.carrier || null,
           (it.time_from && it.time_to)
@@ -3908,7 +3897,7 @@ export function RateReminder({ t, lang, onRate }) {   // v2.65: ölü `session` 
         <Btn v="muted" sm label={t.rateLaterShort} onPress={() => defer(it.session_id)}
           style={{ flex: 1 }} />
       </View>
-    </View>
+    </Katlanir>
   );
 }
 
@@ -4134,7 +4123,7 @@ export function Wallet({ t, session, onBack }) {
 
   return (
     <Sayfa>
-    <Hdr t={t} scene="CÜZDAN" title={t.walletTitle} sub={t.walletSub} onBack={onBack} />
+    <Hdr t={t} title={t.walletTitle} sub={t.walletSub} onBack={onBack} />
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
       {/* 🔴 12 Eylül · gece — ETİKET GİTTİ, KART GELDİ.
           Eskisi: ortalanmış üç satır, `goldBg` dolgu, 12pt köşe.
@@ -4157,11 +4146,17 @@ export function Wallet({ t, session, onBack }) {
           : String(t.walletCreditsMeans).replace("{n}", String(bal))} />
       {loadErr && <LoadFail t={t} onRetry={load} style={{ marginBottom: ARA[18] }} />}
 
-      <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.goldLine, borderRadius: R.sm, padding: ARA[14], marginBottom: ARA[18] }}>
-        <Text style={{ fontSize: FS.sm, color: C.goldInk, lineHeight: 19 }}>{t.walletBetaNote}</Text>
+      {/* 🔴 v6.1 (Gökberk md.27) — kredi talebi her girişte ekranın yarısını
+          kaplıyordu; bakiyesi yeten kullanıcı için okunacak bir şey yok.
+          Katlanır: başlık + tek satır özet hep görünür, açıklama ve düğme
+          bir dokunuş uzakta. Bakiye 3'ün altındaysa açık başlar. */}
+      <Katlanir buyukBaslik baslik={t.walletRequestTitle} ozet={t.walletRequestOzet}
+        acikBasla={bal != null && bal < 3} stil={{ marginBottom: ARA[18] }}
+        ikon={<Ikon ad="kredi" boy={16} renk={C.goldText} />}>
+        <Text style={{ fontSize: FS.sm, color: C.body, lineHeight: 19 }}>{t.walletBetaNote}</Text>
         <Btn label={busy ? "…" : t.walletRequestBtn} onPress={requestCredits} disabled={busy} style={{ marginTop: SP[3], opacity: busy ? 0.6 : 1 }} />
         {!!msg && <Text style={{ color: C.tealInk, fontSize: FS.sm, marginTop: SP[2], textAlign: "center" }}>{msg}</Text>}
-      </View>
+      </Katlanir>
 
       <Text style={S.label}>{t.walletPacks}</Text>
       {/* Paketin NE OLDUĞUNU önce söylüyoruz: bir abonelik değil, takviye. */}
@@ -4361,7 +4356,7 @@ export function HostApply({ t, session, onBack, onDone }) {
     ]);
     setApp(bas.data || { status: "none" });
     if (uid) setPhoneOk(!!dog?.data?.phone_verified);
-    const beyan = String(eri?.data?.access_source || "").split(", ").map(x => x.trim()).filter(Boolean);
+    const beyan = erisimKaynaklari(eri?.data?.access_source);
     const eslesen = beyan.find(x => ACCESS_SOURCES.indexOf(x) >= 0);
     if (eslesen) setSrc(prev => prev || eslesen);
     const k = eri?.data?.guest_capacity;
@@ -5285,7 +5280,7 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
     return (
       <View>
         {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
-        {gelen.length > 0 && <Text style={S.label}>{t.connIncomingTitle}</Text>}
+        {gelen.length > 0 && <Text style={S.label}>{BUYUK(t.connIncomingTitle)}</Text>}
         {gelen.map(kart)}
         {giden.length > 0 && <Text style={S.label}>{t.connOutgoingTitle}</Text>}
         {giden.map(kart)}

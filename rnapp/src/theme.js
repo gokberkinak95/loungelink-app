@@ -796,8 +796,8 @@ export const KOYU = {
   // Eski `#54483C` koyu zeminde kalın gri bir çizgi çiziyordu — kartı
   // "kutu" gibi gösteriyordu. Gece sisteminde ayraç, altının çok düşük
   // opaklıkta bir izi: kenarı belli eder, kutu kurmaz.
-  line:       "rgba(232,214,182,0.10)",
-  line2:      "rgba(232,214,182,0.17)",
+  line:       "rgba(232,214,182,0.10)",   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1948
+  line2:      "rgba(232,214,182,0.17)",   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1949
   // Marka altını (#B8943A) koyu zeminde OKUNMUYOR. Işığa doğru açıldı;
   // ton aynı, parlaklık farklı. Marka değişmedi, zemin değişti.
   // 🔴 12 EYLÜL — ŞAMPANYA. Gökberk: "çiğ altın sarısı lüks algısını
@@ -1463,7 +1463,7 @@ KOYU.golgeCarp = 2.4;   // opaklık çarpanı
 KOYU.gold      = "#C9B693";   // en kötü 5.07:1 · C* 40.2 → 20.4
 KOYU.goldInk   = "#C9B693";   // en kötü 5.07:1
 KOYU.goldDeep  = "#CBB28A";   // en kötü 4.92:1
-KOYU.goldLine  = "#6B6150";   // kenarlık · kart 3.07:1 (WCAG 1.4.11 · 3:1)
+KOYU.goldLine  = "#6B6150";   // kenarlık · kart 3.07:1 (WCAG 1.4.11 · 3:1)   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1950
 KOYU.teal      = "#9DBBA6";   // en kötü 4.83:1 · C* 45.3 → 20.0
 KOYU.tealInk   = "#9DBBA6";
 KOYU.amber     = "#D9A45E";   // en kötü 4.51:1 · C* 65.9 → 45.1
@@ -1536,7 +1536,7 @@ KOYU.badgeInk = {
 // 🆕 SINIF: "SAYDAMLIK BİR GÖRÜNÜM DEĞİL BİR ZEMİN DEĞİŞİKLİĞİDİR —
 // ARKASI DEĞİŞEN HER YÜZEYDE MÜREKKEP HİYERARŞİSİ YENİDEN ÖLÇÜLMELİDİR."
 KOYU.camKart  = "rgba(20,18,17,0.55)";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1897 (v6 katmanı)
-KOYU.camKenar = "rgba(237,231,219,0.16)";
+KOYU.camKenar = "rgba(237,231,219,0.16)";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1951
 
 // ── KART KENARI: ÇİZGİ DEĞİL IŞIK ────────────────────────────────────
 // 🔴 12 EYLÜL — Gökberk: "kartların içi adeta birer kutu cümbüşü…
@@ -1875,24 +1875,24 @@ const V6_KADIFE  = "#141211";
 const V6_KADIFE2 = "#181614";
 const V6_YOK     = "rgba(0,0,0,0)";
 KOYU.bg         = "#0B0A0B";
-KOYU.surface    = V6_KADIFE;
-KOYU.surfaceAlt = V6_KADIFE2;
+KOYU.surface    = V6_KADIFE;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1939
+KOYU.surfaceAlt = V6_KADIFE2;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1940
 KOYU.card       = V6_KADIFE;
 KOYU.bgAlt      = V6_KADIFE2;
 KOYU.avatarBg   = V6_KADIFE2;
 for (const k of ["goldBg", "amberBg", "goldTint", "greenBg", "purpleBg", "tealBg", "tealTint", "tealTint2"]) KOYU[k] = V6_KADIFE2;
 // Seçili yüzey: kadifenin bir basamak AYDINLIĞI (kahve değil — ton aynı,
 // yalnız ışık fazla). Çerçeve kalkınca seçimi çizgi değil bu ışık taşır.
-KOYU.goldSoft   = "#1E1B19";
-KOYU.redBg      = "#1A1413";          // SOS/engel: kadifenin yalnız bir tık sıcağı — alarm mürekkepte
+KOYU.goldSoft   = "#1E1B19";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1942
+KOYU.redBg      = "#1A1413";          // SOS/engel: kadifenin yalnız bir tık sıcağı — alarm mürekkepte   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1943
 KOYU.hataBg     = KOYU.redBg;
 KOYU.pasifRozet = V6_KADIFE2;
 KOYU.balonBen   = V6_KADIFE2;
 for (const k of ["line", "line2", "kartKenar", "goldLine", "amberLine", "tealLine",
                  "purpleLine", "camKenar", "goldTrace", "hataLine", "warmLine"]) KOYU[k] = V6_YOK;
-KOYU.parlama    = "rgba(244,239,230,0.035)";   // brief'in değeri — üst kenar ışığı
-KOYU.parlamaGuc = "rgba(244,239,230,0.07)";    // basılı / seçili hâlde ışık iki katı
-KOYU.kartIsik   = KOYU.parlama;
+KOYU.parlama    = "rgba(244,239,230,0.035)";   // brief'in değeri — üst kenar ışığı   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1944
+KOYU.parlamaGuc = "rgba(244,239,230,0.07)";    // basılı / seçili hâlde ışık iki katı   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1945
+KOYU.kartIsik   = KOYU.parlama;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1946
 KOYU.kabartmaIsik = "rgba(244,239,230,0.09)";  // rozet mührü: kabartmanın üst sırtı
 KOYU.kabartmaDip  = "rgba(0,0,0,0.30)";        // … ve bastırılmış alt gölgesi
 KOYU.fildisi    = "#EDE7DB";                   // mühür mürekkebi (fildişi krem)
@@ -1919,5 +1919,40 @@ C.muhurZemin = "rgba(26,31,46,0.05)";
 C.isikSizinti = "#C9B693";
 C.onGoldSoluk = "rgba(255,255,255,0.70)";
 C.golgeRenk = "#1A1F2E";
+
+
+// ══════════════════════════════════════════════════════════════════════
+// v6.1 · IŞIKLI KADİFE — cihaz geri bildirimi (26 Eylül)
+// Gökberk: "popuplar çok karanlık, çerçevesi belli olmuyor", "sohbete dön
+// butonu belli olmuyor", "profil düzenleme çok karanlık, alanlar belirsiz".
+// Haklı: v6'da kadife (#141211) obsidyenden yalnız ΔE 3 ayrışıyordu —
+// OLED'de, gece, parlaklık düşükken sıfır. Sessiz lüks görünmezlik değil.
+//
+// Derinlik merdiveni (her basamak bir öncekinden ölçülür biçimde açık):
+//   zemin #0B0A0B → kart #171512 → iç blok/girdi #1F1C19 → seçili #262320
+//   popup #1E1B18 (+ ışık kenarı)
+// Üst ışık %3.5 → %6. Etkileşimli ikincil yüzeyler (hayalet düğme, girdi,
+// popup) bir IŞIK KENARI alır (fildişi %12): kutu çizgisi değil, parmağın
+// "buraya basılır" diye okuduğu yansıma. Kartlarda çevre çizgisi yok.
+// ══════════════════════════════════════════════════════════════════════
+const V61_KART = "#171512", V61_BLOK = "#1F1C19", V61_SECILI = "#262320";
+KOYU.surface = V61_KART; KOYU.card = V61_KART;
+KOYU.surfaceAlt = V61_BLOK; KOYU.bgAlt = V61_BLOK; KOYU.avatarBg = V61_BLOK;
+for (const k of ["goldBg", "amberBg", "goldTint", "greenBg", "purpleBg", "tealBg", "tealTint", "tealTint2", "pasifRozet", "balonBen"]) KOYU[k] = V61_BLOK;
+KOYU.goldSoft = V61_SECILI;
+KOYU.redBg = "#221816"; KOYU.hataBg = KOYU.redBg;
+KOYU.parlama = "rgba(244,239,230,0.06)";
+KOYU.parlamaGuc = "rgba(244,239,230,0.12)";
+KOYU.kartIsik = KOYU.parlama;
+KOYU.kenarIsik = "rgba(237,231,219,0.12)";      // ikincil düğme · girdi · popup
+KOYU.line = "rgba(237,231,219,0.06)";           // girdi/ayırıcı: görünür ama sessiz
+KOYU.line2 = "rgba(237,231,219,0.09)";
+KOYU.goldLine = "rgba(214,195,160,0.38)";       // seçili hâlin ışık kenarı
+KOYU.camKenar = "rgba(237,231,219,0.12)";
+KOYU.popupZemin = "#1E1B18";
+KOYU.perdeRenk = "rgba(6,5,6,0.62)";            // popup arkası (bulanıklığın üstü)
+C.kenarIsik = "rgba(26,31,46,0.14)";
+C.popupZemin = "#FFFFFF";
+C.perdeRenk = "rgba(26,31,46,0.40)";
 
 temaUygula("koyu");

@@ -12,7 +12,7 @@ import * as ExpoLinking from "expo-linking";
 import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName } from "./src/i18n";
-import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant } from "./src/ui";
+import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
 import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
 // katlanır bileşen yazmak yerine Pickers.js'teki tek Katlanir kullanılıyor.
@@ -440,7 +440,7 @@ function AppInner() {
 
   // 🔴 v3.4 — AÇILIŞ GÖSTERGESİ DE MARKA. Kullanıcının uygulamada gördüğü
   // İLK hareket bu; jenerik bir çember, marka anını harcamaktır.
-  if (screen === "boot") return <View style={[st.center,{flex:1,backgroundColor:C.paper}]}><MarkaYukleyici boy={52} /></View>;
+  if (screen === "boot") return <View style={[st.center,{flex:1,backgroundColor:C.paper}]}><MarkaYukleyici /></View>;
 
   return (
     <Sayfa ufuk={screen === "login" || screen === "register" ? 44 : screen === "onboarding" ? 40 : 56}>
@@ -789,6 +789,17 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   // şeridindeki DAVET rozeti de tam olarak bu ikisini sayıyor.
   const [showDavetler, setShowDavetler] = useState(false);
   const [showSohbetler, setShowSohbetler] = useState(false);
+  // 🔴 v6.1 (Gökberk md.a) — "isteği iptal ettim, ana sayfadaki sayı
+  // düşmedi". Akış katmanları (İstek/Davet/Sohbet/Soru) ana sayfanın
+  // üstünde açılıyor; kapandıklarında ana sayfa sayaçları eski kalıyordu.
+  // Katman kapanınca Akış şeridi tazelenir.
+  const [akisTazele, setAkisTazele] = useState(0);
+  const akisAcikti = useRef(false);
+  useEffect(() => {
+    const acik = !!(showIstekler || showDavetler || showSohbetler || showQuestions);
+    if (akisAcikti.current && !acik) setAkisTazele(x => x + 1);
+    akisAcikti.current = acik;
+  }, [showIstekler, showDavetler, showSohbetler, showQuestions]);
   // v2.95 (madde 7) — "İlanıma git": İlanlarım'da odaklanılacak ilan
   const [odakAvail, setOdakAvail] = useState(null);
   // ══════════════════════════════════════════════════════════════════
@@ -1316,7 +1327,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     istekler: () => (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowRequests} onBack={() => setShowIstekler(false)} marka={false} />
-        <ScrollView contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           {/* ⚠️ `onOpenChat`/`onOpenProfile` BURADA YOK — bunlar `Home`un
               propları. Overlay `AppInner` kapsamında çiziliyor, yani
               state'i doğrudan kullanmalı. İlk yazımda `Home`daki adları
@@ -1324,26 +1335,26 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           {/* 3 Eylül — bu ekranın TEK işi istek listesi; katlı gelirse
               kullanıcı "İstek"e basıp boş bir kutu görüyor (web sahnesinde
               ölçüldü). Burada açık başlar; ana sayfadaki katlı hâl aynen. */}
-          <RequestsPanel t={t} lang={lang} session={session} acikBasla
+          <RequestsPanel t={t} lang={lang} session={session} acikBasla tamEkran
             onOpenChat={setChat} onOpenProfile={setPubProfile} />
         </ScrollView>
       </Sayfa>),
     davetler: () => (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowInvitesTitle} onBack={() => setShowDavetler(false)} marka={false} />
-        <ScrollView contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           {/* ⚠️ `tazele` `Home`un kendi state'i; bu katmanlar `Main`
               kapsamında çiziliyor. Ortak anahtar `reload` — ve katmanda
               verilen cevap `setReload` ile ana sayfayı da tazeliyor. */}
           <ActionNeeded t={t} lang={lang} tamEkran tazele={reload}
             onRefresh={() => setReload(x => x + 1)}
-            onOpenChat={setChat} />
+            onOpenChat={setChat} onOpenLoungeChat={setChat} />
         </ScrollView>
       </Sayfa>),
     sohbetler: () => (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowChatsTitle} onBack={() => setShowSohbetler(false)} marka={false} />
-        <ScrollView contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           <HomeConnections t={t} session={session} tamEkran tazele={reload}
             onOpenChat={(cid, nm) => setCompChat({ channelId: cid, name: nm })} />
         </ScrollView>
@@ -1405,7 +1416,17 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         // 🔴 v2.48 (cihazda görüldü): Keşfet'ten "Seyahat ekle" ile gelen
         // kullanıcı kayıttan sonra İLANI KAYBEDİYORDU — tekrar Keşfet'e
         // gidip aramak zorundaydı. Artık kayıt biter bitmez soruyoruz.
-        if (pendingReqAvail) setAskApply(pendingReqAvail);
+        // 🔴 v6.1 (Gökberk md.34) — seyahat kaydı taşıyıcıyı belli eder;
+        // ilan artık "farklı havayolu" yüzünden kapalıysa "başvur" değil
+        // SEBEP sorulur. Kontrol düşerse eski davranış (Keşfet de kapıyı tutar).
+        if (pendingReqAvail) {
+          const av = pendingReqAvail;
+          supabase.rpc("discovery_rule_badges", { p_ids: [av.id] }).then(({ data, error }) => {
+            if (error) logError("askApply.badges", error);
+            const b = !error && Array.isArray(data) ? data[0] : null;
+            setAskApply(b && b.blocks_request ? { ...av, kapaliSebep: b.info || b.label || "" } : av);
+          });
+        }
       }} />),
     // 🔴 v3.4 — ÜÇÜNCÜ KAPI. Sekme gizlendi, davet ekranındaki düğme
     // kaldırıldı; ama bu overlay bir `setShowAddAvail(true)` çağrısıyla
@@ -1434,9 +1455,17 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   // v2.48 — Keşfet→Seyahat onay kartı (her görünümün üstünde çizilir)
   const askApplyModal = askApply ? (
     <Modal visible transparent animationType="fade" onRequestClose={() => { setAskApply(null); setPendingReqAvail(null); }}>
-      <View style={{ flex: 1, backgroundColor: C.perde, justifyContent: "center", padding: ARA[28] }}>
-        <View style={{ backgroundColor: C.card, borderRadius: R.md, padding: ARA[22] }}>
-          <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink }}>{t.tripReadyTitle}</Text>
+      <View style={{ flex: 1, justifyContent: "center", padding: ARA[28] }}>
+        <PerdeBulanik />
+        <View style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[22] }}>
+          <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink }}>{askApply.kapaliSebep != null ? t.tripClosedTitle : t.tripReadyTitle}</Text>
+          {askApply.kapaliSebep != null ? (
+            <>
+              <Text style={{ fontSize: FS.sm, color: C.mut, marginTop: SP[2], lineHeight: 19 }}>{t.tripClosedBody}</Text>
+              <Text style={{ fontSize: FS.sm, color: C.body, marginTop: SP[2], lineHeight: 20 }}>{askApply.kapaliSebep}</Text>
+              <Btn v="ghost" sm full label={t.tripClosedOk} onPress={() => { setAskApply(null); setPendingReqAvail(null); }} style={{ marginTop: SP[4] }} />
+            </>
+          ) : (<>
           <Text style={{ fontSize: FS.sm, color: C.mut, marginTop: SP[2], lineHeight: 19 }}>
             {t.tripReadyBody.replace("{ap}", askApply.airport_code || "").replace("{dt}", askApply.avail_date || "")}
           </Text>
@@ -1446,6 +1475,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             style={{ alignItems: "center", marginTop: SP[3] }}>
             <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.tripReadyLater}</Text>
           </TouchableOpacity>
+          </>)}
         </View>
       </View>
     </Modal>
@@ -1712,7 +1742,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             BAĞLANDI. Davet/bağlantı katmanında verilen cevap `setReload`
             çağırıyor; ana sayfa da o cevabı görmeden bayat kalıyordu.
             `Discovery`/`Hosting`/`Trips` zaten bu anahtarı taşıyordu. */}
-        {tab === "home" && <Home key={"hm" + reload} t={t} lang={lang} session={session} onOpenChat={setChat} onProfilSekmesi={() => setTab("prof")} onOpenCompanion={(cid, nm) => setCompChat({ channelId: cid, name: nm })} onVerify={() => setShowVerify(true)} onRole={setRoleState} setRadar={setRadar} setTab={sekmeyeGit} setHostTripsSub={setHostTripsSub} onWallet={() => setShowWallet(true)} onDiscover={(sc) => setShowDisc(sc || {})} onOpenProfile={setPubProfile} setShowQuestions={setShowQuestions} onGuide={() => setShowGuide(true)}
+        {tab === "home" && <Home key={"hm" + reload} akisTazele={akisTazele} t={t} lang={lang} session={session} onOpenChat={setChat} onProfilSekmesi={() => setTab("prof")} onOpenCompanion={(cid, nm) => setCompChat({ channelId: cid, name: nm })} onVerify={() => setShowVerify(true)} onRole={setRoleState} setRadar={setRadar} setTab={sekmeyeGit} setHostTripsSub={setHostTripsSub} onWallet={() => setShowWallet(true)} onDiscover={(sc) => setShowDisc(sc || {})} onOpenProfile={setPubProfile} setShowQuestions={setShowQuestions} onGuide={() => setShowGuide(true)}
           setShowIstekler={setShowIstekler}
           setShowDavetler={setShowDavetler} setShowSohbetler={setShowSohbetler} />}
         {/* Sekme olarak Keşfet: kapsamsız. `onBack` YOK — bir sekmenin
@@ -1805,7 +1835,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
                      shadowColor: C.golgeRenk, shadowOpacity: 0.55, shadowRadius: 24,
                      shadowOffset: { width: 0, height: 10 }, elevation: 12 }}>
         {tabs.map(([k, ic, lab]) => {
-          const on = tab === k;
+          // v6.1 (md.f) — vurgu GÖRÜNEN ekrana göre: Keşfet ana sayfanın üstüne
+          // katman olarak açıldığında çubuk hâlâ "Ana Sayfa"yı gösteriyordu.
+          const gorunen = topOverlay === "disc" ? "disc" : topOverlay === "notif" ? "prof" : tab;
+          const on = gorunen === k;
           return (
             <TouchableOpacity hitSlop={TAP.slop} key={k} style={{ flex: 1, alignItems: "center", paddingVertical: ARA[2] }}
               onPress={() => {
@@ -2706,7 +2739,16 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         // #7: ayni cihazda onceki hesabin bayat oturumu "girdim ama baska
         // hesap acildi" vakasini yaratabiliyor — girise baslamadan temizle.
         try { await supabase.auth.signOut(); } catch (e) {}
-        const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: pass });
+        let { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: pass });
+        // 🔴 v6.1 (Gökberk md.13) — "bir kez yanlış girince doğru şifre de
+        // hata veriyor". Şifre GÖRÜNÜR moddayken Android klavyeleri
+        // (SwiftKey, Gboard) öneri seçildiğinde sona boşluk ekliyor; ekranda
+        // fark edilmiyor. Kenar boşluklu şifre reddedilirse kırpılmış hâli
+        // bir kez denenir — kasıtlı kenar boşluğu olan şifre ilk denemede
+        // zaten geçer.
+        if (error && /invalid login credentials/i.test(String(error.message)) && pass !== pass.trim()) {
+          ({ error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: pass.trim() }));
+        }
         if (error) throw error;
       }
     } catch (e) {
@@ -2812,7 +2854,8 @@ function Auth({ mode, t, go, lang, toggleLang }) {
               <Text style={st.label}>{t.pass}</Text>
               <IconField icon={<Ikon ad="kilit" boy={15} renk={C.muted} />}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TextInput style={[st.inputBare, { flex: 1 }]} value={pass} onChangeText={setPass}
+                  <TextInput style={[st.inputBare, { flex: 1 }]} value={pass}
+                    onChangeText={(x) => { setPass(x); if (err) setErr(""); }}
                     placeholder="••••••••" placeholderTextColor={C.dim}
                     secureTextEntry={!showPw} autoCapitalize="none" autoCorrect={false}
                     autoComplete="password" textContentType="password"
@@ -3098,7 +3141,7 @@ function greetWord(t) {
 // 🔴 18 EYLÜL — `setMeetSub` İMZADAN ÇIKTI. Akış şeridi artık "reqs"/"conns"
 // alt görünümlerine değil, kendi tam ekranlarına gidiyor (md.4); prop
 // gövdede okunmayan bir yalan hâline gelmişti ve `check.js` yakaladı.
-export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, onRole, setRadar, setTab, setHostTripsSub, onWallet, onOpenProfile, onDiscover, setShowQuestions, onGuide, setShowIstekler, setShowDavetler, setShowSohbetler, onProfilSekmesi }) {
+export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, onRole, setRadar, setTab, setHostTripsSub, onWallet, onOpenProfile, onDiscover, setShowQuestions, onGuide, setShowIstekler, setShowDavetler, setShowSohbetler, onProfilSekmesi, akisTazele = 0 }) {
   const [data, setData] = useState(null);
   // 13 Eylül md.8/15 — durum çubuğu perdesi için kaydırma konumu.
   const kaydirY = useRef(new Animated.Value(0)).current;
@@ -3222,7 +3265,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
   );
   // 🔴 v3.4 — "Yükleniyor" yazısı KALDIRILDI. Dönen gösterge zaten onu
   // söylüyor; yanına kelimeyle yazmak aynı bilgiyi iki kez vermektir.
-  if (!data) return <View style={[st.center, { flex: 1 }]}><MarkaYukleyici boy={48} /></View>;
+  if (!data) return <View style={[st.center, { flex: 1 }]}><MarkaYukleyici /></View>;
 
   // MVP HostDashboard/GuestDashboard birebir: solda kucuk harf-aralikli
   // selamlama + SERIF isim, sagda SERIF altin LoungePuan; altinda rozet pili,
@@ -3383,7 +3426,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
           istekler hiçbir ekranda toplu görünmüyordu. Artık kendi tam
           ekranı var (gelen + gönderilen, ikisi de).
           ══════════════════════════════════════════════════════════════ */}
-      <AkisSeridi t={t} tazele={tazele} rol={data.role}
+      <AkisSeridi t={t} tazele={tazele + akisTazele} rol={data.role}
         onSohbetler={() => setShowSohbetler(true)}
         onIstekler={() => setShowIstekler(true)}
         onDavetler={() => setShowDavetler(true)}

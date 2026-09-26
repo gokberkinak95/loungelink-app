@@ -1673,5 +1673,15 @@
   "300_pasif_salon_adlari.sql",
   "kisit",
   "ck_venue_ad_durum_eki_yok"
+ ],
+ [
+  "301_ertelenen_puan_ana_sayfadan_duser.sql",
+  "govde",
+  "pending_ratings|and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])"
+ ],
+ [
+  "302_kesfet_engelinin_gercek_sebebi.sql",
+  "govde",
+  "discovery_rule_badges|v_key := 'carrier_bad';   v_boost := -1000;"
  ]
 ]
