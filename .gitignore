@@ -1,0 +1,10 @@
+# C:\LoungeLink bu deponun calisma kopyasidir (rnapp + sql + KUR.ps1 + DEVIR).
+# Asagidakiler AYRI depolar ya da yerel klasorler; bu depoya girmez.
+/website/
+/backoffice/
+/_arsiv/
+/Claude outputs/
+/LoungeLink/
+/rnapp_yedek*/
+node_modules/
+*.zip
