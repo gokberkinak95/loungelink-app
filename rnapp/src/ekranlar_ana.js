@@ -26,7 +26,7 @@ import FlightField from "./FlightField";
 import { HostPanel, useReciprocityMoment } from "./HostWallet";
 import MomentScreen from "./MomentScreen";
 import { CarrierPicker, Katlanir } from "./Pickers";
-import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK } from "./i18n";
+import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK, gorunur } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
 import { logError, supabase } from "./supabase";
@@ -167,6 +167,28 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
   const [sortBy, setSortBy] = useState("match");     // MVP: Eşleşme/Güven/Saat
   const [womenOnly, setWomenOnly] = useState(false); // MVP: yalnızca kadın host
   const [langF, setLangF] = useState(null);          // MVP: Dil chip filtresi (host_langs kesişimi)
+
+  // ════════════════════════════════════════════════════════════════════
+  // 🔴 22 EYLÜL — ÜÇ AYRI FİLTRE LİSTESİ, ÜÇÜ DE FARKLI (Gökberk cihazda
+  // gördü: "tüm havalimanlarını gör"e basınca sadece düğme kalkıyor).
+  // Ölçtüm, aynı ekranda üç yerde üç farklı liste vardı:
+  //   · "filtreli mi" mesajı   : apFilter · dateF · sector · flight · langF · womenOnly   (6)
+  //   · temizle düğmesi görünür: apFilter · dateF · sector · flight                        (4)
+  //   · temizle düğmesi siler  : apFilter · dateF · sector · flight                        (4)
+  // Yani `langF` ya da `womenOnly` açıkken: mesaj "filtreler daraldı" der,
+  // düğme HİÇ ÇIKMAZ; dördü açıkken düğme çıkar, basınca dördü silinir ama
+  // diğer ikisi kalır — liste dolmaz, düğme kaybolur. Tam olarak onun
+  // gördüğü davranış.
+  //
+  // 🆕 SINIF: "AYNI SORUYU ÜÇ YERDE AYRI AYRI CEVAPLARSAN, ÜÇÜ DE AYNI
+  // ANDA DOĞRU OLMAZ — SORUYU BİR KEZ SOR, ÜÇÜ DE ONA BAKSIN."
+  // ════════════════════════════════════════════════════════════════════
+  const FILTRELER = [apFilter, dateF, sector, flight, langF, womenOnly];
+  const filtreVar = FILTRELER.some(Boolean);
+  const filtreleriTemizle = React.useCallback(() => {
+    setApFilter(null); setDateF(""); setSector(""); setFlight("");
+    setLangF(null); setWomenOnly(false);
+  }, []);
   // v1.71: scope.sortTrip = FİLTRE DEĞİL sıralama ipucu. FindHostCard artık
   // seyahatin havalimanı/tarihine sert filtre uygulamıyor (liste boş kalıyordu);
   // tüm açık slotlar gelir, seyahate uyum sırasına dizilir.
@@ -220,6 +242,14 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
   const [askState, setAskState] = useState({});
   const [askBusy, setAskBusy] = useState(false);
   const [hiddenCount, setHiddenCount] = useState(0);
+  // 23 Eylül — gönderimden sonra "şimdi ne olacak?" cevabı (bkz. send()).
+  const [gonderildi, setGonderildi] = useState(null);
+  // Bilgi şeridi 12 sn sonra kendiliğinden kalkar (dokunulacak bir şey değil).
+  useEffect(() => {
+    if (!gonderildi) return;
+    const z = setTimeout(() => setGonderildi(null), 12000);
+    return () => clearTimeout(z);
+  }, [gonderildi]);
   const [moreOpen, setMoreOpen] = useState(false);
   // 🔴 v2.89 (Gökberk md.4) — KURAL KUTUSU KATLANIYOR.
   // Kutu kaynak etiketi + rozet + başlık + gerekçe + pencere uyarısı +
@@ -465,8 +495,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       //   5. Eşleşme puanı / kullanıcının seçtiği sıralama
       const fit = r => (sortTrip && r.airport_code === sortTrip.airport)
         ? (String(r.avail_date).slice(0,10) === String(sortTrip.date).slice(0,10) ? 2 : 1) : 0;
+      const bittiMi = r => (geriSayim(r.avail_date, r.time_from, r.time_to, t) || {}).tur === "bitti";
       list = [...list].sort((a, b) =>
-        ((a.fully_booked ? 1 : 0) - (b.fully_booked ? 1 : 0))
+        ((bittiMi(a) ? 1 : 0) - (bittiMi(b) ? 1 : 0))          // 23 Eylül: saati geçen en alta
+        || ((a.fully_booked ? 1 : 0) - (b.fully_booked ? 1 : 0))
         || (tier(a) - tier(b))
         || (boost(b) - boost(a))
         || (fit(b) - fit(a))
@@ -577,7 +609,15 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           supabase.rpc("trip_fit_note", { p_avail_id: target.id }),
           supabase.rpc("ilan_ulasilabilirlik_notu", { p_avail_id: target.id }),
         ]);
-        const data = pc.status === "fulfilled" ? pc.value.data : null;
+        let data = pc.status === "fulfilled" ? pc.value.data : null;
+        // 🔴 23 Eylül · SQL 301 §6 — ön kontrol artık sunucunun kendi yolunu
+        // kuru koşuyor; misafire özel bir kapı (havayolu, kişi sayısı, kendi
+        // ilanı, kredi, açık istek tavanı…) takılırsa `gate` = sunucunun hata
+        // kodu ve `headline` BOŞ gelir — metni burada TR/EN sözlükten çeviriyoruz.
+        // Eskiden bu kapılar "İstek gönder"e basınca, sayfa kapanırken çıkıyordu.
+        if (data && data.can_request === false && !data.headline && data.gate) {
+          data = { ...data, headline: mapErr(t, data.gate) };
+        }
         if (alive) { setPre(data || null); setAckOk(false); setAlts(null); }
         if (alive) {
           const fv = fitR.status === "fulfilled" ? fitR.value : null;
@@ -616,7 +656,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     if (pre && pre.can_request === false) { setErr(pre.headline || ""); return; }
     if (pre && pre.needs_ack && !ackOk) { setErr(t.ruleAckRequired); return; }
     setErr(""); setBusy(true);
-    const { error } = await supabase.rpc("create_request", {
+    const { data, error } = await supabase.rpc("create_request", {
       p_avail_id: target.id, p_type: reqType, p_intro: intro.trim() || null,
       p_idem: `${uid}:${target.id}`,
     });
@@ -651,6 +691,13 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
 
       return setErr(saatli && saatli !== genel ? taban + saatli.slice(genel.length) : taban);
     }
+    // 🔴 23 EYLÜL — GÖNDERİMDEN SONRA SESSİZLİK. Sayfa kapanıyor, kart
+    // sessizce "Gönderildi" oluyordu. Kullanıcı ne zaman yanıt geleceğini,
+    // yanıt gelmezse ne olacağını ve kredisinin nerede olduğunu bilmiyordu —
+    // oysa üçünün de cevabı sunucuda VAR (tutulan kredi, bayat istek
+    // süpürgesi, bildirim). Tek satırda söylüyoruz.
+    const bedel = data && typeof data.kredi_bedeli === "number" ? data.kredi_bedeli : null;
+    setGonderildi({ ad: (hosts[target.host_id] && hosts[target.host_id].name) || target.host_name || "", bedel });
     setTarget(null); setIntro("");
     load();
   }
@@ -928,7 +975,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[10] }}>
             {SECTOR_OPTS.map(sc => (
               <TouchableOpacity key={sc} style={[S.chip, sector === sc && S.chipOn]} onPress={() => setSector(sector === sc ? "" : sc)}>
-                <Text style={{ color: sector === sc ? C.gold : C.ink, fontSize: FS.sm }}>{sc}</Text>
+                <Text style={{ color: sector === sc ? C.gold : C.ink, fontSize: FS.sm }}>{gorunur(sc)}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -937,7 +984,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[10] }}>
             {LANG_OPTS.map(lg => (
               <TouchableOpacity key={lg} style={[S.chip, langF === lg && S.chipOn]} onPress={() => setLangF(langF === lg ? null : lg)}>
-                <Text style={{ color: langF === lg ? C.gold : C.ink, fontSize: FS.sm }}>{lg}</Text>
+                <Text style={{ color: langF === lg ? C.gold : C.ink, fontSize: FS.sm }}>{gorunur(lg)}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -1038,13 +1085,24 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           ÜRÜN İKİ ŞEY SÖYLÜYOR VE KULLANICI YANLIŞ OLANA İNANIYOR —
           'VERİ YOK' İLE 'VERİYİ ALAMADIM' AYNI CÜMLE DEĞİLDİR."
           ══════════════════════════════════════════════════════════ */}
+      {!!gonderildi && (
+        <View accessibilityLiveRegion="polite"
+          style={{ backgroundColor: C.greenBg, borderRadius: R.sm, padding: SP[3], marginTop: ARA[10],
+                   flexDirection: "row", alignItems: "flex-start", gap: SP[2] }}>
+          <Ikon ad="tamam" boy={FS.base} renk={C.greenInk} />
+          <Text style={{ flex: 1, color: C.greenInk, fontSize: FS.sm, lineHeight: 19 }}>
+            {String(t.reqSentNotice || "").replace("{ad}", abbrevName(gonderildi.ad) || "")}
+            {gonderildi.bedel === 0 ? "" : " " + (t.reqSentNoticeCredit || "")}
+          </Text>
+        </View>
+      )}
       {loadErr ? (
         <LoadFail t={t} onRetry={load} style={{ marginTop: ARA[26] }} />
       ) : rows.length === 0 ? (
         <View style={[S.empty, { paddingVertical: ARA[26] }]}>
           <Ikon ad="salon" boy={28} renk={C.muted} stil={{ marginBottom: SP[2] }} />
           <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", fontWeight: "600" }}>
-            {(apFilter || dateF || sector || flight || langF || womenOnly) ? t.noHostsFiltered : t.noAvailFound}
+            {filtreVar ? t.noHostsFiltered : (myRole === "host" ? t.noAvailFound : (t.noAvailFoundGuest || t.noAvailFound))}
           </Text>
           {(apFilter || dateF) ? (
             <Text style={{ color: C.dim, fontSize: FS.sm, textAlign: "center", marginTop: SP[1], lineHeight: 16 }}>
@@ -1061,8 +1119,8 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
             airport={apFilter ? (apFilter.key || apFilter) : null}
             date={dateF || null} />
           {/* Ek görsel: "Yol arkadaşlarına bak" → Tanış sekmesi */}
-          {(apFilter || dateF || sector || flight) && (
-            <Btn v="gold" sm full={false} label={t.clearFilters} onPress={() => { setApFilter(null); setDateF(""); setSector(""); setFlight(""); }} style={{ marginTop: SP[3], alignSelf: "stretch" }} />
+          {filtreVar && (
+            <Btn v="gold" sm full={false} label={t.clearFilters} onPress={filtreleriTemizle} style={{ marginTop: SP[3], alignSelf: "stretch" }} />
           )}
           {onMeet && (
             <Btn v="ghost" sm label={t.seeCompanions} onPress={onMeet} style={{ marginTop: ARA[10] }} />
@@ -1082,6 +1140,12 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
         const mine = r.host_id === uid;
         const open = r.slots - r.filled;
         const rst = myReqs[r.id];
+        // 🔴 23 EYLÜL — "SONA ERDİ" YAZAN KARTTA AKTİF "İSTEK GÖNDER" VARDI.
+        // Sunucu bugünün ilanlarını gün bitene kadar döndürüyor; saati geçmiş
+        // bir ilan sayacında "Sona erdi" yazarken düğmesi açıktı (sahne 02 ve
+        // 37'de ölçüldü — biri listenin EN ÜSTÜNDEYDİ). Sunucu da artık
+        // reddediyor (SQL 300 §B5); ekran aynı şeyi önceden söylüyor.
+        const bitti = (geriSayim(r.avail_date, r.time_from, r.time_to, t) || {}).tur === "bitti";
         return (
           // 🔴 6. tur — TASARIMDA İLK KART FARKLI: `.kart.one`
           // altın izli kenar + üstten çok soluk altın tint. Ben bütün
@@ -1459,6 +1523,12 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
               {!mine && (
                 rst === "accepted" ? <Text style={{ color: C.teal, fontWeight: "700", fontSize: FS.sm, textAlign: "right" }}>{t.reqAcc}</Text>
                 : rst === "pending" ? <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, textAlign: "right" }}>{t.reqSent}</Text>
+                : bitti ? <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "right" }}>{t.listingEndedCard}</Text>
+                // 🔴 23 EYLÜL — REDDEDİLEN İSTEK KARTTA GÖRÜNMÜYORDU. Veri v2.87'den
+                // beri geliyor (`declined` okunuyor) ama hiç çizilmiyordu: kart
+                // "hiç başvurmamışsın" gibi duruyor, aynı host'a tekrar tekrar
+                // istek atılabiliyordu.
+                : rst === "declined" ? <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "right" }}>{t.reqDeclinedCard}</Text>
                 : open > 0 ? (
                   /* MVP kuralı: başvuru fiziksel katılıma bağlı — aynı havalimanı+tarih+
                      çakışan saat (has_trip) + telefon doğrulaması. Yoksa buton pasif + neden. */
@@ -2108,6 +2178,8 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     return () => { iptal = true; };
   }, [sub]);
   const [target, setTarget] = useState(null);
+  // 🔴 23 Eylül — gelen bağlantı isteğine dokunmak ONAYSIZ kabul ediyordu.
+  const [gelen, setGelen] = useState(null);   // { rec, p }
   const [intent, setIntent] = useState(null);
   const [intro, setIntro] = useState("");
   const [err, setErr] = useState("");
@@ -2229,7 +2301,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     const { error } = await supabase.rpc("respond_connection", {
       p_id: id, p_accept: action === "accept" || action === true,
     });
-    if (error) { setErr(mapErr(t, error.message) || "İşlem başarısız"); return; }
+    if (error) { setErr(mapErr(t, error.message)); return; }
     load();
   }
 
@@ -2260,7 +2332,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     // niyet değil. Eski eşleme (coffee/work/wait) hiç tutmuyordu, çip hiç
     // çıkmıyordu. Aynı amaç → "Aynı rota tanışma" (tasarım 05), değilse amacın adı.
     const amac = p.same_purpose ? t.reqTypeRoute
-      : (p.purpose ? ((PURPOSES.find(x => x[0] === p.purpose) || [])[1] || null) : null);
+      : (p.purpose ? gorunur((PURPOSES.find(x => x[0] === p.purpose) || [])[1] || null) : null);
     return (
     <TouchableOpacity activeOpacity={0.85} disabled={!onAc && !p.user_id} hitSlop={TAP.slop}
       onPress={onAc || (() => p.user_id && onOpenProfile && onOpenProfile(p.user_id))}
@@ -2425,7 +2497,14 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
               //   bağlı → sohbet · gelen istek → yanıtla · bekliyor → profil ·
               //   tanımadık → bağlantı kur (not ile).
               const ac = p.rel === "accepted" ? () => openCompanionChat(p.user_id, p.name)
-                : p.rel === "incoming" ? () => { const rec = incoming.find(x => x.from_id === p.user_id); if (rec) respond(rec.id, true); }
+                // 🔴 23 EYLÜL — DOKUNMAK = KABUL ETMEK'Tİ. Tek bir kaçak dokunuş
+                // bir yabancıyla bağlantı ve sohbet açıyordu; notunu bile görmeden.
+                // P2P bir buluşma ürününde "kiminle bağlandım" sorusu geri
+                // alınamaz bir eylemin arkasında kalamaz. Artık yanıt sayfası:
+                // not + profili gör + Kabul et / Reddet.
+                // 🆕 SINIF: "GERİ ALINAMAYAN BİR EYLEM, BİR GEZİNTİ
+                // DOKUNUŞUNUN ARKASINA SAKLANAMAZ."
+                : p.rel === "incoming" ? () => { const rec = incoming.find(x => x.from_id === p.user_id); if (rec) { setErr(""); setGelen({ rec, p }); } }
                 : p.rel === "pending" ? () => p.user_id && onOpenProfile && onOpenProfile(p.user_id)
                 : () => { setTarget(p); setErr(""); };
               // Tasarım 05: kartta eylem çipi yok; ilana istek bağlantı
@@ -2539,6 +2618,31 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
         )
       )}
 
+      <Modal visible={!!gelen} transparent animationType="fade" onRequestClose={() => setGelen(null)}>
+        <View style={{ flex: 1, backgroundColor: C.perde, justifyContent: "flex-end" }}>
+          <View style={{ backgroundColor: C.card, borderTopLeftRadius: R.lg, borderTopRightRadius: R.lg, padding: SP[4], paddingBottom: ARA[30] }}>
+            <Text style={{ color: C.mut, fontSize: FS.xs, fontWeight: "700", letterSpacing: 1 }}>{t.connIncomingTitle}</Text>
+            <Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.lg, marginTop: SP[1] }}>{abbrevName(gelen?.p?.name)}</Text>
+            {!!gelen?.p?.profession && <Text style={{ color: C.mut, fontSize: FS.sm }}>{gelen.p.profession}</Text>}
+            <View style={{ backgroundColor: C.bgAlt, borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
+              <Text style={{ color: gelen?.rec?.intro ? C.ink : C.mut, fontSize: FS.sm, lineHeight: 19 }}>
+                {gelen?.rec?.intro ? `“${gelen.rec.intro}”` : t.connIncomingNoNote}</Text>
+            </View>
+            {onOpenProfile && gelen?.p?.user_id && (
+              <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.viewProfile}
+                onPress={() => { const id = gelen.p.user_id; setGelen(null); onOpenProfile(id); }}
+                style={{ paddingVertical: SP[3], minHeight: TAP.minHeight, justifyContent: "center" }}>
+                <IkonMetin sag ad="sag" renk={C.purple} stilMetin={{ color: C.purple, fontWeight: "700", fontSize: FS.sm }} metin={t.viewProfile} />
+              </TouchableOpacity>
+            )}
+            {!!err && <Text style={{ color: C.red, fontSize: FS.sm, marginBottom: SP[2] }}>{err}</Text>}
+            <Btn v="teal" label={t.accept} a11yLabel={t.accept}
+              onPress={async () => { const id = gelen.rec.id; setGelen(null); await respond(id, true); }} />
+            <Btn v="ghost" label={t.decline} a11yLabel={t.decline} style={{ marginTop: ARA[10] }}
+              onPress={async () => { const id = gelen.rec.id; setGelen(null); await respond(id, false); }} />
+          </View>
+        </View>
+      </Modal>
       <Modal visible={!!target} animationType="slide" onRequestClose={() => setTarget(null)}>
         {/* #31: MVP Baglanti Kur — tam ekran */}
         <Sayfa>
@@ -2639,36 +2743,40 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
 
   useEffect(() => {
     (async () => {
-      const [{ data: p }, { data: ts }, { data: u }, { data: cr }, { data: vf }] = await Promise.all([
+      // 🔴 23 EYLÜL — BAŞKASININ ROZETLERİ HİÇ GÖRÜNMÜYORDU.
+      // `users` ve `verifications` RLS'i yalnız KENDİ satırını gösteriyor
+      // (`users_own`, `verif_own`). Başka birinin profilinde bu iki sorgu
+      // her zaman BOŞ dönüyordu: telefon/kimlik/e-posta rozetleri, "doğrulanmış
+      // kadın" ve host rengi hiç çizilmiyordu — hata da vermeden.
+      // Artık dar bir kart: `profil_karti` (SQL 300 §A5) — yalnız evet/hayır
+      // bayrakları, ham iletişim ya da cinsiyet YOK.
+      const [{ data: p }, { data: ts }, { data: kart, error: eKart }, { data: cr }] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", targetId).maybeSingle(),
         supabase.from("trust_scores").select("*").eq("user_id", targetId).maybeSingle(),
-        supabase.from("users").select("role, gender").eq("id", targetId).maybeSingle(),
+        supabase.rpc("profil_karti", { p_user: targetId }),
         supabase.from("connection_requests").select("id, status, from_id, to_id")
           .or(`and(from_id.eq.${uid},to_id.eq.${targetId}),and(from_id.eq.${targetId},to_id.eq.${uid})`).maybeSingle(),
-        supabase.from("verifications").select("phone_verified, id_verified, email_verified").eq("user_id", targetId).maybeSingle(),
       ]);
+      if (eKart) logError("profil_karti", eKart);
       let r = "none";
       if (cr) r = cr.status === "accepted" ? "connected" : (cr.from_id === uid ? "sent" : "incoming");
       setRel(r);
       setConnId(cr ? cr.id : null);
-      setD({ ...(p || {}), ...(ts || {}), role: u?.role, gender: u?.gender, phone_verified: !!vf?.phone_verified, id_verified: !!vf?.id_verified,
-        email_verified: !!vf?.email_verified });
+      setD({ ...(p || {}), ...(ts || {}), role: kart?.role, gender: kart?.kadin ? "female" : null,
+        phone_verified: !!kart?.phone_verified, id_verified: !!kart?.id_verified,
+        email_verified: !!kart?.email_verified });
       // 🔴 v3.9 — İKİ TUR DAHA VARDI VE İKİSİ DE HİÇBİR ŞEYİ BEKLEMİYORDU.
       // Yukarıdaki 5'li dalga bittikten SONRA sırayla kendi puanım ve
       // oturum sayısı okunuyordu; ikisi de yalnız `uid`/`targetId` ile
       // parametreli. Tek dalga.
       // `sessions` kendi `try`si içindeydi (düşerse "—" gösteriliyordu);
       // o tolerans `.catch(() => null)` ile TAŞINDI, kaybolmadı.
-      const [{ data: mine }, ss] = await Promise.all([
-        supabase.from("trust_scores").select("score").eq("user_id", uid).maybeSingle(),
-        // MVP profil kartinda "Oturum 6" satiri var — canlida hic yoktu.
-        supabase.from("sessions")
-          .select("id, requests!inner(guest_id, host_id)").eq("status", "completed").limit(300)
-          .then(r => r.data).catch(() => null),
-      ]);
+      const { data: mine, error: eMine } = await supabase.from("trust_scores").select("score").eq("user_id", uid).maybeSingle();
+      if (eMine) logError("pp_kendi_guven", eMine);
       setMyScore(mine?.score ?? 0);
-      setPpSessions(ss === null ? null
-        : ss.filter(x => x.requests?.guest_id === targetId || x.requests?.host_id === targetId).length);
+      // "Oturum N": eskiden RLS yüzünden yalnız İKİNİZİN ortak oturumlarını
+      // sayıyordu. Sayı artık karttan (sunucu, kişinin tüm tamamlanmış oturumları).
+      setPpSessions(kart && typeof kart.oturum === "number" ? kart.oturum : null);
     })();
   }, [targetId, uid]);
 
@@ -2756,7 +2864,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
         {showFull ? (
           <>
             {!!d.bio && <View style={S.card}><Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mut, letterSpacing: 1.5, marginBottom: ARA[6] }}>{t.ppAbout}</Text><Text style={{ fontSize: FS.sm, color: C.ink, lineHeight: 20 }}>{d.bio}</Text></View>}
-            {(d.languages?.length > 0) && <View style={S.card}><Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mut, letterSpacing: 1.5, marginBottom: SP[2] }}>{t.ppLangs}</Text><View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6] }}>{d.languages.map(l => <View key={l} style={S.chip}><Text style={{ fontSize: FS.xs, color: C.ink }}>{l}</Text></View>)}</View></View>}
+            {(d.languages?.length > 0) && <View style={S.card}><Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mut, letterSpacing: 1.5, marginBottom: SP[2] }}>{t.ppLangs}</Text><View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6] }}>{d.languages.map(l => <View key={l} style={S.chip}><Text style={{ fontSize: FS.xs, color: C.ink }}>{gorunur(l)}</Text></View>)}</View></View>}
           </>
         ) : (
           <View style={[S.card, { alignItems: "center", padding: ARA[18] }]}>
@@ -3066,7 +3174,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
 }
 
 // ============ Safety Center (§21, §23) ============
-export function Safety({ t, session, onBack, onReport, onTrust, onEditProfile }) {
+export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProfile }) {
   // ============================================================
   // v1.22: bu ekran ARKAYA BAGLI DEGILDI.
   //   · App.js gender/wsm/onToggleWsm prop'larini HIC gecirmiyordu ->
@@ -3084,6 +3192,27 @@ export function Safety({ t, session, onBack, onReport, onTrust, onEditProfile })
   const [sosDone, setSosDone] = useState(null);
   const [note, setNote] = useState("");
   const [openItem, setOpenItem] = useState(null);
+  // 🔴 23 Eylül — ENGEL LİSTESİ GERÇEK. "Engellenen Kullanıcılar" satırı
+  // açılınca yalnız sabit bir metin gösteriyordu; uygulamadan birini
+  // engellemenin de, engeli kaldırmanın da yolu yoktu (blocks tablosuna
+  // insert yetkisi yok, RPC yok). SQL 301 `engelle` / `engeli_kaldir` /
+  // `engellediklerim` ile artık liste canlı ve her satır geri alınabilir.
+  const [engelli, setEngelli] = useState(null);      // null = yüklenmedi
+  const [engelErr, setEngelErr] = useState("");
+  const [engelBusy, setEngelBusy] = useState(null);  // kaldırılan user_id
+  const engelYukle = useCallback(async () => {
+    setEngelErr("");
+    const { data, error } = await supabase.rpc("engellediklerim");
+    if (error) { logError("engellediklerim", error); setEngelErr(mapErr(t, error.message)); setEngelli([]); return; }
+    setEngelli(Array.isArray(data) ? data : []);
+  }, [t]);
+  async function engeliKaldir(id) {
+    setEngelBusy(id); setEngelErr("");
+    const { error } = await supabase.rpc("engeli_kaldir", { p_user: id });
+    setEngelBusy(null);
+    if (error) { logError("engeli_kaldir", error); setEngelErr(mapErr(t, error.message)); return; }
+    setEngelli(l => (l || []).filter(x => x.user_id !== id));
+  }
 
   const load = useCallback(async () => {
     if (!uid) return;
@@ -3116,7 +3245,7 @@ export function Safety({ t, session, onBack, onReport, onTrust, onEditProfile })
     setSosBusy(true);
     const { data, error } = await supabase.rpc("sos_alert", { p_note: note.trim() || null });
     setSosBusy(false);
-    if (error) { setSosDone({ ok: false, msg: error.message }); return; }
+    if (error) { setSosDone({ ok: false, msg: mapErr(t, error.message) }); return; }
     setSosDone({ ok: true, hasSession: data?.has_session });
   }
 
@@ -3195,7 +3324,7 @@ export function Safety({ t, session, onBack, onReport, onTrust, onEditProfile })
           const open = openItem === title;
           return (
             <View key={title} style={[S.card, { padding: 0, overflow: "hidden", marginBottom: SP[2] }]}>
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => { if (go) { go(); return; } setOpenItem(open ? null : title); }}
+              <TouchableOpacity hitSlop={TAP.slop} onPress={() => { if (go) { go(); return; } if (!open && title === t.safeBlockedT) { setEngelli(null); engelYukle(); } setOpenItem(open ? null : title); }}
                 style={{ flexDirection: "row", alignItems: "center", padding: SP[3] }}>
                 <View style={{ width: 38, height: 38, borderRadius: R.xs, backgroundColor: c + "1F", alignItems: "center", justifyContent: "center", marginRight: SP[3] }}>
                   <Ikon ad={ic} boy={18} renk={c} />
@@ -3216,9 +3345,36 @@ export function Safety({ t, session, onBack, onReport, onTrust, onEditProfile })
                   ))}
                 </View>
               )}
-              {open && kind !== "rules" && (
+              {open && title === t.safeBlockedT && (
                 <View style={{ borderTopWidth: 1, borderTopColor: C.line, padding: SP[3], backgroundColor: C.bgAlt }}>
-                  <Text style={{ fontSize: FS.sm, color: C.mutedAA, lineHeight: 17 }}>{title === t.safeBlockedT ? t.safeBlockedLong : t.safeDisputeLong}</Text>
+                  {engelli === null ? (
+                    <ActivityIndicator color={C.gold} />
+                  ) : engelli.length === 0 ? (
+                    <Text style={{ fontSize: FS.sm, color: C.mutedAA, lineHeight: 17 }}>{t.safeBlockedLong}</Text>
+                  ) : engelli.map(b => (
+                    <View key={b.user_id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: ARA[6] }}>
+                      <View style={{ flex: 1, minWidth: 0, marginRight: SP[2] }}>
+                        <Text numberOfLines={1} style={{ fontSize: FS.sm, fontWeight: "600", color: C.ink }}>{b.name || "—"}</Text>
+                        {!!b.created_at && (
+                          <Text style={{ fontSize: FS.xs, color: C.muted, marginTop: ARA[2] }}>
+                            {String(t.blockedSince || "{d}").replace("{d}", fmtLongDate(String(b.created_at).slice(0, 10), lang))}
+                          </Text>
+                        )}
+                      </View>
+                      <Btn v="ghost" cip label={t.unblock} a11yLabel={`${t.unblock} · ${b.name || ""}`}
+                        busy={engelBusy === b.user_id} disabled={!!engelBusy}
+                        onPress={() => engeliKaldir(b.user_id)} />
+                    </View>
+                  ))}
+                  {!!engelErr && <Text style={{ color: C.red, fontSize: FS.sm, marginTop: SP[2] }}>{engelErr}</Text>}
+                  {engelli && engelli.length > 0 && (
+                    <Text style={{ fontSize: FS.xs, color: C.muted, marginTop: SP[2], lineHeight: 16 }}>{t.blockedNote}</Text>
+                  )}
+                </View>
+              )}
+              {open && kind !== "rules" && title !== t.safeBlockedT && (
+                <View style={{ borderTopWidth: 1, borderTopColor: C.line, padding: SP[3], backgroundColor: C.bgAlt }}>
+                  <Text style={{ fontSize: FS.sm, color: C.mutedAA, lineHeight: 17 }}>{t.safeDisputeLong}</Text>
                 </View>
               )}
             </View>
@@ -3552,7 +3708,7 @@ export function SessionHistory({ t, session, onBack, onOpenChat, onOpenProfile, 
                     sayfadan kalkıyordu ve bir daha bulunamıyordu. Puanlanmamış
                     oturum artık BURADA duruyor; kaç saat kaldığı da yazıyor. */}
                 {unrated[s.id] && (
-                  <Btn v="gold" sm solAd="degerlendirme" label={`${t.rateNowBtn}${unrated[s.id].hours_left > 0 ? ` · ${Math.round(unrated[s.id].hours_left)}s` : ""}`} onPress={() => onOpenChat && onOpenChat({ req: { id: s.request_id }, name: o.name, openPanel: true })} style={{ marginBottom: SP[2] }} />
+                  <Btn v="gold" sm solAd="degerlendirme" label={`${t.rateNowBtn}${unrated[s.id].hours_left > 0 ? ` · ${String(t.hoursLeftShort || "{n} sa").replace("{n}", String(Math.round(unrated[s.id].hours_left)))}` : ""}`} onPress={() => onOpenChat && onOpenChat({ req: { id: s.request_id }, name: o.name, openPanel: true })} style={{ marginBottom: SP[2] }} />
                 )}
                 <View style={{ flexDirection: "row", gap: SP[2] }}>
                   <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpenChat && onOpenChat({ req: { id: s.request_id }, name: o.name })}
@@ -4031,7 +4187,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                                 maxWidth: "100%", flexShrink: 1 }]}>
               <Text numberOfLines={2}
                 style={{ color: on ? C.gold : C.ink, fontSize: FS.sm,
-                         fontWeight: on ? "700" : "400", flexShrink: 1 }}>{a}</Text>
+                         fontWeight: on ? "700" : "400", flexShrink: 1 }}>{gorunur(a)}</Text>
             </TouchableOpacity>
           ); })}
         </View>
@@ -4160,8 +4316,9 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                   {pl.member_free_visits == null
                     ? t.ownEntryFree
                     : pl.member_free_visits === 0
-                      ? `Ücretsiz ziyaret yok · ziyaret ${pl.member_visit_fee} ${pl.currency}`
-                      : `${pl.member_free_visits} ücretsiz ziyaret · sonrası ${pl.member_visit_fee} ${pl.currency}`}
+                      ? String(t.planNoFreeVisits).replace("{fee}", pl.member_visit_fee).replace("{cur}", pl.currency)
+                      : String(t.planFreeVisits).replace("{n}", pl.member_free_visits)
+                          .replace("{fee}", pl.member_visit_fee).replace("{cur}", pl.currency)}
                   {`  ·  ${t.planGuestFee} ${pl.guest_visit_fee} ${pl.currency}`}
                 </Text>
               </View>
@@ -5038,7 +5195,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
           {LANG_OPTS.map(l => {
             const sel = form.languages.includes(l);
             return (
-              <Secim key={l} ton="purple" coklu secili={sel} etiket={l} onPress={() => toggleLang(l)}
+              <Secim key={l} ton="purple" coklu secili={sel} etiket={gorunur(l)} onPress={() => toggleLang(l)}
                 stil={{ marginRight: ARA[6], marginBottom: ARA[6] }} />
             );
           })}
@@ -5125,7 +5282,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
                 {BUYUK(t.accessSourceRow)}
               </Text>
               <Text numberOfLines={1} style={{ flex: 1, fontSize: FS.sm, color: C.ink, marginTop: SP[1] }}>
-                {form.access_source || t.stPhoneUnset}
+                {gorunur(form.access_source) || t.stPhoneUnset}
               </Text>
             </View>
             <Ikon ad="sag" boy={FS.lg} renk={C.dimAA} />
@@ -5189,7 +5346,14 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
                 const { data, error } = await supabase.rpc("claim_founding_host");
                 if (error) { setFoundingMsg(t.foundingErr); return; }
                 if (data?.ok) { setFounding(f => ({ ...f, mine: data.no })); setFoundingMsg(null); }
-                else setFoundingMsg(data && data.reason === "full" ? t.foundingFull : t.foundingErr);
+                // 🔴 23 Eylül — sunucu 'full' DEMİYOR: `claim_founding_host` yalnız
+                // 'closed' (kontenjan doldu) ya da 'no_listing' döndürüyor. Eski
+                // kontrol hiç tutmuyor, kontenjan dolunca "tekrar dene" yazıyordu —
+                // tekrar denemek işe yaramayan bir durumda.
+                else setFoundingMsg(
+                  data && (data.reason === "closed" || data.reason === "full") ? t.foundingFull
+                  : data && data.reason === "no_listing" ? (t.foundingNoListing || t.foundingErr)
+                  : t.foundingErr);
               } catch (e) { setFoundingMsg(t.foundingErr); }
             }}
             style={{ flexDirection: "row", alignItems: "center",
@@ -5330,7 +5494,7 @@ export function LoungePicker({ lounges, value, onSelect, emptyNote, t = {} }) {
       <TouchableOpacity hitSlop={TAP.slop} onPress={() => setOpen(!open)}
         style={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: open ? C.teal : C.line, borderRadius: R.xs,
                  paddingVertical: SP[3], paddingHorizontal: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={{ fontSize: FS.sm, color: sel ? C.body : C.dim }}>{sel ? labelOf(sel) : "Lounge seç…"}</Text>
+        <Text style={{ fontSize: FS.sm, color: sel ? C.body : C.dim }}>{sel ? labelOf(sel) : gorunur("Lounge seç…")}</Text>
         <Ikon ad={open ? "yukari" : "asagi"} boy={14} renk={C.mutedAA} />
       </TouchableOpacity>
       {open && (
@@ -5342,9 +5506,9 @@ export function LoungePicker({ lounges, value, onSelect, emptyNote, t = {} }) {
               if (inTab(l, "dom")) counts.dom++;
               if (inTab(l, "int")) counts.int++;
             }
-            const tabs = [["all", "Tümü", lounges.length],
-                          ["dom", "İç Hat", counts.dom],
-                          ["int", "Dış Hat", counts.int]];
+            const tabs = [["all", gorunur("Tümü"), lounges.length],
+                          ["dom", gorunur("İç Hat"), counts.dom],
+                          ["int", gorunur("Dış Hat"), counts.int]];
             // 🔴 SEKME ARTIK HER ZAMAN GORUNUR (tek salon haric).
             // Eski kosul "her iki terminalde de salon varsa goster"
             // idi; bir terminal bossa kullanici sekmenin VARLIGINI
@@ -5643,12 +5807,12 @@ export function SeyahatFormu({ t, f, set, airports, carriers, kilitli, mod }) {
         <View style={{ height: 14 }} />
 
         {/* MVP: SEYAHAT AMACI cipleri */}
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>SEYAHAT AMACI</Text>
+        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.intentLabel}</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[20] }}>
           {PURPOSES.map(([k, lb, ic]) => {
             const sel = f.purpose === k;
             return (
-              <Secim key={k} ton="teal" secili={sel} etiket={lb}
+              <Secim key={k} ton="teal" secili={sel} etiket={gorunur(lb)}
                 onPress={() => set("purpose", sel ? "" : k)}
                 ikon={<Ikon ad={ic} boy={13} renk={sel ? C.teal : C.muted} />}
                 stil={{ marginRight: SP[2], marginBottom: SP[2] }} />
@@ -6119,15 +6283,19 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
   return (
     <View style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.line,
                    borderRadius: R.sm, padding: ARA[18], marginTop: ARA[14] , ...ELEV.card }}>
+      {/* 🔴 23 Eylül — üst satır SABİT "BUGÜN" yazıyordu; altında "7 gün kaldı"
+          duruyordu (sahne 11/19/39). Seyahat bugün değilse başlık "SIRADAKİ
+          SEYAHATİN" olur; "gün kaldı" da KALKIŞ için ayrı bir anahtar. */}
       <Text style={{ color: C.dim, fontSize: FS.micro, letterSpacing: 1.6, fontWeight: "700" }}>
-        {BUYUK(t.calmEyebrow || "")}
+        {BUYUK((yakin && yakin.visit_date && String(yakin.visit_date).slice(0, 10) !== new Date().toISOString().slice(0, 10))
+          ? (t.nextTripEyebrow || t.calmEyebrow || "") : (t.calmEyebrow || ""))}
       </Text>
       {/* 🔴 3 EYLÜL — TASARIM 11 "BUGÜN" KARTI: başlık sıradaki seyahat
           ("Esenboğa · 14 gün"), altı tek cümle, altın "Misafir olarak host
           bul". Seyahat yoksa eski sakin-gün cümlesi. */}
       <Text style={{ color: C.ink, fontSize: FS.lg + 3, fontWeight: "700", marginTop: SP[2] }}>
         {yakin && yakin.visit_date
-          ? `${yakin.airport_code} · ${(() => { const g = Math.max(0, Math.round((new Date(yakin.visit_date) - new Date(new Date().toISOString().slice(0, 10))) / 86400000)); return g === 0 ? BUYUK(t.calmEyebrow || "") : String(t.planGiftLeft || "{n} gün").replace("{n}", String(g)); })()}`
+          ? `${yakin.airport_code} · ${(() => { const g = Math.max(0, Math.round((new Date(yakin.visit_date) - new Date(new Date().toISOString().slice(0, 10))) / 86400000)); return g === 0 ? BUYUK(t.calmEyebrow || "") : g === 1 ? (t.tripTomorrow || "yarın") : String(t.tripDaysLeft || t.planGiftLeft || "{n} gün").replace("{n}", String(g)); })()}`
           : t.calmTitle}
       </Text>
       {yakin && yakin.visit_date ? (

@@ -185,7 +185,9 @@ def main():
             # yalnız gerçek erişimlere bak.
             s = yorumsuz(ham[enM.end():]) + "\n" + "\n".join(
                 l for l in s.split("\n") if re.search(r"\bt\.[a-zA-Z_]", l))
-        nokta |= set(re.findall(r"\bt\.([a-zA-Z_]\w*)", s))
+        # 23 Eylül — `t?.x` (isteğe bağlı zincir) de erişimdir; Pickers/
+        # FlightField anahtarları bu yüzden "ölü" görünüyordu.
+        nokta |= set(re.findall(r"\bt\??\.([a-zA-Z_]\w*)", s))
         koseli |= set(re.findall(r"""\bt\[\s*["']([a-zA-Z_]\w*)["']\s*\]""", s))
         dizge |= set(re.findall(r"""["']([a-zA-Z_]\w{3,})["']""", s))
 

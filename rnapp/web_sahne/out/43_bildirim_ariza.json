@@ -1,0 +1,132 @@
+{
+ "console": [
+  {
+   "t": "warning",
+   "s": "[sahne logError] ortak.js:320 Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] bildirimlerim Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] network Network request failed offline"
+  }
+ ],
+ "errors": [],
+ "calls": [
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "notifications",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "ortak.js:320",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "notifications",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "bildirimlerim",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "network",
+   "err": "Network request failed",
+   "code": "offline"
+  }
+ ],
+ "metin": [
+  "LOUNGELINK",
+  "",
+  "Profil",
+  "G",
+  "Gökberk İnak",
+  "Ürün Yönetimi · İstanbul",
+  "• Temel Doğrulama · 44",
+  "0",
+  "OTURUM",
+  "—",
+  "YILDIZ",
+  "200",
+  "LOUNGEPUAN",
+  "14",
+  "KREDİ",
+  "Profil",
+  "",
+  "%17 · Profilini tamamla",
+  "5 eksik: fotoğraf, bio, LinkedIn…",
+  "",
+  "",
+  "Oturum Geçmişi",
+  "",
+  "",
+  "Değerlendirmeler",
+  "",
+  "",
+  "Bildirimler",
+  "",
+  "GÜVEN VE GÜVENLİK",
+  "",
+  "Güven Puanım",
+  "",
+  "",
+  "Güvenlik Merkezi",
+  "",
+  "ÖDÜLLER",
+  "",
+  "LoungePuan",
+  "",
+  "",
+  "Arkadaşını Davet Et",
+  "",
+  "",
+  "Kampanyalar",
+  "",
+  "HESABIM",
+  "",
+  "Plan",
+  "",
+  "",
+  "AYARLAR",
+  "",
+  "",
+  "Çıkış Yap",
+  "",
+  "",
+  "Ana Sayfa",
+  "",
+  "Keşfet",
+  "",
+  "Planım",
+  "",
+  "Tanış",
+  "",
+  "Profil",
+  "",
+  "LOUNGELINK",
+  "BİLDİRİMLER",
+  "Bildirimler",
+  "Tümü",
+  "Bağlantılar",
+  "İstekler",
+  "Oturumlar",
+  "Bildirimler",
+  "",
+  "Liste şu an gelmedi",
+  "Bağlantı bir an koptu. Verilerin duruyor.",
+  "Yeniden yükle"
+ ],
+ "tasan": [],
+ "bitisik": []
+}

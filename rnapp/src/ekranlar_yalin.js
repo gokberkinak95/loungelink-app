@@ -26,7 +26,7 @@
 // ============================================================================
 import MomentScreen from "./MomentScreen";
 import { AramaKutusu, Katlanir, eslesir } from "./Pickers";
-import { badgeLabel, fmtLongDate, mapErr, shortName, BUYUK } from "./i18n";
+import { badgeLabel, fmtLongDate, mapErr, shortName, BUYUK, gorunur, etkinDil } from "./i18n";
 import { bayrak } from "./runtime";
 import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
@@ -761,6 +761,17 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
 
   useEffect(() => {
     let sub, iv1, iv2;
+    // 🔴 23 EYLÜL — SIZINTI: iki yoklama döngüsü + kapanmamış kanal.
+    // `iv2 = iv2 || setInterval(...)` aşağıdaki async bloktan ÖNCE koşuyor,
+    // sonra async blok `iv2`yi YENİ bir aralıkla ezip ilkini kaybediyordu:
+    // açılan her sohbet, sonsuza kadar 8 sn'de bir oturum sorgusu atan
+    // bir döngü bırakıyordu. Ekran async blok bitmeden kapanırsa kanal
+    // aboneliği ve iki döngü temizlikten SONRA kuruluyordu.
+    // Çözüm: tek `iv2` (en başta, bir kez) + `bitti` bayrağı.
+    // 🆕 SINIF: "`x = x || yeni()` BİR KEZ ÇALIŞIR; ARKASINDAN GELEN
+    // `x = yeni()` O KORUMAYI SESSİZCE İPTAL EDER."
+    let bitti = false;
+    iv2 = setInterval(loadSess, 8000);
     // 🔴 20 AĞUSTOS — OTURUM KONTROLLERİ SOHBETTE HİÇ GÖRÜNMÜYORDU.
     // Gökberk: "ilan kabulü sonrası açılan sohbet ekranında oturum başlat,
     // oturum tamamla, canlı durum gibi alanlar yok gibi. Uçmuş sanki."
@@ -782,6 +793,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     (async () => {
       const { data: c, error: cErr } = await supabase
         .from("chat_channels").select("id").eq("request_id", request?.id).maybeSingle();
+      if (bitti) return;
       if (cErr) setErr(t.chatChannelErr || "Sohbet kanalı açılamadı.");
       if (!c) { setChan(null); return; }
       setChan(c.id);
@@ -793,11 +805,13 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
       // Artık son yükleme önbellekte duruyor ve ağ yokken o çiziliyor.
       // ⚠️ BAYAT VERİ TAZE GİBİ GÖSTERİLMİYOR: önbellek yaşı taşınıyor
       // (bkz. `onbellektenOku`), 72 saatten eskisi `bayat` işaretli gelir.
+      if (bitti) return;
       if (m) { setMsgs(m); onbellegeYaz("sohbet:" + c.id, m.slice(-50)); }
       else {
         const onb = await onbellektenOku("sohbet:" + c.id);
         if (onb && Array.isArray(onb.veri)) setMsgs(onb.veri);
       }
+      if (bitti) return;
       sub = supabase.channel("chat-" + c.id)
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `channel_id=eq.${c.id}` },
           p => addMsgs([p.new]))
@@ -807,11 +821,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         if (hata7) logError("ekranlar_yalin.js:684", hata7);
         if (m2) setMsgs(m2);
       }, 6000);
-      iv2 = setInterval(loadSess, 8000);
     })();
-    // Kanal bulunamasa bile oturum durumu tazelenmeye devam etmeli.
-    iv2 = iv2 || setInterval(loadSess, 8000);
-    return () => { if (sub) supabase.removeChannel(sub); clearInterval(iv1); clearInterval(iv2); };
+    // Kanal bulunamasa bile oturum durumu tazelenmeye devam ediyor (iv2 yukarıda).
+    return () => { bitti = true; if (sub) supabase.removeChannel(sub); clearInterval(iv1); clearInterval(iv2); };
   }, [request?.id, loadSess]);
 
   // ══════════════════════════════════════════════════════════════════
@@ -910,6 +922,33 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   // BİR ŞEY OLUR — KAPIYI ÖNÜNE KOY, EYLEM KENDİ KALSIN."
   const [bpPanel, setBpPanel] = useState(false);
   const [bpBitti, setBpBitti] = useState(false);
+
+  // 23 Eylül · "GELMEDİ Mİ?" — 15 dk bekleyen taraf buluşmayı kendisi
+  // kapatabilsin diye. `simdi` 30 sn'de bir ilerler: sayaç ("7 dk") ve
+  // eşiğin açılması ekrandan çıkıp girmeden görünür. Kural sunucuda
+  // (`gelmedi_bildir` · `gelmedi_bekleme_dk`); burası yalnız zamanı gösterir.
+  const [simdi, setSimdi] = useState(Date.now());
+  const [gelmediSor, setGelmediSor] = useState(false);
+  const [gelmediErr, setGelmediErr] = useState("");
+  const [gelmediBusy, setGelmediBusy] = useState(false);
+  // Eşik sunucudan (SQL 301 `gelmedi_esigi`) — BO'dan değişirse düğme de
+  // aynı dakikada açılır. Okunamazsa 15 (sunucu varsayılanı) ve sunucu
+  // yine kendi kuralını uygular: yanlış eşik en kötü "erken" hatası verir.
+  const [gelmediEsik, setGelmediEsik] = useState(15);
+  const esikOkundu = useRef(false);
+  useEffect(() => {
+    const iv = setInterval(() => setSimdi(Date.now()), 30000);
+    return () => clearInterval(iv);
+  }, []);
+  async function gelmediBildir() {
+    if (!request?.id || gelmediBusy) return;
+    setGelmediBusy(true); setGelmediErr("");
+    const { error } = await supabase.rpc("gelmedi_bildir", { p_request_id: request.id });
+    setGelmediBusy(false);
+    if (error) { logError("gelmedi_bildir", error); setGelmediErr(mapErr(t, error.message)); return; }
+    setGelmediSor(false);
+    await loadSess();
+  }
 
   // Doğrulama kapısı: ilk basışta paneli açar, panel "devam" derse başlatır.
   function baslatIstegi() {
@@ -1054,6 +1093,21 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   // Bu kullanıcı "başlat" dedi mi (çift onaylı başlatmanın kendi tarafı)
   const iStarted = !!(sess && (isHost ? sess.host_started_at : sess.guest_started_at));
   const otherStarted = !!(sess && (isHost ? sess.guest_started_at : sess.host_started_at));
+  // 23 Eylül · "Gelmedi mi?" — yalnız ben başlattım, karşı taraf başlatmadı
+  // ve eşik doldu (varsayılan 15 dk · sunucudaki `gelmedi_bekleme_dk` ile AYNI sayı).
+  const benimBas = sess && (isHost ? sess.host_started_at : sess.guest_started_at);
+  const beklemeDk = (sess && sess.status === "pending" && benimBas && !otherStarted)
+    ? Math.max(0, Math.floor((simdi - new Date(benimBas).getTime()) / 60000)) : null;
+  const gelmediAcik = beklemeDk != null && beklemeDk >= gelmediEsik;
+  useEffect(() => {
+    if (beklemeDk == null || esikOkundu.current) return;
+    esikOkundu.current = true;
+    (async () => {
+      const { data, error } = await supabase.rpc("gelmedi_esigi");
+      if (error) { logError("gelmedi_esigi", error); return; }
+      if (typeof data === "number" && data > 0) setGelmediEsik(data);
+    })();
+  }, [beklemeDk != null]);
   const liveClock = (sess && sess.started_at)
     ? (() => { const m = Math.max(0, Math.floor((Date.now() - new Date(sess.started_at).getTime()) / 60000));
                return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); })()
@@ -1180,8 +1234,16 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             </Text>
           </View>
         </TouchableOpacity>
-        {/* 4 Eylül — tasarım 06: sağda düğme yok. Acil durum (SOS) oturum
-            panelinin altında (bkz. panel). */}
+        {/* 🔴 23 Eylül (Gökberk onayı) — BİLDİR ÜST ÇUBUKTA.
+            Tanış sohbetinde (06b) sağ üstte "Bildir" vardı, salon sohbetinde
+            (06) yoktu — oysa yüz yüze buluşmanın konuşulduğu, DAHA riskli
+            olan sohbet bu. Tek yol oturum panelinin içindeki kırmızı kutuydu:
+            oturum başlamadan panel açılmıyor. Aynı bileşen, aynı yer, iki
+            sohbette aynı dil. Oturum varsa bildirim ona bağlanıyor. */}
+        {onReport && otherId ? (
+          <Btn v="redSoft" mini label={t.ppReport2} a11yLabel={t.reportIssue}
+            onPress={() => onReport(otherId, otherName, sess && sess.id)} />
+        ) : null}
       </View>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -1384,7 +1446,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             <Text style={{ color: C.ink, fontSize: FS.sm, lineHeight: SATIR(FS.sm) }}>{k.body}</Text>
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[6] }}>
               <Ikon ad="uyari" boy={FS.xs} renk={C.redInk} stil={{ marginRight: ARA[6] }} />
-              <Text style={{ flex: 1, minWidth: 0, color: C.redInk, fontSize: FS.xs }}>{t.queueFailed}</Text>
+              <Text style={{ flex: 1, minWidth: 0, color: C.redInk, fontSize: FS.xs }}>{k.hata && /blocked_pair|account_banned|account_deleted/.test(k.hata) ? mapErr(t, k.hata) : t.queueFailed}</Text>
               <TouchableOpacity hitSlop={TAP.slop} onPress={() => kuyruguYenidenDene(k.id)}
                 accessibilityRole="button" accessibilityLabel={t.queueRetry}
                 style={{ paddingHorizontal: ARA[8], paddingVertical: ARA[4] }}>
@@ -1454,8 +1516,10 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           {itirazPaneli}
         </View>
       )}
-      {/* SQL 284 — iptal edilmiş buluşmada da sorun bildirilebilir (kapıda ret sonrası oturum iptal olur) */}
-      {sess !== undefined && sess && sess.status === "cancelled" && (
+      {/* SQL 284 — iptal edilmiş buluşmada da sorun bildirilebilir (kapıda ret sonrası oturum iptal olur).
+          23 Eylül · SQL 301 — "gelmedi" bildirimiyle kapanan (expired) buluşmada da:
+          gelmedi denen taraf "ben oradaydım" diyebilmeli; bildirim onu buraya yönlendiriyor. */}
+      {sess !== undefined && sess && (sess.status === "cancelled" || sess.status === "expired") && (
         <View style={{ paddingHorizontal: ARA[10], paddingTop: SP[2], backgroundColor: C.card, borderTopWidth: 1, borderColor: C.line }}>
           {itirazPaneli}
         </View>
@@ -1572,13 +1636,35 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
       {sess !== undefined && (!sess || sess.status === "pending" || sess.status === "active") && (
         <View style={{ paddingHorizontal: ARA[22], paddingBottom: ARA[22], backgroundColor: C.card }}>
           {(!sess || sess.status === "pending") ? (
-            <>
-              <Btn v={iStarted ? "goldSoft" : "gold"} onPress={baslatIstegi} disabled={iStarted}
-                label={iStarted ? t.waitingOther : t.startSessionBtn} solAd={iStarted ? "bekliyor" : undefined}
-                a11yLabel={iStarted ? t.waitingOther : t.startSessionBtn} />
-            </>
+            iStarted ? (
+              /* 🔴 23 EYLÜL (Gökberk onayı) — BEKLEMEK BİR DÜĞME DEĞİLDİR.
+                 "Karşı taraf bekleniyor · 00:11" altın dolgulu birincil düğme
+                 gibi çiziliyordu: basılacak bir şey varmış gibi. Üstelik karşı
+                 taraf hiç gelmezse yapılacak HİÇBİR ŞEY yoktu — kapanış ilan
+                 saati + 2 saatte süpürgeyle geliyordu.
+                 Artık: sessiz bir durum satırı (ne zamandan beri beklediğin
+                 görünür) ve 15 dakika dolunca "Gelmedi mi? Bildir" (SQL 301
+                 §2 · süpürgeyle aynı kural, anında). */
+              <View>
+                <View accessibilityLiveRegion="polite"
+                  style={{ flexDirection: "row", alignItems: "center", justifyContent: "center",
+                           minHeight: TAP.minHeight, paddingHorizontal: SP[3] }}>
+                  <Ikon ad="bekliyor" boy={16} renk={C.mut} stil={{ marginRight: SP[2] }} />
+                  <Text style={{ color: C.mut, fontSize: FS.sm, fontWeight: "600" }}>
+                    {t.waitingOther}{beklemeDk != null ? ` · ${String(t.waitingMin || "{n} dk").replace("{n}", String(beklemeDk))}` : ""}
+                  </Text>
+                </View>
+                {gelmediAcik && (
+                  <Btn v="ghost" sm label={t.noShowBtn} a11yLabel={t.noShowBtn}
+                    onPress={() => { setGelmediErr(""); setGelmediSor(true); }} style={{ marginTop: SP[2] }} />
+                )}
+              </View>
+            ) : (
+              <Btn v="gold" onPress={baslatIstegi}
+                label={t.startSessionBtn} a11yLabel={t.startSessionBtn} />
+            )
           ) : (
-            <Btn v="gold" label={`${myConfirmed ? t.waitingOther : t.completeSessionBtn} · ${liveClock}`} solAd={myConfirmed ? "bekliyor" : undefined} onPress={() => setPanelOpen(true)}
+            <Btn v={myConfirmed ? "goldSoft" : "gold"} label={`${myConfirmed ? t.waitingOther : t.completeSessionBtn} · ${liveClock}`} solAd={myConfirmed ? "bekliyor" : undefined} onPress={() => setPanelOpen(true)}
               a11yLabel={myConfirmed ? t.waitingOther : t.completeSessionBtn} />
           )}
         </View>
@@ -1624,10 +1710,32 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                           NÖBETÇİNİN ARADIĞI DİZGİYİ İÇEREMEZ." */
                        shadowOpacity: 0, shadowRadius: 0,
                        shadowOffset: { width: 0, height: 0 }, elevation: 24 }}>
-          <Hdr t={t} ustBilgi={t.sceneSession} title={sess && sess.status === "completed" ? t.sessDone : t.sessInProgress}
+          <Hdr t={t} ustBilgi={t.sceneSession} title={sess && sess.status === "completed" ? t.sessDone
+                 : sess && (sess.status === "cancelled" || sess.status === "expired") ? t.sessClosedTitle
+                 : t.sessInProgress}
                onBack={panelKapat} />
         <ScrollView contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[30] }}>
-        {sess === undefined ? null : (!sess || sess.status === "pending") ? (
+        {sess === undefined ? null : (sess && (sess.status === "cancelled" || sess.status === "expired")) ? (
+          /* 🔴 23 EYLÜL — İPTAL/SÜRESİ DOLMUŞ OTURUM "TAMAMLANDI" PANELİNİ AÇIYORDU.
+             Bu üçlü yalnız pending → active → (geri kalan her şey = tamamlandı)
+             diye dallanıyordu. `session_status` beş değer taşıyor; iptal ve
+             süresi dolmuş oturum "+500 LoungePuan, +1 oturum" ve puanlama
+             formunu gösteriyor, puan gönderilince sunucu `not_completed`
+             döndürüyordu. Başlık da "Devam ediyor" diyordu.
+             🆕 SINIF: "BEŞ DEĞERLİ BİR DURUMU ÜÇ DALLA ÇİZEN EKRAN, KALAN
+             İKİSİNİ SON DALIN İÇİNE SAKLAR." */
+          <View style={{ alignItems: "center", paddingVertical: SP[3] }}>
+            <Ikon ad="bilgi" boy={28} renk={C.mut} />
+            <Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.lg, textAlign: "center", marginTop: SP[2] }}>
+              {t.sessClosedTitle}</Text>
+            <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", marginTop: SP[1], lineHeight: 19 }}>
+              {sess.cancel_reason === "not_started" ? t.sessClosedNotStarted
+                : sess.cancel_reason === "no_show" ? t.sessClosedNoShow
+                : sess.status === "expired" ? t.sessClosedExpired
+                : t.sessClosedCancelled}</Text>
+            <Text style={{ color: C.mut, fontSize: FS.xs, textAlign: "center", marginTop: SP[2] }}>{t.sessClosedCredit}</Text>
+          </View>
+        ) : (!sess || sess.status === "pending") ? (
           /* v1.75 + SQL 080: BAŞLATMA DA ÇİFT ONAYLI. Panel bu aşamada
              kimin "buluştuk" dediğini gösterir; süre iki taraf da basınca
              işlemeye başlar. */
@@ -1789,7 +1897,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 style={{ flex: 1, minHeight: TAP.minHeight, paddingHorizontal: SP[2], backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40", borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
                 <Text numberOfLines={1} style={{ textAlign: "center", textAlignVertical: "center", color: C.tealInk, fontWeight: "700", fontSize: FS.sm }}>{t.sessWhereShort}</Text>
               </TouchableOpacity>
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => (onReport ? onReport(otherId, otherName) : onSafety && onSafety())}
+              <TouchableOpacity hitSlop={TAP.slop} onPress={() => (onReport ? onReport(otherId, otherName, sess && sess.id) : onSafety && onSafety())}
                 accessibilityRole="button" accessibilityLabel={t.reportIssue}
                 style={{ flex: 1, minHeight: TAP.minHeight, paddingHorizontal: SP[2], backgroundColor: C.redBg, borderWidth: 1, borderColor: C.red + "40", borderRadius: R.xs, alignItems: "center", justifyContent: "center" }}>
                 <IkonMetin ad="uyari" renk={C.redInk} stilMetin={{ textAlign: "center", textAlignVertical: "center", color: C.redInk, fontWeight: "700", fontSize: FS.sm }} metin={t.sessReportShort} />
@@ -1950,6 +2058,14 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         </View>
       </Modal>
 
+      {/* "Gelmedi mi?" onayı — geri alınamaz bir kapanış, bu yüzden sonuçları
+          açıkça yazılı; varsayılan (sol) düğme beklemeye devam. */}
+      <ConfirmModal visible={gelmediSor}
+        title={t.noShowTitle}
+        body={gelmediErr ? (t.noShowBody + "\n\n" + gelmediErr) : t.noShowBody}
+        confirmLabel={t.noShowYes} cancelLabel={t.noShowKeep} danger busy={gelmediBusy}
+        onConfirm={gelmediBildir} onCancel={() => { setGelmediSor(false); setGelmediErr(""); }} />
+
       {/* SOS (§15: session sırasında güvenlik aracı) */}
       <Modal visible={sosOpen} transparent animationType="fade" onRequestClose={() => setSosOpen(false)}>
         <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", padding: ARA[30] }}>
@@ -1989,7 +2105,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 burada ADLARIYLA duruyorlar ve genişlik sıkıntısı yok. */}
             <Btn v="redSoft" label={t.ppReport2} style={{ marginTop: SP[4] }}
               onPress={() => { setSosOpen(false);
-                (onReport ? onReport(otherId, otherName) : onSafety && onSafety()); }} />
+                (onReport ? onReport(otherId, otherName, sess && sess.id) : onSafety && onSafety()); }} />
             <Btn v="redSoft" label={t.cancelReq} style={{ marginTop: SP[2] }}
               onPress={() => { setSosOpen(false); setConfirmCancel(true); }} />
             <Btn label={t.cancelNo} onPress={() => setSosOpen(false)} style={{ marginTop: SP[2] }} />
@@ -4149,6 +4265,9 @@ export function Wallet({ t, session, onBack }) {
 
       <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.goldLine, borderRadius: R.sm, padding: ARA[14], marginBottom: ARA[18] }}>
         <Text style={{ fontSize: FS.sm, color: C.goldInk, lineHeight: 19 }}>{t.walletBetaNote}</Text>
+        {/* 23 Eylül — cüzdan kredinin NE ZAMAN tutulup NE ZAMAN döndüğünü hiç
+            söylemiyordu; kurallar yalnız karşılama ekranında bir kez geçiyordu. */}
+        {!!t.walletRules && <Text style={{ fontSize: FS.sm, color: C.goldInk, lineHeight: 19, marginTop: SP[2] }}>{t.walletRules}</Text>}
         <Btn label={busy ? "…" : t.walletRequestBtn} onPress={requestCredits} disabled={busy} style={{ marginTop: SP[3], opacity: busy ? 0.6 : 1 }} />
         {!!msg && <Text style={{ color: C.tealInk, fontSize: FS.sm, marginTop: SP[2], textAlign: "center" }}>{msg}</Text>}
       </View>
@@ -4373,7 +4492,7 @@ export function HostApply({ t, session, onBack, onDone }) {
       if (m.includes("phone_not_verified")) return setErr(t.e_phone_not_verified);
       if (m.includes("application_pending")) return setErr(t.hostApplyPending);
       if (m.includes("already_host")) return setErr(t.hostApplyAlready);
-      return setErr(m);
+      return setErr(mapErr(t, m));   // 23 Eylül: ham kod/İngilizce metin ekrana çıkmıyor
     }
     load();
     onDone && onDone();
@@ -4390,7 +4509,7 @@ export function HostApply({ t, session, onBack, onDone }) {
           <IkonMetin ad="bekliyor" renk={C.goldInk} stilMetin={{ fontWeight: "700", color: C.goldInk, fontSize: FS.base }} metin={t.hostApplyPendingTitle} />
           <Text style={{ color: C.goldInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.hostApplyPendingBody}</Text>
           <Text style={{ color: C.goldInk, fontSize: FS.sm, marginTop: SP[2] }}>
-            {app.access_source} · {app.guest_capacity} {t.hostApplyGuestUnit}
+            {gorunur(app.access_source)} · {app.guest_capacity} {t.hostApplyGuestUnit}
           </Text>
         </View>
       ) : app.status === "rejected" ? (
@@ -4429,7 +4548,7 @@ export function HostApplyForm({ t, src, setSrc, cap, setCap, note, setNote, subm
         {ACCESS_SOURCES.map(a => (
           <TouchableOpacity key={a} onPress={() => setSrc(a)}
             style={[S.chip, src === a && S.chipOn, { marginBottom: SP[2] }]}>
-            <Text style={{ color: src === a ? C.gold : C.ink, fontSize: FS.sm }}>{a}</Text>
+            <Text style={{ color: src === a ? C.gold : C.ink, fontSize: FS.sm }}>{gorunur(a)}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -4474,17 +4593,22 @@ export function ProfileCompletionWidget({ profile, onEdit, t }) {
   // 5 Eylül — tasarım 09b: tek kompakt kart, altın iz kenar.
   //   "%17 · Profilini tamamla"
   //   "5 eksik: fotoğraf, biyografi, meslek"   (ilk üçü, gerisi "…")
-  const adlar = missing.map(m => String(m.label).toLocaleLowerCase("tr-TR"));
+  // 23 Eylül — "LinkedIn" → "linkedın": tr-TR küçültmesi I'yı noktasız ı yapıyor.
+  // Marka adları (büyük harfle başlayıp içinde büyük harf taşıyanlar) olduğu gibi kalır.
+  const adlar = missing.map(m => { const l = String(gorunur(m.label));
+    return /^[A-ZÇĞİÖŞÜ][a-zçğıöşü]*[A-Z]/.test(l) ? l
+      : (etkinDil() === "en" ? l.toLowerCase() : l.toLocaleLowerCase("tr-TR")); });
+  const yuzde = etkinDil() === "en" ? `${pct}%` : `%${pct}`;   // 23 Eylül: "%40" Türkçe yazımdır
   const liste = adlar.slice(0, 3).join(", ") + (adlar.length > 3 ? "…" : "");
   return (
     <TouchableOpacity hitSlop={TAP.slop} onPress={onEdit} accessibilityRole="button"
-      accessibilityLabel={`%${pct} · ${t ? t.pcTitle : "Profilini tamamla"}`}
+      accessibilityLabel={`${yuzde} · ${t ? t.pcTitle : "Profilini tamamla"}`}
       style={{ flexDirection: "row", alignItems: "center", backgroundColor: C.surface || C.card,
                borderWidth: 1, borderColor: C.goldTrace || C.goldLine, borderRadius: R.lg,
                paddingVertical: ARA[14], paddingHorizontal: SP[4], marginBottom: ARA[14], minHeight: 64, ...ELEV.card }}>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={{ fontSize: FS.sm + 1, fontWeight: "700", color: C.ink }}>
-          %{pct} · {t ? t.pcTitle : "Profilini tamamla"}
+          {yuzde} · {t ? t.pcTitle : "Profilini tamamla"}
         </Text>
         <Text numberOfLines={1} style={{ fontSize: FS.xs + 1, color: C.mutedAA, marginTop: ARA[4] }}>
           {missing.length} {t ? String(t.pcMissingSuffix || "").split(" · ")[0] : "eksik"}: {liste}
@@ -4510,7 +4634,7 @@ export function Amenities({ data, max = 6, size = "sm" }) {
                                paddingHorizontal: SP[2], paddingVertical: SP[1] }}>
           <Ikon ad={AMENITY_ICONS[k]} boy={size === "sm" ? 13 : 15} renk={C.mutedAA} />
           {size !== "sm" && (
-            <Text style={{ fontSize: FS.xs, color: C.mutedAA, marginLeft: SP[1] }}>{AMENITY_TR[k]}</Text>
+            <Text style={{ fontSize: FS.xs, color: C.mutedAA, marginLeft: SP[1] }}>{gorunur(AMENITY_TR[k])}</Text>
           )}
         </View>
       ))}
@@ -4710,7 +4834,7 @@ export function humanDate(iso) {
   if (!iso || iso.length !== 10) return null;
   const d = new Date(iso + "T12:00:00");
   if (isNaN(d)) return null;
-  return `${TR_DAYS[d.getDay()]}, ${d.getDate()} ${TR_MONTHS[d.getMonth()]}`;
+  return `${gorunur(TR_DAYS[d.getDay()])}, ${d.getDate()} ${gorunur(TR_MONTHS[d.getMonth()])}`;
 }
 export function addDays(n) {
   const d = new Date(); d.setDate(d.getDate() + n); return isoOf(d);
@@ -4721,14 +4845,14 @@ export function DateInput({ label = "TARİH", value, onChange }) {
   // Hızlı seçim: bugün, yarın ve sonraki iki gün. Havalimanı planları
   // ezici çoğunlukla bu pencerede — uzak tarih için seçici var.
   const quick = [
-    [addDays(0), "Bugün"],
-    [addDays(1), "Yarın"],
+    [addDays(0), gorunur("Bugün")],
+    [addDays(1), gorunur("Yarın")],
     [addDays(2), humanDate(addDays(2))?.split(",")[0] || "+2"],
     [addDays(3), humanDate(addDays(3))?.split(",")[0] || "+3"],
   ];
   return (
     <View style={{ marginBottom: ARA[14] }}>
-      <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, marginBottom: SP[1], letterSpacing: 1 }}>{label}</Text>
+      <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, marginBottom: SP[1], letterSpacing: 1 }}>{gorunur(label)}</Text>
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: SP[2] }}>
         {quick.map(([iso, lb]) => {
@@ -4747,7 +4871,7 @@ export function DateInput({ label = "TARİH", value, onChange }) {
                      borderRadius: R.xs, padding: SP[3], flexDirection: "row",
                      justifyContent: "space-between", alignItems: "center" }}>
             <Text style={{ color: human ? C.ink : C.dim, fontSize: FS.base, fontWeight: human ? "600" : "400" }}>
-              {human || "Tarih seç"}
+              {human || gorunur("Tarih seç")}
             </Text>
             <Ikon ad="takvim" boy={22} renk={C.mutedAA} />
           </TouchableOpacity>
@@ -4787,6 +4911,13 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [done, setDone] = useState(false);
+  // 🔴 23 Eylül — "BU KİŞİYİ DE ENGELLE". Bildirmek moderasyona gider ve
+  // günler sürebilir; kullanıcının o an ihtiyacı olan şey karşı tarafın
+  // ona ULAŞAMAMASI. İki eylem ayrı kalıyor (bildirim ≠ engel; biri
+  // yalnız engellemek isteyebilir, biri yalnız bildirmek) ama aynı
+  // ekranda, tek dokunuşla. Engel sessizdir: karşı tarafa bildirim gitmez.
+  const [engelleDe, setEngelleDe] = useState(false);
+  const [engellendi, setEngellendi] = useState(false);
   // Guvenlik Merkezi'nden gelindiginde hedef BELLI DEGIL — kisi secilmeli.
   // create_report bir hedef ister; "kimseyi" bildiremezsin. Bu yuzden
   // gecmiste temas ettigin kisileri listeliyoruz (oturum veya baglanti).
@@ -4830,8 +4961,15 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
       p_target: pick.id, p_type: type, p_description: desc.trim(),
       p_session: sessionId || null,
     });
+    if (error) { setBusy(false); setErr(mapErr(t, error.message)); return; }
+    if (engelleDe) {
+      // Bildirim kaydedildi; engel başarısız olursa bildirimi geri almıyoruz,
+      // yalnız dürüstçe söylüyoruz (teşekkür ekranında engel satırı çıkmaz,
+      // Güvenlik Merkezi'nden tekrar denenebilir).
+      const { error: e2 } = await supabase.rpc("engelle", { p_user: pick.id, p_sebep: type });
+      if (e2) logError("engelle", e2); else setEngellendi(true);
+    }
     setBusy(false);
-    if (error) { setErr(mapErr(t, error.message)); return; }
     setDone(true);
     if (onDone) onDone();
   }
@@ -4843,6 +4981,11 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
         <Ikon ad="tamam" boy={FS.bant} renk={C.mut} />
         <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginTop: SP[3], textAlign: "center" }}>{t.repSent}</Text>
         <Text style={{ fontSize: FS.sm, color: C.mut, marginTop: SP[2], textAlign: "center", lineHeight: 20 }}>{t.repSentBody}</Text>
+        {engellendi && (
+          <Text style={{ fontSize: FS.sm, color: C.mut, marginTop: SP[2], textAlign: "center", lineHeight: 20 }}>
+            {String(t.repBlockedToo || "").replace("{n}", pick.name || "")}
+          </Text>
+        )}
         <Btn label={t.close} onPress={onBack} style={{ marginTop: ARA[22], paddingHorizontal: ARA[40] }} />
       </View>
     </Sayfa>
@@ -4895,7 +5038,7 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
             <Secim key={k} bicim="radyo" ton="amber" secili={sel} onPress={() => setType(k)}
               stil={{ marginBottom: SP[2] }}
               ikon={<Ikon ad={ic} boy={15} renk={sel ? C.amberInk : C.mutedAA} />}
-              etiket={lb} />
+              etiket={gorunur(lb)} />
           );
         })}
 
@@ -4908,6 +5051,12 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
         <View style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, padding: SP[3], marginTop: ARA[14] }}>
           <Text style={{ fontSize: FS.sm, color: C.mutedAA, lineHeight: 17 }}>{t.repPrivacy}</Text>
         </View>
+
+        {!!pick.id && (
+          <Secim bicim="radyo" coklu a11yRol="checkbox" ton="amber" secili={engelleDe}
+            onPress={() => setEngelleDe(v => !v)} stil={{ marginTop: ARA[14] }}
+            etiket={t.repAlsoBlock} alt={t.repAlsoBlockSub} />
+        )}
 
         {!!err && <View style={[S.err, { marginTop: SP[3] }]}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
 

@@ -1,0 +1,3 @@
+Bu tur YENI migration YOK (300 / 301 / 302 daha once calistirildi).
+Istege bagli: sql\SEED8_AKIS_TEZGAHI.sql -> rapora "uygulamada_gorunen" sutunu gelir.
+Test hesaplari: akis.*@seed.loungelink.test  sifre: Seed1234!

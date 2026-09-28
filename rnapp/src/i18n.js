@@ -36,6 +36,63 @@ export function BUYUK(s) {
   return _etkinDil === "en" ? v.toUpperCase() : v.toLocaleUpperCase("tr-TR");
 }
 
+// ============================================================================
+// 🔴 23 EYLÜL — `gorunur(deger)`: SAKLANAN TÜRKÇE DEĞERİN EKRAN ADI.
+// İngilizce sahne taraması (53 sahne) İngilizce ekranda Türkçe buldu:
+// seyahat formunda "HAVALİMANI", "TARİH", "Bugün / Yarın / Cuma",
+// "Tarih seç", "Havayolu seç…", amaç çipinde "İş". Kaynağı tek sınıf:
+// SAKLANAN değerler (profil dili "Türkçe", sektör "Finans", erişim kaynağı
+// "Kredi Kartı Avantajı", seyahat amacı) ve paylaşılan sabitler Türkçe
+// yazılmış ve ekrana olduğu gibi basılıyordu. Değer VERİTABANINDA Türkçe
+// kalıyor (eşleştirme, filtre, kural motoru onu okuyor); yalnız GÖRÜNEN ad
+// etkin dile göre çevriliyor. Türkçede fonksiyon değeri aynen döndürür.
+// 🆕 SINIF: "SAKLANAN BİR DEĞERİ EKRAN METNİ OLARAK KULLANIRSAN, O DEĞERİN
+// DİLİ EKRANIN DİLİ OLUR."
+// ============================================================================
+const EN_KARSILIK = {
+  // diller (LANG_OPTS)
+  "Türkçe": "Turkish", "İngilizce": "English", "Fransızca": "French", "Almanca": "German",
+  "Arapça": "Arabic", "İspanyolca": "Spanish", "Japonca": "Japanese", "Çince": "Chinese",
+  // sektörler (SECTOR_OPTS)
+  "Teknoloji": "Technology", "Finans": "Finance", "Danışmanlık": "Consulting",
+  "Sağlık": "Healthcare", "Hukuk": "Law",
+  // erişim kaynakları (ACCESS_SOURCES) — marka adları çevrilmez
+  "Kredi Kartı Avantajı": "Credit card perk", "Havayolu Statüsü": "Airline status",
+  "Banka / Özel Bankacılık": "Bank / Private banking", "Kurumsal Seyahat": "Corporate travel",
+  // seyahat amacı (PURPOSES)
+  "İş": "Business", "Konferans": "Conference", "Tatil": "Leisure", "Aktarma": "Connecting",
+  "Etkinlik": "Event",
+  // şikâyet türleri (REPORT_TYPES)
+  "Taciz / rahatsız edici davranış": "Harassment / inappropriate behaviour",
+  "Dolandırıcılık": "Fraud", "Sahte profil": "Fake profile",
+  "Platform dışı ödeme talebi": "Off-platform payment request", "Diğer": "Other",
+  // salon olanakları (AMENITY_TR)
+  "Yiyecek": "Food", "Açık büfe": "Buffet", "Duş": "Shower", "Dinlenme": "Rest area",
+  "Çocuk alanı": "Kids' area", "Mescit": "Prayer room", "Çalışma": "Work area",
+  "Teras": "Terrace", "Sinema": "Cinema", "Oyun": "Games", "Emanet": "Luggage storage",
+  "Bebek bakım": "Baby care",
+  // tarih seçici
+  "TARİH": "DATE", "HAVALİMANI": "AIRPORT", "Bugün": "Today", "Yarın": "Tomorrow",
+  "Tarih seç": "Pick a date", "Havayolu seç…": "Pick an airline…",
+  "Pazar": "Sunday", "Pazartesi": "Monday", "Salı": "Tuesday", "Çarşamba": "Wednesday",
+  "Perşembe": "Thursday", "Cuma": "Friday", "Cumartesi": "Saturday",
+  // profil tamamlama (getProfileCompletion)
+  "Fotoğraf": "Photo", "Meslek": "Profession", "Diller": "Languages", "Lounge hakkı": "Lounge access",
+  // salon seçici sekmeleri
+  "Lounge seç…": "Pick a lounge…", "Tümü": "All", "İç Hat": "Domestic", "Dış Hat": "International",
+  // sayfa üst etiketleri (Hdr `scene`)
+  "CÜZDAN": "WALLET", "GEÇMİŞ": "HISTORY", "GÜVEN": "TRUST", "GÜVENLİK": "SAFETY",
+  "Güvenlik": "Safety", "İSTEK": "REQUEST",
+  "Ocak": "Jan", "Şubat": "Feb", "Mart": "Mar", "Nisan": "Apr", "Mayıs": "May", "Haziran": "Jun",
+  "Temmuz": "Jul", "Ağustos": "Aug", "Eylül": "Sep", "Ekim": "Oct", "Kasım": "Nov", "Aralık": "Dec",
+};
+export function gorunur(deger) {
+  if (deger == null) return deger;
+  if (_etkinDil !== "en") return deger;
+  const k = String(deger);
+  return EN_KARSILIK[k] || k;
+}
+
 export const D = {
   tr: {
     // 🔴 18 Eylül (md.12 · md.14) — ÜÇ ANAHTAR SİLİNDİ, ÇÜNKÜ ARTIK
@@ -187,6 +244,10 @@ export const D = {
     sceneGuide: "Rehber",
     sceneConnect: "Bağlantı",
     calmEyebrow: "Bugün",
+    nextTripEyebrow: "Sıradaki seyahatin",
+    tripTomorrow: "yarın",
+    tripDaysLeft: "{n} gün sonra",
+    hoursLeftShort: "{n} sa kaldı",
     // 🔴 30 Ağu — "Bekleyen bir işin yok" bir yapılacaklar uygulamasının
     // cümlesi. Bu ürün iş takip etmiyor; bir yolculuğun ortasında duruyor.
     // Boş durum bir eksiklik değil, bir DAVET olmalı (MARKA_SISTEMI §9).
@@ -341,6 +402,7 @@ export const D = {
     connIncoming: "Sana",
     connOutgoing: "Senden",
     connIncomingTitle: "SANA GELENLER",
+    connIncomingNoNote: "Not eklemedi.",
     connOutgoingTitle: "GÖNDERDİKLERİN",
     connIncomingN: "{n} gelen",
     connOutgoingN: "{n} gönderilen",
@@ -627,6 +689,12 @@ export const D = {
       "kontenjan_azaltilamaz": "Kabul edilmiş misafir varken kontenjan düşürülemez.",
       "kontenjan_dolulugun_altinda": "Kontenjan, dolu koltuk sayısının altına indirilemez.",
       "kendi_ilanlarin_cakisiyor": "Aynı saatte başka bir ilanın var. Önce onu kaldır ya da saatleri ayır.",
+      // SQL 301 §2 — "Gelmedi mi?" kapıları
+      "gelmedi_erken": "Karşı tarafı biraz daha bekle — \"Gelmedi mi?\" bildirimi bekleme süresi dolunca açılır.",
+      "gelmedi_once_baslat": "Önce sen oturumu başlatmalısın; bildirim yalnız bekleyen taraf için.",
+      "karsi_taraf_geldi": "Karşı taraf da oturumu başlattı — buluşma başladı.",
+      // SQL 301 §1 — engel
+      "cannot_block_self": "Kendini engelleyemezsin.",
       // 🔴 v3.4 · SQL 261 — GUEST İLAN AÇAMAZ.
       // Mesaj SUÇLAMIYOR, YOL GÖSTERİYOR: kapı bir ret değil bir adım.
       "not_a_host": "İlan açabilmek için önce host olman gerekiyor. Planım → Host ol adımından lounge hakkını beyan et.",
@@ -1017,6 +1085,12 @@ export const D = {
     sessSummaryBtn: "Oturumu gör",
     completeSessionBtn: "Oturumu Tamamla",
     waitingOther: "Karşı taraf bekleniyor",
+    waitingMin: "{n} dk",
+    noShowBtn: "Gelmedi mi? Bildir",
+    noShowTitle: "Karşı taraf gelmedi mi?",
+    noShowBody: "Buluşma kapanır. Misafirsen kredin iade edilir; karşı tarafın güven puanı etkilenir ve ikinize de bildirim gider. Yanlışlık olduysa karşı taraf itiraz edebilir.",
+    noShowYes: "Evet, gelmedi",
+    noShowKeep: "Beklemeye devam",
     cancelWord: "İptal",
     // 🔴 7. tur — acil sayfasındaki iptal düğmesi. "İptal" tek başına
     // "pencereyi kapat" sanılır; burada iptal edilen şey OTURUMDUR.
@@ -1027,6 +1101,16 @@ export const D = {
     cancelLateTitle: "Geç iptal",
     e_session_started: "Oturum başladı; iptali oturum ekranından yapabilirsin.",
     e_session_closed: "Bu oturum kapanmış.",
+    // 23 Eylül — SEED8 §5'in ölçtüğü ve karşılığı olmayan kodlar
+    e_already_requested: "Bu ilana zaten istek gönderdin — yanıtı bekleniyor.",
+    sessClosedTitle: "Bu oturum kapandı",
+    sessClosedNotStarted: "Oturum başlatılmadan buluşma saati geçti. Kimseye ceza yazılmadı.",
+    sessClosedNoShow: "Taraflardan biri gelmediği için oturum kapandı.",
+    sessClosedExpired: "Oturumun süresi doldu.",
+    sessClosedCancelled: "Oturum iptal edildi.",
+    sessClosedCredit: "Kredi hareketi cüzdanında görünür.",
+    e_sure_doldu: "Bu bildirim için süre doldu (oturumdan sonraki ilk saatler içinde yapılabiliyor).",
+    e_zaten_bildirildi: "Bunu zaten bildirdin — ekibimiz inceliyor.",
     continueWithGoogle: "Google ile devam et",
     continueWithApple: "Apple ile devam et",
     orWord: "veya",
@@ -1066,7 +1150,7 @@ export const D = {
     commentPh: "Deneyimini paylaş...",
     connSentWaiting: "Bağlantı isteği gönderildi — beklenen: {name}",
     shareStatus: "Durum güncellemesini paylaş",
-    locationNotShared: "Konumun paylaşılMAZ. Durum güncellemeleri gönüllüdür.",
+    locationNotShared: "Konumun paylaşılmaz; yalnız seçtiğin durum görünür.",
     lsHost1: "Lounge'dayım, seni bekliyorum",
     lsHost2: "Lounge girişindeyim",
     lsHost3: "10 dk gecikiyorum",
@@ -1088,7 +1172,10 @@ export const D = {
     refCondGH: "Host doğrulandığında",
     safeBlockedT: "Engellenen Kullanıcılar",
     safeBlockedB: "Engel listeni yönet",
-    safeBlockedLong: "Henüz kimseyi engellemedin. Herhangi bir sohbetten Bildir düğmesiyle bir kullanıcıyı engelleyebilirsin.",
+    safeBlockedLong: "Henüz kimseyi engellemedin. Bir sohbette Bildir'e dokunup \"Bu kişiyi de engelle\"yi işaretleyerek engelleyebilirsin.",
+    unblock: "Engeli kaldır",
+    blockedSince: "{d} tarihinde engellendi",
+    blockedNote: "Engellediğin kişi seni keşifte görmez, sana istek ya da mesaj gönderemez. Engeli kaldırmak eski sohbetleri geri açmaz.",
     safeDisputeT: "İtiraz Merkezi",
     safeDisputeB: "İtiraz aç veya takip et",
     safeDisputeLong: "Aktif itiraz yok. Tamamlanan oturumlarda kredinin emanette kaldığı 24 saatlik itiraz süresi vardır.",
@@ -1151,7 +1238,7 @@ export const D = {
     storyTitle: "Ağırlaman nasıl geçti?",
     storyBody: "Kartını paylaşmayı düşünen biri, bizim yazdığımız hiçbir cümleye senin bir cümlen kadar inanmaz. İki satır yeter.",
     storyPlaceholder: "Örn. Aktarmada üç saatim vardı, yanımda birini götürdüm; iyi bir sohbet oldu.",
-    storyNamePlaceholder: "Görünecek ad (örn. Gökberk İ.)",
+    storyNamePlaceholder: "Görünecek ad (örn. Ayşe K.)",
     storyConsent: "Bu cümlenin LoungeLink sitesinde yayınlanmasına izin veriyorum. Yalnız yukarıdaki ad görünür.",
     // 18 Eylül (md.14) — düğme neden kapalı, ekranda YAZIYOR. Sessizce
     // devre dışı bir düğme, bozuk bir düğmeden ayırt edilemez.
@@ -1222,6 +1309,11 @@ export const D = {
     subTabListings: "İlanlarım",
     subTabTrips: "Seyahatlerim",
     noAvailFound: "Bu havalimanında ilk sen olabilirsin. Müsait saatini yaz, kartındaki hak bir tanışmaya dönüşsün.",
+    // 🔴 22 Eylül — `noAvailFound` HOST'a yazılmış bir cümle ("müsait
+    // saatini yaz"). Misafire de gösteriliyordu: kartında hak olmayan
+    // birine "ilanını aç" demek, yapamayacağı işi öneriyor.
+    // 🆕 SINIF: "BOŞ EKRAN METNİ EKRANI DEĞİL, OKUYANI HEDEFLER."
+    noAvailFoundGuest: "Burada henüz açık ilan yok. Aşağıdan haber vermemizi iste; bu aralıkta biri ilan açtığında ilk sen duy.",
     // 🔴 SOĞUK BAŞLANGIÇ — cümlenin her sayısı SQL 279'dan, ölçülmüş.
     // Tahmini arz YOK: "3 host var" demiyoruz, "kural şunu diyor" diyoruz.
     sbBaslik: "Burada henüz yayında host yok.",
@@ -1313,7 +1405,7 @@ export const D = {
     gender: "CİNSİYET — kadınlara özel gizlilik özelliklerini açar",
     genders: [["male","Erkek"],["female","Kadın"],["other","Diğer"],["prefer_not_to_say","Belirtmek istemiyorum"]],
     doLogin: "Giriş Yap",   // 3 Eylül — tasarım 16: ok yok
-    emailPh: "gokberk@ornek.com",
+    emailPh: "ad@ornek.com",
     consentEyebrow: "Sözleşmeler",
     // 🔴 30 Ağu — sekme adı "Ana" idi. Tek başına bir sıfat; neyin
     // anası olduğunu söylemiyor. Diğer dört sekme (Keşfet, Planım,
@@ -1484,6 +1576,7 @@ export const D = {
     foundingMine: "Kurucu Host #{n} ✦",
     foundingMineSub: "Rozetin profilinde ve ilanlarında görünür — kalıcıdır.",
     foundingErr: "Şu an alınamadı — tekrar dene.",
+    foundingNoListing: "Kurucu host olmak için önce bir ilan yayınla.",
     foundingFull: "Kurucu kontenjanı doldu — normal host olarak devam edebilirsin.",
     // 🔴 v2.66 (Gökberk madde 4+14): misafirde "Kurucu Host ol" yerine
     // "Host olmak istiyorum" + bilgilendirici kart. Misafir kurucu
@@ -1549,7 +1642,7 @@ export const D = {
     ppConnect: "Bağlantı Kur",
     ppRespond: "İsteğe yanıt ver →",
     photoUpload: "Fotoğraf Ekle",
-    actionNeeded: "AKSİYON GEREKLİ",
+    actionNeeded: "YANITINI BEKLEYENLER",
     accept: "Kabul et",
     ccTitle: "Sohbet",
     safetyTitle: "Güvenlik Merkezi",
@@ -1569,7 +1662,7 @@ export const D = {
     e_phone_not_verified: "Önce telefonunu doğrula.",
     e_slots_exceed_capacity: "Slot sayısı beyan ettiğin konuk kapasitesini aşamaz.",
     e_no_access_declared: "Önce lounge erişim kaynağını beyan et.",
-    e_availability_expired: "Bu ilanın tarihi geçmiş.",
+    e_availability_expired: "Bu ilanın saati geçti; artık istek alamıyor.",
     phoneGate: "Telefonunu doğrula",
     verifyNow: "Şimdi doğrula →",
     fullyBooked: "Dolu",
@@ -1698,12 +1791,19 @@ export const D = {
   walletBalance: "BAKİYE", walletCredits: "kredi",
   // v2.93 — sayının ne işe yaradığını söyleyen satır
   walletCreditsMeans: "{n} misafir isteği gönderebilirsin",
+  walletRules: "İstek gönderince 1 kredi emanete alınır. Host reddederse, yanıt vermezse ya da kapıda alınmazsan iade edilir. Oturum başladıktan 5 dakika sonra yapılan iptalde iade yok.",
   // 12 Eylül — bakiye sorgusu düşerse kartın kendisi söylüyor.
   walletBalanceFail: "Bakiye şu an gelmedi — kredin duruyor.",
   // v2.93 · SQL 247 — boş keşif ekranını bir söze çeviren akış
   notifyTitle: "Burada henüz ilan yok",
   notifyBody: "Hangi havalimanında, hangi tarihlerde arıyorsun? Biri o aralıkta ilan açtığında sana ilk biz haber veririz.",
-  notifyAirport: "IST",
+  // 🔴 22 Eylül — BU BİR ETİKET, ÖRNEK DEĞER DEĞİL. "IST" yazıyordu;
+  // seçicide "AYT — Antalya" seçiliyken üstünde "IST" duruyordu ve
+  // kullanıcı hangisinin geçerli olduğunu anlayamıyordu (Gökberk cihazda
+  // gördü). Bir alanın etiketi, o alanın OLASI BİR DEĞERİ olamaz.
+  // 🆕 SINIF: "ETİKETE ÖRNEK DEĞER YAZARSAN, KULLANICI ONU SEÇİLMİŞ
+  // DEĞER SANIR — ETİKET ALANIN ADIDIR, İÇERİĞİ DEĞİL."
+  notifyAirport: "Havalimanı",
   notifyUntil: "Bitiş tarihi (isteğe bağlı)",
   notifyCta: "Haber ver",
   notifySaved: "Kaydedildi ✓",
@@ -1869,7 +1969,7 @@ export const D = {
     slots: "MİSAFİR SLOTU",
     saveTrip: "Seyahati Kaydet →",
     errSlots: "En az bir lounge hakkı kaynağı seç",
-    slotsOpen: "slot açık",
+    slotsOpen: "yer açık",
     // 🔴 30 Ağustos · Gece sistemi — KART ALTI GERİ SAYIMI.
     // Tasarımdaki `sayac`: kartın alt satırında, altın düğmenin solunda,
     // tek genişlikli ailede. Kullanıcının bu karttaki asıl sorusu "ne
@@ -1878,6 +1978,10 @@ export const D = {
     cdIn: "{v} içinde",
     cdNow: "Şu an açık",
     cdEnded: "Sona erdi",
+    listingEndedCard: "Saati geçti",
+    reqSentNotice: "İsteğin {ad} adlı host'a gitti. Yanıtı bildirim olarak alacaksın.",
+    reqSentNoticeCredit: "1 kredi emanette: host reddederse ya da ilan saatine kadar yanıt vermezse kendiliğinden iade edilir.",
+    reqDeclinedCard: "Bu kez olmadı",
     toDeparture: "kalkışa",
     bestMatch: "EN İYİ EŞLEŞME",
     // Tasarımın `.roz`u BÜYÜK HARF DEĞİL: "Misafir ücretsiz",
@@ -2014,9 +2118,14 @@ export const D = {
     repSubmit: "Bildirimi Gönder",
     repSent: "Bildirimin bize ulaştı",
     repSentBody: "Ekibimiz inceleyecek. Sonucu bildirim olarak alacaksın. Ciddi durumlarda hesap askıya alınır.",
+    repAlsoBlock: "Bu kişiyi de engelle",
+    repAlsoBlockSub: "Sana istek ve mesaj gönderemez, seni keşifte görmez. Karşı tarafa bildirim gitmez.",
+    repBlockedToo: "{n} engellendi. Güvenlik Merkezi'nden istediğin zaman kaldırabilirsin.",
     repPrivacy: "Bildirimin gizlidir — karşı taraf kimin bildirdiğini görmez. Kötüye kullanım kendi hesabını riske atar.",
     safetyWSMBody: "Yalnızca doğrulanmış kadın kullanıcılara görünürsün",
-    safetySOSBody: "Acil yardım çağrısı gönder — ekibimiz anında görür",
+    // 23 Eylül — "ekibimiz anında görür" veremeyeceğimiz bir söz; hayati tehlikede
+    // doğru ilk adım 112. Düğme destek ekibine çağrı gönderir, onu da söylüyor.
+    safetySOSBody: "Hayati tehlikede önce 112'yi ara. Bu düğme ekibimize yardım çağrısı gönderir.",
     sosWhat: "Ekibimize acil bir uyarı gider ve moderasyon kuyruğunda en üste düşer. Aktif oturumun varsa bilgisi eklenir.",
     sosNote: "Kısa not (isteğe bağlı)",
     sosSend: "Acil Uyarı Gönder",
@@ -2085,11 +2194,23 @@ export const D = {
     stAppLang: "Uygulama Dili",
     stDeleteAccount: "Hesabı Sil",
     stVisEveryone: "Herkes",
+    stVisTrusted: "Güvenilir üyeler",
     stVisConnections: "Yalnızca bağlantılar",
     stPwPlaceholder: "En az 8 karakter",
     stPwRepeat: "Şifreyi tekrarla",
     stPwSave: "Şifreyi Güncelle",
     stPwTooShort: "En az 8 karakter",
+    stPwSame: "Yeni şifre eskisiyle aynı olamaz.",
+    carrierPick: "Havayolu seç…",
+    searchCarrier: "Havayolu ara…",
+    searchCount: "{n} sonuç",
+    searchNoMatch: "Eşleşme yok",
+    flightQuotaTitle: "Günlük uçuş sorgu hakkın doldu",
+    flightQuotaBody: "Uçuş numarasını elle yazabilirsin; bilgiler yarın yeniden otomatik dolar.",
+    hwQuotaUnknown: "Kaç misafir hakkı verdiğini bilmiyoruz.",
+    hwQuotaLeft: "{k} misafir hakkı kaldı ({u}/{n} kullanıldı)",
+    planNoFreeVisits: "Ücretsiz ziyaret yok · ziyaret {fee} {cur}",
+    planFreeVisits: "{n} ücretsiz ziyaret · sonrası {fee} {cur}",
     stPwMismatch: "Şifreler eşleşmiyor",
     stPwDone: "Şifre güncellendi ✓",
     stPhoneEdit: "Telefonu Düzenle",
@@ -2262,6 +2383,10 @@ export const D = {
     sceneGuide: "Guide",
     sceneConnect: "Connection",
     calmEyebrow: "Today",
+    nextTripEyebrow: "Your next trip",
+    tripTomorrow: "tomorrow",
+    tripDaysLeft: "in {n} days",
+    hoursLeftShort: "{n} h left",
     calmTitle: "Quiet today. Shall we look at your next flight?",
     calmPulseSome: "{ap} · {n} hosts and {slot} open slots in the next 14 days.",
     calmPulseNone: "{ap} · no hosts yet in the next 14 days. You could be the first.",
@@ -2359,6 +2484,7 @@ export const D = {
     connIncoming: "To you",
     connOutgoing: "From you",
     connIncomingTitle: "SENT TO YOU",
+    connIncomingNoNote: "No note added.",
     connOutgoingTitle: "YOU SENT",
     connIncomingN: "{n} incoming",
     connOutgoingN: "{n} sent",
@@ -2600,6 +2726,10 @@ export const D = {
       "kontenjan_azaltilamaz": "Capacity cannot be lowered while a guest is accepted.",
       "kontenjan_dolulugun_altinda": "Capacity cannot go below the number of filled seats.",
       "kendi_ilanlarin_cakisiyor": "You already have another listing at that time. Remove it or separate the hours.",
+      "gelmedi_erken": "Give them a little longer — you can report a no-show once the waiting time is up.",
+      "gelmedi_once_baslat": "Start the session yourself first; only the waiting side can report a no-show.",
+      "karsi_taraf_geldi": "The other person has started the session too — your meeting is on.",
+      "cannot_block_self": "You can't block yourself.",
       "not_a_host": "You need to become a host before you can publish. Go to My Plan \u2192 Become a host and declare your lounge access.",
       "not_your_visit": "This trip is not yours.",
       "seyahate_bagli_basvuru_var": "You have an active request based on this trip. Airport and date are locked; you can still change times and flight details.",
@@ -2905,6 +3035,12 @@ export const D = {
     sessSummaryBtn: "See the session",
     completeSessionBtn: "Complete session",
     waitingOther: "Waiting for the other person",
+    waitingMin: "{n} min",
+    noShowBtn: "No-show? Report it",
+    noShowTitle: "Didn't they show up?",
+    noShowBody: "The meeting will close. If you are the guest, your credit is refunded; the other person's trust score is affected and you both get notified. If this is a mistake, they can dispute it.",
+    noShowYes: "Yes, they didn't come",
+    noShowKeep: "Keep waiting",
     cancelWord: "Cancel",
     cancelSessionBtn: "Cancel session",
     startDualTitle: "Have you met?",
@@ -2913,6 +3049,15 @@ export const D = {
     cancelLateTitle: "Late cancellation",
     e_session_started: "The session has started; cancel from the session screen.",
     e_session_closed: "This session is closed.",
+    e_already_requested: "You've already requested this listing — waiting for a reply.",
+    sessClosedTitle: "This session is closed",
+    sessClosedNotStarted: "The meeting time passed before the session was started. No one was penalised.",
+    sessClosedNoShow: "The session closed because one side didn't show up.",
+    sessClosedExpired: "The session has expired.",
+    sessClosedCancelled: "The session was cancelled.",
+    sessClosedCredit: "Any credit movement shows in your wallet.",
+    e_sure_doldu: "The window for this report has passed (it's open for the first hours after the session).",
+    e_zaten_bildirildi: "You've already reported this — our team is reviewing it.",
     continueWithGoogle: "Continue with Google",
     continueWithApple: "Continue with Apple",
     orWord: "or",
@@ -2974,7 +3119,10 @@ export const D = {
     refCondGH: "Host verified",
     safeBlockedT: "Blocked Users",
     safeBlockedB: "Manage your block list",
-    safeBlockedLong: "You haven't blocked anyone. You can block a user from any chat using the Report button.",
+    safeBlockedLong: "You haven't blocked anyone. In any chat, tap Report and tick \"Also block this person\".",
+    unblock: "Unblock",
+    blockedSince: "Blocked on {d}",
+    blockedNote: "People you block can't see you in discovery or send you requests or messages. Unblocking doesn't reopen old chats.",
     safeDisputeT: "Dispute Center",
     safeDisputeB: "Open or track a dispute",
     safeDisputeLong: "No active disputes. Completed sessions have a 24-hour dispute window during which credits stay in escrow.",
@@ -3090,6 +3238,7 @@ export const D = {
     subTabListings: "My Listings",
     subTabTrips: "My Trips",
     noAvailFound: "You could be the first at this airport. Post an hour you're free and turn your card into an introduction.",
+    noAvailFoundGuest: "No open listings here yet. Ask us to notify you below — you'll hear first when someone opens one for this window.",
     sbBaslik: "No hosts are live here yet.",
     sbGercek: "But {program} card programmes give guest access across {salon} lounges.",
     sbSenin: "Yours is one of them.",
@@ -3248,6 +3397,7 @@ export const D = {
     foundingMine: "Founding Host #{n} ✦",
     foundingMineSub: "Your badge shows on your profile and listings — permanently.",
     foundingErr: "Couldn't claim right now — try again.",
+    foundingNoListing: "Publish a listing first to become a founding host.",
     foundingFull: "Founding spots are full — you can continue as a regular host.",
     fcModalTitle: "The first 100 hosts form the founding circle",
     fcModalBody: "If your host application is approved and you are among the first 100, the Founding Host badge is yours permanently.",
@@ -3306,7 +3456,7 @@ export const D = {
     e_phone_not_verified: "Verify your phone first.",
     e_slots_exceed_capacity: "Slots cannot exceed your declared guest capacity.",
     e_no_access_declared: "Declare your lounge access source first.",
-    e_availability_expired: "This listing has expired.",
+    e_availability_expired: "This listing's time has passed; it no longer takes requests.",
     phoneGate: "Verify your phone",
     verifyNow: "Verify now →",
     fullyBooked: "Fully Booked",
@@ -3427,10 +3577,11 @@ export const D = {
   walletTitle: "Wallet", walletSub: "Your credit balance and history",
   walletBalance: "BALANCE", walletCredits: "credits",
   walletCreditsMeans: "You can send {n} guest requests",
+  walletRules: "Sending a request holds 1 credit. It comes back if the host declines, doesn't reply, or you're turned away at the door. Cancelling more than 5 minutes after the session starts is not refunded.",
   walletBalanceFail: "Balance didn't load — your credits are safe.",
   notifyTitle: "No listings here yet",
   notifyBody: "Which airport and which dates? When someone opens a listing in that window, you hear it from us first.",
-  notifyAirport: "IST",
+  notifyAirport: "Airport",
   notifyUntil: "End date (optional)",
   notifyCta: "Notify me",
   notifySaved: "Saved \u2713",
@@ -3583,6 +3734,10 @@ export const D = {
     cdIn: "in {v}",
     cdNow: "Open now",
     cdEnded: "Ended",
+    listingEndedCard: "Time has passed",
+    reqSentNotice: "Your request went to {ad}. You'll get the reply as a notification.",
+    reqSentNoticeCredit: "1 credit is held: it's returned automatically if the host declines or doesn't reply before the listing time.",
+    reqDeclinedCard: "Not this time",
     toDeparture: "to departure",
     bestMatch: "BEST MATCH",
     sameFlight: "Same flight",
@@ -3691,9 +3846,12 @@ export const D = {
     repSubmit: "Submit report",
     repSent: "Your report reached us",
     repSentBody: "Our team will review it. You'll get the outcome as a notification. Serious cases lead to suspension.",
+    repAlsoBlock: "Also block this person",
+    repAlsoBlockSub: "They can't send you requests or messages or see you in discovery. They won't be notified.",
+    repBlockedToo: "{n} is blocked. You can undo this any time in the Safety Center.",
     repPrivacy: "Your report is confidential — the other person cannot see who reported. Abuse puts your own account at risk.",
     safetyWSMBody: "Only verified women users can see you",
-    safetySOSBody: "Send an emergency alert — our team sees it immediately",
+    safetySOSBody: "In a life-threatening emergency call 112 first. This button sends a help request to our team.",
     sosWhat: "An urgent alert goes to our team and jumps to the top of the moderation queue. If you have an active session, its details are included.",
     sosNote: "Short note (optional)",
     sosSend: "Send emergency alert",
@@ -3759,11 +3917,23 @@ export const D = {
     stAppLang: "App Language",
     stDeleteAccount: "Delete Account",
     stVisEveryone: "Everyone",
+    stVisTrusted: "Trusted members",
     stVisConnections: "Connections only",
     stPwPlaceholder: "At least 8 characters",
     stPwRepeat: "Repeat password",
     stPwSave: "Update Password",
     stPwTooShort: "At least 8 characters",
+    stPwSame: "Your new password must be different from the old one.",
+    carrierPick: "Pick an airline…",
+    searchCarrier: "Search airlines…",
+    searchCount: "{n} results",
+    searchNoMatch: "No matches",
+    flightQuotaTitle: "Today's flight lookups are used up",
+    flightQuotaBody: "You can still type the flight number yourself; details fill in automatically again tomorrow.",
+    hwQuotaUnknown: "We don't know how many guest passes your card gives.",
+    hwQuotaLeft: "{k} guest passes left ({u}/{n} used)",
+    planNoFreeVisits: "No free visits · {fee} {cur} per visit",
+    planFreeVisits: "{n} free visits · then {fee} {cur}",
     stPwMismatch: "Passwords don't match",
     stPwDone: "Password updated ✓",
     stPhoneEdit: "Edit Phone",
@@ -3926,6 +4096,17 @@ export function mapErr(t, msg) {
   if (em[m]) return em[m];                                   // birebir kod
   const code = m.split(/[\s:]/).map(x => x.replace(/[^a-z_]/g, "")).find(x => em[x]);
   if (code && em[code]) return em[code];                     // bilinen kod
+  // 🔴 23 EYLÜL — `e_*` SÖZLÜĞÜ HİÇ OKUNMUYORDU.
+  // `hata_mesaji_check.py` bir kodu "karşılığı var" saymak için `errMap`
+  // YA DA `e_*` anahtarına bakıyor; bu fonksiyon ise yalnız `errMap`e
+  // bakıyordu. Denetim yeşil, kullanıcı "Bir şeyler ters gitti" görüyordu:
+  // `session_closed`, `not_completed`, `no_matching_trip`,
+  // `contact_not_verified`, `blocked_pair` … 22 kod (uçtan uca denetim).
+  // Yalnız 7 çağrı yeri `t["e_"+kod]`a kendisi bakıyordu.
+  // 🆕 SINIF: "BİR DENETİMİN 'KARŞILANDI' SAYDIĞI ŞEY, KODUN GERÇEKTEN
+  // OKUDUĞU ŞEY DEĞİLSE, DENETİM KAPSAMI DEĞİL SÖZLÜĞÜ ÖLÇÜYORDUR."
+  const eKod = m.split(/[\s:]/).map(x => x.replace(/[^a-z_0-9]/g, "")).find(x => x && t["e_" + x]);
+  if (eKod) return t["e_" + eKod];
   // Bilinmeyen/ham DB hatası (İngilizce Postgres mesajı gibi) → kullanıcıya
   // Türkçe genel mesaj göster. Ham mesajı geliştirme için konsola yaz.
   if (typeof console !== "undefined") console.warn("[mapErr] eşleşmeyen hata:", m);

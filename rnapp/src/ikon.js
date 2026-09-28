@@ -299,6 +299,9 @@ export const IKONLAR = {
   bekliyor:       "hourglass-outline",       // ⏳
   yasak:          "ban-outline",             // 🚫
   kilit:          "lock-closed-outline",     // 🔒
+  // 🔴 22 Eylül — şifre göster/gizle düğmesi için (giriş ekranı).
+  goz:            "eye-outline",              // şifreyi göster
+  gozKapali:      "eye-off-outline",          // şifreyi gizle
   kilitAcik:      "lock-open-outline",       // 🔓
   bayrak:         "flag-outline",            // 🚩
   acil:           "medkit-outline",          // 🆘

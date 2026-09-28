@@ -102,7 +102,13 @@ if os.path.isdir(SQLDIZ):
                 continue
             if re.search(r"\$\$|;\s|\b(grant|select|insert|update|create|execute|function)\b", deger, re.I):
                 continue
-            bul = ASCII_TR.search(deger)
+            # 🔴 23 EYLÜL — `re.I` Unicode'da ı/i/İ'yi EŞ sayıyor: DOĞRU yazılmış
+            # "kullanıcı" `kullanici` kalıbına uyuyordu. Nöbetçi, düzeltilmiş
+            # metni bozuk sayıyordu (300'de ölçüldü). Eşleşmenin kendisi
+            # yalnız ASCII ise bulgu sayılır.
+            # 🆕 SINIF: "TÜRKÇE METNİ DENETLEYEN BİR DESEN, BÜYÜK-KÜÇÜK HARF
+            # KATLAMASINI TÜRKÇE BİLMİYORSA, DÜZELTMEYİ DE HATA SAYAR."
+            bul = next((b for b in ASCII_TR.finditer(deger) if b.group(0).isascii()), None)
             if not bul or not TR_ISARET.search(deger):
                 continue
             pencere = s[max(0, m.start() - 120):m.start()]

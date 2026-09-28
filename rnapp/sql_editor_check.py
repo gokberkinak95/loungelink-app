@@ -44,6 +44,21 @@ koşmak zorunda değil. (Yerelde `pg_run.py` da `psql` kullanıyor ama
 meta-komuta ihtiyaç duymuyor — zaten `-v ON_ERROR_STOP=1` geçiyor.)
 
 TAVAN 0.
+
+🔴 23 EYLÜL — İKİNCİ ÖLÇÜ: İFADELER ARASI GEÇİCİ TABLO
+Gökberk `SEED8_AKIS_TEZGAHI.sql`i yapıştırdı:
+    ERROR: 42P01: relation "seed8_hesap" does not exist
+SQL Editor dosyadaki `begin; … commit;` bloğunu uygulamıyor; her ifade
+kendi işleminde. Satır başında (bir `do` bloğunun DIŞINDA) açılan
+`create temp table … on commit drop`, açıldığı ifade biter bitmez
+siliniyor; sonraki ifade onu bulamıyor. Yerelde psql tek işlem kurduğu
+için hiç görünmedi — begin/commit silinip koşunca aynı hata, aynı satır.
+Kural: satır başında geçici tablo YOK. İfadeler arası taşınacak veri
+kalıcı bir tabloda (`tezgah.*`) durur; geçici tablo yalnız tek bir
+`do` bloğunun içinde yaşar.
+🆕 SINIF: "BİR DOSYAYI HANGİ İŞLEM SINIRIYLA KOŞACAĞINI BİLMEDEN
+İFADELER ARASINA GEÇİCİ DURUM KOYMAK, O DURUMU BAŞKA BİR İSTEMCİDE
+YOK ETMEKTİR."
 ============================================================================
 """
 import os
@@ -58,6 +73,10 @@ TAVAN = 0
 # (E'\\n' gibi) satır başında olmadığı için yakalanmıyor.
 META = re.compile(r"^\s*\\(set|i|ir|include|echo|timing|gexec|c|connect|copy|pset|x|q|d[a-z]*)\b",
                   re.IGNORECASE)
+
+# Satır BAŞINDA (sütun 0) açılan geçici tablo = bir `do` bloğunun dışında.
+# Blok içindekiler girintili yazılıyor ve tek ifadede yaşıyor — sorun yok.
+GECICI = re.compile(r"^create\s+(temp|temporary)\s+table\b", re.IGNORECASE)
 
 
 def main():
@@ -88,6 +107,8 @@ def main():
         for n, satir in enumerate(open(os.path.join(SQL, f), encoding="utf-8"), 1):
             if META.match(satir):
                 bulgular.append((f, n, satir.strip()[:60]))
+            elif GECICI.match(satir):
+                bulgular.append((f, n, "ifadeler arası geçici tablo: " + satir.strip()[:40]))
 
     print("  taranan .sql dosyası : %d" % dosya)
     print("  bulgu                : %d  (tavan %d)" % (len(bulgular), TAVAN))
@@ -105,8 +126,10 @@ def main():
         print("  ÇÖZÜM: satırı sil. Hata koruması `do $$ … raise exception` ile")
         print("  zaten var; `ON_ERROR_STOP` yalnız `psql -f` akışında iş görür")
         print("  ve `pg_run.py` onu `-v ON_ERROR_STOP=1` ile kendisi geçiyor.")
+        print("  Geçici tablo bulgusu Editor'de 42P01 'relation does not exist' verir:")
+        print("  tabloyu `tezgah.*` altında kalıcı yap ya da tek bir `do` bloğuna taşı.")
     else:
-        print("  ✓ hiçbir dosyada satır başı psql meta-komutu yok")
+        print("  ✓ hiçbir dosyada satır başı psql meta-komutu ya da ifadeler arası geçici tablo yok")
     print("")
     print("SONUC  bulgu=%d  tavan=%d" % (len(bulgular), TAVAN))
     return 1 if len(bulgular) > TAVAN else 0

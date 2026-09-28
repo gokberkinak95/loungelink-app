@@ -51,6 +51,9 @@ SEEDLER = [
     # yalniz `pending` satir var (2 adet); `accepted` YOK. Yani bu iz
     # SEED7'ye ozgu ve baska hicbir seed onu uretmiyor.
     ('SEED7_TEZGAH.sql',            'sayi', "invites|status = 'accepted'|1"),
+    # 🔴 23 EYLUL — SEED8 (akis tezgahi). Izi: akis.host hesabi. Olctum:
+    # SEED..SEED7'de `akis.` onekli tek bir e-posta yok.
+    ('SEED8_AKIS_TEZGAHI.sql',      'satir', 'users.email=akis.host@seed.loungelink.test'),
 ]
 
 satirlar = []

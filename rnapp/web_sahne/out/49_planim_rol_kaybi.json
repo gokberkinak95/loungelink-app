@@ -1,0 +1,121 @@
+{
+ "console": [
+  {
+   "t": "warning",
+   "s": "[sahne logError] kabuk_rol Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] App.js:790 Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] home_role Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] network Network request failed offline"
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] kabuk_rol Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] kabuk_rol Network request failed "
+  }
+ ],
+ "errors": [],
+ "calls": [
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "users",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "users",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "users",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "kabuk_rol",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "App.js:790",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "home_role",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "network",
+   "err": "Network request failed",
+   "code": "offline"
+  },
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "users",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "kabuk_rol",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "users",
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "kabuk_rol",
+   "err": "Network request failed",
+   "code": null
+  }
+ ],
+ "metin": [
+  "Hesap bilgin şu an yüklenemedi; bazı bölümler eksik görünebilir.",
+  "Yeniden dene",
+  "LOUNGELINK",
+  "HAVALİMANI ZİYARETLERİNİ YÖNET",
+  "Seyahatlerim",
+  "Seyahatlerim",
+  "",
+  "Sıradaki uçuşunu yaz. Kapıyı kimin açabileceğini o an göreceksin.",
+  "Seyahat Ekle",
+  "",
+  "Ana Sayfa",
+  "",
+  "Keşfet",
+  "",
+  "Planım",
+  "",
+  "Tanış",
+  "1",
+  "",
+  "Profil"
+ ],
+ "tasan": [],
+ "bitisik": []
+}

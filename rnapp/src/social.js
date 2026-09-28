@@ -44,7 +44,15 @@ export const RESET_REDIRECT = ExpoLinking.createURL("reset-password");
 // olmuş kullanıcı); Supabase'in Apple sağlayıcısı web OAuth ile Android'de
 // de çalışır (Service ID + Key kurulumu aynı). iOS'ta native akış kalır.
 export async function appleAvailable() {
-  if (Platform.OS !== "ios") return true;
+  // 🔴 22 EYLÜL — ANDROID'DE APPLE DÜĞMESİ KALKTI (Gökberk: "androidde
+  // apple olmamalı sonuçta"). Önceki hâl Android'de `true` dönüyordu ve
+  // düğmeyi web OAuth'a yönlendiriyordu; bu ancak Supabase'de Apple
+  // sağlayıcısı (Service ID + Key) kuruluysa çalışır. Kurulu değilken
+  // düğme kullanıcıyı çıkmaza götürüyordu — ve kurulu olsa bile Android
+  // kullanıcısına Apple girişi teklif etmek alışılmış değil.
+  // 🆕 SINIF: "BİR GİRİŞ YÖNTEMİNİ, ARKASINDAKİ KURULUMUN VARLIĞINI
+  // ÖLÇMEDEN GÖSTERMEK, KULLANICIYA ÇALIŞMAYAN BİR KAPI AÇMAKTIR."
+  if (Platform.OS !== "ios") return false;
   try { return await AppleAuthentication.isAvailableAsync(); } catch (e) { return false; }
 }
 

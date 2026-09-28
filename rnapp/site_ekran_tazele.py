@@ -78,7 +78,16 @@ ESLESME = [
     #
     # 🆕 SINIF: "BİR GÖRSELİN ADINI DEĞİL GÖSTERDİĞİ ŞEYİ ANLAT — AD
     # ESKİYEBİLİR, GÖSTERDİĞİ ŞEY ESKİMEZ."
-    ("ss-eslesme.jpg", "06b_sohbet_tanis", "Bağlandınız — sohbet açıldı"),
+    # 🔴 21 EYLÜL — Gökberk: "örnek sohbet ekranı biraz boş bir ss gibi".
+    # Ölçtüm, haklı: `06b_sohbet_tanis` dört mesaj taşıyor ve karenin
+    # ALT %55'i boş siyah. Sebep ürün kusuru değil — sohbet ekranı kısa
+    # bir konuşmayı ÜSTTEN diziyor. Üründe doğru, VİTRİNDE yanlış:
+    # ziyaretçi boşluğu "içi yok" diye okuyor.
+    # `45_sohbet_uzun` aynı ekranın dolu hâli: geri sayım, konum şeridi,
+    # hızlı yanıt çipleri, yazma kutusu, bekleme düğmesi — hepsi görünür.
+    # 🆕 SINIF: "VİTRİNE ÜRÜNÜN EN SEYREK HÂLİNİ KOYARSAN, ZİYARETÇİ
+    # ÜRÜNÜN KENDİSİNİ SEYREK SANIR — EN DOLU DOĞRU HÂLİNİ KOY."
+    ("ss-eslesme.jpg", "45_sohbet_uzun", "Sohbet — kapıda buluşma koordinasyonu"),
     ("ss-tanis.jpg", "05_tanis", "Tanış — havalimanı yol arkadaşı ağı"),
     ("ss-m.jpg", "06_sohbet", "Sohbet — oturum öncesi koordinasyon"),
     ("ss-oturum.jpg", "35_canli_durum", "Oturum · canlı durum paylaşımı"),

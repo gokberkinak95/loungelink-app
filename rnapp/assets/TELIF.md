@@ -42,6 +42,7 @@ REFERANSTAN BİR YÜKÜMLÜLÜĞE ÇEVİRİR."
 | `bant_hale.png` | `brand/build_bant_hale.py` üretiyor (paletten · bandın iki radial halesi) | kendi üretimimiz | ✓ |
 | `icon.png` · `adaptive-icon.png` · `monochrome-icon.png` · `notification-icon.png` · `favicon.png` · `splash.png` | `brand/build_kemer.py` üretiyor (kemer geometrisi elle çizildi; swoosh izi kendi eski ikonumuzdan `cv2.findContours` ile alındı) | kendi üretimimiz | ✓ |
 | `arsiv_ikon_v5/*` | v5 ikon setinin derecelendirme/yenileme ÖNCESİ hâli — "eski dosya silinmez" kuralı gereği saklandı, dağıtılmıyor | kendi üretimimiz | ✓ |
+| `arsiv_ikon_20260923/*` | 23 Eyl ikon/açılış turu (#1 #2 #10) ÖNCESİ hâli — işaret %2 aşağıdaydı, adaptive güvenli daireyi aşıyordu, splash opak zeminliydi. "Eski dosya silinmez" kuralı gereği saklandı, dağıtılmıyor | kendi üretimimiz | ✓ |
 | `tanecik.png` | `brand/build_tanecik.py` üretiyor (sabit tohumlu rastgele gren · ekranın üstüne serilen dither katmanı) | kendi üretimimiz | ✓ |
 | `fonts/ionicons.ttf` | `@expo/vector-icons` 14.0.4 · Ionicons (ionic-team) — 5 Eyl: dosya adı küçük harf (Android aileyi addan türetiyor; eski `Ionicons.ttf` → `arsiv/fontlar/`) | **MIT** — ticari kullanım ve dağıtım serbest | ✓ |
 | `splash.png` | `brand/build_brand.py` | kendi üretimimiz | ✓ |

@@ -188,6 +188,16 @@ function kaliciMi(error) {
   if (kod === "23505") return false;                 // zaten teslim — başarı sayılır
   if (kod.startsWith("42") || kod === "23514") return true;  // yetki / kısıt
   if (m.includes("row-level security") || m.includes("violates")) return true;
+  // 🔴 23 Eylül · SQL 301 — İŞ KURALI REDDİ KALICIDIR.
+  // `raise exception 'blocked_pair'` (engel), `account_banned`,
+  // `account_deleted` Postgres'te P0001 kodlu gelir. Önceki sürüm P0001'i
+  // tanımıyordu → "bilmiyorsak geçici" dalına düşüyordu → kuyruk her
+  // denemede aynı mesajda duruyor ve ARKASINDAKİ, başka sohbetlere giden
+  // mesajları da sonsuza kadar bekletiyordu. Tek istisna hız sınırı ve
+  // oturum düşmesi: onlar gerçekten zamanla geçer.
+  // 🆕 SINIF: "SUNUCUNUN BİLEREK VERDİĞİ BİR 'HAYIR'I AĞ HATASI GİBİ
+  // TEKRAR DENEMEK, KUYRUĞUN TAMAMINI O 'HAYIR'IN ARKASINA KİLİTLER."
+  if (kod === "P0001") return !/rate_limited|not_authenticated/.test(m);
   if (m.includes("network") || m.includes("fetch") || m.includes("timeout")) return false;
   return false;   // bilmiyorsak GEÇİCİ say — mesajı atmaktansa tekrar deneriz
 }

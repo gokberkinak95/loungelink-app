@@ -1072,7 +1072,7 @@
  [
   "192_on_kontrol_kapi_hizalama.sql",
   "govde",
-  "request_precheck|,    coalesce(nullif(d ->>"
+  "request_precheck|Bu ilana misafir alınamıyor"
  ],
  [
   "193_kart_etiketi_ve_kabin_yazma.sql",
@@ -1668,5 +1668,20 @@
   "299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql",
   "kolon",
   "supurge_damgasi.kaynak"
+ ],
+ [
+  "300_uctan_uca_denetim.sql",
+  "indeks",
+  "idx_messages_from"
+ ],
+ [
+  "301_guven_ve_akis_tamamlama.sql",
+  "kolon",
+  "blocks.sebep"
+ ],
+ [
+  "302_test_hesaplarini_gorenler.sql",
+  "tablo",
+  "test_gorunurlugu"
  ]
 ]

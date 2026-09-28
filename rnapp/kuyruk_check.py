@@ -12,7 +12,7 @@ Bir mesaj kuyruğunun iki ölümcül hatası vardır ve ikisi de SESSİZDİR:
      atılırsa, kullanıcı gönderdiğini sanır. Hiç göndermemekten kötüdür.
 
 Bu denetim `src/cevrimdisi.js`i node ile GERÇEKTEN koşturur: sahte bir
-AsyncStorage ve sahte bir Supabase ile 8 senaryo oynar.
+AsyncStorage ve sahte bir Supabase ile 9 senaryo oynar.
 
 🆕 SINIF: "BİR KUYRUĞUN DOĞRULUĞU MUTLU YOLDA DEĞİL, AĞIN YARIDA
 KOPTUĞU YERDE ÖLÇÜLÜR."
@@ -105,6 +105,24 @@ let l = await M.kuyrugaBak();
 sonuc.kalici_kayit_sayisi = l.length;
 sonuc.kalici_durum = l[0] && l[0].durum;
 
+// 6b · İŞ KURALI REDDİ (P0001 · SQL 301 engel): kalıcıdır, ARKADAKİ
+// başka sohbetin mesajını KİLİTLEMEZ. Hız sınırı ise geçicidir.
+depo.clear();
+senaryo = (row) => row.channel_id === "engelli"
+  ? ({ error: { code: "P0001", message: "blocked_pair" } }) : ({ error: null });
+await M.mesajKuyruga({ ...msj("engelli-mesaj"), channel_id: "engelli" });
+await M.mesajKuyruga(msj("arkadaki"));
+const r6b = await M.kuyrugaAkit();
+l = await M.kuyrugaBak();
+sonuc.p0001_dustu = (l.find(x => x.channel_id === "engelli") || {}).durum;
+sonuc.p0001_arkasi_gitti = r6b.gonderildi;
+depo.clear();
+senaryo = () => ({ error: { code: "P0001", message: "rate_limited" } });
+await M.mesajKuyruga(msj("hizli"));
+await M.kuyrugaAkit();
+l = await M.kuyrugaBak();
+sonuc.rate_limited_gecici = (l[0] || {}).durum || "bekliyor";
+
 // 7 · TAVAN: dolunca YENİYİ reddeder ve SÖYLER (eskiyi atmaz)
 depo.clear();
 senaryo = () => ({ error: { message: "network" } });
@@ -164,6 +182,9 @@ bekle("23505 başarı sayılmalı (mükerrer yok)", "dup_gonderildi", 1)
 bekle("23505 sonrası kuyruk boşalmalı", "dup_kalan", 0)
 bekle("kalıcı hata SİLİNMEMELİ", "kalici_kayit_sayisi", 1)
 bekle("kalıcı hata 'dustu' işaretlenmeli", "kalici_durum", "dustu")
+bekle("P0001 iş kuralı reddi kalıcı ('dustu')", "p0001_dustu", "dustu")
+bekle("P0001 reddi arkadaki mesajı kilitlememeli", "p0001_arkasi_gitti", 1)
+bekle("rate_limited geçici kalmalı", "rate_limited_gecici", "bekliyor")
 bekle("tavan uygulanmalı", "tavan", 200)
 bekle("tavan dolunca yeni REDDEDİLMELİ", "tavan_reddi", True)
 bekle("tavanda EN ESKİ korunmalı", "tavan_ilk_korundu", True)
@@ -184,7 +205,7 @@ try:
 except Exception:
     pass
 
-print(f"kuyruk_check · 17 davranış sınaması · bulgu: {len(hata)}")
+print(f"kuyruk_check · 20 davranış sınaması · bulgu: {len(hata)}")
 for h in hata[:10]:
     print(f"   ✗ {h}")
 if hata:

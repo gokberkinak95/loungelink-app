@@ -1,0 +1,97 @@
+{
+ "console": [
+  {
+   "t": "warning",
+   "s": "[sahne logError] discover_availabilities Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] network Network request failed offline"
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] discover_availabilities Network request failed "
+  },
+  {
+   "t": "warning",
+   "s": "[sahne logError] network Network request failed offline"
+  }
+ ],
+ "errors": [],
+ "calls": [
+  {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "discover_availabilities",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "network",
+   "err": "Network request failed",
+   "code": "offline"
+  },
+  {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
+   "kind": "logError",
+   "screen": "discover_availabilities",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "network",
+   "err": "Network request failed",
+   "code": "offline"
+  }
+ ],
+ "metin": [
+  "LOUNGELINK",
+  "",
+  "İSTANBUL · IST",
+  "İstanbul",
+  "Kalkışına 1 sa 40 dk",
+  "İstanbul",
+  "",
+  "",
+  "Liste şu an gelmedi",
+  "Bağlantı bir an koptu. Verilerin duruyor.",
+  "Yeniden yükle",
+  "",
+  "Ana Sayfa",
+  "",
+  "Keşfet",
+  "",
+  "Planım",
+  "",
+  "Tanış",
+  "1",
+  "",
+  "Profil"
+ ],
+ "tasan": [],
+ "bitisik": []
+}

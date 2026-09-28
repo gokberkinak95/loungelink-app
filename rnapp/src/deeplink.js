@@ -33,7 +33,7 @@
 //   · ?error=...&error_code=...&error_description=...     (süresi dolmuş bağlantı)
 // ============================================================
 
-import { supabase } from "./supabase";
+import { logError, supabase } from "./supabase";
 
 // Hem '#' hem '?' parçalarını tek sözlükte toplar. Supabase bazen ikisini
 // birden kullanır (…/reset-password?foo=1#access_token=…), o yüzden ayrı ayrı
@@ -83,9 +83,22 @@ export async function applyAuthUrl(url, t) {
       type,
       message: expired
         ? (tr.dlExpired || "Bağlantının süresi dolmuş. Lütfen yeni bir sıfırlama bağlantısı iste.")
-        : (p.error_description || tr.dlFailed || "Bağlantı doğrulanamadı."),
+        : (tr.dlFailed || "Bağlantı doğrulanamadı."),
     };
   }
+
+  // 🔴 23 Eylül — HAM İNGİLİZCE MESAJ KULLANICIYA GİTMİYOR.
+  // Önceki sürüm Supabase'in `error.message` / `error_description` metnini
+  // ("Email link is invalid or has expired", "Token has expired or is
+  // invalid") olduğu gibi döndürüyordu ve App.js onu ekrana basıyordu.
+  // Artık iki cümleden biri: süresi dolmuş / doğrulanamadı. Ham metin kayda.
+  const dost = (ham) => {
+    const m = String(ham || "");
+    if (m) logError("deeplink", m);
+    return /expired|otp_expired|invalid/i.test(m)
+      ? (tr.dlExpired || "Bağlantının süresi dolmuş. Lütfen yeni bir sıfırlama bağlantısı iste.")
+      : (tr.dlFailed || "Bağlantı doğrulanamadı.");
+  };
 
   try {
     // 2) implicit akış — jetonlar adres parçasında
@@ -94,7 +107,7 @@ export async function applyAuthUrl(url, t) {
         access_token: p.access_token,
         refresh_token: p.refresh_token,
       });
-      if (error) return { ok: false, type, message: error.message };
+      if (error) return { ok: false, type, message: dost(error.message) };
       return { ok: true, type: type || "recovery" };
     }
 
@@ -104,18 +117,18 @@ export async function applyAuthUrl(url, t) {
         token_hash: p.token_hash,
         type: p.type,
       });
-      if (error) return { ok: false, type, message: error.message };
+      if (error) return { ok: false, type, message: dost(error.message) };
       return { ok: true, type: p.type };
     }
 
     // 4) PKCE / OAuth dönüşü
     if (p.code) {
       const { error } = await supabase.auth.exchangeCodeForSession(p.code);
-      if (error) return { ok: false, type, message: error.message };
+      if (error) return { ok: false, type, message: dost(error.message) };
       return { ok: true, type: type || "oauth" };
     }
   } catch (e) {
-    return { ok: false, type, message: String(e && e.message ? e.message : e) };
+    return { ok: false, type, message: dost(e && e.message ? e.message : e) };
   }
 
   return { ok: false, type: null, message: null };  // auth adresi değil — sessiz geç

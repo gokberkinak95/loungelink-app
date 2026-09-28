@@ -2,7 +2,7 @@ import FlightField from "./FlightField";
 import { HostPanel, useReciprocityMoment } from "./HostWallet";
 import MomentScreen from "./MomentScreen";
 import { CarrierPicker, Katlanir } from "./Pickers";
-import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK } from "./i18n";
+import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK, gorunur } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
 import { sadeGorunumMu, sadeGorunumYaz } from "./atmosfer";
@@ -221,7 +221,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                 <TouchableOpacity hitSlop={TAP.slop} onPress={() => onEditTrip && onEditTrip(r)}
                   accessibilityRole="button" accessibilityLabel={t.editTrip} style={{ flex: 1, minWidth: 0 }}>
                   <Text numberOfLines={1} style={{ fontSize: FS.lg - 1, fontWeight: "700", color: C.ink }}>
-                    {r.airport_code}{r.purpose ? ` · ${(PURPOSES.find(x => x[0] === r.purpose) || [])[1] || ""}` : r.destination ? ` → ${r.destination}` : ""}
+                    {r.airport_code}{r.purpose ? ` · ${gorunur((PURPOSES.find(x => x[0] === r.purpose) || [])[1] || "")}` : r.destination ? ` → ${r.destination}` : ""}
                   </Text>
                 </TouchableOpacity>
                 {/* 🔴 13 EYLÜL (Gökberk md.17) — "2 kişi · 4 yaş ne?"
@@ -394,7 +394,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
             {PURPOSES.map(([k, lb, ic]) => {
               const on = purpose === k;
               return (
-                <Secim key={k} ton="teal" secili={on} etiket={lb}
+                <Secim key={k} ton="teal" secili={on} etiket={gorunur(lb)}
                   onPress={() => setPurpose(on ? "" : k)}
                   ikon={<Ikon ad={ic} boy={14} renk={C.mutedAA} />} />
               );
@@ -1109,13 +1109,17 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                   ÇİZMEYE DEVAM EDERSEN, KULLANICI ONU DENER VE SONUCUNU
                   'ÇALIŞMIYOR' DİYE OKUR."
                   ══════════════════════════════════════════════════════════ */}
+              {/* 🔴 23 Eylül (Gökberk onayı) — "İlanı kaldır" "İlanı düzenle" ile
+                  AYNI ağırlıkta, yan yanaydı ve kırmızıydı: göz önce yıkıcı eyleme
+                  gidiyordu. Artık SOLDA, sessiz metin; kırmızı yalnız onay
+                  penceresinde (geri dönüşü olan yer orası). Düzenle sağda kalıyor. */}
               {durum !== "gecmis" && (
-              <View style={{ flexDirection: "row", gap: SP[4], marginTop: SP[2], alignItems: "center", justifyContent: "flex-end" }}>
+              <View style={{ flexDirection: "row", gap: SP[4], marginTop: SP[2], alignItems: "center", justifyContent: "space-between" }}>
                 {durum === "canli" ? (
                   <TouchableOpacity hitSlop={TAP.slop} onPress={() => setSilAdayi({ id: r.id, acik: reqs.filter(q => q.avail_id === r.id && (q.status === "pending" || q.status === "accepted")).length })}
                     accessibilityRole="button" accessibilityLabel={t.delete}
                     style={{ alignSelf: "flex-start", minHeight: TAP.minHeight, justifyContent: "center" }}>
-                    <Text style={{ color: C.red, fontSize: FS.sm }}>{t.delete}</Text>
+                    <Text style={{ color: C.mutedAA, fontSize: FS.sm, textDecorationLine: "underline" }}>{t.delete}</Text>
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity hitSlop={TAP.slop} disabled={acBusy === r.id}
@@ -1480,8 +1484,9 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
     // hiç olmamasından kötüdür. Artık hata olursa anahtar GERİ alınıyor.
     const onceki = showDisc;
     setShowDisc(val);
-    const { error } = await supabase.from("profiles")
-      .update({ show_on_discovery: val }).eq("user_id", uid);
+    // 🔴 23 Eylül — kolon 253 §5'ten beri istemciye KAPALI; doğrudan
+    // `update` her seferinde "permission denied" alıyordu. Tek amaçlı kapı: SQL 300 §A4.
+    const { error } = await supabase.rpc("kesifte_gorun", { p_acik: val });
     if (error) { setShowDisc(onceki); setErr(mapErr(t, error.message)); return; }
     setErr("");
   }
@@ -2097,8 +2102,16 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
   async function patch(fields) {
     const uid = session?.user?.id;
     setProf(p => ({ ...p, ...fields }));   // iyimser
-    const { error } = await supabase.from("profiles").update(fields).eq("user_id", uid);
-    if (error) { flash(t.stSaveFail); load(); }
+    // 🔴 23 Eylül — "Keşifte görün" anahtarı her dokunuşta "kaydedilemedi"
+    // deyip geri zıplıyordu: `show_on_discovery` 253 §5'ten beri istemciye
+    // kapalı (ölçüldü: has_column_privilege → f). O alan kendi kapısından
+    // (SQL 300 §A4) gider; kalan alanlar eskisi gibi doğrudan.
+    const { show_on_discovery, ...kalan } = fields;
+    const isler = [];
+    if (show_on_discovery !== undefined) isler.push(supabase.rpc("kesifte_gorun", { p_acik: !!show_on_discovery }));
+    if (Object.keys(kalan).length) isler.push(supabase.from("profiles").update(kalan).eq("user_id", uid));
+    const sonuc = await Promise.all(isler);
+    if (sonuc.some(r => r && r.error)) { flash(t.stSaveFail); load(); }
   }
 
   async function savePassword() {
@@ -2107,7 +2120,15 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: draft });
     setBusy(false);
-    if (error) { flash(error.message); return; }
+    // 🔴 23 Eylül — Supabase'in İngilizce metni ("New password should be
+    // different from the old password.") doğrudan ekrana basılıyordu.
+    if (error) {
+      const m = String(error.message || "");
+      flash(/different from the old password|same_password/i.test(m) ? t.stPwSame
+        : /at least|weak_password|too short/i.test(m) ? t.stPwTooShort
+        : mapErr(t, m));
+      return;
+    }
     setEditor(null); flash(t.stPwDone);
   }
 
@@ -2116,7 +2137,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
     setBusy(true);
     const { error } = await supabase.rpc("change_phone", { p_phone: draft.trim() });
     setBusy(false);
-    if (error) { flash(error.message); return; }
+    if (error) { flash(mapErr(t, error.message)); return; }
     setEditor(null); flash(t.stPhoneDone);
     load();
   }
@@ -2134,7 +2155,8 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
   const VIS = ["Everyone", "Trusted+", "Connections"];
   // Anahtarlar SUNUCU değerleri (değişmez); etiketler i18n'den gelir.
-  const VIS_TR = { Everyone: t.stVisEveryone, "Trusted+": "Trusted+", Connections: t.stVisConnections };
+  // 23 Eylül — "Trusted+" veritabanı değeri; ekranda Türkçe karşılığı yazılır.
+  const VIS_TR = { Everyone: t.stVisEveryone, "Trusted+": t.stVisTrusted || "Trusted+", Connections: t.stVisConnections };
 
   // 🔴 v2.65 · İKİZ BİLEŞEN KALDIRILDI.
   // Burada Toggle ve Row'un YEREL kopyaları vardı (ui.js'te de var,
@@ -2185,8 +2207,12 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
               (onVerify buraya kadar geliyordu ama hiç okunmuyordu). */}
           <Row label={t.stPhone}
             right={<>
-              <Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{me.phone || t.stPhoneUnset}</Text>
-              {me.phone_verified
+              {/* 23 Eylül — "Ayarlanmadı ✓": eksik bir alan başarı rengi ve onay
+                  işaretiyle çiziliyordu (numara yokken bile doğrulama bayrağı
+                  işareti basıyordu). Numara yoksa nötr metin, işaret yok. */}
+              <Text style={{ fontSize: FS.sm, color: me.phone ? C.tealInk : C.mut, fontWeight: "600" }}>{me.phone || t.stPhoneUnset}</Text>
+              {!me.phone ? null
+                : me.phone_verified
                 ? <Ikon ad="tamam" boy={FS.xs} renk={C.greenInk} />
                 : <ToneBadge tone="unknown" style={{ marginLeft: ARA[6] }}>{t.phoneNotYetVerified}</ToneBadge>}
             </>}
@@ -2198,7 +2224,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
         <Head>{t.stPrivacy}</Head>
         <View style={{ backgroundColor: C.card, borderRadius: R.sm, borderWidth: 1, borderColor: C.line, marginBottom: SP[4], overflow: "hidden" , ...ELEV.card }}>
-          <Row label={t.stVisibility} right={<Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{VIS_TR[prof?.profile_visibility] || "Trusted+"}</Text>}
+          <Row label={t.stVisibility} right={<Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{VIS_TR[prof?.profile_visibility] || VIS_TR["Trusted+"]}</Text>}
             onPress={() => setEditor("visibility")} />
           <Row label={t.stShowDiscovery} right={<SwitchCell a11yLabel={t.stShowDiscovery} on={prof?.show_on_discovery !== false} onPress={() => patch({ show_on_discovery: !(prof?.show_on_discovery !== false) })} />} />
           <Row label={t.stLocation} sub={t.stLocationSub}

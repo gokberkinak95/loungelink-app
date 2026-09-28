@@ -133,6 +133,9 @@ const PY_ADIMLARI = [
   ["taklit_yuzey_check.py", "render taklitleri gerçek RN yüzeyini kapsıyor mu"],
   ["buyuk_harf_check.py", "Türkçe büyük harf — noktasız I üreten stil yok"],
   ["hata_mesaji_check.py", "sunucunun fırlattığı her hatanın kendi cümlesi var mı"],
+  // 23 Eylül — Gökberk: "kullanıcıya _ li kod göstermiyoruz, değil mi?" Ölçüldü:
+  // 4 yolda ham metin ekrana gidiyordu. Sunucu kodu × TR/EN × sözlük × kaynak × sahne.
+  ["ham_kod_check.py", "kullanıcı TR ya da EN'de alt çizgili kod / ham İngilizce hata görüyor mu"],
   ["durum_kapsam_check.py", "ekranın her HÂLİ en az bir sahnede görüldü mü"],
   ["satir_check.py", "klamplı başlıklarda inici harf (ğ ç ş) alttan kesiliyor mu"],
   ["kutu_tasma_check.py", "kutu ekrandan taşıyor mu · ikon metne yapışık mı (sahne ölçümü)"],
@@ -256,6 +259,9 @@ const PY_ADIMLARI = [
   // Üstelik hata mesajı YANLIŞ satırı gösteriyordu (bir önceki yorumu).
   // Diğer altı SEED'de o satır yoktu — yani hatayı "güvenli olsun"
   // alışkanlığım üretti.
+  // 23 Eylül — KUR.ps1 Windows PowerShell 5.1'de hiç ayrışmadı (BOM'suz UTF-8
+  // + uzun tire = 0x94 = kapanan tırnak). Kök .ps1 dosyaları yalnız ASCII.
+  ["ps1_check.py", "kök klasördeki PowerShell betikleri Windows PowerShell 5.1'de okunabilir mi (yalnız ASCII)"],
   ["sql_editor_check.py",
    "Supabase SQL Editor'e yapıştırılacak dosyada psql meta-komutu (\\set, \\i…) var mı"],
   // 🔴 20 EYLÜL — "HANGİ SQL'LERİ ÇALIŞTIRDIM" TABLOSU SESSİZCE DARALMIŞTI.

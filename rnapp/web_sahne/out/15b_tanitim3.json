@@ -1,0 +1,35 @@
+{
+ "console": [],
+ "errors": [],
+ "calls": [],
+ "metin": [
+  "LOUNGELINK",
+  "Kararı ",
+  "bir ",
+  "algoritma ",
+  "değil,",
+  "bir ",
+  "insan ",
+  "verir.",
+  "İsteği host görür: doğrulanmış kimlik, güven puanı, kaç oturum. Kabul de ret de onun elinde — reddedilirse kredin anında geri döner.",
+  "Devam"
+ ],
+ "tasan": [
+  {
+   "g": 455,
+   "sol": -28,
+   "tx": ""
+  },
+  {
+   "g": 455,
+   "sol": -28,
+   "tx": ""
+  },
+  {
+   "g": 455,
+   "sol": -28,
+   "tx": ""
+  }
+ ],
+ "bitisik": []
+}

@@ -10,7 +10,7 @@
 // MVP kaynagi: LoungeLink_MVP_v15.jsx satir 307-465
 // ============================================================
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { BUYUK } from "./i18n";
+import { BUYUK, gorunur } from "./i18n";
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal } from "react-native";
 // 🔴 `BTN` adı bu dosyada ZATEN VAR (varyant haritası). Tema tarafındaki
 // ölçüler ayrı adla giriyor; aynı adı ikinci kez bağlamak sessiz bir
@@ -1704,7 +1704,7 @@ export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ust
           olan her zaman kazanır.) */}
       {title ? (
         <Bar title={title} sub={sub} onBack={onBack} right={right} t={t}
-             ustBilgi={ustBilgi || scene} kahraman={kahraman}
+             ustBilgi={ustBilgi || gorunur(scene)} kahraman={kahraman}
              ustPay={marka || kahraman ? 0 : TOPPAD + 6} />
       ) : null}
     </View>
@@ -1797,7 +1797,9 @@ export function Toggle({ val, onChange, disabled, a11yLabel }) {
                alignItems: "flex-end", justifyContent: "center" }}>
       <View style={{
         width: G, height: Y, borderRadius: Y / 2, overflow: "hidden",
-        opacity: disabled ? 0.42 : 1, justifyContent: "center",
+        // 23 Eylül: 0.42'de "Kapatılamaz" (açık + kilitli) anahtarlar KAPALI
+        // gibi okunuyordu. 0.62: kilitli olduğu belli, durumu da okunuyor.
+        opacity: disabled ? 0.62 : 1, justifyContent: "center",
         backgroundColor: C.pistAsfalt,
       }}>
         {/* ── KAPALI: PİST ────────────────────────────────────────── */}
@@ -2586,6 +2588,8 @@ export function Sayfa({ children, tur = "is", ufuk = 56, kaynak, yogunluk, style
 // taşındı; gerekçe orada yazılı)
 // ════════════════════════════════════════════════════════════════════════
 export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, danger, onConfirm, onCancel, busy }) {
+  // Onay düğmesinin mürekkebi zeminine göre (bkz. aşağıdaki 23 Eylül notu).
+  const onayMurekkep = danger ? "#fff" : C.onAccent;
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <View style={{ flex: 1, backgroundColor: C.perde, justifyContent: "center", padding: ARA[28] }}>
@@ -2607,8 +2611,12 @@ export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, 
             )}
             {!!confirmLabel && (
               <TouchableOpacity hitSlop={TAP.slop} onPress={onConfirm} disabled={busy}
-                style={{ flex: 1, backgroundColor: danger ? C.red : C.teal, borderRadius: R.sm, paddingVertical: SP[3], alignItems: "center" }}>
-                {busy ? <ActivityIndicator color="#fff" /> : <Text style={{ color: C.onAccent, fontWeight: "700", fontSize: FS.base }}>{confirmLabel}</Text>}
+                style={{ flex: 1, backgroundColor: danger ? C.dangerBtn : C.teal, borderRadius: R.sm, paddingVertical: SP[3], alignItems: "center" }}>
+                {/* 🔴 23 Eylül — tehlike onayı `C.red` (koyu temada açık pembe
+                    #F2607F) üstüne `onAccent` yazıyordu: ölçülen 3.11:1, AA (4.5) altı.
+                    Tehlike DÜĞMESİNİN kendi zemini (`dangerBtn`, beyazla ≥7:1)
+                    burada da kullanılıyor — aynı eylem, aynı renk. */}
+                {busy ? <ActivityIndicator color="#fff" /> : <Text style={{ color: onayMurekkep, fontWeight: "700", fontSize: FS.base }}>{confirmLabel}</Text>}
               </TouchableOpacity>
             )}
           </View>

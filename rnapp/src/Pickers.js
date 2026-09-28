@@ -33,6 +33,7 @@ import React, { useMemo, useState } from "react";
 import { Ikon } from "./ikon";
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { ARA, ELEV, C, FS, R, SP, T, TAP } from "./theme";
+import { gorunur } from "./i18n";
 
 // 🔴 TEK NORMALLEŞTİRME FONKSİYONU. İki yerde iki farklı normalleştirme
 // yazsaydım, bir liste "Çanakkale"yi bulur öbürü bulmazdı ve bu fark
@@ -141,7 +142,7 @@ export function CarrierPicker({
           flexDirection: "row", justifyContent: "space-between", alignItems: "center",
         }}>
         <Text style={{ fontSize: FS.base, color: sec ? C.body : C.dim, flex: 1 }} numberOfLines={1}>
-          {sec ? sec.name : (t?.carrierPick || "Havayolu seç…")}
+          {sec ? sec.name : (t?.carrierPick || gorunur("Havayolu seç…"))}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {/* Seçimi geri almak da bir yol olmalı; çiplerde "tekrar dokun"

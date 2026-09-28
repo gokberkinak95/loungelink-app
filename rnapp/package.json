@@ -1,13 +1,13 @@
 {
   "name": "loungelink",
-  "version": "5.14.0",
+  "version": "5.17.1",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
     "verify": "node verify.js",
     "snapshot": "node pyrun.js snapshot_gen.py",
     "render": "node render_check/yoga_kalibre.js && node render_check/tasma_check.js && node render_check/screens_test.js && node render_check/app_boot_test.js && node render_check/deeplink_test.js && node render_check/error_map_test.js && node render_check/mount_test.js && node render_check/giris_kapisi_test.js",
-    "e2e": "node pyrun.js render_check/onboarding_e2e.py && node pyrun.js render_check/two_account_e2e.py && node pyrun.js render_check/edge_flows_e2e.py && node pyrun.js render_check/flow_matrix_e2e.py && node pyrun.js render_check/rpc_field_e2e.py && node pyrun.js render_check/rule_dims_e2e.py",
+    "e2e": "node pyrun.js render_check/onboarding_e2e.py && node pyrun.js render_check/tam_akis_e2e.py && node pyrun.js render_check/two_account_e2e.py && node pyrun.js render_check/edge_flows_e2e.py && node pyrun.js render_check/flow_matrix_e2e.py && node pyrun.js render_check/rpc_field_e2e.py && node pyrun.js render_check/rule_dims_e2e.py",
     "python": "node pyrun.js",
     "verify:js": "node check.js && npm run render",
     "sahne:export": "LL_SAHNE=1 expo export --platform web --no-minify --output-dir web_sahne/dist",

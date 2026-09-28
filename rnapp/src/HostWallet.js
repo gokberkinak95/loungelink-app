@@ -306,8 +306,9 @@ export function HostWallet({ onAddCard, t = {} }) {
                     değil "bilinmiyor" yazıyoruz. Bir sayı uydurmak,
                     kullanıcıyı kapıda utandırmanın en kısa yoludur. */}
                 {k.kalan == null
-                  ? "Kaç misafir hakkı verdiğini bilmiyoruz."
-                  : `${k.kalan} misafir hakkı kaldı (${k.kullanilan ?? 0}/${k.toplam} kullanıldı)`}
+                  ? (t.hwQuotaUnknown || "")
+                  : String(t.hwQuotaLeft || "").replace("{k}", String(k.kalan))
+                      .replace("{u}", String(k.kullanilan ?? 0)).replace("{n}", String(k.toplam))}
               </Text>
               {k.kalan_gun != null && (
                 <Text style={[T.xs, { color: acil ? C.amber : C.mut, marginTop: ARA[2] }]}>

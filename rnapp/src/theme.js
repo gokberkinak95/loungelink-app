@@ -1668,7 +1668,14 @@ KOYU.purple     = KOYU.gold;
 // ══════════════════════════════════════════════════════════════════════
 KOYU.pistAsfalt  = "#3E382E";
 KOYU.pistIsik    = "#C5AD80";
-KOYU.gokMavi     = "#53462B";
+// 🔴 23 Eylül (Gökberk: ayar anahtarları açık/kapalı net okunmuyor) —
+// ölçüm: KAPALI #3E382E L* 23.8 · AÇIK #53462B L* 30.4 → aydınlık farkı
+// 6.6, ton aynı (85°↔86°). Koyu zeminde iki durum neredeyse aynı gri-kahve.
+// AÇIK artık şampanya: L* 71.2 (fark 47.4), C* 27.6 (marka tavanı 28'in
+// altında), ton 88° (bant içinde). Uçak topuzu beyaz, uçak koyu — okunur.
+// 🆕 SINIF: "İKİ DURUMLU BİR KONTROLÜN DURUMLARI YALNIZ TONLA DEĞİL
+// AYDINLIKLA AYRILMALI — KOYU TEMADA TON FARKI GÖRÜNMEZ."
+KOYU.gokMavi     = "#C2AC7C";
 KOYU.pistUcak    = "#181308";
 
 // ════════════════════════════════════════════════════════════════════

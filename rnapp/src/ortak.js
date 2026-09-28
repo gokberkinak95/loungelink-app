@@ -25,7 +25,7 @@
 // dogruluyor ve dongusel cekirdegin BUYUMESINI de engelliyor.
 // ============================================================================
 import { AramaKutusu, Katlanir, eslesir } from "./Pickers";
-import { fmtLongDate, mapErr, BUYUK } from "./i18n";
+import { fmtLongDate, mapErr, BUYUK, gorunur } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER, LEGAL_VERSION } from "./legal";
 import { bayrak } from "./runtime";
 // `ui.js` ortak.js'i içe AKTARMIYOR — yön tek, döngü yok (bagimlilik_check ölçüyor).
@@ -516,7 +516,10 @@ export async function pickAndUploadPhoto(uid) {
   if (error) return null;
   const { data } = supabase.storage.from("avatars").getPublicUrl(path);
   const url = data.publicUrl + "?t=" + Date.now();
-  await supabase.from("profiles").update({ photo_url: url }).eq("user_id", uid);
+  // 23 Eylül: güncelleme hatası yutuluyordu — ekranda yeni foto görünür,
+  // ama profile yazılmadığı için bir sonraki açılışta eskisi geri gelirdi.
+  const { error: eFoto } = await supabase.from("profiles").update({ photo_url: url }).eq("user_id", uid);
+  if (eFoto) { logError("avatar_photo_url", eFoto); return null; }
   return url;
 }
 export function TrustRing({ score }) {
@@ -548,6 +551,16 @@ export function TrustRing({ score }) {
     </View>
   );
 }
+// 🔴 23 Eylül — yönetim notları salon ADINA yazılmış: 190/211/214 pasife
+// aldıkları salonların adına "(214 kaynaksız → pasif)" gibi iz düştü ve bu
+// iz "Kapıda ne oldu?" kartında kullanıcıya aynen çiziliyordu (sahne 25).
+// Salon tablosundaki iz yönetim için anlamlı — ekrana giden kopya temizlenir.
+// Desen: "(" + üç haneli migration no + boşluk … ")".
+export function salonAdi(ad) {
+  if (!ad) return ad;
+  return String(ad).replace(/\s*\(\d{3}\s[^)]*\)/g, "").trim();
+}
+
 export function FieldReportPrompt({ t, session }) {
   const [rows, setRows] = useState([]);
   const [busy, setBusy] = useState(null);
@@ -616,7 +629,7 @@ export function FieldReportPrompt({ t, session }) {
   // KULLANICI YERİNDEN ŞİKÂYET EDİYORSA ÖNCE YERİNİ DEĞİŞTİR, SİLME."
   // ══════════════════════════════════════════════════════════════════════
   return (
-    <Katlanir baslik={t.frTitle} ozet={r.venue_name || t.frVenueUnknown}
+    <Katlanir baslik={t.frTitle} ozet={salonAdi(r.venue_name) || t.frVenueUnknown}
       tint={C.surface} cizgi={C.gold} not={t.frSub} acikBasla>
       {!!sendErr && (
         <View style={{ backgroundColor: C.hataBg, borderRadius: R.xs, padding: ARA[10], marginBottom: ARA[10] }}>
@@ -804,7 +817,7 @@ export function AirportPicker({ label = "HAVALİMANI", airports, value, onSelect
   const sikSayisi = (sik && !q) ? gorunen.filter(a => AP_SIK.includes(a.code)).length : 0;
   return (
     <View style={{ marginBottom: ARA[14] }}>
-      <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, marginBottom: SP[1], letterSpacing: 1 }}>{label}</Text>
+      <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, marginBottom: SP[1], letterSpacing: 1 }}>{gorunur(label)}</Text>
       {/* ÇOKLU KİPTE seçilenler kutunun ÜSTÜNDE çip olarak durur:
           liste kapalıyken de "neyi seçtim" görünür. Çipin kendisi
           kaldırma düğmesi — seçimi geri almak listeyi açmayı

@@ -108,6 +108,28 @@ def fonksiyon_govdeleri():
     return govde
 
 
+def _maperr_davranisi():
+    import subprocess, json as _j
+    kaynak = open(I18N, encoding="utf-8").read()
+    i = kaynak.find("export function mapErr(t, msg) {")
+    if i < 0:
+        return "mapErr bulunamadı"
+    j = kaynak.find("\n}\n", i)
+    govde = kaynak[i + len("export "):j + 2]
+    js = ("const logError=()=>{};const console={warn(){}};" + govde +
+          "const t={errMap:{bilinen:'B'},e_ozel_kod:'OZEL',errGeneric:'GENEL'};"
+          "const r=[mapErr(t,'ozel_kod'),mapErr(t,'ERROR: ozel_kod'),mapErr(t,'bilinen'),mapErr(t,'hic_yok')];"
+          "process.stdout.write(JSON.stringify(r));")
+    try:
+        p = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=20)
+    except Exception as e:
+        return "node koşmadı: %s" % e
+    if p.returncode:
+        return "node hatası: " + p.stderr.strip()[:120]
+    r = _j.loads(p.stdout)
+    return "ok" if r == ["OZEL", "OZEL", "B", "GENEL"] else "beklenmeyen sonuç %s" % r
+
+
 def main():
     print("=" * 74)
     print("HATA MESAJI DENETİMİ — sunucunun dediğini kullanıcı anlıyor mu?")
@@ -153,6 +175,17 @@ def main():
           % (len(tr_map), len(en_map), len(tek_dil)))
     for k in tek_dil:
         print("     ✗ %s — İngilizce karşılığı yok" % k)
+
+    # ── mapErr GERÇEKTEN e_* OKUYOR MU? (23 Eylül) ─────────────────
+    # Bu denetim bir kodu `errMap` YA DA `e_*` varsa "karşılandı" sayıyordu;
+    # `mapErr` ise yalnız `errMap`e bakıyordu. Denetim yeşil, kullanıcı
+    # "Bir şeyler ters gitti" görüyordu (22 kod). Artık sözlüğü değil
+    # DAVRANIŞI ölçüyoruz: `mapErr`i çıkarıp node'da iki girdiyle çağırıyoruz.
+    davranis = _maperr_davranisi()
+    print("  mapErr e_* yolu (davranış)       : %s" % davranis)
+    if davranis != "ok":
+        print("\n🔴 `mapErr` e_* anahtarlarını okumuyor — sözlükteki cümleler ekrana ULAŞMAZ.")
+        return 1
 
     if len(eksik) > TAVAN or tek_dil:
         print("\n🔴 Bu kodlar kullanıcıya 'Bir şeyler ters gitti' diye görünür.")

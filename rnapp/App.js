@@ -90,7 +90,17 @@ function AppInner() {
   // metin düzeltmesi (SQL 212 · i18n_overrides) derli sözlüğün üstüne
   // biniyor. `D[lang]` yazsaydık /manage/i18n ekranının "anında
   // yansır" sözü yine tutulmamış olurdu.
-  const t = useMemo(() => sozluk(lang), [lang, rtSurum]);
+  // 🔴 23 Eylül — BÜYÜK HARF DİLİ `t` İLE AYNI YERDEN.
+  // `dilAyarla` yalnız `applyLang`da (dil seçim ekranı) çağrılıyordu.
+  // Açılışta kayıtlı dil `setLangState(_lang)` ile, ayarlardaki geçişte
+  // `toggleLang` ile geliyordu — ikisi de `dilAyarla` çağırmıyordu. Yani
+  // İngilizce seçmiş biri uygulamayı yeniden açınca `BUYUK()` Türkçe
+  // kuralla çalışıyordu: "GOOD EVENİNG", "CREDİTS", "INVİTES"
+  // (İngilizce sahne taraması, 53 sahne). Sözlük ile büyük harf kuralı
+  // artık AYNI anda, aynı değişkenden kuruluyor; biri diğerinden kopamaz.
+  // 🆕 SINIF: "BİR DURUMUN İKİ YANSIMASINI İKİ AYRI YERDE KURARSAN, BİR GÜN
+  // BİRİNİ UNUTAN BİR YOL AÇILIR."
+  const t = useMemo(() => { dilAyarla(lang); return sozluk(lang); }, [lang, rtSurum]);
 
   useEffect(() => {
     const cik = runtimeDinle(() => setRtSurum(v => v + 1));
@@ -239,7 +249,7 @@ function AppInner() {
       setDlErr("");
       setRecovery(true);
     } else if (!r.ok && r.message) {
-      setDlErr(r.message);
+      setDlErr(r.message);   // ham-kod: sözlük metni (deeplink.js `dost` — 23 Eylül)
     }
   }, [lang]);
 
@@ -521,7 +531,7 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
         p_gender: gender || null,
       });
       if (error) throw error;
-      await supabase.rpc("grant_consents", {
+      const { error: eOnay } = await supabase.rpc("grant_consents", {
         // 🔴 v2.99 — "18 yaşındayım" AYRI BİR ONAY OLARAK EKLENDİ.
         // Platform sözleşmesi 18 yaş sınırı koyuyordu ama uygulama bunu
         // HİÇ SORMUYORDU. Mağaza yaş derecelendirmesi (yabancılarla sohbet +
@@ -531,6 +541,8 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
         p_types: ["no_lounge_sale", "no_offplatform_payment", "community_rules", "venue_rules", "terms_privacy", "age_18"],
         p_version: "v16",
       });
+      // 23 Eylül: hata `{ error }` olarak dönüyor, fırlamıyor — onaysız geçme.
+      if (eOnay) throw eOnay;
       onDone();
     } catch (e) {
       setErr(mapErr(t, e.message || String(e)));
@@ -663,6 +675,16 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   const [needsOnb, setNeedsOnb] = useState(false);
   useEffect(() => {
     let alive = true;
+    // 23 Eylül: kayıtta yazılamamış sözleşme onayı varsa şimdi yaz.
+    (async () => {
+      try {
+        const bek = await AsyncStorage.getItem("ll_onay_bekliyor");
+        if (!bek) return;
+        const { error } = await supabase.rpc("grant_consents", { p_types: JSON.parse(bek), p_version: "v16" });
+        if (!error) await AsyncStorage.removeItem("ll_onay_bekliyor");
+        else logError("grant_consents_tekrar", error);
+      } catch (e) {}
+    })();
     (async () => {
       const need = await needsOnboarding(session?.user?.id);
       if (alive) setNeedsOnb(!!need);
@@ -1278,7 +1300,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     compChat: () => (<CompanionChat t={t} session={session} channelId={compChat.channelId} otherName={compChat.name} onBack={() => setCompChat(null)} onOpenProfile={(id) => setPubProfile(id)} onReport={(id, nm) => setReport({ targetId: id, targetName: nm, sessionId: null })} />),
     report: () => (<ReportUser t={t} session={session} targetId={report.targetId} targetName={report.targetName}
     sessionId={report.sessionId} onBack={() => setReport(null)} />),
-    safety: () => (<Safety t={t} session={session} onBack={() => setShowSafety(false)}
+    safety: () => (<Safety t={t} lang={lang} session={session} onBack={() => setShowSafety(false)}
     onReport={() => { setShowSafety(false); setReport({ targetId: null, targetName: null, sessionId: null }); }}
     onTrust={() => { setShowSafety(false); setShowTrust(true); }}
     onEditProfile={() => { setShowSafety(false); setShowEditProf(true); }} />),
@@ -1419,7 +1441,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     guide: () => (<LoungeGuide t={t} onBack={() => setShowGuide(false)}
       onDiscover={(sc) => { setShowGuide(false); setShowDisc(sc || {}); }} />),
     disc: () => (<Discovery t={t} lang={lang} session={session} scope={showDisc} onOpenProfile={setPubProfile} onBack={() => setShowDisc(null)} onMeet={() => { setShowDisc(null); setTab("meet"); }} onAddTrip={(av) => { setShowDisc(null); setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} onVerify={() => { setShowDisc(null); setShowVerify(true); }} />),
-    chat: () => (<Chat t={t} session={session} request={chat.req} otherName={chat.name} openPanel={chat.openPanel} onBack={() => setChat(null)} onReferral={() => { setChat(null); setShowRef(true); }} onOpenProfile={(id) => setPubProfile(id)} onReport={(id, nm) => setReport({ targetId: id, targetName: nm, sessionId: null })}
+    chat: () => (<Chat t={t} session={session} request={chat.req} otherName={chat.name} openPanel={chat.openPanel} onBack={() => setChat(null)} onReferral={() => { setChat(null); setShowRef(true); }} onOpenProfile={(id) => setPubProfile(id)} onReport={(id, nm, sid) => setReport({ targetId: id, targetName: nm, sessionId: sid || null })}
       /* 🔴 v1.75: onLiveStatus HİÇ GEÇİLMEMİŞTİ — "Canlı Durum" düğmesi bu
          yüzden hiçbir şey yapmıyordu. */
       onLiveStatus={(sid) => { setShowLive(sid || true); }}
@@ -2204,8 +2226,36 @@ function Splash({ t, go, lang, toggleLang }) {
   // çünkü marka görevi ortadaki "LoungeLink"te ve o 18.18:1.
   // ==========================================================================
   const G = Dimensions.get("window").width;
+  // ══════════════════════════════════════════════════════════════════
+  // 🔴 23 EYLÜL — KANAT PENCEREYE GÖRE KONUMLANIYOR (Gökberk #10)
+  // "splash ekrandaki logo bir tık daha aşağı inerek pencereye göre
+  //  ortalı olsa belki daha tatlı olur"
+  //
+  // ÖLÇÜM: arka plan (`bant.jpg`, 1180×1475) `cover` ile yerleşiyor; telefon
+  // görselden daha uzun olduğu için görsel YÜKSEKLİĞE göre ölçekleniyor —
+  // yani pencere camı her cihazda EKRAN YÜKSEKLİĞİNİN AYNI ORANINDA:
+  //     cam üstü %23.5 · ufuk %57.5 · cam altı %76.5
+  // Kanat ise `top: 30%` + 64pt SABİT ile konuyordu. Yüzde ile punto
+  // karışınca konum cihaza göre kayıyor: 390×844'te kanat merkezi %40.4,
+  // 412×915 (20:9 Android) %39.7 — yani uzun ekranda kanat camın içinde
+  // YUKARI kaçıyordu. Gökberk'in telefonunda gördüğü tam bu.
+  //
+  // Şimdi ikisi de sahnenin kendi yüksekliğinin ORANI:
+  //     kanat merkezi %42.0 (cam üstü ile ufuk arasındaki gökyüzü bandı;
+  //                          eskisinden bir tık aşağıda)
+  //     slogan üstü   %54.3 (390×844'teki eski yerinde — slogan kıpırdamadı)
+  // Sahne yüksekliği `onLayout` ile ölçülüyor (foto ile AYNI kutuya bakılsın).
+  // 🆕 SINIF: "YÜKSEKLİĞE GÖRE ÖLÇEKLENEN BİR ARKA PLANIN ÜSTÜNE OTURAN
+  // ÖĞE, PUNTOYLA DEĞİL O YÜKSEKLİĞİN ORANIYLA KONUMLANIR — YOKSA HER EN
+  // BOY ORANINDA BAŞKA BİR YERE OTURUR."
+  // ══════════════════════════════════════════════════════════════════
+  const [sahneH, setSahneH] = useState(Dimensions.get("window").height);
+  const kanatH = G * 0.246 * 0.4925;
+  const KANAT_MERKEZ = 0.420, SLOGAN_UST = 0.543;
   return (
     <FotoSahne>
+      <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        onLayout={(e) => { const h = e.nativeEvent.layout.height; if (h > 0 && Math.abs(h - sahneH) > 1) setSahneH(h); }} />
       {/* 🔴 30 Ağu · 5. tur — DİL DÜĞMESİ MUTLAK KONUMA ALINDI.
           Marka kelimesi `flex:1 + paddingLeft:44` ile ortalanıyordu:
           o 44pt, sağdaki dil düğmesini dengelemek içindi ama KELİMENİN
@@ -2264,7 +2314,7 @@ function Splash({ t, go, lang, toggleLang }) {
           (G×0.30 kare), "LOUNGELINK" 24/700 kutunun 26 altında, serif slogan
           78 altında (34 punto, 44 satır; ikinci satır krem). Hepsi ortalı ve
           TEK blok — düğmelerden bağımsız, ekran boyu değişse de aynı yerde. */}
-      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "30%", alignItems: "center" }}>
+      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, alignItems: "center" }}>
         {/* ⚠️ KANAT — KEMER'E DÖNÜŞ DEĞİL, KEMER'İN İÇİ.
             Kanat, Kemer'in açıklığındaki swoosh ile AYNI çizim; Kemer ona
             bir KAP veriyor. İkon 48px'te okunmak zorunda ve orada kaba
@@ -2282,10 +2332,11 @@ function Splash({ t, go, lang, toggleLang }) {
             458pt'te kalıyor — yani kelime ortadan kalktı ama slogan
             YERİNDEN OYNAMADI (gerçek karede ölçüldü). */}
         <Image source={require("./assets/mark-kanat.png")} resizeMode="contain"
-          style={{ width: G * 0.246, height: G * 0.246 * 0.4925, marginTop: ARA[64] }} />
+          style={{ width: G * 0.246, height: kanatH, marginTop: Math.round(sahneH * KANAT_MERKEZ - kanatH / 2) }} />
         {/* ⚠️ İkinci satır AYRI Text ve fontFamily'yi AÇIKÇA taşıyor: `sansUygula`
             aile vermeyen her Text'e sans basar — iç içe Text'te miras yok. */}
-        <Text style={{ fontSize: FS.hero, fontFamily: F.serif, lineHeight: 44, marginTop: ARA[92],
+        <Text style={{ fontSize: FS.hero, fontFamily: F.serif, lineHeight: 44,
+                       marginTop: Math.max(ARA[34], Math.round(sahneH * (SLOGAN_UST - KANAT_MERKEZ) - kanatH / 2)),
                        marginHorizontal: ARA[12], color: C.foto.baslik, textAlign: "center",
                        textShadowColor: "rgba(10,6,6,0.85)",
                        textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 10 }}>
@@ -2679,12 +2730,26 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         // §5 Adım 3: sözleşme kabulü kaydı (KVKK)
         // Liste artık ekrandaki kutularla AYNI KAYNAKTAN geliyor:
         // kutu sayısı ile kayda giden tip sayısı ayrışamaz.
-        try {
-          await supabase.rpc("grant_consents", {
-            p_types: CONSENT_TYPES,
-            p_version: "v16",
-          });
-        } catch (e) {}
+        // 🔴 23 EYLÜL — ONAY KAYDI SESSİZCE DÜŞEBİLİYORDU (KVKK).
+        // supabase-js hatayı FIRLATMAZ, `{ error }` olarak döndürür; bu
+        // yüzden `try/catch` hiçbir şey yakalamıyordu. Kayıt düşerse hesap
+        // açılıyor ama sözleşme onayı veritabanında YOK — yalnız 18 yaş
+        // kartı sonradan tekrar soruluyor, diğer beşi hiç.
+        // Şimdi: iki deneme; yine düşerse bayrak bırakılır ve `Main` ilk
+        // açılışta yeniden yazar. Kullanıcı kayıttan ALIKONMAZ.
+        {
+          let eOnay = null;
+          for (let deneme = 0; deneme < 2; deneme++) {
+            const r = await supabase.rpc("grant_consents", { p_types: CONSENT_TYPES, p_version: "v16" })
+              .catch((e) => ({ error: e }));
+            eOnay = r && r.error;
+            if (!eOnay) break;
+          }
+          if (eOnay) {
+            logError("grant_consents_kayit", eOnay);
+            try { await AsyncStorage.setItem("ll_onay_bekliyor", JSON.stringify(CONSENT_TYPES)); } catch (e) {}
+          }
+        }
       } else {
         // #7: ayni cihazda onceki hesabin bayat oturumu "girdim ama baska
         // hesap acildi" vakasini yaratabiliyor — girise baslamadan temizle.
@@ -2699,7 +2764,9 @@ function Auth({ mode, t, go, lang, toggleLang }) {
       const key = /invalid login credentials/i.test(raw) ? "e_bad_credentials"
         : /email not confirmed/i.test(raw) ? "e_email_not_confirmed"
         : /rate limit|too many/i.test(raw) ? "e_too_many_attempts" : null;
-      setErr(key ? t[key] : raw);
+      // 🔴 23 Eylül — tanınmayan hata HAM gösteriliyordu (İngilizce Supabase
+      // metni). Artık `mapErr`: bilinen kod → cümle, bilinmeyen → genel mesaj.
+      setErr(key ? t[key] : mapErr(t, raw));
       setBusy(false);
     }
   }
@@ -2800,7 +2867,20 @@ function Auth({ mode, t, go, lang, toggleLang }) {
                     secureTextEntry={!showPw} autoCapitalize="none" autoCorrect={false}
                     autoComplete="password" textContentType="password"
                     returnKeyType="go" onSubmitEditing={submit} />
-                  {/* 4 Eylül — "Göster" anahtarı kalktı: tasarım 16'da yok. */}
+                  {/* 🔴 22 EYLÜL — GÖZ İKONU GERİ GELDİ (Gökberk: "şifre
+                      girerken ne girdiğimi anlamıyorum"). 4 Eylül'de
+                      "tasarım 16'da yok" diye kaldırılmıştı; tasarımda
+                      olmaması, kullanıcının ihtiyacının olmadığı anlamına
+                      gelmiyor. `showPw` durumu zaten duruyordu — yani
+                      kaldırılan şey mekanizma değil, ona erişimdi.
+                      🆕 SINIF: "BİR DENETİMİ KALDIRIP DURUMUNU BIRAKIRSAN,
+                      ÖZELLİĞİ SİLMİŞ OLMAZSIN — ULAŞILAMAZ YAPMIŞ OLURSUN." */}
+                  <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={TAP.slop}
+                    accessibilityRole="button"
+                    accessibilityLabel={showPw ? t.pwHide : t.pwShow}
+                    style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
+                    <Ikon ad={showPw ? "gozKapali" : "goz"} boy={17} renk={C.muted} />
+                  </TouchableOpacity>
                 </View>
               </IconField>
               <Btn label={t.doLogin} onPress={submit} disabled={busy} busy={busy} a11yLabel={t.doLogin} style={{ marginTop: ARA[22] }} />

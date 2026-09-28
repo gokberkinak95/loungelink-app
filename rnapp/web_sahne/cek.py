@@ -22,7 +22,10 @@ from playwright.sync_api import sync_playwright
 
 KOK = os.path.dirname(os.path.abspath(__file__))
 DIST = os.path.join(KOK, "dist")
-OUT = os.path.join(KOK, "out")
+# 23 Eylül — `LL_SAHNE_DIL=en`: aynı sahneler İngilizce, `out_en/`e.
+# (ham_kod_check.py iki dilin de ekran metnini tarıyor.)
+DIL = os.environ.get("LL_SAHNE_DIL", "tr")
+OUT = os.path.join(KOK, "out" if DIL == "tr" else "out_" + DIL)
 os.makedirs(OUT, exist_ok=True)
 KOPRU_PORT = 8765
 
@@ -405,7 +408,7 @@ def cek(sahneler, tam=False):
                 pg.on("console", lambda m: kayit["console"].append({"t": m.type, "s": m.text[:400]})
                       if m.type in ("error", "warning") and "useNativeDriver" not in m.text else None)
                 pg.on("pageerror", lambda e: kayit["errors"].append(str(e)[:600]))
-                pg.goto(f"http://127.0.0.1:{port}/?sahne={ad}&kim={kim}"
+                pg.goto(f"http://127.0.0.1:{port}/?sahne={ad}&kim={kim}&dil={DIL}"
                         f"&kopru=http://127.0.0.1:{KOPRU_PORT}" + (("&" + ek) if ek else ""),
                         wait_until="networkidle")
                 try:
