@@ -409,7 +409,8 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
           // my_sent_requests bunların hepsini veriyor; okumamak, veriyi
           // çekip çöpe atmaktı.
           const hostNm = r.host_name || names[r.host_id] || "—";
-          const timeLine = [r.airport_code, r.avail_date,
+          // 29 Eylül — ham ISO ("2026-09-29") çiziliyordu; uygulamanın her yerindeki biçim "29 Eylül".
+          const timeLine = [r.airport_code, r.avail_date ? fmtLongDate(String(r.avail_date).slice(0, 10), lang) : null,
             (r.time_from && r.time_to) ? `${String(r.time_from).slice(0,5)}–${String(r.time_to).slice(0,5)}` : null,
           ].filter(Boolean).join(" · ");
           const flightLine = [r.flight_number || null, r.carrier].filter(Boolean).join(" · ");

@@ -268,6 +268,35 @@ Keşfet (fildişi kabartma uyum mührü) · Sohbet (FIDS şeridi, şafak amber %
 - Zarafet protokolü (doğrulamayı atla) için ürün kararı: aylık sınır olsun mu?
 - Veri borcu: kural notlarındaki ASCII'leşmiş Türkçe (kural_metni tavanı 27).
 
+---
+
+## TUR 8 (29 Eylül) · 6.2.1 cihaz gözlemleri + katman önizlemesi
+
+Commit `33961ec` + tarih düzeltmesi. Sürüm hâlâ 6.2.1 (272/266) — **yeni build ALINMADI** (onay bekleyen tasarımla birlikte alınacak).
+- md.1 İlanlarım: sayı yalnız aktif ("İLANLARIM · 2 AKTİF"); Aktif/Pasif/Geçmiş bölümleri; pasif/geçmişte "X yer açık"
+  yerine "Yayında değil · yeniden yayınlayabilirsin" / "Tarihi geçti" + "N misafir ağırlandı". Cüzdan/Kaçırılan/Mertebe
+  kutularına (i): `Katlanir` `bilgi` özelliği (TR+EN tek cümle; EN'de mertebe adları yok — DB'de yalnız TR).
+- md.2 Saati geçen ilanın uyum ekranında eylem yok, "sona erdi" notu.
+- md.4 K6 başlıkları: İSTEKLERİN / DAVETLERİN / SOHBETLERİN / SORULARIN ("KALKIŞ" anlaşılmıyordu).
+- md.5 "Bekleyen X isteğin var" yalnız GELENLERİ sayar; gelen yoksa "Gönderdiğin X istek yanıt bekliyor" → gönderilen sekmesi.
+- md.6 Uyumlu ilan sayaçları (Seyahatlerim + Host bul) saati geçen ilanı saymaz. Kök: sunucu `active` + `tarih >= bugün`
+  süzüyor; BUGÜN saati geçen ilan geliyor (yerel DB'de ölçüldü).
+- md.8 İçerik içi yükleyici tam `Sayfa` (zemin + atmosfer) çiziyordu → `Load icerik` (10 yer).
+- md.a Seçili çip görünmüyordu: koyu temada #292312 vs #1F1C19 → şampanya zemin + koyu yazı (tüm sekme çipleri).
+- md.b Davet/Sohbet tam ekranı yüklenirken boş pano göstermiyor ("henüz bilmiyoruz" ≠ "boş").
+- Benim eklediklerim: `ilanDurumu` bugün+saati geçen ilanı "geçmiş" sayar (host listesinde canlıydı) · `Katlanir` tek kenar
+  ışığı Android'de sert → tam saç teli kenar · İstek kartında ham ISO tarih ("2026-09-29") → "29 Eylül".
+- Test: render **77/77** (+4: geçmiş ilan "yer açık" yazmıyor, durumunu ve sonucunu söylüyor), 13, 12, 53 ekran, 37/37.
+  "dolu ilan" testinin sabit tarihi geçmişe düşmüştü → ileri tarihli canlı ilan.
+- md.7 ("iç kutucukta sorun var"): ekran görüntüsü gelmedi — Gökberk'e soruldu.
+
+### Onay bekleyen tasarım (tuval satır 3, F–I)
+https://claude.ai/artifact/HsGjDDnBUKcvcnUWQSyvbN
+- F/G İstekler önce/sonra: dış kutu çözülür (başlık zeminde yüzer), tek kart #171512 + 1 px üst ışık, kart içi kutu yok
+  (ışık çizgisi), durum hapları → harf aralıklı çıplak satır (#EDE7DB olmuş · #C9B693 bekliyor).
+- H Katman kuralı (tüm ekranlar): K0 zemin · K1 kart · K2 kart içi (kutu yok) · K3 cam (yalnız üst üste binenlerde).
+- I Alt çubuk: siyah şerit kalkar, içerik altından akar, kapsül cam + altta yumuşak geçiş.
+
 ### Bekleyen (Gökberk) — eski liste, tarihçe
 0. **Site 0.69'u `main`e almak = canlı yayın.** Önizlemeyi (Vercel önizleme adresi / yerelde localhost:3069) gör, onay ver.
 1. **BO push = canlı yayın.** Otomatik izin denetimi BO `main` push'unu reddetti (onay yalnız app dalı içindi).
