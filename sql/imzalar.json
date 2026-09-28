@@ -1683,5 +1683,20 @@
   "302_test_hesaplarini_gorenler.sql",
   "tablo",
   "test_gorunurlugu"
+ ],
+ [
+  "303_ertelenen_puan_ana_sayfadan_duser.sql",
+  "govde",
+  "pending_ratings|and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])"
+ ],
+ [
+  "304_kesfet_engelinin_gercek_sebebi.sql",
+  "govde",
+  "discovery_rule_badges|v_key := 'carrier_bad';   v_boost := -1000;"
+ ],
+ [
+  "305_erisim_kaynagi_etiketleri.sql",
+  "fonksiyon",
+  "erisim_kaynagi_etiketle"
  ]
 ]

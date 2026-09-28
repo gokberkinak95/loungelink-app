@@ -114,6 +114,7 @@ const STUBS = {
     requestPermissionsAsync: async () => (globalThis.__IZIN || { status: "granted", canAskAgain: true }),
     getExpoPushTokenAsync: async () => {
       if (globalThis.__JETON_HATA === "fcm") throw new Error("Default FirebaseApp is not initialized in this process");
+      if (globalThis.__JETON_HATA === "ag") throw new Error("network request failed");
       return { data: "ExponentPushToken[test]" };
     },
     setNotificationHandler: () => {},
@@ -217,9 +218,9 @@ STUBS["react-native"] = new Proxy({}, {
     };
     if (k === "PanResponder") return { create: (cfg) => ({ panHandlers: {} }) };
     if (k === "Easing") return {
-      linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x,
+      linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x, sin: (x) => x,
       out: (f) => (f || ((x) => x)), in: (f) => (f || ((x) => x)),
-      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x),
+      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x), poly: () => ((x) => x), back: () => ((x) => x),
     };
     if (k === "NativeModules") return {};
     if (k === "UIManager") return { getViewManagerConfig: () => null };
@@ -571,10 +572,14 @@ const CASES = [
     // yazan ama hiçbir şey yapmayan bir düğme, olmayan düğmeden kötüdür.
     // 3 Eylül: cihazdaki izin de KAPALI (kart artık cihaza da bakıyor).
     { icermeli: t.pushOpenSettings, izin: { status: "denied", canAskAgain: false } }],
-  // 3 Eylül — cihazda izin AÇIK ama jeton yok (Firebase kurulu değil):
+  // 3 Eylül — cihazda izin AÇIK ama jeton yok (ağ düştü):
   // kart "Bildirimleri aç" DEMEMELİ; nedeni yazıp "Tekrar dene" vermeli.
   ["UlasilabilirlikKarti-izinAcik", S.UlasilabilirlikKarti, { t, goster: ["kritik", "uyari"] },
-    { icermeli: t.retry, icermemeli: t.pushEnable, izin: { status: "granted", canAskAgain: true }, jeton: "fcm" }],
+    { icermeli: t.retry, icermemeli: t.pushEnable, izin: { status: "granted", canAskAgain: true }, jeton: "ag" }],
+  // v6.1 (Gökberk md.14) — izin açık, bu derlemede FCM yok: kullanıcının
+  // yapacağı bir şey kalmadı, kart ana sayfada HİÇ çizilmemeli.
+  ["UlasilabilirlikKarti-fcmYok", S.UlasilabilirlikKarti, { t, goster: ["kritik", "uyari"] },
+    { bos: true, izin: { status: "granted", canAskAgain: true }, jeton: "fcm" }],
   ["UlasilabilirlikKarti-filtre", S.UlasilabilirlikKarti, { t, goster: ["bilgi"] },
     // Aynı veri, farklı şiddet süzgeci: bu kart HİÇ çizilmemeli.
     { bos: true }],
@@ -822,7 +827,10 @@ try {
   // aynı ders ikinci kez çarptı.
   const KOYU_IM  = [tema.KOYU.bg, tema.KOYU.surface, tema.KOYU.bgAlt, tema.KOYU.ink,
                     tema.KOYU.mutedAA, tema.KOYU.dimAA, tema.KOYU.goldBtn,
-                    tema.KOYU.line].map(s => String(s).toUpperCase());
+                    tema.KOYU.line,
+                    // v6 — çizgi jetonları şeffaflaştı; koyu temanın izi artık
+                    // altın gradyanın alt ucu ve üst kenar ışığında da duruyor.
+                    tema.KOYU.goldBtn2, tema.KOYU.parlama].map(s => String(s).toUpperCase());
   // Açık temanın YALNIZ ona ait yüzey değerleri (koyuda karşılığı başka)
   // 🔴 ÜÇ YÜZEY YETMİYORMUŞ. Bu liste yalnız kart/blok/sayfa zeminini
   // içeriyordu; DÜĞME zeminleri yoktu. `ui.js`teki `BTN` tablosu tema

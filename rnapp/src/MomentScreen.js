@@ -24,6 +24,7 @@ import { MONO } from "./typography";
 import { Ikon } from "./ikon";
 import { TOPPAD, Btn, Hale, MESH_BANT } from "./ui";
 import { Katman } from "./katman";
+import { useAzHareket, dokun } from "./hareket";
 
 // Sahne ölçüleri — haleler ekran genişliğine oranlı (tasarımın
 // radial-gradient'i de kutuya oranlı: `96% 62% at 50% 8%`).
@@ -34,16 +35,76 @@ const BOY = Dimensions.get("window").height;
    İki tanesi yan yana ve aralarındaki çizgi — bu üçlü, "eşleştiniz"
    cümlesinin görsel karşılığı. İkincisi teal: kalkan rengiyle aynı,
    yani "seni içeri alacak olan" tarafı işaret ediyor. */
-function AnAvatar({ harf, ton }) {
+function AnAvatar({ harf, ton, zemin }) {
   return (
     <View style={{ width: 66, height: 66, borderRadius: R.full,
                    borderWidth: 1, borderColor: C.line2 || C.line,
-                   backgroundColor: "rgba(255,255,255,0.05)",
+                   backgroundColor: zemin || "rgba(255,255,255,0.05)",
                    alignItems: "center", justifyContent: "center" }}>
       <Text style={{ fontFamily: F.serif, fontSize: FS.display, fontWeight: "600",
                      color: ton || C.gold }}>
         {String(harf || "?").charAt(0).toUpperCase()}
       </Text>
+    </View>
+  );
+}
+
+// ======================================================================
+// v6.2 (K5 · Gökberk onayı) — KAPI ARALANIR.
+// Uygulamanın en duygusal anı: kemer kapının (marka işareti) içinden ışık
+// yükselirken iki yolcu iki yandan gelip eşikte buluşuyor ve tek bir
+// çizgiyle bağlanıyor. Tek sefer oynar, döngü yok. Buluşma anında tek,
+// yumuşak titreşim. "Hareketi azalt" açıksa son kare durağan çizilir.
+// ======================================================================
+const ISIK = require("../assets/isik_bulutu.png");
+function KapiAralanir({ ikiz }) {
+  const az = useAzHareket();
+  const isik = useRef(new Animated.Value(az ? 1 : 0)).current;
+  const gel = useRef(new Animated.Value(az ? 1 : 0)).current;
+  const bag = useRef(new Animated.Value(az ? 1 : 0)).current;
+  useEffect(() => {
+    if (az) { isik.setValue(1); gel.setValue(1); bag.setValue(1); return undefined; }
+    const a = Animated.parallel([
+      Animated.timing(isik, { toValue: 1, duration: 1400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.sequence([
+        Animated.delay(250),
+        Animated.timing(gel, { toValue: 1, duration: 900, easing: Easing.bezier(0.5, 0, 0.2, 1), useNativeDriver: true }),
+        Animated.timing(bag, { toValue: 1, duration: 360, useNativeDriver: true }),
+      ]),
+    ]);
+    const z = setTimeout(() => dokun("hafif"), 1150);
+    a.start();
+    return () => { a.stop(); clearTimeout(z); };
+  }, [az]);
+  const KEN = 132, KBOY = 168;
+  return (
+    <View style={{ width: 240, height: KBOY + 40, alignItems: "center" }}>
+      {/* kemer — markanın kendi biçimi */}
+      <View style={{ position: "absolute", top: 0, width: KEN, height: KBOY,
+                     borderTopLeftRadius: KEN / 2, borderTopRightRadius: KEN / 2,
+                     borderWidth: 2, borderBottomWidth: 0, borderColor: C.gold, overflow: "hidden" }}>
+        <Animated.Image source={ISIK} resizeMode="stretch" tintColor={C.gold}
+          style={{ position: "absolute", left: -40, bottom: -90, width: KEN + 80, height: KBOY + 60,
+                   opacity: isik.interpolate({ inputRange: [0, 1], outputRange: [0.05, 0.6] }),
+                   transform: [{ translateY: isik.interpolate({ inputRange: [0, 1], outputRange: [120, 0] }) }] }} />
+      </View>
+      {/* eşik */}
+      <View style={{ position: "absolute", top: KBOY, width: 190, height: 2, backgroundColor: C.gold }} />
+      {/* iki yolcu + bağ */}
+      <View style={{ position: "absolute", top: KBOY - 33, flexDirection: "row", alignItems: "center" }}>
+        <Animated.View style={{ opacity: gel,
+          transform: [{ translateX: gel.interpolate({ inputRange: [0, 1], outputRange: [-80, 0] }) }] }}>
+          <AnAvatar harf={ikiz[0]} zemin={C.gece} />
+        </Animated.View>
+        <Animated.View style={{ flexDirection: "row", opacity: bag.interpolate({ inputRange: [0, 1], outputRange: [0, 0.8] }) }}>
+          <View style={{ width: 13, height: 1, backgroundColor: C.gold }} />
+          <View style={{ width: 13, height: 1, backgroundColor: C.teal }} />
+        </Animated.View>
+        <Animated.View style={{ opacity: gel,
+          transform: [{ translateX: gel.interpolate({ inputRange: [0, 1], outputRange: [80, 0] }) }] }}>
+          <AnAvatar harf={ikiz[1]} ton={C.teal} zemin={C.gece} />
+        </Animated.View>
+      </View>
     </View>
   );
 }
@@ -193,18 +254,7 @@ export default function MomentScreen({
                               paddingHorizontal: ARA[26],
                               opacity: rise, transform: [{ translateY }] }}>
         {ikiz ? (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <AnAvatar harf={ikiz[0]} />
-            {/* Bağ çizgisi: tasarımda altından teale giden 52×1 bir
-                gradyan. Gradyan paketi yok — çizgi iki yarıya bölündü,
-                sol yarı altın, sağ yarı teal. 52px'te geçiş noktası
-                zaten tek bir piksel; göz bunu gradyan olarak okur. */}
-            <View style={{ flexDirection: "row", opacity: 0.7 }}>
-              <View style={{ width: 26, height: 1, backgroundColor: C.gold }} />
-              <View style={{ width: 26, height: 1, backgroundColor: C.teal }} />
-            </View>
-            <AnAvatar harf={ikiz[1]} ton={C.teal} />
-          </View>
+          <KapiAralanir ikiz={ikiz} />
         ) : (kind === "completed" || kind === "reciprocity")
           ? <Ikon ad={mark} boy={38} renk={C.gold} />
           : <Image source={require("../assets/mark-kemer.png")}
@@ -249,7 +299,7 @@ export default function MomentScreen({
         )}
 
         {!!code && (
-          <View style={{ marginTop: ARA[26], borderWidth: 1, borderColor: C.gold + "55",
+          <View style={{ marginTop: ARA[26], borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.sm, paddingVertical: ARA[20], alignItems: "center",
                          backgroundColor: C.goldBg }}>
             <Text style={{ fontSize: FS.xs, letterSpacing: 3, color: C.goldInk, marginBottom: SP[2] }}>{t.entryCode || "GİRİŞ KODU"}</Text>
@@ -263,14 +313,16 @@ export default function MomentScreen({
       </Animated.View>
 
       <View style={{ paddingHorizontal: ARA[30], paddingBottom: ARA[34] }}>
+        {/* v6.1 (md.3 · md.5) — ikincil eylem soluk bir metindi ("Sohbete dön",
+            "Şimdi değil") ve fotoğrafın üstünde kayboluyordu. Artık birincille
+            AYNI genişlikte, ışık kenarlı cam bir hap: hiyerarşiyi dolgu kuruyor
+            (altın = asıl eylem), görünürlüğü değil. */}
         {!!primary && (
-          <Btn v="gold" sm label={primary.label} onPress={primary.onPress} />
+          <Btn v="gold" sm full label={primary.label} onPress={primary.onPress} />
         )}
         {!!secondary && (
-          <TouchableOpacity hitSlop={TAP.slop} onPress={secondary.onPress}
-            style={{ paddingVertical: ARA[14], alignItems: "center" }}>
-            <Text style={{ color: C.paper, opacity: 0.7, fontSize: FS.base }}>{secondary.label}</Text>
-          </TouchableOpacity>
+          <Btn v="ghost" sm full label={secondary.label} onPress={secondary.onPress}
+            style={{ marginTop: ARA[12], backgroundColor: C.camKart }} />
         )}
       </View>
     </View>

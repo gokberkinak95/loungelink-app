@@ -37,7 +37,14 @@ google-services.json
 GoogleService-Info.plist
 
 # Araç çıktıları
-render_check/
+# 🔴 25 Eyl — burada `render_check/` yazıyordu: KLASÖRÜN TAMAMI. Oysa
+# `npm run render` ve `verify:js`in koştuğu test paketi (37 kontrol,
+# mount/tasma/deeplink testleri, stub'lar) o klasörde. Depoya itilseydi
+# testler gitmeyecek, CI "script bulunamadı" diye düşecekti.
+# Yalnız geçici çıktılar yok sayılır.
+render_check/_gecici/
+web_sahne/dist/
+web_sahne/out/
 __pycache__/
 *.pyc
 /tmp/

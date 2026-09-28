@@ -7,8 +7,8 @@
  "src/HostWallet.js": 1,
  "src/Pickers.js": 1,
  "src/ekranlar_ana.js": 14,
- "src/ekranlar_yalin.js": 12,
+ "src/ekranlar_yalin.js": 10,
  "src/ortak.js": 2,
- "src/screens.js": 7,
+ "src/screens.js": 6,
  "src/ui.js": 2
 }

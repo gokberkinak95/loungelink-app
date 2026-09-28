@@ -143,10 +143,15 @@ IDDIALAR = [
      "ui.js", r"letterSpacing: 2\.4[\s\S]{0,120}?color: C\.gold",
      "düğüm noktası markanın rengiyle işaretleniyor"),
 
-    ("başlık sans",
-     r"\.ust-h1\{(?![^}]*Cormorant)",
-     "ui.js", r"fontSize: FS\.bant[\s\S]{0,160}?letterSpacing: -1\.2",
-     "serif yalnız `.ust-h1.serif` — o da tek yerde"),
+    # 🔴 26 EYLÜL · v6.1 — İDDİA BİLEREK DEĞİŞTİ. Gökberk önce/sonra
+    # önizlemesini (uygulama_basliklari_once_sonra.jpg) onayladı: ekran
+    # başlıkları artık Cormorant SemiBold. Tasarım dosyasındaki `.ust-h1`
+    # sans kuralı bu kararla geçersiz; kanıt artık bant başlığının SERİF
+    # olduğu. Gövde/düğme/sayı sans-mono kalıyor (başka iddialar ölçüyor).
+    ("başlık serif (v6.1 onay)",
+     r"\.ust-h1\{",
+     "ui.js", r"fontSize: FS\.bant \+ 4[\s\S]{0,160}?fontFamily: F\.serifGosterim",
+     "ekran başlıkları serif — önizleme onaylı (26 Eylül)"),
 
     ("isim serif-ince",
      r"\.ust-h1\.serif\{[^}]*Cormorant",
@@ -210,8 +215,12 @@ IDDIALAR = [
      # `C.goldSoft` → `C.balonBen`: tasarımın degradesinin ORTASI ölçülerek
      # tek renge indirildi (bkz. theme.js). İddia değişmedi — "dolu altın
      # değil tint" — ama kanıtın adı değişti.
-     "ekranlar_yalin.js", r"backgroundColor: mine \? \(C\.balonBen \|\| C\.goldSoft\)",
-     "dolu altın değil tint — vurgu en geniş alana verilmez"),
+     # 🔴 25 EYLÜL · v6.0.0 — İDDİA BİLEREK DEĞİŞTİ. Gökberk'in v6 brief'i:
+     # "host balonları dumanlı cam, misafir balonları mat şampanya." Tint
+     # kararı geri çevrildi; kanıt artık iki malzemenin kurulmuş olması.
+     # Şampanya MAT (gradyansız) — asıl eylemin parlaklığı düğmede kalıyor.
+     "ekranlar_yalin.js", r"hostMu[\s\S]{0,400}?DumanliCam[\s\S]{0,200}?backgroundColor: C\.goldBtn",
+     "v6: host dumanlı cam, misafir mat şampanya — iki malzeme, çizgi yok"),
 
     ("balon saati mono ve içeride",
      r"\.bal time\{[^}]*JetBrains Mono",

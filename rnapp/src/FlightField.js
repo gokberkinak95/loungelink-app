@@ -162,7 +162,7 @@ export default function FlightField({
       {/* 🔴 v2.80 — KOTA UYARISI. Kullanıcı "bulamadım" ile "hakkın
           doldu" arasındaki farkı görsün; ikisinde yapacağı şey farklı. */}
       {kota && !busy && (
-        <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber,
+        <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
                        borderRadius: R.xs, padding: ARA[10], marginTop: ARA[6] }}>
           <Text style={{ fontSize: FS.sm, color: C.amberInk, fontWeight: "700" }}>
             {t?.flightQuotaTitle || "Günlük uçuş sorgu hakkın doldu"}
@@ -178,7 +178,7 @@ export default function FlightField({
 
       {!!info && (
         <View style={{
-          backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "35",
+          backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
           borderRadius: R.xs, padding: ARA[10], marginTop: ARA[6],
         }}>
           <Text style={{ ...T.label, color: C.tealInk, marginBottom: ARA[2] }}>

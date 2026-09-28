@@ -111,8 +111,8 @@ begin
     select u, ty, '1' from unnest(array[g, hs, hd, hm, kt, ey, ad, bs, ek]) u,
            unnest(array['age_18','terms','privacy','community','no_resale','rules']) ty
     on conflict do nothing;
-  update profiles set access_source = 'priority_pass', guest_capacity = 2 where user_id in (hd, hm);
-  update profiles set access_source = coalesce(access_source, 'priority_pass'),
+  update profiles set access_source = 'Priority Pass', guest_capacity = 2 where user_id in (hd, hm);   -- 305: etiket
+  update profiles set access_source = coalesce(access_source, 'Priority Pass'),
                       guest_capacity = coalesce(guest_capacity, 2) where user_id = hs;
 
   -- kart hakları (host1'inki varsa dokunma)

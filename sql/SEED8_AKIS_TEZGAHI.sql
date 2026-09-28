@@ -234,7 +234,7 @@ select h.id, h.ad, h.meslek,
   from tezgah.seed8_hesap h
 on conflict (user_id) do update set name = excluded.name, profession = excluded.profession,
        bio = excluded.bio, show_on_discovery = true;
-update profiles set access_source = 'airline_status', guest_capacity = 2
+update profiles set access_source = 'Havayolu Statüsü', guest_capacity = 2   -- 305: ham kod değil etiket
  where user_id in (select id from tezgah.seed8_hesap where rol = 'host');
 
 insert into trust_scores (user_id, score, badge)

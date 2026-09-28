@@ -107,13 +107,14 @@ function kurS() {
   // GÖRÜNMEDİĞİNİ ÖLÇ — GÖRÜNMEYEN BİR SINIRI SAVUNMAK, OLMAYAN BİR
   // ŞEYİ KAYBETMEKTEN KORKMAKTIR."
   // ══════════════════════════════════════════════════════════════════
-  input: { backgroundColor: C.bgAlt, borderRadius: R.lg,
+  input: { backgroundColor: C.bgAlt, borderRadius: R.lg, borderWidth: 0,
            paddingVertical: SP[3], paddingHorizontal: SP[4] - 2, ...T.lg, color: C.ink },
   // 🔴 12 EYLÜL — KART KENARI `C.warmLine`DAN `C.kartKenar`A GEÇTİ.
   // Ölçüm: eski kenar kartın kendi zemini üstünde ΔE 20.36 (sıcak sarı
   // bir çizgi), yenisi ΔE 3.91. Tek satır, ama bu stili 100+ kart
   // kopyalıyor — yani "kutu cümbüşü"nün en büyük tek kalemi burası.
-  card: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.kartKenar, borderRadius: R.lg,
+  // v6 — kadife kart: çevre çizgisi yok; yalnız ÜST kenarda 1px speküler ışık
+  card: { backgroundColor: C.surface, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || C.kartKenar, borderRadius: R.lg,
           // tasarım `.kart{padding:17px;margin-bottom:13px}` — 16/12 en
           // yakın ölçek basamağı (ARA 2'nin katları). 10'du; kartlar
           // arası boşluk tasarımdakinden dardı.
@@ -129,8 +130,8 @@ function kurS() {
   // birinin yanlış olanı seçmesini garanti ediyordu.
   // 🆕 SINIF: "AYNI İŞİN İKİ TANIMI VARSA, BİRİ ÇAĞRILMIYOR OLSA BİLE
   // TEHLİKELİDİR — ÇÜNKÜ BİR GÜN ÇAĞRILACAKTIR."
-  empty: { padding: SP[6] - 6, alignItems: "center", borderWidth: 1, borderColor: C.line,
-           borderStyle: "dashed", borderRadius: R.lg },
+  empty: { padding: SP[6], alignItems: "center", backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", ...ELEV.card,
+           borderRadius: R.lg },
   // 🔴 v2.78 — ÇİPLERİN DOKUNMA HEDEFİ 44pt'NİN ALTINDAYDI.
   // Ölçüm: `paddingVertical: SP[2]` = 8 → yaklaşık 32pt. 33 çip düğmesinden
   // yalnız 2'si satırında `minHeight` ekliyordu; yani 31 çip standardın
@@ -160,18 +161,18 @@ function kurS() {
   //
   // `S.chip` denetim olarak KALDI (44px, dokunulabilir).
   // `S.roz` kart içi etiket olarak eklendi.
-  chip: { borderWidth: 1, borderColor: C.line, borderRadius: R.full, paddingVertical: SP[2],
+  chip: { borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", borderRadius: R.full, paddingVertical: SP[2],
           paddingHorizontal: ARA[14], backgroundColor: C.surface,
           minHeight: TAP.minHeight, justifyContent: "center",
           marginRight: SP[2], marginBottom: SP[2] },
   // Tasarımdaki `.roz` — kart içi durum etiketi. Gölge YOK: rozet
   // kartın düzleminde duruyor, üstünde yüzmüyor.
-  roz: { borderWidth: 1, borderColor: C.line2 || C.line, borderRadius: R.full,
+  roz: { borderWidth: 0, borderRadius: R.full,
          paddingVertical: ARA[6], paddingHorizontal: ARA[10],
          backgroundColor: "transparent", justifyContent: "center" },
-  chipOn: { borderColor: C.gold, backgroundColor: C.goldSoft },
+  chipOn: { borderTopColor: C.parlamaGuc || C.gold, backgroundColor: C.surfaceAlt },
   err: { backgroundColor: C.hataBg, borderRadius: R.xs, padding: SP[3] - 1, marginTop: SP[3] },
-  pickBtn: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: R.sm,
+  pickBtn: { backgroundColor: C.surface, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", borderRadius: R.sm,
              paddingVertical: SP[3] + 1, paddingHorizontal: SP[4] - 2, ...ELEV.card },};
 }
 
@@ -229,10 +230,11 @@ export function greeting(t) {
 //
 // `baslik` verilmezse `t.loading`e DÜŞMÜYORUZ: başlıksız ama geri oklu bir
 // çubuk çiziyoruz. Çıkış korunur, tekrar geri gelmez.
-export function Load({ t, title, onBack }) {
+export function Load({ t, title, onBack, gosterge: ozelGosterge }) {
+  // v6.2 — ekran kendi bekleme anlatımını verebilir (Keşfet: terminal radarı · K3).
   const gosterge = (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 120 }}>
-      <MarkaYukleyici boy={44} koyuZemin={koyuTemaMi()} />
+      {ozelGosterge || <MarkaYukleyici />}
     </View>
   );
   // ══════════════════════════════════════════════════════════════════
@@ -271,16 +273,6 @@ export function Load({ t, title, onBack }) {
       {gosterge}
     </Sayfa>
   );
-}
-
-// Koyu tema mı? Marka işaretinin altın hâli koyu zeminde de okunuyor ama
-// açık hâli daha net; tek ölçüt zeminin parlaklığı (tema modunu ikinci bir
-// yerde tanımlamıyoruz).
-function koyuTemaMi() {
-  const h = String((C && C.bg) || "#FFFFFF").replace("#", "");
-  if (h.length < 6) return false;
-  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
-  return (0.2126 * r + 0.7152 * g + 0.0722 * b) < 128;
 }
 
 // MVP Host Bul filtresi: Sektör CHIP seçenekleri (profession ilike eşleşir)
@@ -670,7 +662,7 @@ export function RefCodeEntry({ t }) {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   if (done) return (
-    <View style={{ backgroundColor: C.tealTint2, borderWidth: 1, borderColor: C.teal, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
+    <View style={{ backgroundColor: C.tealTint2, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
       <Text style={{ color: C.tealInk, fontSize: FS.sm, fontWeight: "700" }}>{t.refCodeApplied}</Text>
     </View>
   );
@@ -694,6 +686,35 @@ export function RefCodeEntry({ t }) {
 }
 export const ACCESS_SOURCES = ["Priority Pass", "LoungeKey", "DragonPass", "Kredi Kartı Avantajı",
   "Havayolu Statüsü", "Business Class", "Banka / Özel Bankacılık", "Kurumsal Seyahat"];
+
+// 🔴 v6.1 (Gökberk md.10) — profilde "airline_status" yazıyordu ve başka
+// seçim yapılınca da kalıyordu. `profiles.access_source` bazı hesaplarda
+// SUNUCU KODUYLA yazılmış (priority_pass, airline_status…); ekran ise
+// yalnız etiket tanıyordu: kod çipe eşlenmiyor, seçimi kaldırılamıyor ve
+// her kayıtta yeniden yazılıyordu. Okurken kodu etikete çeviriyoruz;
+// tanınmayan bir değer düşürülmez ama ham kod da ekrana basılmaz.
+const KAYNAK_KODLARI = {
+  priority_pass: "Priority Pass", lounge_key: "LoungeKey", loungekey: "LoungeKey",
+  dragon_pass: "DragonPass", dragonpass: "DragonPass",
+  credit_card: "Kredi Kartı Avantajı", bank_card: "Kredi Kartı Avantajı", card_membership: "Kredi Kartı Avantajı",
+  airline_status: "Havayolu Statüsü", alliance_status: "Havayolu Statüsü",
+  business_class: "Business Class", ticket_class: "Business Class",
+  private_bank: "Banka / Özel Bankacılık", private_banking: "Banka / Özel Bankacılık",
+  corporate: "Kurumsal Seyahat",
+  // eski etiketler (i18n.accessOpts) → güncel adlar
+  "Kredi Kartı": "Kredi Kartı Avantajı", "Credit Card": "Kredi Kartı Avantajı",
+  "Airline Status": "Havayolu Statüsü",
+};
+// Ekranda gösterim: kayıt her zaman TR etiketiyle tutulur (sunucu ve
+// kural motoru onu okur); İngilizce arayüz onu `t.accessSrcNames` ile çevirir.
+export function erisimEtiketi(t, etiket) {
+  return (t && t.accessSrcNames && t.accessSrcNames[etiket]) || etiket;
+}
+export function erisimKaynaklari(ham) {
+  const liste = String(ham || "").split(",").map(x => x.trim()).filter(Boolean)
+    .map(x => KAYNAK_KODLARI[x] || KAYNAK_KODLARI[x.toLowerCase()] || x);
+  return [...new Set(liste)];
+}
 
 // v2.65 — `firstRun` imzada vardı, gövdede hiç okunmuyordu ve App.js'in
 // ilk-çalıştırma dalı normal dalla aynı davranıyordu. Ölü bayrak kaldırıldı.
@@ -1010,7 +1031,7 @@ export const PURPOSES = [
 ];
 export function PromiseBox({ t, lounge, f, esik, yogunluk }) {
   return (
-    <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.gold + "40",
+    <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: "transparent",
                    borderRadius: R.sm, padding: SP[3], marginTop: SP[3] }}>
       <Text style={{ color: C.goldText, fontSize: FS.xs, letterSpacing: 1.1, fontWeight: "700" }}>
         {t.promiseTitle}
@@ -1160,6 +1181,12 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
 
   const izinAcik = !!(cihaz && cihaz.durum === "verildi");
   const jetonNeden = cihaz && cihaz.tokenNeden;
+  // 🔴 v6.1 (Gökberk md.14) — "bildirim izni alanı çalışmıyor". İzin
+  // VERİLMİŞ ama bu derlemede FCM yok: kullanıcının yapabileceği hiçbir
+  // şey kalmamışken kart "Yeniden dene" diye duruyordu ve düğme her
+  // dokunuşta aynı cümleyi geri getiriyordu. Kullanıcıya iş çıkarmayan
+  // bir altyapı eksiği ana sayfada kart olmaz.
+  if (izinAcik && jetonNeden === "fcm_yok") return null;
   // İzin açık + jeton yok → "kapalı" değil, "altyapı/kayıt" hâli: sessiz ton.
   const siddet = izinAcik ? "bilgi" : d.siddet;
   const renk = siddet === "kritik" ? C.red : siddet === "uyari" ? C.amber : C.gold;
@@ -1237,7 +1264,7 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
        değiyordu. Ritim `ARA[14]`; boşluk artık iki uçta da var.
        🆕 SINIF: "BOŞLUĞU YALNIZ BİR YÖNE YAZAN İKİ KOMŞU, ARALARINDA
        HİÇ BOŞLUK BIRAKMAZ." */
-    <View style={{ backgroundColor: zemin, borderWidth: 1, borderColor: renk + "40",
+    <View style={{ backgroundColor: zemin, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.kabartmaIsik,
                    borderRadius: R.sm, padding: SP[4], marginTop: SP[3], marginBottom: ARA[14] }}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Ikon ad="bildirimKapali" boy={15} renk={renk} stil={{ marginRight: SP[2] }} />
@@ -1288,7 +1315,7 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
         style={{ backgroundColor: renk, borderRadius: R.sm, paddingVertical: SP[3],
                  minHeight: TAP.minHeight, justifyContent: "center",
                  alignItems: "center", marginTop: SP[3], opacity: bekle ? 0.6 : 1 }}>
-        <Text style={{ color: C.onAccent, fontSize: FS.sm, fontWeight: "700" }}>
+        <Text style={{ color: siddet === "kritik" ? C.onAccent : C.onGold, fontSize: FS.sm, fontWeight: "700" }}>
           {bekle ? (t.loading || "…")
                  : izinAcik ? (t.retry || "Tekrar dene")
                  : ayarGerekli ? (t.pushOpenSettings || "Telefon ayarlarını aç")
@@ -1341,7 +1368,7 @@ export function YasOnayi({ t }) {
   };
 
   return (
-    <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: C.gold + "40",
+    <View style={{ backgroundColor: C.goldBg, borderWidth: 1, borderColor: "transparent",
                    borderRadius: R.sm, padding: SP[4], marginTop: SP[3] }}>
       <Text style={{ color: C.goldText, fontSize: FS.micro, letterSpacing: 1.6, fontWeight: "700" }}>
         {BUYUK(t.ageGateEyebrow || "")}

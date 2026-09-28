@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, Dimensions } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Image, Dimensions, Animated, Easing } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { C } from "./theme";
 import { Katman } from "./katman";
+import { useAzHareket } from "./hareket";
 
 // ============================================================================
 // ATMOSFER KATMANI  (26 Ağustos 2026 · v3.1)
@@ -181,6 +182,51 @@ const DOKU_KOYU = DOKU.aksam;
 //     ... ekran içeriği ...
 //   </View>
 // ---------------------------------------------------------------------------
+// ======================================================================
+// v6.2 (K9 · Gökberk onayı: "yalnız arka plandaki hareketi getir, başka
+// bir şeyi değiştirme") — CANLI ZEMİN.
+// İki yumuşak ışık bulutu (altın + `C.purple` — an ekranının ikinci halesiyle AYNI ton; palete yeni renk girmedi) gövde bölgesinde çok yavaş
+// kayıyor. Başlık bandı, kartlar, renkler ve yerleşim AYNEN; bu katman
+// yalnız zeminin arkasında ve dokunuş almıyor. Bulutlar ekranın alt %60'ında
+// duruyor: foto bantların ÜSTÜNE çıkmıyor. Varlık titreşimli (dither)
+// üretildi — gren_check'in bant kuralını bozmaz.
+// "Hareketi azalt" → bulutlar DURAĞAN; sade mod → hiç yok (üstte döner).
+// ======================================================================
+const ISIK_BULUTU = require("../assets/isik_bulutu.png");
+function IsikBulutlari() {
+  const az = useAzHareket();
+  const v = useRef(new Animated.Value(0)).current;
+  const w = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (az) return undefined;
+    const a = Animated.loop(Animated.sequence([
+      Animated.timing(v, { toValue: 1, duration: 18000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      Animated.timing(v, { toValue: 0, duration: 18000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+    ]));
+    const b = Animated.loop(Animated.sequence([
+      Animated.timing(w, { toValue: 1, duration: 24000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      Animated.timing(w, { toValue: 0, duration: 24000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+    ]));
+    a.start(); b.start();
+    return () => { a.stop(); b.stop(); };
+  }, [az]);
+  const G = Dimensions.get("window").width;
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "40%", bottom: 0, overflow: "hidden" }}>
+      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={C.gold}
+        style={{ position: "absolute", width: G * 1.3, height: G * 1.3, right: -G * 0.45, top: -G * 0.1,
+                 opacity: 0.09,
+                 transform: [{ translateX: v.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.18] }) },
+                             { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.12] }) }] }} />
+      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={C.purple}
+        style={{ position: "absolute", width: G * 1.4, height: G * 1.4, left: -G * 0.55, bottom: -G * 0.35,
+                 opacity: 0.12,
+                 transform: [{ translateX: w.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.2] }) },
+                             { translateY: w.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.15] }) }] }} />
+    </View>
+  );
+}
+
 export function Atmosfer({ tur = "is", ufuk = 58, kaynak, yogunluk }) {
   const [, tazele] = useState(0);
   useEffect(() => sadeDinle(() => tazele(v => v + 1)), []);
@@ -213,12 +259,15 @@ export function Atmosfer({ tur = "is", ufuk = 58, kaynak, yogunluk }) {
     // sohbet %20 → 30, giriş/kayıt %34 → 44, tanıtım/kural %30 → 40.
     const ust = Math.max(0, Math.min(80, (Number(ufuk) || 56) - 10));
     return (
-      <Katman
-        source={DOKU[ambiyansKusagi()] || DOKU_KOYU}
-        resizeMode="stretch"
-        fadeDuration={0}
-        style={{ position: "absolute", top: `${ust}%`, left: 0, right: 0, height: "20%", width: "100%" }}
-      />
+      <>
+        <Katman
+          source={DOKU[ambiyansKusagi()] || DOKU_KOYU}
+          resizeMode="stretch"
+          fadeDuration={0}
+          style={{ position: "absolute", top: `${ust}%`, left: 0, right: 0, height: "20%", width: "100%" }}
+        />
+        <IsikBulutlari />
+      </>
     );
   }
   return (

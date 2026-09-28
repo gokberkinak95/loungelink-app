@@ -11,7 +11,7 @@ import { logError, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { MONO } from "./typography";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP } from "./theme";
-import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma } from "./ui";
+import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -36,6 +36,7 @@ export * from "./ortak";
 export * from "./ekranlar_yalin";
 export * from "./ekranlar_ana";
 import { ActionNeeded, Campaigns, CompanionChat, ConfirmModal, Discovery, EditProfile, FindHostCard, HomeConnections, HostAccessSource, LoungePicker, Meet, PhoneGate, PublicProfile, Referral, Safety, SakinGun, SessionHistory, SeyahatFormu, KisiSayisi, TimeInput, TrustVisual, visOpts } from "./ekranlar_ana";
+import { yerelGun } from "./zaman";
 
 export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt }) {
   const uid = session?.user?.id;
@@ -82,7 +83,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
   const load = useCallback(async () => {
     // 🔴 Süresi GEÇMİŞ seyahatler listede kalmamalı — "30 Temmuz 14-16"
     // biter bitmez o kartın ve ona bağlı host-bul bağlamının düşmesi gerekir.
-    const today = new Date().toISOString().slice(0, 10);
+    const today = yerelGun();
     const { data, error } = await supabase.from("visits").select("*")
       .eq("user_id", uid).gte("visit_date", today).order("visit_date");
     if (error) { setLoadErr(true); return; }
@@ -277,17 +278,17 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                         tam olarak böyle; iki liste ekranının aynı işi
                         farklı yerlerde yapması, kullanıcıya iki ayrı
                         alışkanlık öğretmek olurdu. */}
-                    <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center",
-                                   gap: SP[4], marginTop: ARA[12] }}>
-                      <TouchableOpacity onPress={() => onEditTrip && onEditTrip(r)} hitSlop={TAP.slop}
-                        accessibilityRole="button" accessibilityLabel={t.editTrip}
-                        style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
-                        <Text style={{ color: C.mutedAA, fontSize: FS.sm }}>{t.edit}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={git} hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.findHost}
-                        style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
-                        <Text style={{ color: C.goldText, fontSize: FS.xs + 1, fontWeight: "700", lineHeight: 14 }}>{t.findHost}</Text>
-                      </TouchableOpacity>
+                    {/* 🔴 v6.1 (Gökberk md.22) — "Düzenle" çerçevesiz bir metindi
+                        ve altın metnin yanında sahipsiz duruyordu. Artık iki
+                        gerçek düğme: solda ghost "Düzenle" (kalem), sağda
+                        altın birincil eylem. Sessiz olan solda — ilan
+                        kartıyla aynı düzen. */}
+                    <View style={{ flexDirection: "row", alignItems: "center",
+                                   gap: SP[2], marginTop: ARA[14] }}>
+                      <Btn v="ghost" sm label={t.edit} solAd="duzenle" a11yLabel={t.editTrip}
+                        onPress={() => onEditTrip && onEditTrip(r)} />
+                      <Btn v="gold" sm label={t.findHost} a11yLabel={t.findHost} onPress={git}
+                        style={{ flex: 1 }} />
                     </View>
                   </>
                 );
@@ -445,7 +446,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
 // GÖSTERİLİRSE, KULLANICI DÜZELTEBİLECEĞİ ŞEYLE DÜZELTEMEYECEĞİNİ AYIRT
 // EDEMEZ."
 export function ilanDurumu(r) {
-  const bugun = new Date().toISOString().slice(0, 10);
+  const bugun = yerelGun();
   const gecti = String(r?.avail_date || "") < bugun;
   if (gecti) return "gecmis";
   return r?.active ? "canli" : "pasif";
@@ -721,8 +722,12 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
 
   return (
     <>
+    {/* v6.1 (md.5) — anlar TAM EKRAN katmanda: sekme içinde mutlak konumlu
+        çizildiklerinde alt çubuk üstlerinde kalıyordu ("Eşleştiniz" ekranında
+        sekmeler görünüyordu). Modal, kabuğun tamamını örter. */}
     {!!karsilik && (
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 41 }}>
+      <Modal visible transparent={false} animationType="fade" statusBarTranslucent onRequestClose={karsilikKapat}>
+      <View style={{ flex: 1 }}>
         <MomentScreen t={t}
           kind={karsilik.kind}
           title={karsilik.title}
@@ -735,9 +740,11 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           secondary={{ label: t.close, onPress: karsilikKapat }}
         />
       </View>
+      </Modal>
     )}
     {!!moment && (
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 40 }}>
+      <Modal visible transparent={false} animationType="fade" statusBarTranslucent onRequestClose={() => setMoment(null)}>
+      <View style={{ flex: 1 }}>
         <MomentScreen t={t}
           kind="matched"
           dugum={t.momentMatchEyebrow}
@@ -760,6 +767,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           secondary={{ label: t.momentLater, onPress: () => setMoment(null) }}
         />
       </View>
+      </Modal>
     )}
     <Kaydirma {...(bnt ? bnt.scrollProps : null)} ref={kaydirmaRef} contentContainerStyle={{ padding: ARA[20], paddingTop: (bnt ? bnt.ustBosluk : 0) + SP[4], paddingBottom: ARA[40] }}>
       {!adding && (
@@ -828,7 +836,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               onLayout={(e) => { kartY.current[r.id] = e.nativeEvent.layout.y; }}
               style={[S.card,
                       yayindaDegil && { opacity: 0.62, borderColor: C.line },
-                      odakId === r.id && { borderColor: C.gold, borderWidth: 2, backgroundColor: C.goldSoft }]}>
+                      odakId === r.id && { borderColor: "transparent", borderWidth: 2, backgroundColor: C.goldSoft }]}>
               {/* 🔴 v2.95 (Gökberk madde 3) — "CANLI ibaresi alanın dışına taşıyor".
                   Ölçtüm: satır `space-between` ama salon adında NE `flex: 1` NE
                   `numberOfLines` vardı. RN'de esnetilmemiş bir Text kendi doğal
@@ -1429,10 +1437,10 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
       // 5 Eylül — banttaki "meslek · şehir": sıradaki seyahatin, yoksa sıradaki
       // ilanın havalimanı şehri (airports.city). İkisi de yoksa şehir yazılmaz.
       supabase.from("visits").select("airport_code, airports(city)").eq("user_id", uid)
-        .gte("visit_date", new Date().toISOString().slice(0, 10)).order("visit_date").limit(1)
+        .gte("visit_date", yerelGun()).order("visit_date").limit(1)
         .then(r => r.data).catch(() => null),
       supabase.from("availabilities").select("airport_code, airports(city)").eq("host_id", uid).eq("active", true)
-        .gte("avail_date", new Date().toISOString().slice(0, 10)).order("avail_date").limit(1)
+        .gte("avail_date", yerelGun()).order("avail_date").limit(1)
         .then(r => r.data).catch(() => null),
     ]);
     {
@@ -1536,8 +1544,12 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
                   {[p.profession, sehir].filter(Boolean).join(" · ")}
                 </Text>
               ) : null}
-              <View style={{ flexDirection: "row", marginTop: ARA[2] }}>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginTop: ARA[2] }}>
                 <Cip ton={myRole === "host" ? "ok" : "gold"} etiket={`• ${badgeLabel(t, ts.badge)} · ${ts.score ?? 0}`} />
+                {/* v6.1 (Gökberk md.35) — kurucu rozeti kendi profilinde de görünür. */}
+                {p.founding_host_no ? (
+                  <Cip ton="gold" etiket={String(t.foundingBadge || "Kurucu Host #{n}").replace("{n}", String(p.founding_host_no))} />
+                ) : null}
               </View>
             </View>
           </View>
@@ -1558,7 +1570,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
       contentContainerStyle={{ padding: ARA[20], paddingTop: bnt.ustBosluk + SP[4],
                                paddingBottom: ARA[40] }}>
       {!!err && (
-        <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: C.red,
+        <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: "transparent",
                        borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
           <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 18 }}>{err}</Text>
         </View>
@@ -1568,7 +1580,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               kartın içinde sayılıyor. */}
           {kisit && kisit.kisitli && (
             <View style={{ backgroundColor: C.redBg || C.hataBg, borderWidth: 1,
-                           borderColor: C.red, borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
+                           borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
               <Text style={{ color: C.redInk, fontWeight: "700", fontSize: FS.sm }}>
                 {kisit.baslik || t.restrictedTitle}
               </Text>
@@ -1618,6 +1630,32 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
                 💳 Plan · 👛 Cuzdan · 🏷 Lounge hakki · 📡 Canli Durum
                 ✦ Host olmak istiyorum  -> hepsi bu listede, tab degil.
               ============================================================ */}
+          {/* 🔴 v6.1 (Gökberk md.8) — durum/biyografi "Çıkış Yap"ın hemen
+              üstündeydi: kimlik bilgisi, hesap kapatma eyleminin yanında.
+              Ayarlara da ait değil (ayar değil, vitrin). Yeri menünün
+              BAŞI: kimlik şeridinin hemen altında, kim olduğunu söyleyen
+              ilk cümle. */}
+          {/* biyografi kartı yalnız biyografi VARSA (yoksa eksik kartı söylüyor) */}
+          {!!p.bio && (
+          <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.8} onPress={onEditProfile}
+            style={[S.card, { marginBottom: ARA[10] }]}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <Text style={{ color: C.ink, fontSize: FS.base, lineHeight: 20, flex: 1, marginRight: SP[2] }}>
+                {p.bio}
+              </Text>
+              <Ikon ad="duzenle" boy={22} renk={C.mutedAA} />
+            </View>
+            {langs.length > 0 && (
+              <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
+                {langs.map(l => (
+                  <View key={l} style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: ARA[10], marginRight: ARA[6], marginBottom: ARA[6] }}>
+                    <Text style={{ fontSize: FS.sm, color: C.mutedAA }}>{l}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </TouchableOpacity>
+          )}
           {[
             // ============================================================
             // MVP PROFİL MENÜSÜ — kaynak birebir (host vs guest ayrı).
@@ -1743,27 +1781,6 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               buton aynı yere gidiyordu. Diller ise BUTON GİBİ görünüp hiçbir
               şey yapmıyordu. Artık bio + diller TEK dokunulabilir blok ve
               sağ üstte ✎ var (Gokberk'in tercihi: düzenlenebilir alanda ✎). */}
-          {/* biyografi kartı yalnız biyografi VARSA (yoksa eksik kartı söylüyor) */}
-          {!!p.bio && (
-          <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.8} onPress={onEditProfile}
-            style={[S.card, { marginBottom: ARA[10] }]}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <Text style={{ color: C.ink, fontSize: FS.base, lineHeight: 20, flex: 1, marginRight: SP[2] }}>
-                {p.bio}
-              </Text>
-              <Ikon ad="duzenle" boy={22} renk={C.mutedAA} />
-            </View>
-            {langs.length > 0 && (
-              <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
-                {langs.map(l => (
-                  <View key={l} style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: ARA[10], marginRight: ARA[6], marginBottom: ARA[6] }}>
-                    <Text style={{ fontSize: FS.sm, color: C.mutedAA }}>{l}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </TouchableOpacity>
-          )}
 
 
           {/* 5 Eylül — "Bakiye" kartı kalktı: kredi banttaki şeritte (dokununca Cüzdan). */}
@@ -1784,7 +1801,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
 
           {/* Cikis — MVP'de menunun EN ALTINDA, kirmizi, tek yerde */}
           <TouchableOpacity hitSlop={TAP.slop}
-            style={{ backgroundColor: C.redBg, borderRadius: R.sm, borderWidth: 1, borderColor: C.red + "40",
+            style={{ backgroundColor: C.redBg, borderRadius: R.sm, borderWidth: 1, borderColor: "transparent",
                      paddingVertical: ARA[14], paddingHorizontal: ARA[14], marginTop: ARA[6], marginBottom: SP[2],
                      flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
             onPress={() => { setLogoutMsg(""); setConfirmOut(true); }}>
@@ -1837,7 +1854,7 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
   const load = useCallback(async () => {
     const [{ data: av }, { data: v }] = await Promise.all([
       supabase.from("availabilities").select("id, lounge_name, airport_code, avail_date, time_from, time_to, slots, filled, featured_until")
-        .eq("host_id", uid).eq("active", true).gte("avail_date", new Date().toISOString().slice(0, 10)).order("avail_date"),
+        .eq("host_id", uid).eq("active", true).gte("avail_date", yerelGun()).order("avail_date"),
       supabase.from("verifications").select("phone_verified").eq("user_id", uid).maybeSingle(),
     ]);
     setAvails(av || []);
@@ -1928,11 +1945,17 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
                 const on = sel === a.id;
                 return (
                 <TouchableOpacity key={a.id} disabled={full} onPress={() => setSel(a.id)}
+                  accessibilityRole="radio" accessibilityState={{ selected: on, disabled: full }}
                   style={[S.chip, { width: "100%", marginBottom: SP[2], opacity: full ? 0.5 : 1,
-                    borderColor: on ? C.gold : C.line, backgroundColor: on ? C.goldSoft : C.card }]}>
-                  <Text style={{ color: on ? C.gold : C.ink, fontSize: FS.sm, fontWeight: "700" }}>
-                    {a.lounge_name || a.airport_code} · {a.airport_code}
-                  </Text>
+                    borderTopColor: on ? C.parlamaGuc : C.parlama, backgroundColor: on ? C.goldSoft : C.card }]}>
+                  {/* v6 — seçim çizgiyle değil: altın nokta (konum kanalı) + aydınlık kadife (ışık kanalı) */}
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View style={{ width: 6, height: 6, borderRadius: R.full, marginRight: ARA[8],
+                                   backgroundColor: on ? C.gold : "transparent" }} />
+                    <Text style={{ color: on ? C.gold : C.ink, fontSize: FS.sm, fontWeight: "600", letterSpacing: 0.2 }}>
+                      {a.lounge_name || a.airport_code} · {a.airport_code}
+                    </Text>
+                  </View>
                   <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[2] }}>
                     {fmtLongDate(a.avail_date, lang)}
                     {a.time_from ? ` · ${String(a.time_from).slice(0,5)}–${String(a.time_to).slice(0,5)}` : ""}
@@ -2156,7 +2179,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
   const VIS = ["Everyone", "Trusted+", "Connections"];
   // Anahtarlar SUNUCU değerleri (değişmez); etiketler i18n'den gelir.
   // 23 Eylül — "Trusted+" veritabanı değeri; ekranda Türkçe karşılığı yazılır.
-  const VIS_TR = { Everyone: t.stVisEveryone, "Trusted+": t.stVisTrusted || "Trusted+", Connections: t.stVisConnections };
+  const VIS_TR = { Everyone: t.stVisEveryone, "Trusted+": t.stVisTrusted, Connections: t.stVisConnections };
 
   // 🔴 v2.65 · İKİZ BİLEŞEN KALDIRILDI.
   // Burada Toggle ve Row'un YEREL kopyaları vardı (ui.js'te de var,
@@ -2209,9 +2232,10 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
             right={<>
               {/* 23 Eylül — "Ayarlanmadı ✓": eksik bir alan başarı rengi ve onay
                   işaretiyle çiziliyordu (numara yokken bile doğrulama bayrağı
-                  işareti basıyordu). Numara yoksa nötr metin, işaret yok. */}
-              <Text style={{ fontSize: FS.sm, color: me.phone ? C.tealInk : C.mut, fontWeight: "600" }}>{me.phone || t.stPhoneUnset}</Text>
-              {!me.phone ? null
+                  işareti basıyordu). Numara yoksa nötr metin, işaret yok.
+                  v6.x birleştirme: numara yok ama doğrulanmışsa "Doğrulandı". */}
+              <Text style={{ fontSize: FS.sm, color: (me.phone || me.phone_verified) ? C.tealInk : C.mut, fontWeight: "600" }}>{me.phone || (me.phone_verified ? t.hwVerified : t.stPhoneUnset)}</Text>
+              {!me.phone && !me.phone_verified ? null
                 : me.phone_verified
                 ? <Ikon ad="tamam" boy={FS.xs} renk={C.greenInk} />
                 : <ToneBadge tone="unknown" style={{ marginLeft: ARA[6] }}>{t.phoneNotYetVerified}</ToneBadge>}
@@ -2224,7 +2248,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
         <Head>{t.stPrivacy}</Head>
         <View style={{ backgroundColor: C.card, borderRadius: R.sm, borderWidth: 1, borderColor: C.line, marginBottom: SP[4], overflow: "hidden" , ...ELEV.card }}>
-          <Row label={t.stVisibility} right={<Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{VIS_TR[prof?.profile_visibility] || VIS_TR["Trusted+"]}</Text>}
+          <Row label={t.stVisibility} right={<Text style={{ fontSize: FS.sm, color: C.tealInk, fontWeight: "600" }}>{VIS_TR[prof?.profile_visibility] || t.stVisTrusted}</Text>}
             onPress={() => setEditor("visibility")} />
           <Row label={t.stShowDiscovery} right={<SwitchCell a11yLabel={t.stShowDiscovery} on={prof?.show_on_discovery !== false} onPress={() => patch({ show_on_discovery: !(prof?.show_on_discovery !== false) })} />} />
           <Row label={t.stLocation} sub={t.stLocationSub}
@@ -2317,7 +2341,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
         <Head>{t.stDanger}</Head>
         {/* #22: Cikis Yap KALDIRILDI (Profil'de zaten var); Hesabi Sil onay ister */}
         {!!delErr && (
-          <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: C.red, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] }}>
+          <View style={{ backgroundColor: C.redBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] }}>
             <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 18 }}>
               {t.deleteFailed} {delErr}
             </Text>
@@ -2369,29 +2393,31 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
       {/* Editor modal — MVP'deki gibi */}
       {editor && (
         <TouchableOpacity activeOpacity={1} onPress={() => setEditor(null)}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.45)", alignItems: "center", justifyContent: "center", padding: ARA[20] }}>
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center", padding: ARA[20] }}>
+          {/* v6.1 (md.4) — Ayarlar editörü de bulanık perde + ışık kenarlı popup. */}
+          <PerdeBulanik />
           <TouchableOpacity activeOpacity={1} onPress={() => {}}
-            style={{ backgroundColor: C.card, borderRadius: R.sm, padding: ARA[18], width: "100%", maxWidth: 340 }}>
+            style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[18], width: "100%", maxWidth: 340 }}>
             {editor === "password" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[3] }}>{t.stChangePw}</Text>
               <TextInput secureTextEntry placeholder={t.stPwPlaceholder} value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[2], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[2] }]} />
               <TextInput secureTextEntry placeholder={t.stPwRepeat} value={draft2} onChangeText={setDraft2} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={busy ? "…" : t.stPwSave} onPress={savePassword} disabled={busy} a11yLabel={t.stPwSave} />
             </>}
             {editor === "phone" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[1] }}>{t.stPhoneEdit}</Text>
               <Text style={{ fontSize: FS.xs, color: C.mutedAA, marginBottom: SP[3] }}>{t.stPhoneEditSub}</Text>
               <TextInput keyboardType="phone-pad" placeholder="+90 5xx xxx xx xx" value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={busy ? "…" : t.stPhoneSave} onPress={savePhone} disabled={busy} a11yLabel={t.stPhoneSave} />
             </>}
             {editor === "email" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[1] }}>{t.stContactEmail}</Text>
               <Text style={{ fontSize: FS.xs, color: C.mutedAA, marginBottom: SP[3] }}>{t.stEmailSub}</Text>
               <TextInput keyboardType="email-address" autoCapitalize="none" placeholder="email@example.com" value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3], color: C.ink }} />
+                style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={t.stEmailSave} onPress={saveEmailField} a11yLabel={t.stEmailSave} />
             </>}
             {editor === "visibility" && <>
@@ -2518,7 +2544,7 @@ export function AddVisit({ t, session, onBack, onDone, suggest }) {
             "bu nereden geldi?" der. İkisi de kötü: ilki yanlış veriyi
             onaylatır, ikincisi güveni sarsar. */}
         {suggest ? (
-          <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.teal + "40",
+          <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: ARA[10], marginTop: SP[2] }}>
             <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 18 }}>{t.tripPrefilled}</Text>
           </View>
@@ -2684,7 +2710,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
       <Hdr t={t} ustBilgi={t.sceneListing} title={t.editAvail} onBack={onBack} />
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {kilitli ? (
-          <View style={[S.card, { borderColor: C.gold, borderWidth: 1.5, marginBottom: SP[3] }]}>
+          <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.editLockedTitle}</Text>
             <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.editLockedBody}</Text>
           </View>
@@ -2723,7 +2749,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
           ))}
         </View>
         {cabin === "business" && (
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40",
+          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
             <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
           </View>
@@ -3172,7 +3198,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
           <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>• {t.hostSetupStep}</Text>
         </View>
         {!!hiddenWhy && (
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
+          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
             <IkonMetin ad="uyari" renk={C.amberInk} stilMetin={{ color: C.amberInk, fontWeight: "700", fontSize: FS.sm }} metin={t.availHiddenDisc} />
           </View>
         )}
@@ -3281,7 +3307,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
         {cabin === "business" && (
           /* Resmî kural: Business bileti misafir hakkı VERMEZ. Yumuşak
              not — engellemiyoruz, yanlış beklentiyi baştan düzeltiyoruz. */
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40",
+          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
             <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
           </View>
@@ -3362,7 +3388,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
             hakkı > uçuş şartsız > ücretli. */}
         {!!kartOneri && (
           <View style={{ marginTop: -2, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3],
-                         borderWidth: 1, borderColor: C.gold, backgroundColor: C.goldBg }}>
+                         borderWidth: 1, borderColor: "transparent", backgroundColor: C.goldBg }}>
             <Text style={{ ...T.label, color: C.muted, marginBottom: SP[1] }}>
               {BUYUK(t.whichCardTitle || "")}
             </Text>
@@ -3516,7 +3542,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
         {!phoneOk && (
           <TouchableOpacity onPress={onVerify}
             accessibilityRole="button" accessibilityLabel={t.haPhoneCta}
-            style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: C.amber + "40", borderRadius: R.sm, padding: SP[3], minHeight: TAP.minHeight, justifyContent: "center", marginTop: SP[3] }}>
+            style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], minHeight: TAP.minHeight, justifyContent: "center", marginTop: SP[3] }}>
             <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 19 }}>
               {t.haPhoneNeeded}{" "}
               <Text style={{ fontWeight: "700" }}>{t.haPhoneCta}</Text>

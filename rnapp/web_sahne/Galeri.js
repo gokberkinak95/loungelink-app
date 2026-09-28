@@ -13,6 +13,10 @@ import { View } from "react-native";
 import * as Font from "expo-font";
 import App from "../App";
 import { sahneKur } from "./sahneler";
+import MomentScreen from "../src/MomentScreen";
+import { TerminalRadari, TakimyildizPuan } from "../src/hareket";
+import { Sayfa, MarkaYukleyici, Tanecik } from "../src/ui";
+import { D as TR } from "../src/i18n";
 
 const q = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
 const SAHNE = q.get("sahne") || "karsilama";
@@ -53,5 +57,23 @@ export default function Galeri() {
     return () => clearTimeout(t);
   }, [hazir]);
   if (!hazir) return <View style={{ flex: 1, backgroundColor: "#0B0A0F" }} />;
+  // v6.2 — HAREKET VİTRİNİ: onaylı hareket bileşenlerini gerçek fontlarla,
+  // tek başına çizer (K3 · K5 · K8 · K2). Yalnız web sahnesinde; uygulamaya girmez.
+  if (SAHNE.endsWith("vitrin_kapi")) {
+    return <MomentScreen t={TR.tr || {}} kind="matched" dugum="Eşleştiniz" title="Deniz K. seni salona alıyor"
+      subtitle="TAV Primeclass · 14:20–16:40" ikiz={["G", "D"]}
+      primary={{ label: "Sohbeti aç", onPress: () => {} }} secondary={{ label: "Şimdi değil", onPress: () => {} }} />;
+  }
+  if (SAHNE.endsWith("vitrin_radar")) {
+    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <TerminalRadari etiket="Terminalindeki host'lar aranıyor" dugum="IST" />
+    </View><Tanecik /></Sayfa>);
+  }
+  if (SAHNE.endsWith("vitrin_puan")) {
+    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 48 }}>
+      <TakimyildizPuan deger={4} onDegis={() => {}} />
+      <MarkaYukleyici />
+    </View><Tanecik /></Sayfa>);
+  }
   return <App />;
 }

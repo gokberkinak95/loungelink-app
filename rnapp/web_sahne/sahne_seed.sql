@@ -156,7 +156,7 @@ begin
     on conflict do nothing;
   -- `bh` de burada: `access_source` boş kalsa App.js ilk açılışta "Lounge
   -- Erişim Kurulumu" katmanını açar ve BOŞ PLANIM'ı hiç göremezdik.
-  update profiles set access_source = 'priority_pass', guest_capacity = 2 where user_id in (hd, hm, hs, bh);
+  update profiles set access_source = 'Priority Pass', guest_capacity = 2 where user_id in (hd, hm, hs, bh);
   -- Yeni Üye: hiçbir doğrulaması yok → Keşfet'te "Telefonunu doğrula" kapısı
   update verifications set phone_verified = false, id_verified = false, email_verified = true
     where user_id = yn;

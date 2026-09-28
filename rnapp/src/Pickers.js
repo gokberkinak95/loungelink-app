@@ -31,7 +31,7 @@
 // ============================================================================
 import React, { useMemo, useState } from "react";
 import { Ikon } from "./ikon";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Dimensions } from "react-native";
 import { ARA, ELEV, C, FS, R, SP, T, TAP } from "./theme";
 import { gorunur } from "./i18n";
 
@@ -232,36 +232,66 @@ export function CarrierPicker({
 // altında TEK SATIRLIK özet duruyor — kapalıyken de panelin söylediği asıl
 // cümle görünür. `tint`/`cizgi` ise panellerin marka rengini (altın cüzdan,
 // teal mertebe) katlanır hâle geçerken kaybetmemesi için.
-export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla = false, not }) {
+// v6.1 — Katlanır panel, sistem genelinde tek bileşen.
+// Gökberk (md.2 · 20 · 21 · 27 · 33): "daralıp genişleyebilmeli, çok yer
+// kaplıyor ve arkadaki görünümü engelliyor." Eklenenler:
+//   · `buyukBaslik` — başlık bir etiket değil bir CÜMLE olduğunda ("Kapıda
+//     alınmadın mı?") tam punto ve mürekkep rengiyle yazılır
+//   · `onKapat`     — sağ üstte × (paneli tamamen kapatır; katlamaktan farklı)
+//   · `enFazla`     — açık gövde ekranın bu oranını geçmez, içerik kayar
+//   · `acik`/`onAcik` — dışarıdan yönetilebilir (verilmezse kendi durumu)
+export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla = false, not,
+                           buyukBaslik, onKapat, enFazla, ikon, stil }) {
   const [acik, setAcik] = useState(!!acikBasla);
-  return (
-    <View style={{ borderWidth: 1, borderColor: cizgi || C.line, borderRadius: R.sm,
-                   marginBottom: ARA[14], overflow: "hidden", backgroundColor: tint || C.card }}>
-      <TouchableOpacity hitSlop={TAP.slop} onPress={() => setAcik(v => !v)}
-        style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-                 paddingVertical: ARA[14], paddingHorizontal: SP[3], minHeight: 46 }}>
-        <View style={{ flex: 1, paddingRight: SP[2] }}>
-          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, letterSpacing: 1 }}>
-            {baslik}{typeof sayi === "number" ? `  ·  ${sayi}` : ""}
-          </Text>
-          {/* Kapalıyken bilgi kaybolmasın diye özet HER ZAMAN çizilir. */}
-          {!!ozet && (
-            <Text numberOfLines={acik ? 3 : 2}
-              style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: ARA[2] }}>
-              {ozet}
-            </Text>
-          )}
-        </View>
-        <Ikon ad={acik ? "yukari" : "asagi"} boy={14} renk={C.muted} />
-      </TouchableOpacity>
-      {acik && (
-        <View style={{ paddingHorizontal: SP[3], paddingBottom: SP[3] }}>
-          {children}
-          {!!not && (
-            <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: SP[2], lineHeight: 16 }}>{not}</Text>
-          )}
-        </View>
+  const degis = () => setAcik(a => !a);
+  const govdeYuk = enFazla ? Math.round(Dimensions.get("window").height * enFazla) : undefined;
+  const govde = (
+    <View style={{ paddingHorizontal: SP[3] + 2, paddingBottom: SP[3] + 2 }}>
+      {children}
+      {!!not && (
+        <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: SP[2], lineHeight: 16 }}>{not}</Text>
       )}
+    </View>
+  );
+  return (
+    <View style={[{ borderWidth: cizgi ? 1 : 0, borderColor: cizgi || "transparent",
+                    borderTopWidth: 1, borderTopColor: cizgi || C.parlama || C.line,
+                    borderRadius: R.md, marginBottom: ARA[14], overflow: "hidden",
+                    backgroundColor: tint || C.card }, stil]}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <TouchableOpacity hitSlop={TAP.slop} onPress={degis}
+          accessibilityRole="button" accessibilityState={{ expanded: acik }}
+          accessibilityLabel={typeof baslik === "string" ? baslik : undefined}
+          style={{ flex: 1, flexDirection: "row", alignItems: "center",
+                   paddingVertical: ARA[14], paddingLeft: SP[3] + 2, paddingRight: SP[2], minHeight: 48 }}>
+          {!!ikon && <View style={{ marginRight: ARA[10] }}>{ikon}</View>}
+          <View style={{ flex: 1, paddingRight: SP[2] }}>
+            <Text style={buyukBaslik
+              ? { fontSize: FS.base, fontWeight: "600", color: C.ink }
+              : { fontSize: FS.xs, fontWeight: "600", color: C.muted, letterSpacing: 1 }}>
+              {baslik}{typeof sayi === "number" ? `  ·  ${sayi}` : ""}
+            </Text>
+            {/* Kapalıyken bilgi kaybolmasın diye özet HER ZAMAN çizilir. */}
+            {!!ozet && (
+              <Text numberOfLines={acik ? 3 : 2}
+                style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: ARA[2] }}>
+                {ozet}
+              </Text>
+            )}
+          </View>
+          <Ikon ad={acik ? "yukari" : "asagi"} boy={14} renk={C.muted} />
+        </TouchableOpacity>
+        {!!onKapat && (
+          <TouchableOpacity hitSlop={TAP.slop} onPress={onKapat}
+            accessibilityRole="button" accessibilityLabel="Kapat"
+            style={{ width: 44, height: 48, alignItems: "center", justifyContent: "center" }}>
+            <Ikon ad="kapat" boy={14} renk={C.muted} />
+          </TouchableOpacity>
+        )}
+      </View>
+      {acik && (govdeYuk
+        ? <ScrollView style={{ maxHeight: govdeYuk }} nestedScrollEnabled keyboardShouldPersistTaps="handled">{govde}</ScrollView>
+        : govde)}
     </View>
   );
 }

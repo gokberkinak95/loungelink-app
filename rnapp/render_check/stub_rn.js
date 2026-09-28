@@ -39,9 +39,11 @@ const Easing = {
   // çağrısı render testinde çöktü. Stub'ın eksikliği ürün hatası gibi
   // görünür — doğrusu stub'ı gerçeğe yaklaştırmaktır. Test animasyonun
   // eğrisini değil, çağrılabilirliğini doğrular.
-  linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x,
+  linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x, sin: (x) => x,
   out: (fn) => (fn || ((x) => x)), in: (fn) => (fn || ((x) => x)),
   inOut: (fn) => (fn || ((x) => x)), bezier: () => ((x) => x),
+  // v6 — gerçek RN'de var: `poly(n)` ve `back(s)` eğri FABRİKASI döndürür.
+  poly: () => ((x) => x), back: () => ((x) => x),
 };
 
 module.exports = {
@@ -91,7 +93,7 @@ module.exports = {
     View: host("AnimatedView"), Text: host("AnimatedText"), Image: host("AnimatedImage"),
     ScrollView: host("AnimatedScrollView"),
     event: () => () => {},
-    Value: function () { return { setValue() {}, interpolate: () => 0 }; },
+    Value: function () { return { setValue() {}, interpolate: () => 0, addListener: () => "1", removeListener() {} }; },
     timing: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
     spring: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
     sequence: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),

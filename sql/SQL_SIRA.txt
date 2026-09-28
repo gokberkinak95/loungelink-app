@@ -1,3 +1,14 @@
-Bu tur YENI migration YOK (300 / 301 / 302 daha once calistirildi).
-Istege bagli: sql\SEED8_AKIS_TEZGAHI.sql -> rapora "uygulamada_gorunen" sutunu gelir.
-Test hesaplari: akis.*@seed.loungelink.test  sifre: Seed1234!
+SQL SIRASI - 26 Eylul 2026 (app 6.1 turu)
+
+Supabase SQL Editor'de SIRAYLA calistir (her dosyayi ayri ayri, tamamini yapistir):
+
+  1) 303_ertelenen_puan_ana_sayfadan_duser.sql   -> "Son oturumu puanla > Sonra" calisir
+  2) 304_kesfet_engelinin_gercek_sebebi.sql      -> farkli havayolu kendi gerekcesiyle
+  3) 305_erisim_kaynagi_etiketleri.sql           -> airline_status gibi ham kodlar etikete doner
+
+300 / 301 / 302 daha once calistirildi (senin serin). Tekrar gerekmez.
+Uc dosya da tekrar kosulabilir.
+
+Istege bagli (yalniz test hesaplari): SEED8_AKIS_TEZGAHI.sql artik
+access_source'a etiket yaziyor ("Havayolu Statusu"). 305 zaten mevcut
+kayitlari duzeltiyor; SEED8'i yeniden kosmak sart degil.

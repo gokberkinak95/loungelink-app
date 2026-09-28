@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-09-23
+-- Uretim tarihi: 2026-09-26
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,7 +9,7 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 493
+-- Toplam fonksiyon: 494
 -- Birden cok dosyada tanimli (dikkat!): 143
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
@@ -43,7 +43,7 @@
 --   delete_my_account            -> etkin: 282_ban_ve_kvkk_silme.sql  (ayrica: 049_discovery_safety_phone_delete.sql)
 --   discover_availabilities      -> etkin: 243_one_cikarma_gercekten_calissin.sql  (ayrica: 012_women_safety.sql, 016_match_score.sql, 024_avatars_storage.sql, 030_match_and_broadcast.sql, 040_visibility_and_discovery_fix.sql, 041_staff_accounts_excluded.sql, 049_discovery_safety_phone_delete.sql, 064_fix_overloads_and_discovery.sql, 072_discover_availabilities_gender_langs.sql, 112_blocks_in_discovery.sql, 158_device_findings.sql, 182_discover_carries_decision.sql, 187_kanitlanmis_kusurlar.sql, 195_ucus_alanlari_ve_kod_paylasimi.sql)
 --   discover_people              -> etkin: 070_discover_people_trip_data.sql  (ayrica: 015_connections.sql, 024_avatars_storage.sql, 044_trip_purpose_and_people_fix.sql, 049_discovery_safety_phone_delete.sql, 054_discover_people_include_hosts.sql, 059_discover_everyone_request_gate.sql)
---   discovery_rule_badges        -> etkin: 221_hosta_sor.sql  (ayrica: 090_rules_to_app.sql, 102_badge_wording.sql, 116_badges_gate_and_sort.sql, 135_short_and_honest.sql, 219_kredi_ve_ucret_dili.sql)
+--   discovery_rule_badges        -> etkin: 304_kesfet_engelinin_gercek_sebebi.sql  (ayrica: 090_rules_to_app.sql, 102_badge_wording.sql, 116_badges_gate_and_sort.sql, 135_short_and_honest.sql, 219_kredi_ve_ucret_dili.sql, 221_hosta_sor.sql)
 --   expire_stale_sessions        -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 080_session_lifecycle.sql, 187_kanitlanmis_kusurlar.sql, 292_zaman_dilimi_yerel_an.sql, 298_supurge_kisiti_ve_asim_dedektoru.sql, 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql)
 --   flight_fetch_allow           -> etkin: 225_planin_sozu_tutulsun.sql  (ayrica: 091_flight_quota.sql)
 --   flight_info                  -> etkin: 195_ucus_alanlari_ve_kod_paylasimi.sql  (ayrica: 091_flight_quota.sql)
@@ -89,7 +89,7 @@
 --   partner_demand               -> etkin: 209_saglayici_modulu.sql  (ayrica: 023_partner_portal.sql, 029_bo_requirements.sql, 207_kopruler_ve_verilen_sozler.sql)
 --   partner_gate                 -> etkin: 213_saglayici_kurumsal_katman.sql  (ayrica: 209_saglayici_modulu.sql)
 --   partner_payout               -> etkin: 209_saglayici_modulu.sql  (ayrica: 029_bo_requirements.sql)
---   pending_ratings              -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 032_p2_flows.sql, 081_pending_ratings_link.sql, 186_context_for_cards.sql)
+--   pending_ratings              -> etkin: 303_ertelenen_puan_ana_sayfadan_duser.sql  (ayrica: 032_p2_flows.sql, 081_pending_ratings_link.sql, 186_context_for_cards.sql, 187_kanitlanmis_kusurlar.sql)
 --   phone_in_use                 -> etkin: 253_guvenlik_kapanisi.sql  (ayrica: 049_discovery_safety_phone_delete.sql)
 --   plan_kredisi_yerlestir       -> etkin: 236_ust_plan_bir_ay_ucretsiz.sql  (ayrica: 225_planin_sozu_tutulsun.sql)
 --   push_kanali                  -> etkin: 278_push_kanali_enum.sql  (ayrica: 276_push_kanallari.sql)
@@ -4106,8 +4106,8 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- pending_ratings   [etkin kaynak: 187_kanitlanmis_kusurlar.sql]
--- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- pending_ratings   [etkin kaynak: 303_ertelenen_puan_ana_sayfadan_duser.sql]
+-- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.pending_ratings()
 returns table (
@@ -4116,7 +4116,10 @@ returns table (
   airport_code text, avail_date date, time_from time, time_to time,
   flight_number text, carrier text
 )
-language plpgsql stable security definer set search_path = public as $$
+ language plpgsql
+ stable security definer
+ set search_path to 'public'
+as $function$
 declare v_uid uuid := auth.uid();
 begin
   return query
@@ -4126,7 +4129,7 @@ begin
          coalesce(a.lounge_name, a.airport_code::text),
          s.completed_at,
          (r.host_id = v_uid),
-         a.airport_code::text,          -- 🔴 char(3) -> text
+         a.airport_code::text,
          a.avail_date, a.time_from, a.time_to,
          a.flight_number, a.carrier
     from sessions s
@@ -4136,11 +4139,12 @@ begin
       on p.user_id = case when r.host_id = v_uid then r.guest_id else r.host_id end
    where s.status = 'completed'
      and (r.host_id = v_uid or r.guest_id = v_uid)
+     and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])   -- 303
      and not exists (select 1 from ratings rt
                       where rt.session_id = s.id and rt.rater_id = v_uid)
    order by s.completed_at desc nulls last
    limit 20;
-end $$;
+end $function$;
 
 -- ----------------------------------------------------------------------
 -- has_active_session   [etkin kaynak: 080_session_lifecycle.sql]
@@ -7700,15 +7704,15 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- discovery_rule_badges   [etkin kaynak: 221_hosta_sor.sql]
--- ⚠ Bu fonksiyon 6 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- discovery_rule_badges   [etkin kaynak: 304_kesfet_engelinin_gercek_sebebi.sql]
+-- ⚠ Bu fonksiyon 7 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-create or replace function public.discovery_rule_badges(p_ids uuid[])
-returns table (
-  avail_id uuid, severity text, label text, info text, detail text,
-  same_flight_match boolean, blocks_request boolean, sort_boost int,
-  can_ask_host boolean
-) language plpgsql stable security definer set search_path = public as $$
+CREATE OR REPLACE FUNCTION public.discovery_rule_badges(p_ids uuid[])
+ RETURNS TABLE(avail_id uuid, severity text, label text, info text, detail text, same_flight_match boolean, blocks_request boolean, sort_boost integer, can_ask_host boolean)
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 declare
   r record; d jsonb; b jsonb; v_flight text; v_key text;
   v_boost int; v_same boolean; v_block boolean; v_prog lounge_programs%rowtype;
@@ -7736,7 +7740,12 @@ begin
     end if;
 
     v_boost := 0;
-    if v_block then                                  v_key := 'guest_none';  v_boost := -1000;
+    -- 304: engelin SEBEBİ ayrı anahtar — farklı havayolu "misafir hakkı yok" değildir.
+    if v_block and coalesce((d ->> 'carrier_ok') = 'false', false) then
+                                                     v_key := 'carrier_bad';   v_boost := -1000;
+    elsif v_block and coalesce((d ->> 'charter') = 'true', false) then
+                                                     v_key := 'charter_block'; v_boost := -1000;
+    elsif v_block then                               v_key := 'guest_none';  v_boost := -1000;
     elsif v_same then                                v_key := 'same_flight'; v_boost := 100;
     elsif (d ->> 'fits') = 'false' then              v_key := 'flight_bad';  v_boost := -100;
     elsif (d ->> 'guest_policy') = 'not_allowed' then
@@ -7764,7 +7773,7 @@ begin
     can_ask_host := public.kural_sorusu_uygun_mu(avail_id);
     return next;
   end loop;
-end $$;
+end $function$;
 
 -- ----------------------------------------------------------------------
 -- flight_fetch_allow   [etkin kaynak: 225_planin_sozu_tutulsun.sql]
@@ -30316,4 +30325,46 @@ end $$;
 create or replace function public.gelmedi_esigi()
 returns int language sql stable security definer set search_path = public as $$
   select coalesce((select (value #>> '{}')::int from beta_settings where key = 'gelmedi_bekleme_dk'), 15)
+$$;
+
+-- ----------------------------------------------------------------------
+-- erisim_kaynagi_etiketle   [etkin kaynak: 305_erisim_kaynagi_etiketleri.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.erisim_kaynagi_etiketle(p text)
+returns text
+language sql
+immutable
+set search_path = public
+as $$
+  select nullif(string_agg(e, ', ' order by ilk), '')
+    from (
+      select e, min(sira) as ilk
+        from (
+          select case lower(btrim(x))
+                   when 'priority_pass'    then 'Priority Pass'
+                   when 'lounge_key'       then 'LoungeKey'
+                   when 'loungekey'        then 'LoungeKey'
+                   when 'dragon_pass'      then 'DragonPass'
+                   when 'dragonpass'       then 'DragonPass'
+                   when 'credit_card'      then 'Kredi Kartı Avantajı'
+                   when 'bank_card'        then 'Kredi Kartı Avantajı'
+                   when 'card_membership'  then 'Kredi Kartı Avantajı'
+                   when 'kredi kartı'      then 'Kredi Kartı Avantajı'
+                   when 'credit card'      then 'Kredi Kartı Avantajı'
+                   when 'airline_status'   then 'Havayolu Statüsü'
+                   when 'alliance_status'  then 'Havayolu Statüsü'
+                   when 'airline status'   then 'Havayolu Statüsü'
+                   when 'business_class'   then 'Business Class'
+                   when 'ticket_class'     then 'Business Class'
+                   when 'private_bank'     then 'Banka / Özel Bankacılık'
+                   when 'private_banking'  then 'Banka / Özel Bankacılık'
+                   when 'corporate'        then 'Kurumsal Seyahat'
+                   else btrim(x)
+                 end as e,
+                 sira
+            from unnest(string_to_array(coalesce(p, ''), ',')) with ordinality as u(x, sira)
+           where btrim(x) <> ''
+        ) m
+       group by e
+    ) t;
 $$;

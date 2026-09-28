@@ -2,7 +2,7 @@
   "expo": {
     "name": "LoungeLink",
     "slug": "loungelink",
-    "version": "5.17.1",
+    "version": "6.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.loungelink.app",
-      "versionCode": 270,
+      "versionCode": 271,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -83,7 +83,8 @@
         "expo-image-picker",
         {
           "photosPermission": "Profil fotoğrafını seçebilmen için galerine erişim izni gerekiyor. Fotoğrafın yalnızca senin belirlediğin görünürlükte gösterilir.",
-          "cameraPermission": false
+          "cameraPermission": "Biniş kartındaki barkodu okumak için kamera gerekiyor.",
+          "microphonePermission": false
         }
       ],
       [
@@ -96,7 +97,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.loungelink.app",
-      "buildNumber": "264",
+      "buildNumber": "265",
       "supportsTablet": false,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Biniş kartı ekran görüntünü seçebilmen için galeri erişimi gerekiyor. Seçtiğin görsel cihazından çıkmaz; okunduktan sonra kopyası silinir.",
