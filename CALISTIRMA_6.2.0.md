@@ -1,4 +1,8 @@
-# ÇALIŞTIRMA · 28 Eylül 2026 · SQL 303–305 · site 0.67.0 · app 6.2.0
+# ÇALIŞTIRMA · 28 Eylül 2026 · SQL 303–305 · site 0.68.0 · app 6.2.0
+
+> Akşam güncellemesi: app 6.2'ye K1′ (yalnız splash ışığı) ve K2 iz düzeltmesi eklendi
+> (sürüm aynı: henüz build alınmadı). Site 0.68.0 = 0.67 + hareket katmanı W1–W9.
+> Ayrıntı ve yeni sohbet için ilk mesaj: `DEVIR\2026-09-28b_SON_yerel-oturum-ve-cowork.md`.
 
 > `CALISTIRMA_6.1.0.md`nin yerine geçer. O dosyadaki C adımında taban YANLIŞTI
 > (`origin/main`); doğrusu aşağıda (`96eb4ae`).
@@ -20,7 +24,7 @@ SQL Editor'de, her dosyanın tamamını ayrı ayrı yapıştırıp çalıştır:
 
 ---
 
-## B · Web sitesi 0.67.0 (hemen)
+## B · Web sitesi 0.68.0 (hemen)
 
 ```powershell
 cd C:\LoungeLink\website
@@ -29,7 +33,7 @@ git checkout main
 git pull
 git merge origin/claude/peaceful-brown-02srm2
 npm install
-node verify.js
+node check.js
 npm run build
 git push
 ```
@@ -38,7 +42,7 @@ git push
 
 ## C · 5.17.1 ile 6.2'yi birleştir (bir kerelik)
 
-Bunu **yerel Claude Code oturumuna yaptırman** en kolayı (bkz. `DEVIR\2026-09-28_bulut-v62-hareket.md`).
+Bunu **yerel Claude Code oturumuna yaptırman** en kolayı (bkz. `DEVIR\2026-09-28b_SON_yerel-oturum-ve-cowork.md`).
 Elle yapmak istersen:
 
 ```powershell
@@ -133,4 +137,4 @@ Telefonda sürüm **6.2.0** (versionCode 268) görünmeli.
 - SQL zinciri sıfırdan: 340 dosya, 0 hata (303–305 dahil)
 - app: check.js temiz · render 37/37 · 58 web sahnesi hatasız · verify.js kırmızı yok
   (tip_check yerel koşucuyla) · gren 1.67 pt · schema 1211 kolon · contract 501 RPC
-- site: check.js temiz · verify.js 1 kırmızı (ikon farkı; PC'de 5.17.1 ikonlarıyla kapanır)
+- site 0.68: check.js · tasarim_check · palet_check temiz · build temiz · verify.js 1 kırmızı (ikon farkı; PC'de 5.17.1 ikonlarıyla kapanır)

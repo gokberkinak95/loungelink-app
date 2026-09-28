@@ -1,3 +1,5 @@
+> ⚠️ **TARİHÇE** — yerine `2026-09-28b_SON_yerel-oturum-ve-cowork.md` geçti (K1′ splash, K2 izi, site 0.68).
+
 # DEVİR · 28 Eylül 2026 · bulut oturumu → Cowork / yerel Claude Code
 
 Bu dosyayı okuyan oturum (Cowork ya da `C:\LoungeLink`te açılmış yerel Claude
