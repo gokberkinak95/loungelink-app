@@ -88,4 +88,84 @@ Bu oturumda yeni SQL yazılmadı. 305'ten sonra dosya yok.
    `favicon.png`/`icon.png` app ile eşitlenecek (5.17.1 birleştirmesi yapıldı → artık kopyalanabilir).
 7. 26 Eylül Cowork DEVIR'inden hâlâ açık: IG serisi A/B seçimi ve el yolu · IG metinleri "an" serisi ·
    "Gelmedi" bildiriminde host misafiri bildirirse misafire kredi iadesi değişsin mi.
-8. Temizlik (isteğe bağlı): `_teslim_2809\` depoda izlenmiyor; köke `.gitignore` satırı eklenebilir.
+8. ~~Temizlik: `_teslim_2809\`~~ → kök `.gitignore`a `/_teslim_*/` eklendi (EAS yüklemesine de girmiyor).
+
+---
+
+## TUR 2 (aynı gün) · Gökberk'in kararlarından sonra
+
+Gökberk: SQL 303–305'i Supabase'de ÇALIŞTIRDI. Push: evet. Build: evet. BO: incele. Betikler: ekle.
+
+### Yapılanlar
+- **App dalı push edildi:** `origin/pc-5.17.1` = `12c2f5c`
+  (`9c74f8e` render_check'e `tam_akis_e2e.py` + `jsx_turkce_tara.js` · `12c2f5c` `.gitignore` `/_teslim_*/`).
+- **BO incelendi — güncel olan 1.96.0'dır, 1.95.1 DEĞİL.** Ölçüm: teslimdeki `backoffice_1.95.1` = BO deposundaki
+  `020f8f1` ile 174/174 dosya aynı. `721c9f4 BO 1.96.0` (24 Eylül) ondan SONRA ve `origin/main` zaten orada;
+  içeriği 26 Eylül DEVIR'inin BO maddeleri (SQL 301: "Gelmedi" sonuç sütunu, başlatma sütunu, engel sebebi).
+  28b DEVIR'deki "1.96.0 yanlıştı" cümlesi bulut oturumunun 1.96.0'ı hiç görmemesinden.
+- **BO 1.96.1** (`5d83b8f`, YEREL — push edilmedi, aşağıya bak): `check.js` 2 kırmızı veriyordu (icon/favicon app'ten farklı).
+  Ölçüldü: pikseller (IDAT) birebir aynı, yalnız C2PA meta verisi (`caBX`) farklı. App'inkiler kopyalandı,
+  eskiler `backoffice\_arsiv\20260928\`. `check.js` temiz · `next build` temiz.
+- **EAS build başlatıldı:** Android preview (APK) · 6.2.0 / 271 · commit `12c2f5c` ·
+  https://expo.dev/accounts/gokberkinak/projects/loungelink/builds/ca32e3bb-4f15-41f6-a249-45fd76b15619
+  (yükleme 82,5 MB). `google-services.json` yok → `app.config.js` alanı düşürür → **Android push bildirimi bu build'de çalışmaz** (eskiden beri böyle).
+- iOS build ALINMADI.
+
+- **EAS build BİTTİ (FINISHED):** APK → https://expo.dev/artifacts/eas/r3wMHqwkTurMQ9C40GLYGJUVI5kxQ8npkO4sITi38DQ.apk
+
+---
+
+## TUR 3 · Site 0.69.0 (Gökberk: "önerilerini uygula, hataları çöz")
+
+Dal: `website` → **`site-0.69`** (GitHub'a gönderildi; `main` DEĞİL → canlı site değişmedi, Vercel önizleme üretir).
+Commit'ler: `5491a1b` (denetim hataları + ikonlar) · `fdf5434` (0.69.0).
+
+### Hatalar — kök sebep ölçüldü
+- ◈ sembolü ve sayaçtaki "3, 3, 231, 8" GERÇEK hata değildi: hepsi YORUMDAYDI. `check.js` `yorumsuz()` satırları
+  `"\n"` ile bölüyordu; Windows (CRLF) dosyada `.*$` `\r` yüzünden eşleşmiyor, yorum silinmiyordu. Bulutta (LF) temizdi.
+  Düzeltme: `split(/\r?\n/)`. Ölçüm: eski hâl true/4 sayı, yeni hâl false/0.
+- "Python was not found": `python3` Windows Store kısayolu, hata fırlatmadan 9009 dönüyor → "çöktü" sayılıyordu.
+  `--version` yoklaması + `PYTHONIOENCODING=utf-8` (cp1252 boruda ✓ basınca düşüyordu).
+- `font_check.py` için `fonttools brotli` kuruldu (`pip --user`).
+- icon/favicon: app'inkiler kopyalandı (pikseller zaten aynıydı, yalnız C2PA meta verisi). Eskiler `website\_arsiv\20260928\`.
+
+### Tasarım (0.69.0) — ölçüm
+| | önce (canlı 0.68) | sonra (0.69) |
+|---|---|---|
+| ana sayfa masaüstü | 19.790 px · 22 ekran | 8.850 px · **9,8 ekran** |
+| ana sayfa telefon (375) | 26.657 px · 32,8 ekran | 10.513 px · **12,9 ekran** |
+| kelime | 2.362 | 717 |
+| yatay taşma | — | yok (masaüstü, 375, /kartlar, /ayricaliklar, /rehber) |
+| konsol hatası | — | 0 |
+
+- **İçerik silinmedi, taşındı:** hak hesaplayıcı + 9 program kartı → `/kartlar` (#hesapla, #programlar) ·
+  host bandı (6 madde, HostEarn, HostStories, 4 soru) + abonelik → yeni **`/ayricaliklar`** · kapsam zaten `/rehber`'de.
+- **Header (`SiteHeader.jsx`):** yapışkan; ana sayfada kahramanın üstünde şeffaf, kaydırınca cam zemin + 78→62 px;
+  menü küçük büyük harf + ortadan açılan altın çizgi; bulunulan sayfa `aria-current`; ≤960 px tam ekran serif menü
+  (5 × 60 px dokunma, Esc kapatır, arka sayfa kaymaz). Menü: Nasıl çalışır · Kartlar · Rehber · Ayrıcalıklar · SSS.
+- **"Kartım var / Kartım yok"** (`TarafSecimi.jsx`): iki kitle sırayla değil seçimle; metinler content.js'ten (yeni iddia yok);
+  her tarafta kendi gerçek app ekranı; W8 boş koltuk host tarafında.
+- **Tek çağrı:** her yerde "Beta'ya katıl" (form düğmesi, WalletCalc, header).
+- **Hareket:** Gökberk'in kararıyla YALNIZ W2'nin "Onaylı" mührü ve W9 kurucu çember kalktı
+  (`KurucuCember.jsx` → `components/_arsiv/`, sayaç eski ince çubuğa döndü). W1, W2 şart şart, W3–W8 yerinde.
+  ⚠️ Bu turda bir ara "W1 dışındakileri durdur" diye yanlış anladım; Gökberk düzeltti, CSS'e hiç yazılmadı, sahneler geri kondu.
+- **Eski çapalar** (`EskiCapa.jsx`): /#cuzdan → /kartlar#hesapla · /#kural → /kartlar#programlar · /#kapsam → /rehber ·
+  /#plan → /ayricaliklar#plan; /#kart-sahibi ve /#neden ana sayfada (neden → "Kartım yok" açık). Tarayıcıda test edildi.
+- sitemap'e `/ayricaliklar` eklendi. Telefon: alt bilgi bağlantıları 32 → 44 px.
+- **Denetimler yeni eve bakıyor** (silinmedi): §3 vuruş eşiği 7 → 4 (gerçek sayı), kapsam listesi `/rehber` HTML'inde aranıyor.
+
+### Testler
+- site `check.js` temiz (59 dosya, 19 sayfa) · `verify.js` **7/7 temiz** · `next build` temiz · tasarım mührü (bento yok) temiz.
+
+### Bekleyen (Gökberk)
+0. **Site 0.69'u `main`e almak = canlı yayın.** Önizlemeyi (Vercel önizleme adresi / yerelde localhost:3069) gör, onay ver.
+1. **BO push = canlı yayın.** Otomatik izin denetimi BO `main` push'unu reddetti (onay yalnız app dalı içindi).
+   Gökberk yapacaksa: `cd C:\LoungeLink\backoffice` → `git push origin main`.
+2. **App dalı `main`e alınmadı.** `pc-5.17.1` şu an ayrı dal; `main`e birleştirme (PR) kararı Gökberk'te.
+3. **Site `verify.js` 3 kırmızı** (5 sorun + 2 görsel): `lib/content.js` eski ◈ sembolü · `KurucuSayac.jsx` gömülü metin +
+   sabit sayılar (3, 231, 8 — kural: yalnız `kurucu_cember()`) · icon/favicon (yine yalnız C2PA farkı) ·
+   iki Python denetimi `python3` bulunamadığı için çöktü (Windows'ta `python` var, `python3` Store kısayolu).
+4. **Site incelemesi** (canlı site, 28 Eylül ölçümü): ana sayfa masaüstü 19.790 px = **22 ekran**, telefon 26.657 px = **32,8 ekran**,
+   2.362 kelime. En uzun iki bölüm: `#cuzdan` 4.852 px, `#kart-sahibi` 4.628 px. Header `position:absolute` → ilk
+   ekrandan sonra menü yok. Tekrar: "kapı" 26, "kural motoru" 11, "misafir hakkı" 10 kez. Öneriler sohbette;
+   tasarım değişikliği olduğu için ÖNCE önizleme → onay.

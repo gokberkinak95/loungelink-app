@@ -9,3 +9,4 @@
 node_modules/
 *.zip
 /_teslim_*/
+/.claude/
