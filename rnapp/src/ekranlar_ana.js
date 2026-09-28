@@ -859,9 +859,16 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           // ekranında İstek gönder geliyor") — bu ekran yalnız engeli soruyordu;
           // kart ise seyahat + telefon da soruyor. Karar artık AYNI: tamamsa
           // istek, değilse kartın gösterdiği kapı (doğrula / seyahat ekle).
-          onSend={isBlocked(kural.avail) || !(kural.avail.has_trip && phoneOk) ? null : () => { const a = kural.avail; setKural(null);
+          // 🔴 29 EYLÜL (Gökberk md.2) — saati geçen ilanın uyum ekranından
+          // seyahat eklenip başvurulabiliyordu. Kartın "sona erdi" kararı
+          // (geriSayim) burada da geçerli: eylem yok, yalnız not.
+          sonaErdi={(geriSayim(kural.avail.avail_date, kural.avail.time_from, kural.avail.time_to, t) || {}).tur === "bitti"}
+          onSend={isBlocked(kural.avail) || !(kural.avail.has_trip && phoneOk)
+                  || (geriSayim(kural.avail.avail_date, kural.avail.time_from, kural.avail.time_to, t) || {}).tur === "bitti"
+                  ? null : () => { const a = kural.avail; setKural(null);
                           setTarget(a); setErr(""); setMoreOpen(false); setAdvice(null); }}
-          kapi={isBlocked(kural.avail) || (kural.avail.has_trip && phoneOk) ? null : {
+          kapi={isBlocked(kural.avail) || (kural.avail.has_trip && phoneOk)
+                || (geriSayim(kural.avail.avail_date, kural.avail.time_from, kural.avail.time_to, t) || {}).tur === "bitti" ? null : {
             etiket: !phoneOk ? t.gateVerifyNow : t.gateAddTripNow,
             git: () => { const a = kural.avail; setKural(null);
                          if (!phoneOk) { if (onVerify) onVerify(); } else if (onAddTrip) onAddTrip(a); },
@@ -2533,7 +2540,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
       )}
 
       {sub === "discover" ? (
-        people === null ? <Load /> : (
+        people === null ? <Load icerik /> : (
           <>
             {/* 3 Eylül — mor "Havalimanı Yol Arkadaşı Ağı" kutusu kalktı
                 (tasarım 05'te yok); metin boş durumda söyleniyor. */}
@@ -2660,9 +2667,16 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             {/* Bekleyen isteği varsa boş durum onu SÖYLER ve oraya götürür:
                 "hiç bağlantın yok" derken üç isteğinin beklediğini
                 söylememek, boş durumu bir yalana çevirirdi. */}
-            {(incoming.length > 0 || giden.length > 0) && setSub ? (
-              <Btn v="ghost" label={String(t.connGoRequests || "").replace("{n}", String(incoming.length + giden.length))}
-                onPress={() => setSub("reqs")} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
+            {/* 🔴 29 EYLÜL (Gökberk md.5) — "Bekleyen X isteğin var" gelen +
+                gönderileni TOPLUYORDU; dokununca GELEN sekmesi boş açılıyordu.
+                "İsteğin var" = sana gelen. Gelen yoksa gönderdiğin ayrı cümleyle,
+                kendi sekmesine götürür. */}
+            {incoming.length > 0 && setSub ? (
+              <Btn v="ghost" label={String(t.connGoRequests || "").replace("{n}", String(incoming.length))}
+                onPress={() => { setIstekSekmesi("gelen"); setSub("reqs"); }} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
+            ) : giden.length > 0 && setSub ? (
+              <Btn v="ghost" label={String(t.connGoSent || "").replace("{n}", String(giden.length))}
+                onPress={() => { setIstekSekmesi("giden"); setSub("reqs"); }} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
             ) : null}
             {onRequestListing || setSub ? (
               <Btn label={t.meetTitle} onPress={() => setSub("discover")} a11yLabel={t.calmFind} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
@@ -3175,7 +3189,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
       <View style={{ backgroundColor: C.goldTint, paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
         <Text style={{ color: C.goldInk, fontSize: FS.xs, textAlign: "center" }}>{t.safetyBar}</Text>
       </View>
-      {msgs === null ? <Load /> : (
+      {msgs === null ? <Load icerik /> : (
         <ScrollView ref={ref} onContentSizeChange={() => ref.current?.scrollToEnd({ animated: true })}
           contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[20] }}>
           {msgs.length === 0 && <Text style={{ color: C.mut, textAlign: "center", marginTop: ARA[30], fontSize: FS.sm }}>{t.ccEmpty}</Text>}
@@ -4870,9 +4884,14 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
     // 🔴 Hata yutuluyordu: bekleyen davetler KAYBOLUYOR ve üstüne `SakinGun`
     // "Bekleyen bir işin yok" yazıyordu. İki yalan üst üste.
     const { data, error: eAct } = await supabase.rpc("pending_actions");
+    setYuklendi(true);
     if (eAct) { logError("pending_actions", eAct); return; }
     setItems(data || []);
   }, []);
+  // 🔴 29 EYLÜL (Gökberk md.b) — veri olsa bile açılışta bir an BOŞ PANO
+  // görünüyordu: liste `[]` ile başlıyor, ilk karede "boş" sanılıyordu.
+  // "Henüz bilmiyoruz" ile "boş" ayrı durum.
+  const [yuklendi, setYuklendi] = useState(false);
   // 🔴 18 EYLÜL (Gökberk md.1 · md.6) — `tazele` BAĞIMLILIĞA GİRDİ.
   // Belirti: "mesaj yanıtla tıkladığımda already_responded döndü" ve
   // "isteği ana sayfada kabul etmiş olmama rağmen bağlantılar sayfasında
@@ -4931,6 +4950,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
   // `RequestsPanel` · md.3).
   if (!items.length) {
     if (!tamEkran) return null;
+    if (!yuklendi) return <View style={{ marginTop: ARA[22], height: 120 }}><Load icerik /></View>;
     return kabulBolumu || <BosDurum ikon="eposta" metin={t.flowInvitesEmpty} ortala pano={{ baslik: t.panoDavetBas, durum: t.panoDavetDurum }} />;
   }
   return (
@@ -6292,7 +6312,7 @@ export function Campaigns({ t, onBack }) {   // v2.65: ölü `session` kaldırı
             )}
           </View>
         ) : loadErr ? <LoadFail t={t} onRetry={load} />
-          : rows === null ? <Load /> : rows.length === 0 ? (
+          : rows === null ? <Load icerik /> : rows.length === 0 ? (
           <BosDurum ikon="kampanya" metin={t.campEmpty} />
         ) : rows.map(c => (
           <TouchableOpacity hitSlop={TAP.slop} key={c.id} onPress={() => setDetail(c)} activeOpacity={0.75}
@@ -6565,6 +6585,8 @@ export function HomeConnections({ t, session, onOpenChat, tamEkran, tazele }) {
   );
   if (rows === null || !rows.length) {
     if (!tamEkran) return null;
+    // 29 Eylül (Gökberk md.b) — `null` = henüz yüklenmedi; boş pano yalnız GERÇEKTEN boşken.
+    if (rows === null) return <View style={{ marginTop: ARA[22], height: 120 }}><Load icerik /></View>;
     return <BosDurum ikon="kisiler" metin={t.flowChatsEmpty} ortala pano={{ baslik: t.panoSohbetBas, durum: t.panoSohbetDurum }} />;
   }
   // Tam ekranda katlamak anlamsız: ekranın TEK işi bu liste.
@@ -6670,8 +6692,10 @@ export function FindHostCard({ t, session, onDiscover }) {
     if (avErr) { setFailed(true); setStat(null); return; }
     // RPC kendi ilanlarini da dondurur (a.host_id = v_uid dali) — kart
     // "misafir olarak host bul" oldugu icin kendini ve dolu ilanlari ele.
-    const open = (av || []).filter(a => a.host_id !== uid && !a.fully_booked &&
-      Math.max(0, (a.slots || 0) - (a.filled || 0)) > 0);
+    // 29 Eylül (Gökberk md.6) — saati geçen ilan "müsait" sayılmaz (Seyahatlerim sayacıyla aynı karar).
+    const open = (av || []).filter(a => a.host_id !== uid && !a.fully_booked && a.active !== false &&
+      Math.max(0, (a.slots || 0) - (a.filled || 0)) > 0 &&
+      (geriSayim(a.avail_date, a.time_from, a.time_to, t) || {}).tur !== "bitti");
     const slots = open.reduce((n, a) => n + Math.max(0, (a.slots || 0) - (a.filled || 0)), 0);
     // Havalimani basina KAC HOST musait — "4 ilan · 6 slot" soyut kaliyordu,
     // "IST'te 2 host" somut. (Canli APP 2)
@@ -6800,7 +6824,7 @@ export function FindHostCard({ t, session, onDiscover }) {
    satırı: ürünün en kritik ekranında bilmediğimizi söylemek, bildiğimizi
    uydurmaktan daha değerli.
    ══════════════════════════════════════════════════════════════════════ */
-export function KuralKarari({ t, avail, skor, onBack, onSend, kapi }) {
+export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) {
   const [kosullar, setKosullar] = useState(null);
   const [kart, setKart] = useState("");
   const [kaynakUrl, setKaynakUrl] = useState("");
@@ -7178,7 +7202,9 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi }) {
         </Text>
 
         <View style={{ marginTop: "auto", paddingTop: ARA[26] }}>
-          {onSend ? <Btn v="gold" sm label={t.ruleSendReq} onPress={onSend} sagAd="sag" />
+          {sonaErdi ? (
+            <Text style={{ fontSize: FS.sm, color: C.mut, textAlign: "center", marginBottom: ARA[6] }}>{t.listingEndedCard}</Text>
+          ) : onSend ? <Btn v="gold" sm label={t.ruleSendReq} onPress={onSend} sagAd="sag" />
             : kapi ? <Btn v="gold" sm label={kapi.etiket} onPress={kapi.git} sagAd="sag" /> : null}
           {!!kaynakUrl && (
             <Btn v="ghost" sm label={t.ruleReadVenue} sagAd="tarayici"

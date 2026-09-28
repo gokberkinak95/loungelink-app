@@ -16,7 +16,7 @@ import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 
 export { C, F, ACCENT } from "./theme";
 
@@ -154,8 +154,13 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
       // Hata YUTULMUYOR: sayaç `null` kalır ve kart "sayılıyor…" yerine
       // hiçbir sayı göstermez. Yanlış sayı, sayı olmamasından kötüdür.
       if (error) { setIlanSayaci(null); return; }
-      setIlanSayaci((data || []).filter(a => a.host_id !== uid && !a.fully_booked
-        && Math.max(0, (a.slots || 0) - (a.filled || 0)) > 0));
+      // 🔴 29 EYLÜL (Gökberk md.6) — "4 uyumlu ilan"a basınca içeride sona ermiş
+      // ilan çıkıyordu. Sunucu `active` + `tarih >= bugün` süzüyor; BUGÜN saati
+      // geçmiş ilan geliyor. Başvurulamayan ilan uyumlu sayılmaz (Keşfet
+      // kartının "sona erdi" kararıyla aynı: geriSayim).
+      setIlanSayaci((data || []).filter(a => a.host_id !== uid && !a.fully_booked && a.active !== false
+        && Math.max(0, (a.slots || 0) - (a.filled || 0)) > 0
+        && (geriSayim(a.avail_date, a.time_from, a.time_to, t) || {}).tur !== "bitti"));
     })();
     return () => { iptal = true; };
   }, [uid]);
@@ -447,7 +452,13 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
 // EDEMEZ."
 export function ilanDurumu(r) {
   const bugun = yerelGun();
-  const gecti = String(r?.avail_date || "") < bugun;
+  const gun = String(r?.avail_date || "").slice(0, 10);
+  // 🔴 29 EYLÜL — BUGÜN ama BİTİŞ SAATİ GEÇMİŞ ilan "canlı" sayılıyordu (Keşfet
+  // kartı onu "sona erdi" diye gösterirken host'un kendi listesinde canlıydı;
+  // Gökberk md.2/md.6 ile aynı kök). Bitiş saati geçtiyse o da geçmiş.
+  const simdi = new Date();
+  const saat = `${String(simdi.getHours()).padStart(2, "0")}:${String(simdi.getMinutes()).padStart(2, "0")}`;
+  const gecti = gun < bugun || (gun === bugun && r?.time_to && String(r.time_to).slice(0, 5) <= saat);
   if (gecti) return "gecmis";
   return r?.active ? "canli" : "pasif";
 }
@@ -803,7 +814,8 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           {rows.length > 0 && (
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: SP[1], marginTop: SP[1] }}>
               <Text style={{ fontSize: FS.xs, fontWeight: "700", color: C.mut, letterSpacing: 1.4 }}>
-                {BUYUK(t.subTabListings)} · {rows.length}
+                {/* 29 Eylül (Gökberk md.1) — sayı yalnız AKTİF ilanlar; pasif/geçmiş kendi bölümünde */}
+                {BUYUK(t.subTabListings)} · {String(t.availActiveN || "{n}").replace("{n}", String(rows.filter(x => ilanDurumu(x) === "canli").length))}
               </Text>
               {/* 5 Eylül — mockup 12c: küçük altın düğme (36pt, 12.5). `sm` 44pt'ti. */}
               <Btn v="gold" cip full={false} label={t.addAvail} onPress={() => (onAddAvail ? onAddAvail() : setAdding(true))} a11yLabel={t.addAvail} />
@@ -819,7 +831,9 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
             // ikiye ayrıldığını GÖRMELİ. Sessiz bir sıralama, sıralamayı
             // fark etmeyen için rastgele bir düzendir.
             const oncekiDurum = i > 0 ? ilanDurumu(rows[i - 1]) : null;
-            const basliktaAyir = durum !== oncekiDurum && durum !== "canli";
+            // 29 Eylül (md.1) — aktifler de kendi başlığını alır: üç bölüm, üç başlık.
+            const basliktaAyir = durum !== oncekiDurum
+              && (durum !== "canli" || rows.some(x => ilanDurumu(x) !== "canli"));
             return (
             <React.Fragment key={r.id}>
             {basliktaAyir && (
@@ -827,7 +841,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                 <View style={{ flex: 1, height: 1, backgroundColor: C.line }} />
                 <Text style={{ marginHorizontal: SP[3], fontSize: FS.xs, fontWeight: "700",
                                color: C.mutedAA, letterSpacing: 1 }}>
-                  {BUYUK(durum === "pasif" ? t.availPassiveTitle : t.availPastTitle)}
+                  {BUYUK(durum === "canli" ? t.availActiveTitle : durum === "pasif" ? t.availPassiveTitle : t.availPastTitle)}
                 </Text>
                 <View style={{ flex: 1, height: 1, backgroundColor: C.line }} />
               </View>
@@ -887,6 +901,16 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                   RangeError fırlatır ve tüm ekranı çökertirdi. */}
               {(() => {
                 const acik = Math.max(0, (r.slots || 0) - (r.filled || 0));
+                // 🔴 29 Eylül (Gökberk md.1) — pasif ilanda "X yer açık" yanlış
+                // söz: kimse başvuramaz. Yayında olmayan ilan DURUMUNU ve
+                // SONUCUNU söyler (kaç misafir ağırlandı).
+                if (durum !== "canli") return (
+                  <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[1] }}>
+                    {[durum === "pasif" ? t.availPassiveLine : t.availPastLine,
+                      (r.filled || 0) > 0 ? String(t.availHostedN || "").replace("{n}", String(r.filled)) : null]
+                      .filter(Boolean).join(" · ")}
+                  </Text>
+                );
                 return (
                   <Text style={{ color: acik > 0 ? C.green : C.red, fontSize: FS.sm, marginTop: SP[1], fontWeight: "600" }}>
                     {/* 5 Eylül — nokta sayısı = açık slot sayısıydı ("• • 2 slot

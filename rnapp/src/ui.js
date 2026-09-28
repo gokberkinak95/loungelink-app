@@ -699,7 +699,12 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
              : ton === "ucretli" ? (RZ.cost || C.amber)
              : ton === "engel" ? (RZ.block || C.red)
              : ton === "notr" ? C.mutedAA : C.gold;
-  const zemin = secili ? C.goldBg
+  // 🔴 29 EYLÜL (Gökberk md.a: "Tanış › Bağlantılarım'dayken başlıktaki sekme
+  // seçili görünmüyor") — ÖLÇÜLDÜ: koyu temada seçili zemin #292312, seçilmemiş
+  // #1F1C19; yazı da iki hâlde altın. Seçim VARDI, GÖRÜNMÜYORDU. Seçili çip
+  // artık ana düğmenin dili: şampanya zemin + sayfa zemini renginde yazı
+  // (iki temada da yüksek kontrast).
+  const zemin = secili ? C.goldBtn
     : dolgu ? ((C.badge && C.badge[dolgu === true ? (ton === "ok" ? "ok" : ton === "engel" ? "block" : "cost") : dolgu] || {}).bg || C.bgAlt)
     : C.bgAlt;
   // ══════════════════════════════════════════════════════════════════
@@ -747,7 +752,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
       {isaret ? <Ikon ad={isaret} boy={12} kutu={12} renk={renk} stil={{ marginRight: ARA[4] }} /> : null}
       <Text numberOfLines={1} style={{ fontSize: 10.5, fontWeight: "600", lineHeight: 14,
                                        letterSpacing: 0.6,
-                                       color: secili ? C.goldText : renk }}>{etiket}</Text>
+                                       color: secili ? C.bg : renk }}>{etiket}</Text>
     </View>
   );
   if (!onPress) return ic;

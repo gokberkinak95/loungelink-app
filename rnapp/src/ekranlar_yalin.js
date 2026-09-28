@@ -198,7 +198,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
     <View style={{ marginTop: ARA[22] }}><LoadFail t={t} onRetry={load} /></View>
   );
   if (inc === null || sent === null) return (
-    <View style={{ marginTop: ARA[22], height: 120 }}><Load /></View>
+    <View style={{ marginTop: ARA[22], height: 120 }}><Load icerik /></View>
   );
 
   // 🔴 v2.87 — ANA SAYFADAKİ İSTEK/SOHBET BLOĞU KATLANIR (Gökberk madde 7).
@@ -2186,7 +2186,7 @@ export function KimlikDogrula({ t, session, onBack, onDone }) {
       <Hdr t={t} ustBilgi={t.kycEyebrow} title={t.kycTitle} onBack={onBack} />
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 20, marginBottom: ARA[14] }}>{t.kycBody}</Text>
-        {durum === null ? <Load /> : st === "approved" ? (
+        {durum === null ? <Load icerik /> : st === "approved" ? (
           <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5 }]}>
             <Text style={{ color: C.goldText, fontSize: FS.lg, fontWeight: "700" }}>{t.kycApproved}</Text>
           </View>
@@ -2638,7 +2638,7 @@ export function Notifications({ t, session, onRefreshBadge, onGit, onBack }) {
           KENDİ BOYU KADAR İTMEK ZORUNDADIR — YALNIZ 'ASIL' DALI DEĞİL."
           ══════════════════════════════════════════════════════════════ */}
       {hedefSatiri}
-      {shown === null ? <Load /> : shown.length === 0 ? (
+      {shown === null ? <Load icerik /> : shown.length === 0 ? (
         <View style={{ paddingTop: bnt.ustBosluk + SP[4], paddingHorizontal: SP[4] }}>
           {yukErr ? <LoadFail t={t} onRetry={load} />
           : <BosDurum ikon="bildirim" baslik={t.notifEmpty} metin={t.notifEmptyBody} />}
@@ -3200,7 +3200,7 @@ export function Degerlendirmeler({ t, lang, session, onBack, onRate, onOpenProfi
             değil" diyen kullanıcı artık BURADA bulur. */}
         {sekme === "bekleyen" && <HikayeDaveti t={t} lang={lang} hepAcik onDone={load} />}
         {loadErr ? <LoadFail t={t} onRetry={load} />
-        : rows === null ? <Load />
+        : rows === null ? <Load icerik />
         : liste.length === 0 ? (
           <View style={S.empty}>
             <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", lineHeight: 18 }}>
@@ -4338,7 +4338,7 @@ export function Wallet({ t, session, onBack }) {
 
       <Text style={[S.label, { marginTop: ARA[18] }]}>{t.walletHistory}</Text>
       {loadErr ? <LoadFail t={t} onRetry={load} />
-      : led === null ? <Load />
+      : led === null ? <Load icerik />
       : !led.length ? (
         <View style={S.card}><Text style={{ color: C.mutedAA, fontSize: FS.sm }}>{t.walletNoHistory}</Text></View>
       ) : led.map((r, i) => (

@@ -242,7 +242,7 @@ export function greeting(t) {
 //
 // `baslik` verilmezse `t.loading`e DÜŞMÜYORUZ: başlıksız ama geri oklu bir
 // çubuk çiziyoruz. Çıkış korunur, tekrar geri gelmez.
-export function Load({ t, title, onBack, gosterge: ozelGosterge }) {
+export function Load({ t, title, onBack, gosterge: ozelGosterge, icerik }) {
   // v6.2 — ekran kendi bekleme anlatımını verebilir (Keşfet: terminal radarı · K3).
   const gosterge = (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 120 }}>
@@ -278,6 +278,12 @@ export function Load({ t, title, onBack, gosterge: ozelGosterge }) {
   //
   // 🆕 SINIF: "BİR SARMALAYICIYI KALDIRIRKEN NE ÇİZDİĞİNİ SOR —
   // 'BAŞLIK' SANDIĞIN KATMAN SAYFANIN KENDİSİ OLABİLİR."
+  // 🔴 29 EYLÜL (Gökberk md.8: "Tanış'taki loading'de bozukluk var") — içerik
+  // İÇİNDE (bandın altında, listenin yerinde) çağrılan yükleyici de tam bir
+  // `<Sayfa>` çiziyordu: zemin + atmosfer (bulut, zerre) 120 px'lik bir kutuya
+  // sıkışıp listenin ortasında ikinci bir "sayfa" gibi duruyordu.
+  // `icerik`: yalnız işaret; zemin ve atmosfer zaten dıştaki sayfanın.
+  if (icerik) return gosterge;
   if (!onBack) return <Sayfa>{gosterge}</Sayfa>;
   return (
     <Sayfa>

@@ -31,7 +31,7 @@
 // ============================================================================
 import React, { useMemo, useState } from "react";
 import { Ikon } from "./ikon";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Dimensions } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Dimensions, Platform, StyleSheet } from "react-native";
 import { ARA, ELEV, C, FS, R, SP, T, TAP } from "./theme";
 import { gorunur } from "./i18n";
 
@@ -241,8 +241,11 @@ export function CarrierPicker({
 //   · `enFazla`     — açık gövde ekranın bu oranını geçmez, içerik kayar
 //   · `acik`/`onAcik` — dışarıdan yönetilebilir (verilmezse kendi durumu)
 export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla = false, not,
-                           buyukBaslik, onKapat, enFazla, ikon, stil }) {
+                           buyukBaslik, onKapat, enFazla, ikon, stil, bilgi }) {
   const [acik, setAcik] = useState(!!acikBasla);
+  // 29 Eylül (Gökberk md.1) — `bilgi`: sağ üstte (i); dokununca kutunun ne
+  // anlama geldiğini TEK cümleyle söyler. Kutu açılıp kapanmadan da okunur.
+  const [bilgiAcik, setBilgiAcik] = useState(false);
   const degis = () => setAcik(a => !a);
   const govdeYuk = enFazla ? Math.round(Dimensions.get("window").height * enFazla) : undefined;
   const govde = (
@@ -254,8 +257,12 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
     </View>
   );
   return (
-    <View style={[{ borderWidth: cizgi ? 1 : 0, borderColor: cizgi || "transparent",
-                    borderTopWidth: 1, borderTopColor: cizgi || C.parlama || C.line,
+    <View style={[
+                  // 29 Eylül — tek kenarlı ışık Android'de köşeyi izlemiyordu (md.4 ile aynı kök).
+                  cizgi ? { borderWidth: 1, borderColor: cizgi }
+                  : Platform.OS === "android" ? { borderWidth: StyleSheet.hairlineWidth, borderColor: C.parlama || C.line }
+                  : { borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || C.line },
+                  {
                     borderRadius: R.md, marginBottom: ARA[14], overflow: "hidden",
                     backgroundColor: tint || C.card }, stil]}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -281,6 +288,14 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
           </View>
           <Ikon ad={acik ? "yukari" : "asagi"} boy={14} renk={C.muted} />
         </TouchableOpacity>
+        {!!bilgi && (
+          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setBilgiAcik(v => !v)}
+            accessibilityRole="button" accessibilityState={{ expanded: bilgiAcik }}
+            accessibilityLabel={typeof baslik === "string" ? `${baslik} · ?` : "?"}
+            style={{ width: 40, height: 48, alignItems: "center", justifyContent: "center", marginRight: ARA[2] }}>
+            <Ikon ad="bilgi" boy={15} renk={bilgiAcik ? C.goldText : C.muted} />
+          </TouchableOpacity>
+        )}
         {!!onKapat && (
           <TouchableOpacity hitSlop={TAP.slop} onPress={onKapat}
             accessibilityRole="button" accessibilityLabel="Kapat"
@@ -289,6 +304,10 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
           </TouchableOpacity>
         )}
       </View>
+      {bilgiAcik && !!bilgi && (
+        <Text style={{ fontSize: FS.xs, lineHeight: 17, color: C.body, paddingHorizontal: SP[3] + 2,
+                       paddingBottom: SP[3], marginTop: -ARA[4] }}>{bilgi}</Text>
+      )}
       {acik && (govdeYuk
         ? <ScrollView style={{ maxHeight: govdeYuk }} nestedScrollEnabled keyboardShouldPersistTaps="handled">{govde}</ScrollView>
         : govde)}

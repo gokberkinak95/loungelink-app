@@ -279,6 +279,7 @@ export function HostWallet({ onAddCard, t = {} }) {
   return (
     <Katlanir
       baslik={etiketMetni}
+      bilgi={t.hwWalletInfo}
       ozet={w.baslik}
       sayi={kartlar.length || undefined}
       tint={acil ? C.amberBg : C.goldBg}
@@ -385,7 +386,7 @@ export function HostStanding({ t = {} }) {
   // bu panelin bütün kimliği o iki veri.
   const ozet = `${s.mertebe_adi} · ${s.agirlama} ${t.hwHostings || "ağırlama"}`;
   return (
-    <Katlanir baslik={t.hwRank || "MERTEBE"} ozet={ozet} tint={C.tealBg} cizgi={C.tealLine}>
+    <Katlanir baslik={t.hwRank || "MERTEBE"} bilgi={t.hwRankInfo} ozet={ozet} tint={C.tealBg} cizgi={C.tealLine}>
       <Text style={{ fontSize: FS.lg, lineHeight: 24, color: C.tealInk, fontWeight: "700" }}>
         {s.mertebe_adi}
       </Text>
@@ -439,7 +440,7 @@ export function HostMissed({ onAdd, t = {} }) {
   // N kişi seni bulamadı"). Panelin bütün ikna gücü o cümlede; onu
   // saklamak paneli silmekle aynı şey olurdu.
   return (
-    <Katlanir baslik={t.hwMissed || "KAÇIRILAN"} ozet={m.baslik} tint={C.bgAlt} cizgi={C.line}>
+    <Katlanir baslik={t.hwMissed || "KAÇIRILAN"} bilgi={t.hwMissedInfo} ozet={m.baslik} tint={C.bgAlt} cizgi={C.line}>
       {!!m.alt && <Alt>{m.alt}</Alt>}
       <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[3] }}>
         {(m.havalimanlari || []).slice(0, 4).map(h => (

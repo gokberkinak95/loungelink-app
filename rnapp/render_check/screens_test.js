@@ -318,8 +318,12 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
   // ---------- 19) YAYIN: dolu ilan yeşil "0 slot açık" göstermiyor ----------
   // v2.87 · madde 4. Dolu ilanda ekranda çıplak bir "0" kalıyor ve
   // "0 slot açık" YEŞİL yazıyordu.
+  // 29 Eylül — tarih SABİTTİ (2026-08-06) ve zamanla GEÇMİŞE düştü; kural "dolu
+  // CANLI ilan 'Dolu' der". Geçmiş ilan artık "Tarihi geçti" diyor (Gökberk md.1),
+  // test ileri tarihli canlı ilanla ölçüyor.
+  const ileriGun = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
   data({ extra: { availabilities: [{ id: "av-1", host_id: UID, airport_code: "IST",
-    lounge_name: "Primeclass Lounge", avail_date: "2026-08-06", time_from: "14:00:00",
+    lounge_name: "Primeclass Lounge", avail_date: ileriGun, time_from: "14:00:00",
     time_to: "18:00:00", slots: 2, filled: 2, active: true, carrier: "VF" }] } });
   globalThis.__DATA.rpc.carrier_options = [{ code: "VF", name: "AJet" }];
   globalThis.__DATA.rpc.host_requests = [];
@@ -329,6 +333,17 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
   check(r.name, !has(r.texts, "0 slot açık"), "dolu ilanda '0 slot açık' YAZMIYOR (madde 4)");
   check(r.name, has(r.texts, "Dolu"), "yerine 'Dolu' yazıyor");
   check(r.name, has(r.texts, "AJet"), "host kendi ilanının havayolunu görüyor (madde 5)");
+
+  // ---------- 19b) YAYIN: geçmiş ilan "yer açık" SÖZÜ VERMİYOR (29 Eylül, Gökberk md.1) ----------
+  data({ extra: { availabilities: [{ id: "av-2", host_id: UID, airport_code: "IST",
+    lounge_name: "Primeclass Lounge", avail_date: "2026-08-06", time_from: "14:00:00",
+    time_to: "18:00:00", slots: 3, filled: 1, active: true, carrier: "VF" }] } });
+  r = await renderScreen("Yayın · geçmiş ilan", React.createElement(S.Hosting, {
+    t, session, onOpenChat: () => {}, onAddAvail: () => {}, onAddCard: () => {} }));
+  check(r.name, r.ok, r.ok ? "çökmeden açılıyor" : "ÇÖKTÜ: " + r.err);
+  check(r.name, !has(r.texts, "yer açık"), "geçmiş ilanda 'X yer açık' YAZMIYOR");
+  check(r.name, has(r.texts, "Tarihi geçti"), "durumunu söylüyor: 'Tarihi geçti'");
+  check(r.name, has(r.texts, "1 misafir ağırlandı"), "sonucunu söylüyor: ağırlanan misafir");
 
   // ══════════════════════════════════════════════════════════════════
   // MUTLU YOL ZİNCİRİ — HER ADIM BİR SONRAKİNİ GÖSTERİYOR MU?
