@@ -1,0 +1,91 @@
+# DEVİR · 28 Eylül 2026 (yerel Claude Code) · 5.17.1 + 6.2 birleştirmesi
+
+> Bu dosya en güncelidir. Önceki: `2026-09-28b_SON_yerel-oturum-ve-cowork.md`.
+> Birleştirme (bölüm 3) YAPILDI; henüz PUSH EDİLMEDİ, BUILD ALINMADI.
+
+## Sürümler (dosyadan okundu)
+
+| Parça | Sürüm | Not |
+|---|---|---|
+| App (`rnapp\app.json`) | **6.2.0** · versionCode **271** · buildNumber **265** | 5.17.1'in kodları (270/264) 6.2'ninkinden (268/262) yüksekti → kural gereği +1 |
+| App `package.json` + `package-lock.json` | 6.2.0 | `check.js`: lock ↔ package aynı |
+| Site (`website`, dal `main`) | **0.68.0** · `c5c346d` | `git pull` ile 0.65 → 0.68 |
+| BO (`backoffice\package.json`) | **1.96.0** ⚠ | teslimdeki `backoffice_1.95.1` = 1.95.1; bkz. açık kalan 3 |
+| SQL | son dosya **305** | 305'ten sonra dosya YOK (sql, _teslim_2809, _arsiv, origin/main tarandı) |
+
+## Ne yapıldı (sırayla)
+
+1. **Yedek:** `robocopy C:\LoungeLink C:\LoungeLink_yedek_2809 /E /XD node_modules .next .expo`
+   → 7349 dosya, 379,7 MB, 0 hata.
+2. **Teslim zip'i** `C:\LoungeLink\_teslim_2809\` klasörüne açıldı (fazla `LoungeLink_teslim_2809\` katmanı kaldırıldı; 1064 dosya).
+3. **Arşive taşınanlar** → `_arsiv\20260928_birlestirme_oncesi\`:
+   - `CLAUDE.md`, `KUR.ps1`, `CALISTIRMA_5.17.0.md`, `CALISTIRMA_5.17.1.md` (kökten)
+   - `rnapp_git_v5.9.0\` = **`rnapp\.git`** — rnapp içinde eski, yalnız yerel bir depo vardı
+     (tek commit `5763dd8 v5.9.0`, uzak yok, 78 dosya değişik). Yerinde kalsaydı kökte
+     `git add rnapp` klasörü alt modül olarak kaydedip dosyaları EKLEMEZDİ. Silinmedi.
+4. **Kökte git (Yol A):** `git init` · origin `loungelink-app` · `git fetch` · `git reset 96eb4ae` ·
+   dal `pc-5.17.1`. `core.autocrlf true` **yalnız bu depoya** yazıldı (global değil).
+   - `68d5cf4` PC 5.17.1 — rnapp + sql + `DEVIR\2026-09-26_cowork-5.17.1.md` (174 dosya)
+   - `1499ae3` birleştirme: `origin/claude/v6-gozlemler` (6.2, `99976b4`)
+   - Kök dosyaları (`CLAUDE.md`, `KUR.ps1`, `CALISTIRMA_6.1.0/6.2.0.md`, `README.md`, `.gitignore`,
+     `.github/workflows/app-ci.yml`) birleştirmeyle GitHub'dan geldi; teslimdekilerle içerik aynı (yalnız satır sonu farkı).
+5. `website`: zaten `main`deydi, 0 yerel değişiklik → `git pull` (hızlı ileri sarma).
+
+## Çakışmalar ve çözümleri (15 dosya)
+
+**sql (6) → bulut tarafı** (kural). Önce ölçüldü: 300/301/302 iki tarafta birebir aynı; bulutta ek olarak
+303–305, SEED8'de 305 etiketi (`'Havayolu Statüsü'`), SQL_SIRA, imzalar.
+`ETKIN_TANIMLAR.sql`, `KURULUM_TABLOSU.sql`, `SEED8_AKIS_TEZGAHI.sql`, `SQL_SIRA.txt`, `imza_adaylari.json`, `imzalar.json`.
+
+**rnapp (9) → iki tarafın işlevi korundu:**
+- `app.json` / `package.json` / `package-lock.json`: 6.2.0 · 271 · 265. image-picker bloğu çakışmasız geldi:
+  `cameraPermission: "<metin>"` + `microphonePermission: false` ✓ (kamera düzeltmesi yerinde).
+- `App.js` splash: 6.2'nin `AcilisIsigi` sarmalayıcısı + 5.17.1'in ölçülü konumu (`KANAT_MERKEZ`, `kanatH`) —
+  slogan aynı `kanatH`'a göre dizildiği için 6.2'nin sabit `ARA[64]`ü yerine 5.17.1 konumu.
+- `ekranlar_ana.js` (4): istek kartında 5.17.1'in "ilan bitti" dalı + 6.1'in reddedildi/süresi doldu + iade satırı ·
+  erişim kaynağı çipleri ve satırı 6.2'nin `erisimEtiketi` (SQL 305 ile uyumlu) · "Bugün" kartında 6.2'nin `yerelGun()` +
+  5.17.1'in "yarın" / "{n} gün kaldı".
+- `ekranlar_yalin.js` (3): cüzdan 6.1'in `Katlanir` kartı + içine 5.17.1'in `walletRules` metni · erişim etiketleri 6.2.
+- `screens.js` (3): `VIS_TR` 6.2 (ham `"Trusted+"` yedeği düştü) · telefon satırı birleşik: numara yoksa nötr + işaretsiz
+  (5.17.1), numara yok ama doğrulanmışsa "Doğrulandı" (6.x).
+- `i18n.js` (3): `connIncomingTitle` 6.2'nin cümle hâli ("Sana gelenler" / "Sent to you" — çipte kullanılıyor) +
+  5.17.1'in `connIncomingNoNote` (TR+EN). 5.17.1'in küçük etiketi (`ekranlar_ana.js`) artık `BUYUK()` ile — görünüm aynı.
+- `kural_metni_butce.json`: ÖLÇÜLDÜ. 45 konup `kural_metni_check.py` koşuldu → bulgu **27**, tavan kendiliğinden 27.
+
+## Koşulan testler (sayılarla)
+
+- `npm install`: up to date (bağımlılık değişmedi)
+- `node check.js`: **temiz**, çıkış 0 · "build'e hazır" · lock ↔ package aynı
+- `npm run render`: **73/73 · 13/13 · 12/12** kontrol · **53 ekran** koyu + 53 açık, **0 başarısız** ·
+  giriş kapısı **37/37** · ikon tanımsız ad **0** · (bulut ölçümüyle birebir)
+  - uyarı: 9× React "Function components cannot be given refs" (EditProfile 3, Chat 3, Hosting 2, CompanionChat 2 bildirimi);
+    test düşürmüyor; birleştirmeden ÖNCE de var mıydı ölçülmedi.
+  - 7 ekran örnek veriyle boş döndü (ActionNeeded, HikayeDaveti, HomeConnections, LoungeRadarCard, RateReminder,
+    UlasilabilirlikKarti, YasOnayi) — render'ın kendi bilgi satırı, başarısızlık değil.
+- `kural_metni_check.py`: 27 (tavan 27), yeni bulgu 0
+- `ps1_check.py`: 1 .ps1 tarandı, bulgu **0** (KUR.ps1 ASCII)
+- `npm run verify` (tam) **koşulmadı**.
+
+## Supabase SQL (sırayla; `sql\SQL_SIRA.txt` ile aynı — değişmedi)
+
+1. `303_ertelenen_puan_ana_sayfadan_duser.sql`
+2. `304_kesfet_engelinin_gercek_sebebi.sql`
+3. `305_erisim_kaynagi_etiketleri.sql`
+
+Bu oturumda yeni SQL yazılmadı. 305'ten sonra dosya yok.
+
+## Açık kalanlar / Gökberk'ten beklenenler
+
+1. **PUSH (izin bekliyor):** `git push -u origin pc-5.17.1` — dalda `68d5cf4` + `1499ae3` (+ bu DEVIR commit'i).
+2. **BUILD (izin bekliyor):** 6.2.0 / 271 / 265 için EAS preview.
+3. **BO sürümü çelişkili:** PC `backoffice\package.json` = **1.96.0**; teslim `backoffice_1.95.1` = 1.95.1 ve
+   28b DEVIR "1.96.0 ifadesi yanlıştı" diyor. Hangisi güncel? PC klasörüne dokunulmadı.
+4. **İzlenmeyen iki test betiği:** `rnapp/render_check/tam_akis_e2e.py` (5.17.1'in 171'lik e2e'si) ve
+   `rnapp/render_check/jsx_turkce_tara.js`. 6.2 dalı `render_check/`i izlemeye açmış (39 dosya); bu ikisi PC'de,
+   depoda değil. Eklensin mi?
+5. `npm run verify` (tam) ve cihazda: splash ışığı (K1′) 5.17.1 konumunda doğru mu, yükleyici (K2), kamera izni.
+6. 28b'den devreden: SQL 303–305 Supabase'de · site ekran görüntüleri 6.2 cihaza inince · canlı sitede hareket kontrolü ·
+   `favicon.png`/`icon.png` app ile eşitlenecek (5.17.1 birleştirmesi yapıldı → artık kopyalanabilir).
+7. 26 Eylül Cowork DEVIR'inden hâlâ açık: IG serisi A/B seçimi ve el yolu · IG metinleri "an" serisi ·
+   "Gelmedi" bildiriminde host misafiri bildirirse misafire kredi iadesi değişsin mi.
+8. Temizlik (isteğe bağlı): `_teslim_2809\` depoda izlenmiyor; köke `.gitignore` satırı eklenebilir.
