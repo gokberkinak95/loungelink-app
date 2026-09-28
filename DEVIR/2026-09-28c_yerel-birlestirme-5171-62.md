@@ -204,6 +204,49 @@ Gökberk'in gözlemleri ve kararları, ölçülerek:
 - ~~0. Site 0.69'u main'e almak~~ → yapıldı.
 - ~~1. BO push~~ → yapılmış (5d83b8f).
 
+---
+
+## TUR 6 · App 6.2.1 + site 0.69.3 + North Star önizlemesi
+
+### App 6.2.1 (vc 272 · build 266) — commit `2f0b0a5`, `9ac4f9b` · EAS build `00f9a336`
+- **K9 canlı zemin:** katman vardı ama görünmüyordu (kartlar örtüyor, opaklık %9/%12, toz zerreleri HİÇ yazılmamıştı).
+  ÖLÇÜM (9 sn arayla iki kare): önce alt bölgede %7,8 piksel, en büyük fark 13/255 → sonra %13,9 · Seyahatlerim'de 137/255.
+  Bant bölgesi (üst %22) üç ekranda **%0 değişim**. Alan %22'den, opaklık %16/%20, 6 toz zerresi.
+- **K6 sessiz pano:** `BosDurum` `pano` biçimi — istek · davet · sohbet · soru; TR+EN (`panoIstekBas`…). Pano varken kesikli çerçeve yok.
+  ⚠ Yazarken `MONO` (kalınlık tablosu) yazı tipi sanılmıştı → boş sorular ekranı ÇÖKÜYORDU; web sahnesi yakaladı, düzeltildi.
+- Gökberk'in cihaz testleri:
+  1. Puanlanan oturum ana sayfadan düşmüyordu → sohbet katmanı kapanınca `RateReminder` yeniden okur (`chat` akış tazelemesine eklendi).
+  2. **Alt çubuk iç sayfaların üstünde görünüp dokunuşu arkaya kaçırıyordu** → Android `elevation` çizim sırasını, RN dokunmayı
+     zIndex ile belirliyor. Katman çubuğu örttüğünde kapsül 0, katman 16. Ayrıca Keşfet/Bildirim katmanının altı sabit 76 yerine
+     ÖLÇÜLEN çubuk yüksekliği (~93; v6 kapsülünden beri ~17 px örtülüyordu). Web yükseltmeyi yok saydığı için sahnede görünmedi.
+  3. Uyum ekranı kartla aynı kararı veriyor (seyahat/telefon yoksa "Seyahatini ekle"/"Doğrula", değilse istek).
+  4. Tek kenar parlama (`borderTopWidth`) Android'de köşeyi izlemeden sert çiziliyordu → `ustIsik()` (ortak.js): Android'de
+     saç teli tam kenar, iOS'ta tasarımın üst ışığı. ⚠ Ekran görüntüsü gelmedi; tarife göre teşhis — cihazda teyit edilecek.
+  5. İstekler boş durumu K6 panosu, dikeyde ortalı.
+  6. "Kaldığın yerden devam et" tek satır: ölçülmüş 28 pt (`adjustsFontSizeToFit` DEĞİL — tasma_check başlığı).
+  + "Sen de misafir olabilirsin" kutusuna kapatma (cihazda hatırlanır).
+- Render, build'den ÖNCE iki çökme yakaladı (Keşfet/Profil: AsyncStorage eşzamanlı hata; yukarıdaki MONO). İkisi de düzeltildi.
+- Testler: `check.js` temiz · render **73+13+12 · 53 ekran · 37/37 · taşma 0**.
+- Windows: `pg_run.py` artık bu makinede çalışıyor (initdb --locale=C, psql -d, stdin UTF-8, tam ortam; pgserver'a tzdata).
+
+### Site 0.69.3 (önizleme dalı `site-0.69`, `821a363` — CANLIYA ALINMADI)
+- Yönlendirmeler bölümle uyumlu: güven → "Güven ve gizlilik soruları" · akış → #kapsam · "Kartım yok" → Salon rehberi.
+- "İç hat · İç Hat" tekrarı kalktı (KapsamDizini + Coverage).
+- `/kartlar`'daki havalimanı listesi **Salon rehberine yedirildi**: her havalimanında salonlar + kartınla bu terminalde (168 /kart)
+  + misafirini götürebilir misin (105 /rehber). İkinci liste kalktı. `/kartlar` = "Kartın ne veriyor, kuralı ne diyor?" (telefon 7,5 ekran).
+- Kart sayfalarında menü "Salon rehberi"ni işaretler; ekmek kırıntısı Salon rehberi.
+- `check.js` temiz (61 dosya, 19 sayfa) · `verify.js` 7/7.
+
+### North Star önizlemesi (uygulanmadı — Gökberk onayı bekliyor)
+https://claude.ai/artifact/HsGjDDnBUKcvcnUWQSyvbN — 5 ekran: ana sayfa (biniş kartı nesnesi, kutusuz doğrusal ızgara) ·
+Keşfet (fildişi kabartma uyum mührü) · Sohbet (FIDS şeridi, şafak amber %8) · biniş kartı cam sayfa · zarafet protokolü.
+
+### Bekleyen (Gökberk) — tur 6
+- 6.2.1 APK'yı cihazda dene: özellikle madde 2 (alt çubuk) ve 4 (çerçeveler — ekran görüntüsüyle teyit).
+- Site 0.69.3'ü canlıya almak ("main'e al").
+- North Star: onay / değişiklik.
+- Veri borcu: kural notlarında ASCII'leşmiş Türkçe ("UYENIN… MISAFIR YINE 30 EUR") — `kural_metni_check` tavanı 27; SQL ile düzeltilecek.
+
 ### Bekleyen (Gökberk) — eski liste, tarihçe
 0. **Site 0.69'u `main`e almak = canlı yayın.** Önizlemeyi (Vercel önizleme adresi / yerelde localhost:3069) gör, onay ver.
 1. **BO push = canlı yayın.** Otomatik izin denetimi BO `main` push'unu reddetti (onay yalnız app dalı içindi).
