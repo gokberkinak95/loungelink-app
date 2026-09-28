@@ -247,6 +247,27 @@ Keşfet (fildişi kabartma uyum mührü) · Sohbet (FIDS şeridi, şafak amber %
 - North Star: onay / değişiklik.
 - Veri borcu: kural notlarında ASCII'leşmiş Türkçe ("UYENIN… MISAFIR YINE 30 EUR") — `kural_metni_check` tavanı 27; SQL ile düzeltilecek.
 
+---
+
+## TUR 7 · Canlıya çıkış + build + mevcut uygulamaya uyarlanmış önizleme
+
+- **Site 0.69.3 CANLIDA:** `main` = `821a363` (Vercel: success). Canlıda doğrulandı: Salon rehberinde 15 × "Kartınla bu
+  terminalde", yurt dışı paneli; /kartlar "Kartın ne veriyor…"; ana sayfa "Güven ve gizlilik soruları".
+- **App 6.2.1 build BİTTİ** (EAS `00f9a336`, ~70 dk ücretsiz kuyruk): APK
+  https://expo.dev/artifacts/eas/yK9zjQ3D2tT5e269gp6G43ZkIIQuheJ08LZLJ10KobU.apk
+- **Uyarlanmış önizleme** (aynı tuval, ikinci sıra A–E): https://claude.ai/artifact/HsGjDDnBUKcvcnUWQSyvbN
+  Başlık ve alt çubuk app'in GERÇEK render'ından kesildi (web_sahne/out: 11_ana_misafir, 02_kesfet, 06_sohbet);
+  ortası Gökberk'in işaretlediği kartlar: ana sayfa biniş kartı + "Yanıtını bekleyenler" satırı · Keşfet host kartları,
+  uyum TAM DAİRE (sabit ölçü, `flex-shrink:0` — ilk önizlemede sıkışıp yumurtaya dönüyordu) içinde "%99 UYUM" ·
+  sohbette geri sayım kutusunun yerine FIDS şeridi (KAPI · KALKIŞA · DURUM), yeni balonlar, "Oturumu Başlat" alanı ·
+  biniş kartı cam sayfa · zarafet protokolü. **App'e UYGULANMADI** — Gökberk onayı bekleniyor.
+
+### Bekleyen (Gökberk) — tur 7
+- 6.2.1 APK'yı cihazda dene: alt çubuk (madde 2) ve çerçeveler (madde 4) teyit.
+- Uyarlanmış önizleme (A–E) için onay / değişiklik → onaylanırsa app'e ekran ekran uygulanır (önce Ana sayfa + Keşfet).
+- Zarafet protokolü (doğrulamayı atla) için ürün kararı: aylık sınır olsun mu?
+- Veri borcu: kural notlarındaki ASCII'leşmiş Türkçe (kural_metni tavanı 27).
+
 ### Bekleyen (Gökberk) — eski liste, tarihçe
 0. **Site 0.69'u `main`e almak = canlı yayın.** Önizlemeyi (Vercel önizleme adresi / yerelde localhost:3069) gör, onay ver.
 1. **BO push = canlı yayın.** Otomatik izin denetimi BO `main` push'unu reddetti (onay yalnız app dalı içindi).
