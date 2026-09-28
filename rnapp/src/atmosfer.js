@@ -192,6 +192,43 @@ const DOKU_KOYU = DOKU.aksam;
 // üretildi — gren_check'in bant kuralını bozmaz.
 // "Hareketi azalt" → bulutlar DURAĞAN; sade mod → hiç yok (üstte döner).
 // ======================================================================
+// 🔴 28 EYLÜL (Gökberk: "K9'daki ışık hareketini göremiyorum") — KOD
+// OKUNDU: katman çiziliyordu ama (1) ekranın alt %60'ı ana sayfada
+// neredeyse tamamen kartlarla kaplı, bulutlar yalnız aralardan
+// görünüyordu; (2) opaklık %9/%12 koyu zeminde ayırt edilmiyordu;
+// (3) onaylı K9'un "arada toz zerreleri yükseliyor" parçası HİÇ
+// YAZILMAMIŞTI. Gökberk'in onayıyla: alan bandın altından (%22) başlar,
+// opaklık %16/%20, altı toz zerresi eklendi. Bant ve kartlar AYNEN.
+const ZERRE = [
+  { x: 0.12, gec: 0,     boy: 3, ton: "gold" },
+  { x: 0.31, gec: 4200,  boy: 2, ton: "ink"  },
+  { x: 0.52, gec: 8100,  boy: 3, ton: "gold" },
+  { x: 0.68, gec: 1900,  boy: 2, ton: "ink"  },
+  { x: 0.83, gec: 6300,  boy: 3, ton: "gold" },
+  { x: 0.44, gec: 10200, boy: 2, ton: "ink"  },
+];
+function TozZerresi({ x, gec, boy, ton, G, Y }) {
+  const az = useAzHareket();
+  const p = useRef(new Animated.Value(az ? 0.5 : 0)).current;
+  useEffect(() => {
+    if (az) { p.setValue(0.5); return undefined; }
+    const d = Animated.sequence([
+      Animated.delay(gec),
+      Animated.loop(Animated.timing(p, { toValue: 1, duration: 12000, easing: Easing.linear, useNativeDriver: true })),
+    ]);
+    d.start();
+    return () => d.stop();
+  }, [az]);
+  return (
+    <Animated.View style={{
+      position: "absolute", left: G * x, bottom: 0, width: boy, height: boy, borderRadius: boy,
+      backgroundColor: ton === "gold" ? C.gold : C.ink,
+      opacity: az ? 0.35 : p.interpolate({ inputRange: [0, 0.2, 0.75, 1], outputRange: [0, 0.7, 0.45, 0] }),
+      transform: [{ translateY: p.interpolate({ inputRange: [0, 1], outputRange: [0, -Y * 0.85] }) }],
+    }} />
+  );
+}
+
 const ISIK_BULUTU = require("../assets/isik_bulutu.png");
 function IsikBulutlari() {
   const az = useAzHareket();
@@ -210,19 +247,21 @@ function IsikBulutlari() {
     a.start(); b.start();
     return () => { a.stop(); b.stop(); };
   }, [az]);
-  const G = Dimensions.get("window").width;
+  const { width: G, height: H } = Dimensions.get("window");
+  const Y = H * 0.78; // katmanın yüksekliği (%22 → alt)
   return (
-    <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "40%", bottom: 0, overflow: "hidden" }}>
+    <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "22%", bottom: 0, overflow: "hidden" }}>
       <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={C.gold}
         style={{ position: "absolute", width: G * 1.3, height: G * 1.3, right: -G * 0.45, top: -G * 0.1,
-                 opacity: 0.09,
+                 opacity: 0.16,
                  transform: [{ translateX: v.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.18] }) },
                              { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.12] }) }] }} />
       <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={C.purple}
         style={{ position: "absolute", width: G * 1.4, height: G * 1.4, left: -G * 0.55, bottom: -G * 0.35,
-                 opacity: 0.12,
+                 opacity: 0.2,
                  transform: [{ translateX: w.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.2] }) },
                              { translateY: w.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.15] }) }] }} />
+      {ZERRE.map((z, i) => <TozZerresi key={i} {...z} G={G} Y={Y} />)}
     </View>
   );
 }

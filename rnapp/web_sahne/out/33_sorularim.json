@@ -56,98 +56,105 @@
   "",
   "TANIŞ",
   "Soru",
-  "",
+  "SORULAR · KALKIŞ",
+  "— —",
+  "— — — —",
+  "— : —",
+  "— —",
+  "— — — —",
+  "— : —",
+  "BEKLEYEN SORU YOK",
   "Henüz bir soru sormadın. Keşfet'te bir ilana bakarken host'a misafir hakkını sorabilirsin — cevabı burada birikir."
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 37,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 37,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 37,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -205,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -205,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -205,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 37,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 37,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 37,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -205,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -205,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -205,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 47,
+   "sol": 54,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 47,
+   "sol": 54,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 47,
+   "sol": 54,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -211,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -211,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -211,
    "tx": ""
   }
  ],

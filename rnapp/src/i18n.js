@@ -308,6 +308,11 @@ export const D = {
     flowChatsTitle: "Sohbetlerim",
     flowChatsEmpty: "Henüz bir bağlantın yok. Tanış sekmesinden birine bağlantı isteği gönderebilirsin.",
     questionsEmpty: "Henüz bir soru sormadın. Keşfet'te bir ilana bakarken host'a misafir hakkını sorabilirsin — cevabı burada birikir.",
+    // v6.2.1 · K6 sessiz pano — başlık ve durum satırları
+    panoIstekBas: "İSTEKLER · KALKIŞ", panoIstekDurum: "BEKLEYEN İSTEK YOK",
+    panoDavetBas: "DAVETLER · KALKIŞ", panoDavetDurum: "BEKLEYEN DAVET YOK",
+    panoSohbetBas: "SOHBETLER · KALKIŞ", panoSohbetDurum: "AÇIK SOHBET YOK",
+    panoSoruBas: "SORULAR · KALKIŞ", panoSoruDurum: "BEKLEYEN SORU YOK",
     avPickAirport: "Havalimanı seç",
     avFixDate: "Tarihi tamamla (YYYY-AA-GG)",
     pushDeniedGoSettings: "Bildirim izni kapalı ve telefon bir daha soramıyor. Ayarlardan açman gerekiyor.",
@@ -2430,6 +2435,11 @@ export const D = {
     flowChatsTitle: "My chats",
     flowChatsEmpty: "No connections yet. Send someone a connection request from the Meet tab.",
     questionsEmpty: "You haven't asked anything yet. While browsing a listing in Discover you can ask the host about their guest allowance — the answers collect here.",
+    // v6.2.1 · K6 quiet board — header and status lines
+    panoIstekBas: "REQUESTS · DEPARTURES", panoIstekDurum: "NO PENDING REQUESTS",
+    panoDavetBas: "INVITES · DEPARTURES", panoDavetDurum: "NO PENDING INVITES",
+    panoSohbetBas: "CHATS · DEPARTURES", panoSohbetDurum: "NO OPEN CHATS",
+    panoSoruBas: "QUESTIONS · DEPARTURES", panoSoruDurum: "NO PENDING QUESTIONS",
     avPickAirport: "Pick an airport",
     avFixDate: "Complete the date (YYYY-MM-DD)",
     pushDeniedGoSettings: "Notifications are off and your phone won't ask again. You'll need to turn them on in Settings.",

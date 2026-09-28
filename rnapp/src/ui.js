@@ -18,6 +18,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platfor
 import { ARA, ELEV, BTN as BOY, C, F, FS, R, SATIR, SP, T, TAP, temaYenidenKur, temaModu } from "./theme";
 import { MONO } from "./typography";
 import { Atmosfer } from "./atmosfer";
+import { SessizPano } from "./hareket";   // K6 · boş durum panosu
 import { Ikon } from "./ikon";
 import { Katman } from "./katman";
 
@@ -2870,17 +2871,22 @@ export function GirisSahnesi({ ustBilgi, baslik, sag, children, yaprakUst = 0 })
 // yok", "Eşleşme yok"). Bu bileşen bir `eylem` slotu taşıyor — çünkü
 // boş bir ekranın işi, orayı doldurmanın yolunu göstermektir.
 // ============================================================================
-export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala = false }) {
+// v6.2.1 · K6 (Gökberk: "K6'yı da yapalım") — `pano={{ baslik, durum }}`
+// verilirse ikon dairesi yerine SESSİZ PANO çizilir (hareket.js).
+// Metin, başlık ve eylem aynen kalır: dört boş durumda tek dil.
+export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala = false, pano }) {
   return (
     <View style={{
       // v6.1 (Gökberk md.a) — tam ekran boş durum ekranın ORTASINDA durur;
       // üstte yapışık bir kutu "yarım yüklenmiş" gibi okunuyordu.
       ...(ortala ? { marginVertical: "auto" } : null),
       alignItems: "center", paddingVertical: sikisik ? 20 : 28, paddingHorizontal: ARA[20],
-      borderWidth: 1, borderColor: C.line, borderStyle: "dashed", borderRadius: R.sm,
+      // K6: pano kendi çerçevesi — kesikli çerçeveyle çift çerçeve olmasın.
+      borderWidth: pano ? 0 : 1, borderColor: C.line, borderStyle: "dashed", borderRadius: R.sm,
       backgroundColor: "transparent",
     }}>
-      {!!ikon && (
+      {!!pano && <SessizPano baslik={pano.baslik} durum={pano.durum} />}
+      {!!ikon && !pano && (
         <View style={{
           // 🔴 `borderRadius: 22` YAZMIYORUM. 44/2 elle hesaplanmış bir
           // daire, boyut değiştiği gün sessizce yumurtaya döner — ve

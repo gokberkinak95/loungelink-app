@@ -400,3 +400,73 @@ export function AcilisIsigi({ g, y }) {
     </View>
   );
 }
+
+// ============================================================================
+// K6 · SESSİZ PANO — boş durumlar (istek · davet · sohbet · soru)
+// 28 Eylül · Gökberk: "K6'yı da yapalım". Onaylı önizleme: boş ekran bir
+// kalkış panosu; satırlar tire, arada bir hücre döner (4 sn döngü, dönüş
+// ~50 ms), köşede tek altın ışık yanıp söner. Dört boş durumda AYNI dil,
+// yalnız başlık/durum satırı değişir. Metin ve düğme BosDurum'un kendisi.
+// "Hareketi azalt" → durağan pano, ışık sabit.
+// ============================================================================
+const PANO_HUCRE = [
+  { oran: 40, yazi: "— —",     gec: 0 },
+  { oran: 86, yazi: "— — — —", gec: 250 },
+  { oran: 70, yazi: "— : —",   gec: 500 },
+];
+function PanoHucresi({ oran, yazi, gec }) {
+  const az = useAzHareket();
+  const v = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (az) return undefined;
+    const d = Animated.sequence([
+      Animated.delay(gec),
+      Animated.loop(Animated.timing(v, { toValue: 1, duration: 4000, easing: Easing.linear, useNativeDriver: true })),
+    ]);
+    d.start();
+    return () => d.stop();
+  }, [az]);
+  return (
+    <Animated.View style={{
+      flex: oran, height: 24, borderRadius: 3, backgroundColor: C.bgAlt,
+      alignItems: "center", justifyContent: "center",
+      opacity: az ? 1 : v.interpolate({ inputRange: [0, 0.7, 0.71, 0.725, 1], outputRange: [1, 1, 0.2, 1, 1] }),
+    }}>
+      <Text style={{ fontFamily: MONO[500], fontSize: FS.xs, color: C.ink, letterSpacing: 0.5 }}>{yazi}</Text>
+    </Animated.View>
+  );
+}
+
+export function SessizPano({ baslik, durum }) {
+  const az = useAzHareket();
+  const isik = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (az) return undefined;
+    const d = Animated.loop(Animated.sequence([
+      Animated.timing(isik, { toValue: 1, duration: 1200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      Animated.timing(isik, { toValue: 0, duration: 1200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+    ]));
+    d.start();
+    return () => d.stop();
+  }, [az]);
+  const satir = (k) => (
+    <View key={k} style={{ flexDirection: "row", gap: SP[2], marginTop: k ? SP[2] : 0 }}>
+      {PANO_HUCRE.map((h, i) => <PanoHucresi key={i} {...h} gec={h.gec + k * 250} />)}
+    </View>
+  );
+  return (
+    <View accessible accessibilityLabel={durum}
+      style={{ alignSelf: "stretch", borderRadius: R.sm, borderWidth: 1, borderColor: C.line,
+               backgroundColor: C.bg, padding: ARA[14], marginBottom: SP[4] }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: SP[3] }}>
+        <Text style={{ fontSize: FS.xs, color: C.muted, letterSpacing: 2 }}>{baslik}</Text>
+        <Animated.View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: C.gold,
+                                opacity: az ? 1 : isik.interpolate({ inputRange: [0, 1], outputRange: [0.25, 1] }) }} />
+      </View>
+      {satir(0)}
+      {satir(1)}
+      <Text style={{ fontFamily: MONO[500], fontSize: FS.xs, color: C.goldText, letterSpacing: 1.5,
+                     textAlign: "center", marginTop: SP[4] }}>{durum}</Text>
+    </View>
+  );
+}

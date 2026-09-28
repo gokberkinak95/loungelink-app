@@ -108,6 +108,9 @@ ESLESME = [
     # TÜKETİCİ ESKİ ÇIKTIYI DİSKTEN OKUMAYA DEVAM EDER — VE HİÇBİR
     # ŞEY HATA VERMEZ."
     ("ss-bildirim.jpg", "10_bildirim", "Bildirimler — akış tek yerde"),
+    # 28 Eylül · site 0.69 (Gökberk: "Milleri topladın…" yanında eşleştiniz
+    # ekranı) — 6.2'nin K5 "kapı aralanır" anı: kemerin altında iki koltuk.
+    ("ss-eslesti.jpg", "60_vitrin_kapi", "Eşleştiniz — kapı aralanır, yanındaki koltuk dolar"),
 ]
 
 TANITIM_ESLESME = [("hero-phones.jpg", "web_hero.png"),

@@ -231,7 +231,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   // ══════════════════════════════════════════════════════════════════
   if (!inc.length && !sent.length) {
     if (!tamEkran) return null;
-    return <BosDurum ikon="bekliyor" metin={t.flowRequestsEmpty} ortala />;
+    return <BosDurum ikon="bekliyor" metin={t.flowRequestsEmpty} ortala pano={{ baslik: t.panoIstekBas, durum: t.panoIstekDurum }} />;
   }
   const bekleyen = inc.filter(r => r.status === "pending").length;
   // 🔴 v2.95 (Gökberk madde 2) — "'X gönderdiğin' yerine 'Gönderdiğin X
@@ -3621,7 +3621,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowQuestions} onBack={onBack} />
         <View style={{ flex: 1, justifyContent: "center", padding: ARA[20] }}>
-          <BosDurum ikon="bilgi" metin={t.questionsEmpty} />
+          <BosDurum ikon="bilgi" metin={t.questionsEmpty} pano={{ baslik: t.panoSoruBas, durum: t.panoSoruDurum }} />
         </View>
       </Sayfa>
     );

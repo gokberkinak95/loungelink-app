@@ -4902,7 +4902,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
   // `RequestsPanel` · md.3).
   if (!items.length) {
     if (!tamEkran) return null;
-    return kabulBolumu || <BosDurum ikon="eposta" metin={t.flowInvitesEmpty} ortala />;
+    return kabulBolumu || <BosDurum ikon="eposta" metin={t.flowInvitesEmpty} ortala pano={{ baslik: t.panoDavetBas, durum: t.panoDavetDurum }} />;
   }
   return (
     /* 5 Eylül — ÖLÇÜLDÜ (web sahne 11): başlık "BUGÜN" kartının alt
@@ -6536,7 +6536,7 @@ export function HomeConnections({ t, session, onOpenChat, tamEkran, tazele }) {
   );
   if (rows === null || !rows.length) {
     if (!tamEkran) return null;
-    return <BosDurum ikon="kisiler" metin={t.flowChatsEmpty} ortala />;
+    return <BosDurum ikon="kisiler" metin={t.flowChatsEmpty} ortala pano={{ baslik: t.panoSohbetBas, durum: t.panoSohbetDurum }} />;
   }
   // Tam ekranda katlamak anlamsız: ekranın TEK işi bu liste.
   if (tamEkran) return (
