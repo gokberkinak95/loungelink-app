@@ -218,7 +218,7 @@ STUBS["react-native"] = new Proxy({}, {
     };
     if (k === "PanResponder") return { create: (cfg) => ({ panHandlers: {} }) };
     if (k === "Easing") return {
-      linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x,
+      linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x, sin: (x) => x,
       out: (f) => (f || ((x) => x)), in: (f) => (f || ((x) => x)),
       inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x), poly: () => ((x) => x), back: () => ((x) => x),
     };

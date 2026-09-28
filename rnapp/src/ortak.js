@@ -230,10 +230,11 @@ export function greeting(t) {
 //
 // `baslik` verilmezse `t.loading`e DÜŞMÜYORUZ: başlıksız ama geri oklu bir
 // çubuk çiziyoruz. Çıkış korunur, tekrar geri gelmez.
-export function Load({ t, title, onBack }) {
+export function Load({ t, title, onBack, gosterge: ozelGosterge }) {
+  // v6.2 — ekran kendi bekleme anlatımını verebilir (Keşfet: terminal radarı · K3).
   const gosterge = (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 120 }}>
-      <MarkaYukleyici />
+      {ozelGosterge || <MarkaYukleyici />}
     </View>
   );
   // ══════════════════════════════════════════════════════════════════

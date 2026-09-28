@@ -39,6 +39,7 @@ import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
 import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
+import { KalkisHalkasi, TakimyildizPuan } from "./hareket";
 import { yerelGun } from "./zaman";
 
 export const timeOk = s => /^\d{2}:\d{2}$/.test(s);
@@ -1846,30 +1847,11 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             {!rated ? (
               <DumanliCam stil={{ borderRadius: R.lg, padding: SP[4], marginTop: SP[3], borderTopWidth: 1, borderTopColor: C.parlama, shadowColor: C.golgeRenk, shadowOpacity: 0.45, shadowRadius: 22, shadowOffset: { width: 0, height: 10 }, elevation: 8 }}>
                 <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.rateTitle} {shortName(otherName)}</Text>
-                <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: SP[2] }}>
-                  {/* 🔴 Yıldızlar tek tek dokunulabilir ama ekran okuyucuda hepsi
-                      "düğme" diye okunuyordu — kullanıcı kaç yıldız verdiğini
-                      duyamıyordu. Rol `radio` + seçili durumu eklendi. */}
-                  {[1,2,3,4,5].map(n => (
-                    <TouchableOpacity hitSlop={TAP.slop} key={n} onPress={() => setStars(n)} style={{ padding: SP[1] }}
-                      accessibilityRole="radio"
-                      accessibilityState={{ selected: stars === n }}
-                      accessibilityLabel={String(n)}>
-                      {/* ══════════════════════════════════════════════
-                          🔴 13 EYLÜL (Gökberk md.11) — "yıldız verme alanı
-                          backgrounddan dolayı belli olmuyor."
-                          Zemin değil KOD: `renk={n}` yazıyordu — yani
-                          yıldızın RENGİ olarak 1,2,3,4,5 SAYILARI
-                          geçiliyordu. Geçersiz renk → çizilmeyen yıldız.
-                          Beş yıldızın beşi de görünmezdi; puanlama alanı
-                          ekranda BOŞ bir şerit olarak duruyordu.
-                          Artık dolu yıldız altın, boş yıldız soluk.
-                          🆕 SINIF: "BİR PROP'A YANLIŞ TİPTE DEĞER GEÇMEK
-                          HATA VERMEZ — SESSİZCE ÇİZMEZ." */}
-                      <Ikon ad={n <= stars ? "degerlendirmeDolu" : "degerlendirme"}
-                            boy={FS.display} renk={n <= stars ? C.gold : C.dimAA} />
-                    </TouchableOpacity>
-                  ))}
+                {/* v6.2 (K8) — TAKIMYILDIZ: seçilen yıldızlar sırayla parlar ve
+                    ince bir hatla bağlanır. Radio rolü ve dokunma alanı
+                    bileşenin içinde korunuyor (bkz. hareket.js). */}
+                <View style={{ marginVertical: SP[2] }}>
+                  <TakimyildizPuan deger={stars} onDegis={setStars} />
                 </View>
                 {/* MVP: "YORUM (İSTEĞE BAĞLI)" etiketi + "Deneyimini paylaş..." placeholder */}
                 <Text style={S.label}>{t.comment}</Text>
@@ -3306,7 +3288,7 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
         supabase.from("visits").select("*").eq("user_id", uid).gte("visit_date", today).order("visit_date").limit(1).maybeSingle(),
         // #19: host'un aktif ilani da "canli durum"un parcasi
         supabase.from("availabilities").select("id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, active").eq("host_id", uid).eq("active", true).gte("avail_date", today).order("avail_date").limit(1).maybeSingle(),
-        supabase.from("sessions").select("id, status, started_at, host_status, host_status_ts, guest_status, guest_status_ts, requests!inner(id, guest_id, host_id, availabilities(lounge_name, airport_code, time_from, time_to))")
+        supabase.from("sessions").select("id, status, started_at, host_status, host_status_ts, guest_status, guest_status_ts, requests!inner(id, guest_id, host_id, availabilities(lounge_name, airport_code, avail_date, time_from, time_to))")
           .eq("status", "active").limit(5),
       ]);
       const mine = (sess || []).find(s => s.requests?.guest_id === uid || s.requests?.host_id === uid);
@@ -3320,6 +3302,20 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneLive} title={act ? t.liveSessionTitle : t.liveTitle} onBack={onBack} />
+      {/* v6.2 (K7) — salon penceresinin ne kadarı kaldı: Güven halkasıyla
+          aynı noktalı dil; son 15 dakikada kehribar. */}
+      {act && (() => {
+        const av = act.requests && act.requests.availabilities;
+        if (!av || !av.avail_date || !av.time_from || !av.time_to) return null;
+        const bas = new Date(`${av.avail_date}T${String(av.time_from).slice(0, 8)}`).getTime();
+        const bit = new Date(`${av.avail_date}T${String(av.time_to).slice(0, 8)}`).getTime();
+        if (!isFinite(bas) || !isFinite(bit)) return null;
+        return (
+          <View style={{ alignItems: "center", marginTop: ARA[18], marginBottom: ARA[10] }}>
+            <KalkisHalkasi t={t} baslangic={bas} bitis={bit} />
+          </View>
+        );
+      })()}
       {act && <LiveStatusPicker t={t} sess={act} isHost={isHost} uid={session?.user?.id} />}
       {/* MVP: durum kutusunun altinda "Oturuma Git" — sohbete/oturuma doner */}
       {act && onGoSession && (

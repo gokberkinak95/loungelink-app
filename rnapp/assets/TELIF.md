@@ -40,6 +40,7 @@ REFERANSTAN BİR YÜKÜMLÜLÜĞE ÇEVİRİR."
 | `altin_acik.png` | `brand/build_altin.py` üretiyor (AÇIK paletten · 18 Eyl: tek PNG iki temaya yetmiyordu — açık temada koyu paletin şampanyası çiziliyor ve beyaz metin 1.65:1 kalıyordu) | kendi üretimimiz | ✓ |
 | `perde.png` | `brand/build_perde.py` üretiyor (paletten · tam ekran fotoğrafın alt perdesi, 512 adım) | kendi üretimimiz | ✓ |
 | `bant_hale.png` | `brand/build_bant_hale.py` üretiyor (paletten · bandın iki radial halesi) | kendi üretimimiz | ✓ |
+| `isik_bulutu.png` | `brand/build_isik_bulutu.py` üretiyor (v6.2 · yalnız alfa, gauss + sabit tohumlu dither · rengi `tintColor` veriyor · canlı zemin K9 ve kapı ışığı K5) | kendi üretimimiz | ✓ |
 | `icon.png` · `adaptive-icon.png` · `monochrome-icon.png` · `notification-icon.png` · `favicon.png` · `splash.png` | `brand/build_kemer.py` üretiyor (kemer geometrisi elle çizildi; swoosh izi kendi eski ikonumuzdan `cv2.findContours` ile alındı) | kendi üretimimiz | ✓ |
 | `arsiv_ikon_v5/*` | v5 ikon setinin derecelendirme/yenileme ÖNCESİ hâli — "eski dosya silinmez" kuralı gereği saklandı, dağıtılmıyor | kendi üretimimiz | ✓ |
 | `tanecik.png` | `brand/build_tanecik.py` üretiyor (sabit tohumlu rastgele gren · ekranın üstüne serilen dither katmanı) | kendi üretimimiz | ✓ |

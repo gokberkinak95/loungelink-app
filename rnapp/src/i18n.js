@@ -806,6 +806,7 @@ export const D = {
     carrierWhy: "Bazı salonlar misafirin seninle aynı havayolunda uçmasını şart koşuyor. THY ile AJet ayrı taşıyıcı sayılır — bu yüzden soruyoruz.",
     hiddenByFilter: "Filtre {n} ilanı gizliyor — hepsini görmek için dokun",
     cannotApply: "Başvuru kapalı",
+    discScanning: "Terminalindeki host'lar aranıyor",
     // ══════════════════════════════════════════════════════════════════
     // 🔴 13 EYLÜL (Gökberk md.18, md.19) — "guest not allowed yazıyor" ·
     // "fully booked yazıyor. İngilizce badge'ler türkçede olmamalı".
@@ -871,6 +872,8 @@ export const D = {
     ruleNote: "Son karar her zaman salona aittir. Kapıda alınmazsan kredin iade edilir.",
     ruleReadVenue: "Salon kurallarını oku",
     ruleSendReq: "Lounge isteği gönder",
+    ruleSealOk: "Onaylı",
+    ruleSealAll: "Tüm şartlar",
     ruleUnknownNote: "Gri satırlar, kaynağından doğrulayamadığımız şartlar. Onları bilmiyoruz — bildiğimizi söylemiyoruz.",
     ruleEmpty: "Bu ilan için koşul dökümü alınamadı.",
     // 🔴 v3.4 — İSTEK EKRANINDA GÜVENLİK. Metin SUÇLAMIYOR, KORUMAYI
@@ -1609,6 +1612,7 @@ export const D = {
     bcAccepted: "Kabul edildi ✓",
     bcSelectAv: "Hangi ilan için?",
     liveTitle: "Canlı Durum",
+    ringLeft: "salonda kalan",
     e_cold_invite_blocked: "Yalnızca geçmiş misafirlerini davet edebilirsin.",
     e_insufficient_points_feature: "Öne çıkarmak için 200 puan gerekir.",
     step: "ADIM",
@@ -2771,6 +2775,7 @@ export const D = {
     carrierWhy: "Some lounges require your guest to fly the same airline. THY and AJet count as separate carriers \u2014 that is why we ask.",
     hiddenByFilter: "Filters are hiding {n} listings — tap to see all",
     cannotApply: "Applications closed",
+    discScanning: "Looking for hosts in your terminal",
     engelKisa: {
       fully_booked: "Fully booked",
       guests_not_allowed: "No guests",
@@ -2808,6 +2813,8 @@ export const D = {
     ruleNote: "The lounge always has the final say. If you're turned away at the door, your credit is refunded.",
     ruleReadVenue: "Read lounge rules",
     ruleSendReq: "Send lounge request",
+    ruleSealOk: "Cleared",
+    ruleSealAll: "All rules",
     ruleUnknownNote: "Grey rows are conditions we could not verify at the source. We don't know them — and we won't pretend we do.",
     ruleEmpty: "Could not load the condition breakdown for this listing.",
     reqSafeTitle: "You meet inside the lounge, in public",
@@ -3361,6 +3368,7 @@ export const D = {
     bcAccepted: "Accepted ✓",
     bcSelectAv: "For which listing?",
     liveTitle: "Live Status",
+    ringLeft: "left in lounge",
     e_cold_invite_blocked: "You can only invite past guests.",
     e_insufficient_points_feature: "200 points required to feature.",
     step: "STEP",

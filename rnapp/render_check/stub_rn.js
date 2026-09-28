@@ -39,7 +39,7 @@ const Easing = {
   // çağrısı render testinde çöktü. Stub'ın eksikliği ürün hatası gibi
   // görünür — doğrusu stub'ı gerçeğe yaklaştırmaktır. Test animasyonun
   // eğrisini değil, çağrılabilirliğini doğrular.
-  linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x,
+  linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x, sin: (x) => x,
   out: (fn) => (fn || ((x) => x)), in: (fn) => (fn || ((x) => x)),
   inOut: (fn) => (fn || ((x) => x)), bezier: () => ((x) => x),
   // v6 — gerçek RN'de var: `poly(n)` ve `back(s)` eğri FABRİKASI döndürür.

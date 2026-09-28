@@ -25,6 +25,7 @@
 import FlightField from "./FlightField";
 import { HostPanel, useReciprocityMoment } from "./HostWallet";
 import MomentScreen from "./MomentScreen";
+import { TerminalRadari, OnayDamgasi } from "./hareket";
 import { CarrierPicker, Katlanir } from "./Pickers";
 import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
@@ -736,7 +737,9 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     return { dugum: BUYUK(String(dugum)), baslik, alt: parcalar.join(" · ") };
   }, [apFilter, sortTrip, airports, dateF, rows, lang, t]);
 
-  if (rows === null) return <Load t={t} title={t.discTitle} onBack={onBack} />;
+  // v6.2 (K3) — liste gelene kadar terminal radarı: "arıyoruz" anlatılıyor.
+  if (rows === null) return <Load t={t} title={t.discTitle} onBack={onBack}
+    gosterge={<TerminalRadari etiket={t.discScanning} dugum={scope && scope.airport ? scope.airport : null} />} />;
 
   // 🔴 v2.66 (madde 9) — TEK KAPI TANIMI. Rozet ile ilan verisi ayrı
   // kaynaklardır; ikisinden biri "misafir alınamaz" diyorsa kapı kapalıdır.
@@ -6888,7 +6891,9 @@ export function KuralKarari({ t, avail, skor, onBack, onSend }) {
                       🆕 SINIF: "BİR ANİMASYONUN VAR OLMASI GÖRÜLDÜĞÜ
                       ANLAMINA GELMEZ — HAREKETİN ÖLÇÜSÜ SÜRE DEĞİL,
                       DEĞİŞEN ALANDIR." */}
-                  <Muhur gecikme={120 + gi * 90} titret={gi === 0}>
+                  {/* v6.2 (K4) — gruplar okunur bir sırayla iner (420 ms arayla):
+                      karar tek seferde değil, şart şart geliyor. */}
+                  <Muhur gecikme={160 + gi * 420} titret={gi === 0}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={{ flex: 1, fontSize: FS.micro, fontWeight: "700",
                                    letterSpacing: 2, color: C.mutedAA }}>{BUYUK(g.ad)}</Text>
@@ -6955,6 +6960,16 @@ export function KuralKarari({ t, avail, skor, onBack, onSend }) {
               );
             });
           })()}
+          {/* v6.2 (K4) — bütün şartlar tuttuysa son damga. Bilinmeyen ya da
+              tutmayan tek şart varsa damga YOK: mühür bir süs değil, bir hüküm. */}
+          {Array.isArray(kosullar) && kosullar.length > 0
+            && !kosullar.some((k) => k.durum === "yok" || k.durum === "bilinmiyor") ? (
+            <View style={{ alignItems: "flex-end", marginTop: ARA[18] }}>
+              <Muhur gecikme={160 + 3 * 420 + 180} titret>
+                <OnayDamgasi t={t} />
+              </Muhur>
+            </View>
+          ) : null}
         </View>
 
         {bilinmeyenVar && (

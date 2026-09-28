@@ -45,6 +45,10 @@ SAHNELER = {
     "19_ana_guest1":   ("guest1",  []),   # ekran: Home
     "02_kesfet":       ("kaan",    [("dokun", "Keşfet")]),   # Kaan: Deniz'e isteği yok → tasarımdaki "İstek gönder"   # ekran: Discovery
     # v6.1 — md.33: istek formu, üç katlanır bilgi paneli kapalı
+    # v6.2 — hareket vitrini (onaylı bileşenler, tek başına)
+    "60_vitrin_kapi":  ("",        [("bekle", 1600)]),   # ekran: MomentScreen · K5
+    "61_vitrin_radar": ("",        [("bekle", 2400)]),   # ekran: TerminalRadari · K3
+    "62_vitrin_puan":  ("",        [("bekle", 1400)]),   # ekran: TakimyildizPuan · K8 + K2
     "50_istek_gonder": ("kaan",    [("dokun", "Keşfet"), ("dokun", "İstek gönder"), ("bekle", 900)]),   # ekran: Discovery · istek modalı
     # v6.1 — md.e: kural ekranının altı ("Salon kurallarını oku" resmî kaynağa)
     "51_kural_alt":    ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("kaydir",), ("bekle", 700)]),   # ekran: KuralKarari

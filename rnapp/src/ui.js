@@ -2712,9 +2712,22 @@ export function MarkaYukleyici({ boy = 96, koyuZemin = false }) {
     return () => dongu.stop();
   }, [v]);
   const yuk = Math.round(boy * 504 / 1024);
+  // v6.2 (K2 · Gökberk onayı) — kanat MARKANIN KENDİ PNG'si kalıyor;
+  // altına süzülme yönünde akan kesikli bir iz eklendi (6 nokta, sola akar).
+  const iz = v.interpolate({ inputRange: [0, 1], outputRange: [0, -boy * 0.12] });
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}
       accessibilityRole="progressbar" accessible>
+      <View pointerEvents="none" style={{ position: "absolute", width: boy * 1.1, height: 6,
+                                          overflow: "hidden", top: yuk * 0.78,
+                                          transform: [{ rotate: "-18deg" }] }}>
+        <Animated.View style={{ flexDirection: "row", transform: [{ translateX: iz }] }}>
+          {Array.from({ length: 9 }).map((_, i) => (
+            <View key={i} style={{ width: boy * 0.06, height: 2, borderRadius: R.full, marginRight: boy * 0.06,
+                                   backgroundColor: C.goldText, opacity: 0.12 + i * 0.05 }} />
+          ))}
+        </Animated.View>
+      </View>
       <Animated.Image
         source={MARKA_KANAT}
         resizeMode="contain"

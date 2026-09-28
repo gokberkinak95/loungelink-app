@@ -1,0 +1,318 @@
+// ============================================================================
+// LoungeLink · hareket.js — HAREKET DİLİ (v6.2 · 28 Eylül)
+//
+// Gökberk onayı (önizleme "LoungeLink Hareket Dili"):
+//   K3 terminal radarı · K4 şart şart mühür · K5 kapı aralanır ·
+//   K7 kalkış halkası · K8 takımyıldız puanı   → UYGULA
+//   K2 yükleyici → mevcut kanat PNG'siyle (ui.js · MarkaYukleyici)
+//   K9 canlı zemin → YALNIZ arka plan hareketi (atmosfer.js)
+//   K6 → yapılmadı (bozuk bir durum sanılabilir) · K1 → yalnız öneri
+//
+// İLKELER
+//   · Yeni native paket YOK: hepsi RN `Animated` + `View`. react-native-svg
+//     eklemek bir bağımlılık ve bir test yükü demekti; bu şekiller onsuz
+//     çiziliyor.
+//   · Renk ve yazı yalnız tema jetonlarından (C · FS · F · MONO).
+//   · "Hareketi azalt" açıksa her bileşen DURAĞAN son karesini çizer.
+//   · Döngüler yalnız ekran açıkken döner; unmount'ta durur.
+// ============================================================================
+import React, { useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, Animated, Easing, Platform, Text, TouchableOpacity, View } from "react-native";
+import { ARA, C, FS, R, SP, TAP } from "./theme";
+import { MONO } from "./typography";
+import { Ikon } from "./ikon";
+import { BUYUK } from "./i18n";
+
+// ---------------------------------------------------------------- erişim
+export function useAzHareket() {
+  const [az, setAz] = useState(false);
+  useEffect(() => {
+    let canli = true;
+    const A = AccessibilityInfo;
+    try {
+      if (A && typeof A.isReduceMotionEnabled === "function") {
+        A.isReduceMotionEnabled().then((v) => { if (canli) setAz(!!v); }).catch(() => {});
+      }
+    } catch (e) { /* stub/web: hareket açık kalır */ }
+    let abone = null;
+    try {
+      if (A && typeof A.addEventListener === "function") {
+        abone = A.addEventListener("reduceMotionChanged", (v) => setAz(!!v));
+      }
+    } catch (e) { abone = null; }
+    return () => { canli = false; if (abone && abone.remove) abone.remove(); };
+  }, []);
+  return az;
+}
+
+// Hafif dokunsal geri bildirim — web'de ve paket yoksa sessizce yok.
+export function dokun(tur = "hafif") {
+  if (Platform.OS === "web") return;
+  try {
+    const H = require("expo-haptics");
+    if (tur === "secim" && H.selectionAsync) H.selectionAsync();
+    else if (H.impactAsync) H.impactAsync(H.ImpactFeedbackStyle ? H.ImpactFeedbackStyle.Light : undefined);
+  } catch (e) { /* titreşim yoksa hareket yine tamam */ }
+}
+
+function dongu(anim) {
+  const d = Animated.loop(anim);
+  d.start();
+  return () => d.stop();
+}
+
+// ======================================================================
+// K3 · TERMİNAL RADARI — Keşfet yüklenirken "arıyoruz" anlatır.
+// Nokta konumları TEMSİLÎ: gerçek konum göstermez (gizlilik sözü).
+// ======================================================================
+const RADAR_NOKTA = [
+  { aci: -38, r: 0.72, altin: true },
+  { aci: 128, r: 0.58 },
+  { aci: 62, r: 0.86 },
+  { aci: 205, r: 0.44 },
+  { aci: -112, r: 0.9 },
+];
+
+export function TerminalRadari({ boy = 220, etiket, dugum }) {
+  const az = useAzHareket();
+  const nabiz = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
+  const tarama = useRef(new Animated.Value(0)).current;
+  const noktalar = useRef(RADAR_NOKTA.map(() => new Animated.Value(az ? 1 : 0))).current;
+
+  useEffect(() => {
+    if (az) { noktalar.forEach((n) => n.setValue(1)); return undefined; }
+    const durdur = [];
+    nabiz.forEach((v, i) => {
+      durdur.push(dongu(Animated.sequence([
+        Animated.delay(i * 1200),
+        Animated.timing(v, { toValue: 1, duration: 3600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(v, { toValue: 0, duration: 0, useNativeDriver: true }),
+      ])));
+    });
+    durdur.push(dongu(Animated.timing(tarama, { toValue: 1, duration: 6000, easing: Easing.linear, useNativeDriver: true })));
+    noktalar.forEach((v, i) => {
+      durdur.push(dongu(Animated.sequence([
+        Animated.delay(300 + i * 1000),
+        Animated.timing(v, { toValue: 1, duration: 500, useNativeDriver: true }),
+        Animated.delay(3800),
+        Animated.timing(v, { toValue: 0, duration: 700, useNativeDriver: true }),
+        Animated.delay(Math.max(0, 1000 - i * 200)),
+      ])));
+    });
+    return () => durdur.forEach((f) => f());
+  }, [az]);
+
+  const yari = boy / 2;
+  const halka = (cap, ek) => ({
+    position: "absolute", left: yari - cap / 2, top: yari - cap / 2,
+    width: cap, height: cap, borderRadius: R.full, borderWidth: 1, ...ek,
+  });
+  return (
+    <View style={{ alignItems: "center" }} accessible accessibilityRole="progressbar"
+      accessibilityLabel={etiket || ""}>
+      <View style={{ width: boy, height: boy }}>
+        {[1, 0.66, 0.33].map((k) => (
+          <View key={k} style={halka(boy * k, { borderColor: C.line })} />
+        ))}
+        {!az && nabiz.map((v, i) => (
+          <Animated.View key={i} pointerEvents="none" style={[halka(boy, { borderColor: C.goldLine || C.gold }), {
+            opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.7, 0] }),
+            transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [0.15, 1] }) }],
+          }]} />
+        ))}
+        {!az && (
+          <Animated.View pointerEvents="none" style={{
+            position: "absolute", left: 0, top: 0, width: boy, height: boy,
+            transform: [{ rotate: tarama.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] }) }],
+          }}>
+            <View style={{ position: "absolute", left: yari - 0.5, top: 0, width: 1, height: yari,
+                           backgroundColor: C.gold, opacity: 0.35 }} />
+          </Animated.View>
+        )}
+        {RADAR_NOKTA.map((n, i) => {
+          const rad = (n.aci * Math.PI) / 180;
+          const cap = n.altin ? 9 : 6;
+          return (
+            <Animated.View key={i} style={{
+              position: "absolute",
+              left: yari + Math.cos(rad) * yari * n.r - cap / 2,
+              top: yari + Math.sin(rad) * yari * n.r - cap / 2,
+              width: cap, height: cap, borderRadius: R.full,
+              backgroundColor: n.altin ? C.gold : C.mutedAA || C.mut,
+              opacity: noktalar[i],
+            }} />
+          );
+        })}
+        <View style={{ position: "absolute", left: yari - 5, top: yari - 5, width: 10, height: 10,
+                       borderRadius: R.full, backgroundColor: C.ink }} />
+      </View>
+      {!!dugum && (
+        <Text style={{ fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 1.4, color: C.goldText,
+                       marginTop: ARA[18] }}>{BUYUK(dugum)}</Text>
+      )}
+      {!!etiket && (
+        <Text style={{ fontSize: FS.sm, color: C.mut, marginTop: ARA[6], textAlign: "center" }}>{etiket}</Text>
+      )}
+    </View>
+  );
+}
+
+// ======================================================================
+// K4 · ONAY DAMGASI — kural kartındaki bütün şartlar tuttuğunda.
+// Çağıran `Muhur` ile sarar (iniş + titreşim zaten orada).
+// ======================================================================
+export function OnayDamgasi({ t }) {
+  return (
+    <View style={{ width: 84, height: 84, borderRadius: R.full, borderWidth: 1.5,
+                   borderColor: C.ink, alignItems: "center", justifyContent: "center",
+                   transform: [{ rotate: "-8deg" }], opacity: 0.92 }}>
+      <View style={{ position: "absolute", left: 5, top: 5, right: 5, bottom: 5, borderRadius: R.full,
+                     borderWidth: 1, borderColor: C.line2 || C.line, borderStyle: "dashed" }} />
+      <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2, color: C.ink }}>
+        {BUYUK(t.ruleSealOk || "Onaylı")}
+      </Text>
+      <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: C.goldText, marginTop: 2 }}>
+        {BUYUK(t.ruleSealAll || "")}
+      </Text>
+    </View>
+  );
+}
+
+// ======================================================================
+// K7 · KALKIŞ HALKASI — mevcut Güven halkasıyla (TrustRing) AYNI dil:
+// noktalı çember. Dolan kısım altın; son 15 dakikada kehribar.
+// ======================================================================
+const HALKA_NOKTA = 48;
+function ikiHane(n) { return String(Math.max(0, n)).padStart(2, "0"); }
+
+export function KalkisHalkasi({ t, baslangic, bitis, boy = 176 }) {
+  const az = useAzHareket();
+  const [simdi, setSimdi] = useState(Date.now());
+  const nefes = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const iv = setInterval(() => setSimdi(Date.now()), 1000);
+    return () => clearInterval(iv);
+  }, []);
+  useEffect(() => {
+    if (az) return undefined;
+    return dongu(Animated.sequence([
+      Animated.timing(nefes, { toValue: 0.45, duration: 500, useNativeDriver: true }),
+      Animated.timing(nefes, { toValue: 1, duration: 500, useNativeDriver: true }),
+    ]));
+  }, [az]);
+
+  if (!baslangic || !bitis || bitis <= baslangic) return null;
+  const toplam = bitis - baslangic;
+  const gecen = Math.min(toplam, Math.max(0, simdi - baslangic));
+  const oran = gecen / toplam;
+  const kalanSn = Math.max(0, Math.round((bitis - simdi) / 1000));
+  const kisa = kalanSn < 15 * 60;
+  const renk = kisa ? C.amber : C.gold;
+  const dolu = Math.round(oran * HALKA_NOKTA);
+  const yari = boy / 2, rr = yari - 8;
+  const sa = Math.floor(kalanSn / 3600), dk = Math.floor((kalanSn % 3600) / 60), sn = kalanSn % 60;
+  return (
+    <View style={{ alignItems: "center" }} accessible accessibilityRole="timer"
+      accessibilityLabel={`${ikiHane(sa)}:${ikiHane(dk)} ${t.ringLeft || ""}`}>
+      <View style={{ width: boy, height: boy, alignItems: "center", justifyContent: "center" }}>
+        {Array.from({ length: HALKA_NOKTA }).map((_, i) => {
+          const aci = (i / HALKA_NOKTA) * 2 * Math.PI - Math.PI / 2;
+          const on = i < dolu;
+          const bas = i === dolu;
+          const cap = bas ? 9 : on ? 6 : 4;
+          return (
+            <View key={i} style={{
+              position: "absolute", left: yari + rr * Math.cos(aci) - cap / 2,
+              top: yari + rr * Math.sin(aci) - cap / 2, width: cap, height: cap,
+              borderRadius: R.full, backgroundColor: bas ? C.ink : on ? renk : C.line,
+            }} />
+          );
+        })}
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <Text style={{ fontFamily: MONO[500], fontSize: FS.bant, color: C.ink, lineHeight: FS.bant * 1.2 }}>
+            {ikiHane(sa)}:{ikiHane(dk)}
+          </Text>
+          <Animated.Text style={{ fontFamily: MONO[500], fontSize: FS.sm, color: renk, marginLeft: 2,
+                                  marginBottom: 6, opacity: az ? 1 : nefes }}>:{ikiHane(sn)}</Animated.Text>
+        </View>
+        <Text style={{ fontSize: FS.micro, letterSpacing: 2, color: C.mut, marginTop: 2 }}>
+          {BUYUK(t.ringLeft || "")}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+// ======================================================================
+// K8 · TAKIMYILDIZ PUANI — yıldızlar sırayla parlar, aralarında ince bir
+// hat belirir. Dokunmatik alan ve ekran okuyucu (radio) korunur.
+// ======================================================================
+const YILDIZ_DY = [10, -6, 4, -10, 2];
+
+export function TakimyildizPuan({ deger = 0, onDegis, boy = 34 }) {
+  const az = useAzHareket();
+  const parla = useRef([0, 1, 2, 3, 4].map(() => new Animated.Value(0))).current;
+  const hat = useRef([0, 1, 2, 3].map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    parla.forEach((v, i) => v.setValue(i < deger && az ? 1 : 0));
+    hat.forEach((v, i) => v.setValue(i < deger - 1 && az ? 1 : 0));
+    if (az || !deger) return undefined;
+    const adimlar = [];
+    for (let i = 0; i < deger; i++) {
+      adimlar.push(Animated.sequence([
+        Animated.delay(i * 120),
+        Animated.spring(parla[i], { toValue: 1, friction: 5, tension: 140, useNativeDriver: true }),
+      ]));
+      if (i > 0) {
+        adimlar.push(Animated.sequence([
+          Animated.delay(i * 120 + 80),
+          Animated.timing(hat[i - 1], { toValue: 1, duration: 320, useNativeDriver: true }),
+        ]));
+      }
+    }
+    const a = Animated.parallel(adimlar);
+    a.start();
+    return () => a.stop();
+  }, [deger, az]);
+
+  const hucre = boy + SP[3];
+  const merkez = (i) => ({ x: i * hucre + hucre / 2, y: 22 + YILDIZ_DY[i] + boy / 2 });
+  return (
+    <View style={{ alignSelf: "center", width: hucre * 5, height: boy + 44 }}>
+      {[0, 1, 2, 3].map((i) => {
+        const a = merkez(i), b = merkez(i + 1);
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const uz = Math.sqrt(dx * dx + dy * dy);
+        const aci = Math.atan2(dy, dx);
+        return (
+          <Animated.View key={i} pointerEvents="none" style={{
+            position: "absolute", left: (a.x + b.x) / 2 - uz / 2, top: (a.y + b.y) / 2 - 0.5,
+            width: uz, height: 1, backgroundColor: C.gold,
+            opacity: hat[i].interpolate({ inputRange: [0, 1], outputRange: [0, 0.55] }),
+            transform: [{ rotate: `${aci}rad` }],
+          }} />
+        );
+      })}
+      {[1, 2, 3, 4, 5].map((n, i) => {
+        const secili = n <= deger;
+        const s = parla[i];
+        return (
+          <TouchableOpacity key={n} hitSlop={TAP.slop} activeOpacity={0.8}
+            onPress={() => { dokun("secim"); onDegis && onDegis(n); }}
+            accessibilityRole="radio" accessibilityState={{ selected: deger === n }}
+            accessibilityLabel={String(n)}
+            style={{ position: "absolute", left: i * hucre + SP[3] / 2, top: 22 + YILDIZ_DY[i],
+                     width: boy, height: boy, alignItems: "center", justifyContent: "center" }}>
+            <Animated.View style={{
+              transform: [{ scale: secili ? s.interpolate({ inputRange: [0, 0.6, 1], outputRange: [0.8, 1.25, 1] }) : 1 }],
+              opacity: secili ? s.interpolate({ inputRange: [0, 1], outputRange: [0.35, 1] }) : 1,
+            }}>
+              <Ikon ad={secili ? "degerlendirmeDolu" : "degerlendirme"} boy={boy} renk={secili ? C.gold : C.dimAA} />
+            </Animated.View>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
