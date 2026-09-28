@@ -184,7 +184,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
   // Yoksa ağ koptuğunda kullanıcı sonsuza kadar yükleyici veya "hiç yok"
   // görür ve neyin bozuk olduğunu asla öğrenemez.
   if (loadErr) return <LoadFail t={t} onRetry={load} />;
-  if (rows === null) return <Load t={t} title={t.tripsTitle} />;
+  if (rows === null) return <Load icerik />;  // 29 Eylul md.8: bandin altinda, ikinci sayfa cizme
 
   return (
     <Kaydirma {...(bnt ? bnt.scrollProps : null)} contentContainerStyle={{ padding: ARA[20], paddingTop: (bnt ? bnt.ustBosluk : 0) + SP[4], paddingBottom: ARA[40] }}>
@@ -729,7 +729,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
   // Yoksa ağ koptuğunda kullanıcı sonsuza kadar yükleyici veya "hiç yok"
   // görür ve neyin bozuk olduğunu asla öğrenemez.
   if (loadErr) return <LoadFail t={t} onRetry={load} />;
-  if (rows === null) return <Load t={t} title={t.hostingTitle} />;
+  if (rows === null) return <Load icerik />;  // 29 Eylul md.8
 
   return (
     <>

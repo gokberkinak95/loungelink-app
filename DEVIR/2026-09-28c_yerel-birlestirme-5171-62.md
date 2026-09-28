@@ -309,3 +309,18 @@ https://claude.ai/artifact/HsGjDDnBUKcvcnUWQSyvbN
    2.362 kelime. En uzun iki bölüm: `#cuzdan` 4.852 px, `#kart-sahibi` 4.628 px. Header `position:absolute` → ilk
    ekrandan sonra menü yok. Tekrar: "kapı" 26, "kural motoru" 11, "misafir hakkı" 10 kez. Öneriler sohbette;
    tasarım değişikliği olduğu için ÖNCE önizleme → onay.
+
+## TUR 9 - 29 Eylul: Gokberk'in ekran goruntuleriyle yeniden kontrol (surum degismedi, 6.2.1)
+Gorseller (00-11.jpg) sonradan geldi; tur 8'de gorselsiz yapilan duzeltmeler tek tek karsilastirildi.
+- md.1, 2, 4, 5, 6, a, b: tur 8 duzeltmeleri gorsellerle ayni sorunu hedefliyor, yerinde.
+- md.7 (ic kutucuk) KOK: ilk Kesfet karti (ve okunmamis bildirim karti) `altinIz03` = %3 SAYDAM
+  dolgu aliyordu; Android'de elevation + atmosfer kartin icinden gorunup koseli ikinci kutu
+  ciziyordu (olculdu: ic RGB 36-43, kenar bandi 31-35). Token OPAK: koyu #1D1A16, acik #FDFAF3 (theme.js).
+- md.8: Seyahatlerim / Ilanlarim / Tanis>Istekler yukleyicileri de `<Load icerik />` (ikinci sayfa cizmiyor).
+- Kesfet (08.jpg): alt satirda "28 Eylul · 28 Eylul" tekrari giderildi; "N host yayinda" artik sona
+  erenleri saymiyor; one cikan altin vurgu sona ermis ilana verilmiyor.
+- md.3 (alt cubuk siyah serit): DEGISMEDI - cozumu tuvaldeki "I" panosuydu, Gokberk F-I'yi iptal etti.
+- md.9 / katman istemi: iptal (F-I), uygulanmadi.
+Dosyalar: rnapp/src/theme.js, ekranlar_ana.js, ekranlar_yalin.js, screens.js
+Testler: check.js temiz · render 77/77, 13/13, 12/12, 53 ekran 0 hata, 37/37 · SQL yok.
+Acik: yeni APK (6.2.2 onerisi) Gokberk onayi bekliyor; uyarlanmis onizleme A-E onay bekliyor.

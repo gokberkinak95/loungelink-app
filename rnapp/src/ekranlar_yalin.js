@@ -5421,7 +5421,7 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
   };
 
   if (embedded) {
-    if (rows === null) return <Load t={t} title={t.connReqTitle} />;
+    if (rows === null) return <Load icerik />;  // 29 Eylul md.8: gomulu panel
     if (!liste.length) return (
       <BosDurum ikon="kisiler" metin={t.connReqEmpty} />
     );

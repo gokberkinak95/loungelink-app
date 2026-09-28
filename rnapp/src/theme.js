@@ -83,7 +83,9 @@ export const C = {
   //     kararının (C* 40.2 → 20.4) reddettiği ÇİĞ altının ta kendisi.
   //   · `#2E3647` → hue 277°, menekşe-mavi. Sistem 73-88° sıcak.
   // Jetonlaştırıldılar; `tema_sizinti_check.py` geri gelmelerini engelliyor.
-  altinIz03:  "rgba(184,148,58,0.03)",
+  // 29 Eylul (Gokberk md.7): saydam %3 dolgu Android'de golgeyi ve atmosferi
+  // kartin icinden gosteriyordu (ic kutu). Kart rengine %3 altin, OPAK.
+  altinIz03:  "#FDFAF3",
   amberLine:  "rgba(217,119,6,0.30)",
   pasifRozet: "#E3DED4",
   tealLine:   "rgba(13,148,136,0.30)",
@@ -1947,6 +1949,10 @@ KOYU.surface = V61_KART; KOYU.card = V61_KART;
 KOYU.surfaceAlt = V61_BLOK; KOYU.bgAlt = V61_BLOK; KOYU.avatarBg = V61_BLOK;
 for (const k of ["goldBg", "amberBg", "goldTint", "greenBg", "purpleBg", "tealBg", "tealTint", "tealTint2", "pasifRozet", "balonBen"]) KOYU[k] = V61_BLOK;
 KOYU.goldSoft = V61_SECILI;
+// 29 Eylul (md.7) - ilk/okunmamis kartin %3 altin tinti OPAK olmali: saydam
+// zemin + elevation Android'de kartin icinde koseli ikinci bir kutu ciziyordu
+// (olculdu: ic RGB 36-43, kenar bandi 31-35). #171512 + %3 #D6C3A0 = #1D1A16.
+KOYU.altinIz03 = "#1D1A16";
 KOYU.redBg = "#221816"; KOYU.hataBg = KOYU.redBg;
 KOYU.parlama = "rgba(244,239,230,0.06)";
 KOYU.parlamaGuc = "rgba(244,239,230,0.12)";

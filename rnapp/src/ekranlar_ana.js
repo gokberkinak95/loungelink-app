@@ -785,10 +785,16 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           .replace("{ap}", sortTrip.airport).replace("{d}", fmtLongDate(sortTrip.date, lang)));
       }
     }
-    if (dateF) parcalar.push(fmtLongDate(dateF, lang));
+    // 29 Eylul (08.jpg) - seyahat tarihi ile tarih filtresi ayni gunse
+    // "28 Eylul · 28 Eylul" diye iki kez yaziyordu.
+    if (dateF && !(sortTrip && sortTrip.date && String(sortTrip.date).slice(0, 10) === String(dateF).slice(0, 10)))
+      parcalar.push(fmtLongDate(dateF, lang));
     // `rows` yüklenene kadar NULL — bu memo erken dönüşlerden önce
     // çalıştığı için sayıyı korumasız okumak çökertiyordu.
-    if (rows && rows.length) parcalar.push(String(t.discHostsLive || "{n}").replace("{n}", String(rows.length)));
+    // 29 Eylul (md.6, 08.jpg) - "1 host yayinda" yaziyordu, o tek ilan sona ermisti.
+    // Yayinda = saati gecmemis ilan; sona erenler listede kalir ama sayilmaz.
+    const yayinda = (rows || []).filter(r => (geriSayim(r.avail_date, r.time_from, r.time_to, t) || {}).tur !== "bitti").length;
+    if (yayinda) parcalar.push(String(t.discHostsLive || "{n}").replace("{n}", String(yayinda)));
     // 3 Eylül — "filtrelemek için dokun" kuyruğu kalktı: tasarım 02'de alt
     // satır iki parça ("Kalkışına 3 sa 12 dk · 6 host yayında"); filtre
     // yolu sağ üstteki daire, etkin filtre varsa altın nokta onu söylüyor.
@@ -1227,7 +1233,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           // eski çerçevenin altında kalıyor.
           // Kartın içindeki üç dokunma hedefi (avatar · rozet · düğme)
           // bozulmuyor: `IsikliKart` sorumluluk talep etmeden dinliyor.
-          <IsikliKart key={r.id} stil={[S.card, idx === 0 && !mine && {
+          <IsikliKart key={r.id} stil={[S.card, idx === 0 && !mine && !bitti && {
                  borderColor: C.goldTrace || C.goldLine,
                  backgroundColor: C.altinIz03 }]}>
             {/* v1.86: yuzde HEM burada HEM sagdaki halkada yaziyordu — ayni
