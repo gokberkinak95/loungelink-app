@@ -86,14 +86,105 @@
   "Geçmiş oturumlardan güvendiğin misafirleri bir sonraki slotuna davet et. Tanımadıklarına toplu mesaj yasaktır.",
   "Hangi ilan için?",
   "TAV Primeclass · IST",
-  "23 Eylül · 14:20–16:40",
+  "28 Eylül · 14:20–16:40",
   "1 yer açık · 1/2",
   "Comfort Lounge · SAW",
-  "24 Eylül · 09:00–11:30",
+  "29 Eylül · 09:00–11:30",
   "Dolu · 1/1",
   "DAVET NOTU",
   "0/140"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 24,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 24,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 24,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -191,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -191,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -191,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 24,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 24,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 24,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -191,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -191,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -191,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

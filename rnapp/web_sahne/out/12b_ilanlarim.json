@@ -22,7 +22,7 @@
   "+ İlan Ekle",
   "TAV Primeclass",
   "• CANLI",
-  "IST · 23 Eylül · 14:20–16:40",
+  "IST · 28 Eylül · 14:20–16:40",
   "",
   "TK · Türk Hava Yolları",
   "• 1 yer açık",
@@ -31,7 +31,7 @@
   "İlanı düzenle",
   "Comfort Lounge",
   "• CANLI",
-  "SAW · 24 Eylül · 09:00–11:30",
+  "SAW · 29 Eylül · 09:00–11:30",
   "",
   "PC · Pegasus",
   "• Dolu",
@@ -40,7 +40,7 @@
   "YAYINDA OLMAYANLAR",
   "TAV Primeclass",
   "Pasif",
-  "IST · 27 Eylül · 10:00–12:30",
+  "IST · 2 Ekim · 10:00–12:30",
   "",
   "TK · Türk Hava Yolları",
   "• 2 yer açık",
@@ -59,6 +59,67 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

@@ -75,7 +75,6 @@
   "Profil",
   "LOUNGELINK",
   "",
-  "CÜZDAN",
   "Cüzdan",
   "Kredilerin ve hareket geçmişin",
   "LOUNGELINK",
@@ -86,14 +85,106 @@
   "6 misafir isteği gönderebilirsin",
   "Selin B.",
   "LL 1284 7316",
-  "Kredi paketleri henüz açılmadı — beta dönemindeyiz. O zamana kadar kredin biterse aşağıdan talep et, ekibimiz hesabına tanımlar. Bir misafir ağırlamak da kredi kazandırır.",
-  "İstek gönderince 1 kredi emanete alınır. Host reddederse, yanıt vermezse ya da kapıda alınmazsan iade edilir. Oturum başladıktan 5 dakika sonra yapılan iptalde iade yok.",
-  "Kredi talep et",
+  "",
+  "Kredi talebi",
+  "Beta döneminde kredin biterse ekibimiz hesabına tanımlar.",
+  "",
   "KREDİ PAKETLERİ",
   "Paketler üyeliğin yerine geçmez; plan kredin bittiğinde tek seferlik ek haktır.",
   "Tek hak",
   "1 lounge isteği"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -7,10 +16,10 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Kalkışına 1 sa 44 dk · 65 host yayında",
+  "Seyahatine göre sıralandı: IST · 28 Eylül · 66 host yayında",
   "İstanbul",
   "",
-  "Senin uçuşunda 6 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
+  "Senin uçuşunda 7 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
   "S",
   "",
   "Selin B.",
@@ -18,13 +27,13 @@
   "99",
   "UYUM",
   "TAV Primeclass",
-  "IST · 23 Eylül · 14:20–16:40",
+  "IST · 28 Eylül · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "AYNI UÇUŞ",
   "",
-  "3 sa 4 dk içinde",
+  "Şu an açık",
   "İstek gönder",
   "",
   "D",
@@ -34,13 +43,29 @@
   "96",
   "UYUM",
   "TAV Primeclass",
-  "IST · 23 Eylül · 13:55–16:15",
+  "IST · 28 Eylül · 17:52–20:12",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "AYNI UÇUŞ",
   "",
-  "2 sa 39 dk içinde",
+  "2 sa 38 dk içinde",
+  "İstek gönder",
+  "",
+  "S",
+  "",
+  "Selin B.",
+  "Miles&Smiles · Elite Plus",
+  "88",
+  "UYUM",
+  "TAV Primeclass",
+  "IST · 28 Eylül · 14:20–16:40",
+  "",
+  "Misafir ücretsiz",
+  "TK1979",
+  "AYNI UÇUŞ",
+  "",
+  "Şu an açık",
   "İstek gönder",
   "",
   "M",
@@ -50,13 +75,13 @@
   "78",
   "UYUM",
   "THY Dış Hat Business",
-  "IST · 23 Eylül · 13:55–15:55",
+  "IST · 28 Eylül · 17:52–19:52",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "AYNI UÇUŞ",
   "",
-  "2 sa 39 dk içinde",
+  "2 sa 38 dk içinde",
   "İstek gönder",
   "",
   "S",
@@ -66,34 +91,109 @@
   "88",
   "UYUM",
   "Comfort Lounge",
-  "SAW · 24 Eylül · 09:00–11:30",
+  "SAW · 29 Eylül · 09:00–11:30",
   "",
   "Misafir ücretli girer",
   "PC2210",
   "AYNI UÇUŞ",
   "",
-  "21 sa 44 dk içinde",
+  "17 sa 46 dk içinde",
   "İstek gönder",
   "",
   "N",
-  "",
-  "Nehir A.",
-  "Miles&Smiles · Elite Plus",
-  "64",
-  "UYUM",
-  "Primeclass Lounge",
-  "IST · 24 Eylül · 07:00–09:30",
-  "",
-  "Misafir ücretsiz",
-  "",
-  "19 sa 44 dk içinde",
-  "Seyahat ekle",
-  "N",
-  "",
-  "Nehir A.",
-  "Miles&Smiles · Elite Plus",
-  "64"
+  ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 37,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 37,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 37,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -200,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -200,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -200,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 37,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 37,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 37,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -200,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -200,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -200,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

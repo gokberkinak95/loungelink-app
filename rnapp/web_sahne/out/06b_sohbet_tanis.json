@@ -5,7 +5,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ GÜNLER",
   "Gökberk",
   "14",
   "KREDİ",
@@ -38,10 +38,6 @@
   "\"Uçuşun aynı, güzel.\"",
   "Kabul et",
   "Reddet",
-  "",
-  "Radar kapalı",
-  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
-  "Radarı aç",
   "Bağlantılarım  ·  1",
   "Ece Y.",
   "",
@@ -66,15 +62,106 @@
   "",
   "⚠ Lounge satışı yok · Platform dışı ödeme yok · Lounge ve havayolu kurallarına uy",
   "Merhaba Ece, aynı rotadayız — IST'te kahve içelim mi?",
-  "10:48",
+  "14:45",
   "Olur! Ben 14:40'ta iniyorum, aktarmam uzun.",
-  "10:50",
+  "14:47",
   "A7 kapısındayım, lacivert ceket.",
-  "10:53",
+  "14:50",
   "Gördüm, geliyorum.",
-  "10:55",
+  "14:52",
   ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": -1,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -1,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -1,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -168,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -168,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -168,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -1,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -1,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -1,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -168,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -168,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -168,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 28,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 28,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 28,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -194,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -194,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -194,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

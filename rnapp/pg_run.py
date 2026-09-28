@@ -65,10 +65,16 @@ TEKRAR_ESIK = 219
 DATA = pathlib.Path('/tmp/ll_pg')
 BIN = pathlib.Path(pgserver.__file__).parent / 'pginstall' / 'bin'
 ENV = {'PATH': f'{BIN}:/usr/bin:/bin', 'HOME': '/tmp'}
+# 28 Eylül — Windows'ta yalın ortamla psql ağ katmanını açamıyor
+# (SYSTEMROOT yok → winsock yok) ve boş bir "psql: error:" ile düşüyordu.
+if os.name == 'nt':
+    ENV = {**os.environ, 'PATH': f'{BIN};' + os.environ.get('PATH', '')}
 
 
 def psql(uri, sql=None, file=None, quiet=True, tuples=False):
-    cmd = [str(BIN / 'psql'), uri, '-v', 'ON_ERROR_STOP=1', '-X']
+    # 28 Eylül — adres `-d` ile: Windows psql'i konumsal argümandan SONRAKİ
+    # seçenekleri yok sayıyordu ("extra command-line argument ignored").
+    cmd = [str(BIN / 'psql'), '-d', uri, '-v', 'ON_ERROR_STOP=1', '-X']
     if tuples:
         cmd += ['-t', '-A']
     if quiet:
@@ -91,9 +97,14 @@ def psql(uri, sql=None, file=None, quiet=True, tuples=False):
         # Olctum: 244 dosyanin 244'u bu modda temiz. Yani maliyeti yok,
         # kazanci bir hata sinifinin tamami.
         cmd += ['-1', '-f', str(file)]
-    else:
-        cmd += ['-c', sql]
-    return subprocess.run(cmd, capture_output=True, text=True, env=ENV)
+        return subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8',
+                              errors='replace', env=ENV)
+    # 28 Eylül — SQL komut satırından (-c) değil STDIN'den: Windows'ta çok
+    # satırlı, Türkçe karakterli argüman sistem kod sayfasında (cp1254)
+    # bozuluyor ve psql boş bir "error:" ile düşüyordu. Çıktı da UTF-8.
+    cmd += ['-f', '-']
+    return subprocess.run(cmd, input=sql, capture_output=True, text=True, encoding='utf-8',
+                          errors='replace', env={**ENV, 'PGCLIENTENCODING': 'UTF8'})
 
 
 def kopyalayici(uri):
@@ -380,6 +391,15 @@ def main():
     if DATA.exists():
         shutil.rmtree(DATA, ignore_errors=True)
     DATA.mkdir(parents=True)
+    # 🔴 28 Eylül — WINDOWS'TA initdb DÜŞÜYORDU: sistem yerel ayarı
+    # "Turkish_Türkiye.1254", pgserver'ın istediği UTF8 ile birleşmiyor
+    # (LC_ALL/LANG ortam değişkenleri Windows'ta dikkate alınmıyor).
+    # Kümeyi C yerel ayarıyla biz kurarız; pgserver kurulu küme görünce
+    # initdb'yi atlar. Linux'ta (bulut kabı) hiçbir şey değişmez.
+    if os.name == 'nt':
+        subprocess.run([str(BIN / 'initdb.exe'), '-D', str(DATA), '--auth=trust',
+                        '--encoding=UTF8', '--locale=C', '-U', 'postgres'],
+                       check=True, capture_output=True, text=True)
     srv = pgserver.get_server(DATA)
     uri = srv.get_uri()
 

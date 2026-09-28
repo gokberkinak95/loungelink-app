@@ -32,6 +32,18 @@
    "error": "Network request failed"
   },
   {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
    "kind": "logError",
    "screen": "discover_availabilities",
    "err": "Network request failed",
@@ -42,18 +54,6 @@
    "screen": "network",
    "err": "Network request failed",
    "code": "offline"
-  },
-  {
-   "kind": "rpc",
-   "fn": "discover_availabilities",
-   "table": null,
-   "error": "Network request failed"
-  },
-  {
-   "kind": "rpc",
-   "fn": "discover_availabilities",
-   "table": null,
-   "error": "Network request failed"
   },
   {
    "kind": "logError",
@@ -73,7 +73,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Kalkışına 1 sa 40 dk",
+  "Seyahatine göre sıralandı: IST · 28 Eylül",
   "İstanbul",
   "",
   "",
@@ -92,6 +92,97 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 34,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 34,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 34,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -199,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -199,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -199,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 34,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 34,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 34,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -199,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -199,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -199,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

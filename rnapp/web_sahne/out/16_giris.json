@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -17,6 +26,37 @@
   "Giriş Yap",
   "Şifremi unuttum"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 44,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 44,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 44,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

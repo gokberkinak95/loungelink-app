@@ -7,7 +7,7 @@
   "",
   "TÜM HAVALİMANLARI VE TARİHLER",
   "Keşfet",
-  "63 host yayında",
+  "64 host yayında",
   "Keşfet",
   "",
   "Sen de misafir olabilirsin",
@@ -18,13 +18,41 @@
   "Miles&Smiles · Elite Plus",
   "76",
   "UYUM",
+  "TAV Primeclass",
+  "IST · 28 Eylül · 14:20–16:40",
+  "",
+  "Misafir ücretsiz",
+  "TK1979",
+  "",
+  "Şu an açık",
+  "Seyahat ekle",
+  "S",
+  "",
+  "Selin B.",
+  "Miles&Smiles · Elite Plus",
+  "76",
+  "UYUM",
   "IST",
-  "IST · 25 Eylül · 12:00–18:00",
+  "IST · 30 Eylül · 12:00–18:00",
   "",
   "Misafir ücretsiz",
   "TK712",
   "",
-  "2 g 0 sa içinde",
+  "1 g 20 sa içinde",
+  "Seyahat ekle",
+  "S",
+  "",
+  "Selin B.",
+  "Miles&Smiles · Elite Plus",
+  "76",
+  "UYUM",
+  "ESB",
+  "ESB · 1 Ekim · 09:00–12:00",
+  "",
+  "Misafir ücretsiz",
+  "TK2104",
+  "",
+  "2 g 17 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -33,12 +61,12 @@
   "76",
   "UYUM",
   "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 27 Eylül · 10:00–14:00",
+  "IST · 2 Ekim · 10:00–14:00",
   "",
   "Misafir ücretsiz",
   "TK1953",
   "",
-  "3 g 22 sa içinde",
+  "3 g 18 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -47,12 +75,12 @@
   "76",
   "UYUM",
   "Turkish Airlines Lounge",
-  "ESB · 30 Eylül · 08:00–12:00",
+  "ESB · 5 Ekim · 08:00–12:00",
   "",
   "Misafir ücretsiz",
   "TK2106",
   "",
-  "6 g 20 sa içinde",
+  "6 g 16 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -61,39 +89,102 @@
   "76",
   "UYUM",
   "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 6 Ekim · 06:00–13:00",
+  "IST · 11 Ekim · 06:00–13:00",
   "",
   "Misafir ücretsiz",
-  "TK1957",
-  "",
-  "12 g 18 sa içinde",
-  "Seyahat ekle",
-  "D",
-  "",
-  "Deniz K.",
-  "Miles&Smiles · Elite Plus",
-  "72",
-  "UYUM",
-  "TAV Primeclass",
-  "IST · 23 Eylül · 13:55–16:15",
-  "",
-  "Misafir ücretsiz",
-  "TK1979",
-  "",
-  "2 sa 35 dk içinde",
-  "Seyahat ekle",
-  "N",
-  "",
-  "Nehir A.",
-  "Miles&Smiles · Elite Plus",
-  "64",
-  "UYUM",
-  "Primeclass Lounge",
-  "IST · 24 Eylül · 07:00–09:30",
-  "",
-  "Misafir ücretsiz",
-  ""
+  "TK1957"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 39,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 39,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 39,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -202,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -202,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -202,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 39,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 39,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 39,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -202,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -202,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -202,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

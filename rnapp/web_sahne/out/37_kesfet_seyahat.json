@@ -7,7 +7,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Kalkışına 4 g 22 sa · 65 host yayında",
+  "Kalkışına 4 g 18 sa · 66 host yayında",
   "İstanbul",
   "",
   "S",
@@ -17,12 +17,12 @@
   "80",
   "UYUM",
   "TAV Primeclass",
-  "IST · 23 Eylül · 14:20–16:40",
+  "IST · 28 Eylül · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "3 sa 1 dk içinde",
+  "Şu an açık",
   "Seyahat ekle",
   "N",
   "",
@@ -31,11 +31,11 @@
   "76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 24 Eylül · 07:00–09:30",
+  "IST · 29 Eylül · 07:00–09:30",
   "",
   "Misafir ücretsiz",
   "",
-  "19 sa 41 dk içinde",
+  "15 sa 41 dk içinde",
   "Seyahat ekle",
   "N",
   "",
@@ -44,12 +44,12 @@
   "76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 24 Eylül · 10:00–13:00",
+  "IST · 29 Eylül · 10:00–13:00",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "22 sa 41 dk içinde",
+  "18 sa 41 dk içinde",
   "Seyahat ekle",
   "N",
   "",
@@ -58,42 +58,133 @@
   "76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 24 Eylül · 16:00–17:30",
+  "IST · 29 Eylül · 16:00–17:30",
+  "",
+  "Misafir ücretsiz",
+  "",
+  "1 g 0 sa içinde",
+  "Seyahat ekle",
+  "N",
+  "",
+  "Nehir A.",
+  "Miles&Smiles · Elite Plus",
+  "76",
+  "UYUM",
+  "Primeclass Lounge",
+  "IST · 29 Eylül · 18:00–19:30",
+  "",
+  "Misafir ücretsiz",
+  "",
+  "1 g 2 sa içinde",
+  "Seyahat ekle",
+  "N",
+  "",
+  "Nehir A.",
+  "Miles&Smiles · Elite Plus",
+  "76",
+  "UYUM",
+  "Primeclass Lounge",
+  "IST · 29 Eylül · 20:00–21:30",
   "",
   "Misafir ücretsiz",
   "",
   "1 g 4 sa içinde",
   "Seyahat ekle",
-  "N",
-  "",
-  "Nehir A.",
-  "Miles&Smiles · Elite Plus",
-  "76",
-  "UYUM",
-  "Primeclass Lounge",
-  "IST · 24 Eylül · 18:00–19:30",
-  "",
-  "Misafir ücretsiz",
-  "",
-  "1 g 6 sa içinde",
-  "Seyahat ekle",
-  "N",
-  "",
-  "Nehir A.",
-  "Miles&Smiles · Elite Plus",
-  "76",
-  "UYUM",
-  "Primeclass Lounge",
-  "IST · 24 Eylül · 20:00–21:30",
-  "",
-  "Misafir ücretsiz",
-  "",
-  "1 g 8 sa içinde",
-  "Seyahat ekle",
   "D",
   "",
   "Deniz K."
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 38,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -201,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 53,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -211,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

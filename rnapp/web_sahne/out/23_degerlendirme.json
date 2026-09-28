@@ -81,7 +81,7 @@
   "Bekleyen · 3",
   "Tamamlanan",
   "Ağırlaman nasıl geçti?",
-  "TAV Primeclass · 2026-09-23",
+  "TAV Primeclass · 28 Eylül",
   "",
   "0/240 · 20 karakter daha",
   "Bu cümlenin LoungeLink sitesinde yayınlanmasına izin veriyorum. Yalnız yukarıdaki ad görünür.",
@@ -91,9 +91,100 @@
   "İzin vermezsen yalnız bizde kalır. İstediğin an geri alabilirsin — yayından düşer.",
   "Kartını paylaşmayı düşünen biri, bizim yazdığımız hiçbir cümleye senin bir cümlen kadar inanmaz. İki satır yeter.",
   "Kaan T.",
-  "TAV Primeclass · IST · 23 Eylül · 14:20–16:40",
+  "TAV Primeclass · IST · 28 Eylül · 14:20–16:40",
   "Ağırladın"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 29,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 29,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 29,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -195,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -195,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -195,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 29,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 29,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 29,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -195,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -195,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -195,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 47,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 47,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 47,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

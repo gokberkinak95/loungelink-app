@@ -9,14 +9,16 @@
   "Seyahatlerim",
   "IST · Aktarma",
   "2 kişi · 1 çocuk (4 yaş)",
-  "23 Eylül · 13:35 – 17:35",
-  "Keşfet'te 3 uyumlu ilan →",
+  "28 Eylül · 17:32 – 21:32",
+  "Keşfet'te 4 uyumlu ilan →",
+  "",
   "Düzenle",
   "Seni içeri alacak birini bul",
   "SAW · Tatil",
   "PC2210",
-  "1 Ekim · 09:00 – 11:00",
+  "6 Ekim · 09:00 – 11:00",
   "Bu güne uyumlu ilan yok",
+  "",
   "Düzenle",
   "Seni içeri alacak birini bul",
   "Seyahat Ekle",
@@ -33,6 +35,67 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 41,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 41,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 41,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -203,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -203,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -203,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 41,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 41,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 41,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -203,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -203,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -203,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

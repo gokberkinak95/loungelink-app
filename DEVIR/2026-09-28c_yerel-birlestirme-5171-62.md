@@ -157,6 +157,37 @@ Commit'ler: `5491a1b` (denetim hataları + ikonlar) · `fdf5434` (0.69.0).
 ### Testler
 - site `check.js` temiz (59 dosya, 19 sayfa) · `verify.js` **7/7 temiz** · `next build` temiz · tasarım mührü (bento yok) temiz.
 
+---
+
+## TUR 4 · Önizleme gözlemleri + app 6.2 görselleri (site `3108f60`)
+
+Gökberk'in gözlemleri ve kararları, ölçülerek:
+- **"Arkada bir ekran daha"** — site değil: Claude'un tarayıcı panelinde telefon taklidinin kenar kalıntısı.
+  375 px'te `scrollWidth = 375`, taşan öğe yalnız kırpılan dekoratif SVG. Gerçek telefonda önizleme linkiyle bakılacak.
+- **Hak topları alt satıra iniyordu** — 10 × 22 px + 9 × 10 px = 310 px sığmıyordu. Artık tek satır, top alana göre küçülür (≤22 px). Ölçüldü: 10 top, 1 satır.
+- **Scroll sonrası menü bozuk** — kaydırınca başlığa gelen `backdrop-filter`, içindeki `position:fixed` menüye yeni kapsayıcı kuruyordu
+  (menü 62 px'lik başlığa hapsoluyordu). Menü açıkken cam kalkar. Ölçüldü: kaydırdıktan sonra menü 375×812, sol 0.
+- **Akordeon** (`<details>`, JS yok, arama motoru kapalı içeriği okur): rehber kural sayfaları (telefon **19,0 → 3,6 ekran**),
+  `/kartlar` 15 havalimanı (8,1 ekran), SSS 7 soru (şema yerinde).
+- **Kapsam ana sayfaya döndü** (harita animasyonu + liste; harita başlığındaki "· TÜRKİYE" kalktı) → "Salon rehberini aç".
+- **Abonelik ana sayfaya döndü** (3 kart; `PlanKartlari.jsx` tek kaynak, /ayricaliklar da onu kullanıyor) → "Planların ve kredinin ayrıntısı".
+- **Menü adları:** Nasıl çalışır · **Kartlar ve kurallar** · **Salon rehberi** · **Ayrıcalıklar ve üyelik** · SSS.
+  Masaüstü satırı 1.016 px istiyor (ölçüldü) → telefon menüsü eşiği 960 → **1100 px**.
+- Ana sayfa şimdi: masaüstü **12,9 ekran** (canlı 0.68: 22) · 8 bölüm.
+- **App görselleri 6.2'den:** `web_sahne/cek.py` → 58 sahne, hepsi `hata=0` (42–44, 49 bilerek arıza sahneleri) →
+  `site_ekran_tazele.py` → 14 `ss-*.jpg`. `SURUM.json`: app 6.2.0 · 2026-09-28 · tür render · **`kabul_edildi: false`** (Gökberk bakıp onaylayacak).
+
+### Bu makinede ekran çekim hattı kuruldu (ilk kez Windows'ta)
+- `pip --user`: `pgserver psycopg2-binary playwright tzdata fonttools brotli` · `playwright install chromium`.
+- `rnapp/pg_run.py` Windows düzeltmeleri (Linux davranışı aynı): `initdb --locale=C` (Turkish_Türkiye.1254 ≠ UTF8) ·
+  psql adresi `-d` ile · SQL stdin'den UTF-8 · Windows'ta tam ortam (SYSTEMROOT yoksa winsock yok).
+- pgserver'ın Windows paketinde **saat dilimi verisi YOK** → `tzdata/zoneinfo` → `pginstall/share/postgresql/timezone` kopyalandı
+  (yoksa 202/292 düşüyor, `yerel_gun()` gelmiyor, 12 dosya zincirleme hata).
+- Sonuç: 347 dosya temiz, **1 hata: `268a_telefon_cakismasi.sql`** (268'in kurduğu `phone_kanonik`'i ondan ÖNCE arıyor —
+  yerel sıralama meselesi; bulutta 0 hataydı, canlı Supabase'i etkilemez; bakılacak).
+- Çekim için: `pg_run.py --keep` → `ll` veritabanı `postgres`ten kopyalandı → `PGPORT`/`PGHOST` ortamıyla `cek.py`
+  (cek.py/pg_kopru `ll` + varsayılan port bekliyor; kod değişmedi, ortam verildi).
+
 ### Bekleyen (Gökberk)
 0. **Site 0.69'u `main`e almak = canlı yayın.** Önizlemeyi (Vercel önizleme adresi / yerelde localhost:3069) gör, onay ver.
 1. **BO push = canlı yayın.** Otomatik izin denetimi BO `main` push'unu reddetti (onay yalnız app dalı içindi).

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [
   {
@@ -88,7 +97,6 @@
   "Profil",
   "LOUNGELINK",
   "",
-  "CÜZDAN",
   "Cüzdan",
   "Kredilerin ve hareket geçmişin",
   "LOUNGELINK",
@@ -103,10 +111,102 @@
   "Liste şu an gelmedi",
   "Bağlantı bir an koptu. Verilerin duruyor.",
   "Yeniden yükle",
-  "Kredi paketleri henüz açılmadı — beta dönemindeyiz. O zamana kadar kredin biterse aşağıdan talep et, ekibimiz hesabına tanımlar. Bir misafir ağırlamak da kredi kazandırır.",
-  "İstek gönderince 1 kredi emanete alınır. Host reddederse, yanıt vermezse ya da kapıda alınmazsan iade edilir. Oturum başladıktan 5 dakika sonra yapılan iptalde iade yok.",
-  "Kredi talep et"
+  "",
+  "Kredi talebi",
+  "Beta döneminde kredin biterse ekibimiz hesabına tanımlar.",
+  ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 25,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -192,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

@@ -5,7 +5,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ GÜNLER",
   "Selin B.",
   "• Güvenilir Host",
   "6",
@@ -44,18 +44,23 @@
   "Akademisyen",
   "52",
   "% uyum",
-  "23 Eylül · 14:20–16:40 · TAV Primeclass",
+  "28 Eylül · 14:20–16:40 · TAV Primeclass",
   "",
   "Telefon",
   "",
   "Aynı uçuş",
   "1 oturum",
-  "Güven 32",
+  "Güven 26",
   "\"Uçuştan önce kahve?\"",
   "Misafiri kabul et",
   "Reddet",
+  "",
+  "Radar kapalı",
+  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
+  "Radarı aç",
   "⭐ Son oturumunu puanla",
-  "TAV Primeclass · 23 Eylül",
+  "TAV Primeclass · 28 Eylül",
+  "",
   "Kaan T. ile · TK1979 · 14:20–16:40",
   "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",
   "Şimdi puanla",
@@ -72,6 +77,67 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

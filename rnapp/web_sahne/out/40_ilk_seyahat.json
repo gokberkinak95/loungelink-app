@@ -5,7 +5,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ GÜNLER",
   "Boş",
   "5",
   "KREDİ",
@@ -54,8 +54,8 @@
   "TARİH",
   "Bugün",
   "Yarın",
-  "Cuma",
-  "Cumartesi",
+  "Çarşamba",
+  "Perşembe",
   "Tarih seç",
   "",
   "BAŞLANGIÇ",
@@ -90,6 +90,97 @@
   "Host'un misafir hakkı kişi sayına göre kontrol edilir; yanlış sayı kapıda geri çevrilmek demek.",
   "Seyahat Ekle"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 43,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 43,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 43,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 43,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 43,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 43,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -205,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 46,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -207,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

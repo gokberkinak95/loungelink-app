@@ -5,7 +5,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ GÜNLER",
   "Gökberk",
   "14",
   "KREDİ",
@@ -38,10 +38,6 @@
   "\"Uçuşun aynı, güzel.\"",
   "Kabul et",
   "Reddet",
-  "",
-  "Radar kapalı",
-  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
-  "Radarı aç",
   "Bağlantılarım  ·  1",
   "Ece Y.",
   "",
@@ -60,40 +56,135 @@
   "D",
   "Deniz K.",
   "TAV Primeclass · Kapı A12 önü",
+  "Bildir",
   "",
   "0",
-  "0",
-  "0",
-  "0",
-  "2",
-  "2",
-  "2",
   "2",
   ":",
   "3",
-  "3",
-  "3",
-  "3",
-  "5",
-  "5",
-  "5",
-  "5",
+  "1",
   ":",
-  "1",
-  "1",
-  "1",
-  "1",
-  "1",
-  "2",
-  "2",
-  "1",
+  "5",
+  "4",
+  "0",
+  "9",
   "kalkışa",
   "",
   "Kapı A12 önü",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "10:56",
-  "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım."
+  "14:53",
+  "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
+  "14:55",
+  "Lounge girişindeyim",
+  "15:00",
+  "Ben de yeni geçtim, kapıdayım.",
+  "15:00",
+  "Süper. Kaç numaralı kapıdasın?",
+  "15:01",
+  "A12. Primeclass girişi tam karşısı.",
+  "15:01",
+  "Anladım, yürüyen merdivenden çıkıyorum.",
+  "15:01",
+  "Acele etme, uçuşa daha var.",
+  "15:02",
+  "Kahve ısmarlayayım mı? Burada sıra yok gibi.",
+  "15:02",
+  "Olur, ben sade içiyorum.",
+  "15:02",
+  "Not aldım.",
+  "15:03"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": -10,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -10,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -10,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -154,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -154,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -154,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -10,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -10,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": -10,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -154,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -154,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -154,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 16,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 16,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 16,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -184,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -184,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -184,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

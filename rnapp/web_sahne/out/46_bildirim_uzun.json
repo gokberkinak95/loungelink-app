@@ -72,7 +72,6 @@
   "Profil",
   "",
   "LOUNGELINK",
-  "BİLDİRİMLER",
   "Bildirimler",
   "Tümü",
   "Bağlantılar",
@@ -81,19 +80,111 @@
   "Bildirimler",
   "",
   "İstek kabul edildi",
-  "7 dk",
+  "10 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "23 dk",
+  "26 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
+  "",
+  "Oturum Devam Ediyor",
+  "1 sa",
+  "TAV Primeclass · Kapı A12 önü.",
   "",
   "Havalimanı güncellemesi #1",
-  "1 sa",
-  "IST Dış Hatlar terminalinde salon kapasitesi güncellendi. Kart kurallarını yeniden kontrol ettik.",
-  "",
-  "Oturum Devam Ediyor"
+  "1 sa"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 8,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 8,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 8,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -177,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -177,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -177,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 8,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 8,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 8,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -177,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -177,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -177,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 28,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 28,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 28,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -194,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -194,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -194,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

@@ -87,13 +87,104 @@
   "Aktif",
   "Bağlantılar",
   "KAPIDA NE OLDU?",
-  "Primeclass Lounge (214 kaynaksız → pasif)",
+  "Primeclass Lounge",
   "",
   "✓ Sorunsuz girdik, ücret alınmadı",
   "Girdik ama misafir ücret ödedi",
   "✕ Misafir içeri alınmadı",
   "Tek soru — cevabın, aynı salona gidecek diğer kullanıcıların doğru bilgi görmesini sağlıyor."
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 31,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 31,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 31,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -196,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -196,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -196,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 31,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 31,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 31,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -196,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -196,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -196,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 50,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 50,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 50,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -209,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -209,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -209,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }

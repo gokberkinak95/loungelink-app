@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -72,7 +81,6 @@
   "Profil",
   "",
   "LOUNGELINK",
-  "BİLDİRİMLER",
   "Bildirimler",
   "Tümü",
   "Bağlantılar",
@@ -81,19 +89,111 @@
   "Bildirimler",
   "",
   "İstek kabul edildi",
-  "4 dk",
+  "6 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "20 dk",
+  "22 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
+  "",
+  "Oturum Devam Ediyor",
+  "1 sa",
+  "TAV Primeclass · Kapı A12 önü.",
   "",
   "Havalimanı güncellemesi #1",
-  "1 sa",
-  "IST Dış Hatlar terminalinde salon kapasitesi güncellendi. Kart kurallarını yeniden kontrol ettik.",
-  "",
-  "Oturum Devam Ediyor"
+  "1 sa"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 507,
+   "sol": 27,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 27,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 27,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -193,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -193,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -193,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 27,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 27,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 27,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -193,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -193,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -193,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 507,
+   "sol": 45,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  },
+  {
+   "g": 546,
+   "sol": -206,
+   "tx": ""
+  }
+ ],
  "bitisik": []
 }
