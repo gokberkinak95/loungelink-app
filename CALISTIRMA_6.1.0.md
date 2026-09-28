@@ -1,3 +1,6 @@
+> ⚠️ **ESKİ** — yerine `CALISTIRMA_6.2.0.md` geçti. Bu dosyadaki C adımındaki
+> ilk sürümü `git reset origin/main` diyordu ve YANLIŞTI (6.0 değişikliklerini geri alırdı); aşağıda düzeltildi: `git reset 96eb4ae`.
+
 # ÇALIŞTIRMA · 26 Eylül 2026 · SQL 303–305 · site 0.67.0 · app 6.1.0
 
 Bu turun sırası önemli. Aşağıdaki A ve B **hemen** yapılabilir. C bir kerelik
@@ -48,7 +51,7 @@ cd C:\LoungeLink
 git init
 git remote add origin https://github.com/gokberkinak95/loungelink-app.git
 git fetch origin
-git reset origin/main
+git reset 96eb4ae
 git checkout -b pc-5.17.1
 git add rnapp sql
 git commit -m "PC 5.17.1 - Cowork teslimi (rnapp + sql)"
@@ -56,7 +59,7 @@ git push -u origin pc-5.17.1
 ```
 
 - İlk satır tam bir yedek alır (node_modules hariç).
-- `git reset origin/main` dosyalarına **dokunmaz**; yalnız Git'e "karşılaştırma
+- `git reset 96eb4ae` dosyalarına **dokunmaz**; yalnız Git'e "karşılaştırma
   tabanı bu" der. `git add rnapp sql` yalnız bu iki klasörü gönderir;
   website, backoffice ve _arsiv gitmez.
 - Push'tan sonra bana "pc-5.17.1 gönderildi" yazman yeterli.
