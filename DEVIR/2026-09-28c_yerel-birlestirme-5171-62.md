@@ -188,7 +188,23 @@ Gökberk'in gözlemleri ve kararları, ölçülerek:
 - Çekim için: `pg_run.py --keep` → `ll` veritabanı `postgres`ten kopyalandı → `PGPORT`/`PGHOST` ortamıyla `cek.py`
   (cek.py/pg_kopru `ll` + varsayılan port bekliyor; kod değişmedi, ortam verildi).
 
-### Bekleyen (Gökberk)
+---
+
+## TUR 5 · CANLIYA ÇIKIŞ (Gökberk: "main'e al", "görselleri uygula")
+
+- **Site 0.69.0 CANLIDA:** `main` = `3f13b33` (site-0.69'dan hızlı ileri sarma). Vercel Production yayını başarılı.
+  https://loungelink-website.vercel.app — `/`, `/ayricaliklar`, `/kartlar`, `/rehber`, `/sss` hepsi 200; yeni yapı HTML'de.
+  ⚠ İlk bakışta ESKİ sayfa geldi: Vercel kenar önbelleği (`Age: 8112`, `X-Vercel-Cache: HIT`); birkaç dakika sonra `PRERENDER` ile yenisi.
+- **Görseller onaylandı:** `SURUM.json` `kabul_edildi: true` (app 6.2.0 · 2026-09-28 · tür render). Canlıda doğrulandı.
+- **BO 1.96.1 zaten GitHub'da:** `origin/main` = `5d83b8f` (Gökberk push etti).
+- ⚠ **`loungelink.co` ÇÖZÜLMÜYOR** (curl: bağlantı yok, kod 000). 28b DEVIR "loungelink.co'da kontrol et" diyordu; alan adı Vercel'e bağlı değil
+  ya da DNS yok. Gökberk'e soruldu.
+
+### Önceki "bekleyen" listesinin güncel hâli
+- ~~0. Site 0.69'u main'e almak~~ → yapıldı.
+- ~~1. BO push~~ → yapılmış (5d83b8f).
+
+### Bekleyen (Gökberk) — eski liste, tarihçe
 0. **Site 0.69'u `main`e almak = canlı yayın.** Önizlemeyi (Vercel önizleme adresi / yerelde localhost:3069) gör, onay ver.
 1. **BO push = canlı yayın.** Otomatik izin denetimi BO `main` push'unu reddetti (onay yalnız app dalı içindi).
    Gökberk yapacaksa: `cd C:\LoungeLink\backoffice` → `git push origin main`.
