@@ -24,6 +24,7 @@ import { MONO } from "./src/typography";
 import { pushDurumOku } from "./src/push";
 import { useRecognitionMoment } from "./src/HostWallet";
 import MomentScreen from "./src/MomentScreen";
+import { AcilisIsigi } from "./src/hareket";
 // v2.73 — GÖVDE YAZISI ARTIK BİZİM. Tek çağrı; ayrıntısı src/typography.js.
 // Buraya, ilk render'dan ÖNCE koyuldu: sonrasında çağrılsaydı ilk ekran
 // sistem fontuyla çizilip sonra zıplardı.
@@ -2331,8 +2332,13 @@ function Splash({ t, go, lang, toggleLang }) {
             marginTop 64: kanadın MERKEZİ 341pt'e otursun diye. Slogan
             458pt'te kalıyor — yani kelime ortadan kalktı ama slogan
             YERİNDEN OYNAMADI (gerçek karede ölçüldü). */}
-        <Image source={require("./assets/mark-kanat.png")} resizeMode="contain"
-          style={{ width: G * 0.246, height: G * 0.246 * 0.4925, marginTop: ARA[64] }} />
+        {/* v6.2 (K1′ · Gökberk onayı, YALNIZ splash) — kanat yerinde; arkasında
+            iz + cam parıltısı + zerre (hareket.js · AcilisIsigi). */}
+        <View style={{ width: G * 0.246, height: G * 0.246 * 0.4925, marginTop: ARA[64] }}>
+          <AcilisIsigi g={G * 0.246} y={G * 0.246 * 0.4925} />
+          <Image source={require("./assets/mark-kanat.png")} resizeMode="contain"
+            style={{ width: G * 0.246, height: G * 0.246 * 0.4925 }} />
+        </View>
         {/* ⚠️ İkinci satır AYRI Text ve fontFamily'yi AÇIKÇA taşıyor: `sansUygula`
             aile vermeyen her Text'e sans basar — iç içe Text'te miras yok. */}
         <Text style={{ fontSize: FS.hero, fontFamily: F.serif, lineHeight: 44, marginTop: ARA[92],

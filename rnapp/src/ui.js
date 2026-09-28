@@ -2712,33 +2712,42 @@ export function MarkaYukleyici({ boy = 96, koyuZemin = false }) {
     return () => dongu.stop();
   }, [v]);
   const yuk = Math.round(boy * 504 / 1024);
-  // v6.2 (K2 · Gökberk onayı) — kanat MARKANIN KENDİ PNG'si kalıyor;
-  // altına süzülme yönünde akan kesikli bir iz eklendi (6 nokta, sola akar).
-  const iz = v.interpolate({ inputRange: [0, 1], outputRange: [0, -boy * 0.12] });
+  // v6.2 (K2 · Gökberk onayı) — kanat MARKANIN KENDİ PNG'si (mark-kanat.png).
+  // 28 Eylül düzeltmesi: iz artık kanadın ALTINDAN paralel geçmiyor; kanadın
+  // kuyruk ucunda (PNG'nin sol alt köşesi) biter ve geriye, sol alta uzanır —
+  // splash'teki K1' iziyle aynı mantık. Kuyruğa yakın noktalar belirgin, uzaklaştıkça söner.
+  const L = boy * 0.62;                       // iz uzunluğu
+  const ACI = 34;                             // kuyruk teğetinin eğimi (derece)
+  const cs = Math.cos(ACI * Math.PI / 180), sn = Math.sin(ACI * Math.PI / 180);
+  const kx = boy * 0.02, ky = yuk * 0.96;     // kuyruk ucu (kanat kutusunda)
+  const iz = v.interpolate({ inputRange: [0, 1], outputRange: [0, -boy * 0.1] });
+  const salinim = [
+    { translateX: v.interpolate({ inputRange: [0, 1], outputRange: [-boy * 0.05, boy * 0.05] }) },
+    { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [yuk * 0.06, -yuk * 0.06] }) },
+  ];
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}
+    <View style={{ alignItems: "center", justifyContent: "center", paddingLeft: L * cs * 0.6 }}
       accessibilityRole="progressbar" accessible>
-      <View pointerEvents="none" style={{ position: "absolute", width: boy * 1.1, height: 6,
-                                          overflow: "hidden", top: yuk * 0.78,
-                                          transform: [{ rotate: "-18deg" }] }}>
-        <Animated.View style={{ flexDirection: "row", transform: [{ translateX: iz }] }}>
-          {Array.from({ length: 9 }).map((_, i) => (
-            <View key={i} style={{ width: boy * 0.06, height: 2, borderRadius: R.full, marginRight: boy * 0.06,
-                                   backgroundColor: C.goldText, opacity: 0.12 + i * 0.05 }} />
-          ))}
-        </Animated.View>
-      </View>
-      <Animated.Image
-        source={MARKA_KANAT}
-        resizeMode="contain"
-        tintColor={C.goldText}
-        style={{ width: boy, height: yuk,
-                 opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] }),
-                 transform: [
-                   { translateX: v.interpolate({ inputRange: [0, 1], outputRange: [-boy * 0.06, boy * 0.06] }) },
-                   { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [yuk * 0.06, -yuk * 0.06] }) },
-                 ] }}
-      />
+      <Animated.View style={{ width: boy, height: yuk, transform: salinim }}>
+        <View pointerEvents="none" style={{ position: "absolute", width: L, height: 4, overflow: "hidden",
+                                            left: kx - (L / 2) * cs - L / 2, top: ky + (L / 2) * sn - 2,
+                                            transform: [{ rotate: `-${ACI}deg` }] }}>
+          <Animated.View style={{ position: "absolute", right: -boy * 0.1, flexDirection: "row",
+                                  alignItems: "center", height: 4, transform: [{ translateX: iz }] }}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <View key={i} style={{ width: boy * 0.05, height: 2, borderRadius: R.full, marginRight: boy * 0.05,
+                                     backgroundColor: C.goldText, opacity: 0.06 + i * 0.06 }} />
+            ))}
+          </Animated.View>
+        </View>
+        <Animated.Image
+          source={MARKA_KANAT}
+          resizeMode="contain"
+          tintColor={C.goldText}
+          style={{ width: boy, height: yuk,
+                   opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.5, 1] }) }}
+        />
+      </Animated.View>
     </View>
   );
 }

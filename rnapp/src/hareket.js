@@ -316,3 +316,87 @@ export function TakimyildizPuan({ deger = 0, onDegis, boy = 34 }) {
     </View>
   );
 }
+
+// ---------------------------------------------------------------- K1′ açılışa ışık
+// Gökberk (28 Eylül): "açılış ekranı güzel olmuş … tanıtım ekranlarındaki
+// görsel kısımları kaybetmek istemem … sadece açılış ekranını uygula."
+// YALNIZ Splash'te (App.js) çağrılır; tanıtım/giriş/kayıt FotoSahne'si aynen.
+// Kanat YERİNDEN OYNAMAZ. Kanat kutusunun içine, kanadın ARKASINA üç katman:
+//   1. iz    — sol alttan kanadın KUYRUK UCUNA kadar çizilen ince ışık (7 sn)
+//   2. cam   — camın üstünden çapraz geçen yumuşak parıltı (9 sn)
+//   3. zerre — pencerede yükselip sönen dört toz zerresi (10 sn)
+// Renk: C.foto.marka (fildişi) — fotoğrafın üstündeki mevcut mürekkep.
+const ISIK = require("../assets/isik_bulutu.png");
+const ZERRELER = [[-0.25, 1.0, 0.0], [0.4, 1.25, 0.3], [0.75, 0.7, 0.6], [0.1, 1.6, 0.8]];
+// Döngü değeri v (0→1) için faz kaydırmalı anahtar kareler: yerel = (v + faz) mod 1.
+// İç içe interpolate yerine TEK interpolate — sıçrama noktası iki kareyle.
+function fazli(faz, ins, outs) {
+  const deger = (u) => {
+    for (let k = 1; k < ins.length; k++) {
+      if (u <= ins[k]) { const a = (u - ins[k - 1]) / (ins[k] - ins[k - 1]); return outs[k - 1] + a * (outs[k] - outs[k - 1]); }
+    }
+    return outs[outs.length - 1];
+  };
+  const kes = 1 - faz;
+  const noktalar = [[0, deger(faz)], [1, deger((1 + faz) % 1 || (faz ? faz : 1))]];
+  ins.forEach((x) => { const v = (x - faz + 1) % 1; if (v > 0 && v < 1 && Math.abs(v - kes) > 1e-6) noktalar.push([v, deger(x)]); });
+  if (faz > 0) { noktalar.push([kes - 0.0005, deger(1)]); noktalar.push([kes, deger(0)]); }
+  noktalar.sort((a, b) => a[0] - b[0]);
+  return { inputRange: noktalar.map((n) => n[0]), outputRange: noktalar.map((n) => n[1]) };
+}
+export function AcilisIsigi({ g, y }) {
+  const az = useAzHareket();
+  const iz = useRef(new Animated.Value(0)).current;
+  const cam = useRef(new Animated.Value(0)).current;
+  const zer = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (az) return undefined;
+    const d = [
+      Animated.loop(Animated.timing(iz, { toValue: 1, duration: 7000, easing: Easing.bezier(0.45, 0, 0.2, 1), useNativeDriver: true })),
+      Animated.loop(Animated.timing(cam, { toValue: 1, duration: 9000, easing: Easing.inOut(Easing.sin), useNativeDriver: true })),
+      Animated.loop(Animated.timing(zer, { toValue: 1, duration: 10000, easing: Easing.linear, useNativeDriver: true })),
+    ];
+    d.forEach((a) => a.start());
+    return () => d.forEach((a) => a.stop());
+  }, [az, iz, cam, zer]);
+  if (az) return null;
+  const renk = C.foto.marka;
+  const L = g * 1.3, ACI = 34;
+  const cs = Math.cos(ACI * Math.PI / 180), sn = Math.sin(ACI * Math.PI / 180);
+  const kx = g * 0.02, ky = y * 0.96;           // kuyruk ucu
+  const PARCA = 14;
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, width: g, height: y }}>
+      {/* 2 · cam parıltısı */}
+      <Animated.Image source={ISIK} resizeMode="stretch" tintColor={renk}
+        style={{ position: "absolute", width: g * 1.4, height: g * 3.4,
+                 left: g / 2 - g * 0.7, top: y / 2 - g * 1.7,
+                 opacity: cam.interpolate({ inputRange: [0, 0.35, 0.6, 1], outputRange: [0, 0.14, 0, 0] }),
+                 transform: [
+                   { translateX: cam.interpolate({ inputRange: [0, 0.6, 1], outputRange: [-g * 1.1, g * 1.3, g * 1.3] }) },
+                   { translateY: cam.interpolate({ inputRange: [0, 0.6, 1], outputRange: [g * 1.1, -g * 1.3, -g * 1.3] }) },
+                   { rotate: "35deg" },
+                 ] }} />
+      {/* 1 · iz: kuyruk ucunda biter, sol alta uzanır */}
+      <Animated.View style={{ position: "absolute", width: L, height: 2, overflow: "hidden",
+                              left: kx - (L / 2) * cs - L / 2, top: ky + (L / 2) * sn - 1,
+                              opacity: iz.interpolate({ inputRange: [0, 0.12, 0.6, 1], outputRange: [0, 0.9, 0.8, 0] }),
+                              transform: [{ rotate: `-${ACI}deg` }] }}>
+        <Animated.View style={{ flexDirection: "row", width: L, height: 2,
+                                transform: [{ translateX: iz.interpolate({ inputRange: [0, 0.6, 1], outputRange: [-L, 0, 0] }) }] }}>
+          {Array.from({ length: PARCA }).map((_, i) => (
+            <View key={i} style={{ width: L / PARCA, height: 1.3, alignSelf: "center",
+                                   backgroundColor: renk, opacity: Math.pow((i + 1) / PARCA, 1.6) }} />
+          ))}
+        </Animated.View>
+      </Animated.View>
+      {/* 3 · toz zerreleri */}
+      {ZERRELER.map(([ox, oy, faz], i) => (
+        <Animated.View key={i} style={{ position: "absolute", width: 2.4, height: 2.4, borderRadius: R.full,
+                                         backgroundColor: renk, left: g / 2 + ox * g, top: y / 2 + oy * g,
+                                         opacity: zer.interpolate(fazli(faz, [0, 0.25, 1], [0, 0.7, 0])),
+                                         transform: [{ translateY: zer.interpolate(fazli(faz, [0, 1], [12, -g * 0.9])) }] }} />
+      ))}
+    </View>
+  );
+}
