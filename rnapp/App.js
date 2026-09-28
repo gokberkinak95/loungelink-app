@@ -819,10 +819,13 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   const [akisTazele, setAkisTazele] = useState(0);
   const akisAcikti = useRef(false);
   useEffect(() => {
-    const acik = !!(showIstekler || showDavetler || showSohbetler || showQuestions);
+    // 🔴 28 EYLÜL (Gökberk: "oturumu puanladım, ana sayfadan kalkmadı") —
+    // puanlama SOHBET katmanında yapılıyor ve o katman bu listede yoktu;
+    // "Puanla" kartı da ilk açılıştaki listeyi göstermeye devam ediyordu.
+    const acik = !!(showIstekler || showDavetler || showSohbetler || showQuestions || chat);
     if (akisAcikti.current && !acik) setAkisTazele(x => x + 1);
     akisAcikti.current = acik;
-  }, [showIstekler, showDavetler, showSohbetler, showQuestions]);
+  }, [showIstekler, showDavetler, showSohbetler, showQuestions, chat]);
   // v2.95 (madde 7) — "İlanıma git": İlanlarım'da odaklanılacak ilan
   const [odakAvail, setOdakAvail] = useState(null);
   // ══════════════════════════════════════════════════════════════════
@@ -1550,6 +1553,11 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   // 4 Eylül — tasarım 10 (Bildirimler) da sekme çubuğunu gösteriyor: bir
   // gezinti durağı (Profil → Bildirimler), bir işin içi değil.
   const katmanCubuguGoster = topOverlay === "disc" || topOverlay === "notif";
+  // 🔴 28 EYLÜL — `CUBUK_YUKSEKLIK = 76` v6.0.0'ın yüzen kapsülünden ÖNCEKİ
+  // çubuğun ölçüsüydü; kapsülle çubuk ~93 oldu ve Keşfet/Bildirimler
+  // katmanının altı ~17 px çubuğun ALTINDA kalıyordu (alt düğmeler örtülü).
+  // Sayı artık ölçülüyor: çubuk değişirse katman da onunla değişir.
+  const [cubukH, setCubukH] = useState(CUBUK_YUKSEKLIK);
 
 
   // MVP: TÜM roller 4 sekme. Host'ta 2. sekme "Yayın" (ilan yönetimi 📡);
@@ -1851,12 +1859,25 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           Aktif sekmenin konum göstergesi KALDI — ikinci kanal (renk körü
           kullanıcı ve yürürken bakış) bir süs değil.
           ══════════════════════════════════════════════════════════════ */}
-      <View style={{ backgroundColor: C.bg, paddingHorizontal: ARA[14], paddingTop: ARA[6], paddingBottom: ARA[18] }}>
+      <View onLayout={(e) => { const h = Math.round(e.nativeEvent.layout.height); if (h > 0 && h !== cubukH) setCubukH(h); }}
+            style={{ backgroundColor: C.bg, paddingHorizontal: ARA[14], paddingTop: ARA[6], paddingBottom: ARA[18] }}>
+      {/* 🔴 28 EYLÜL (Gökberk: "tüm iç sayfalarda tabbar görünüyor, arkadaki
+          butonları örtüyor; tabbara basınca arkadaki butona basılıyor").
+          KÖK: kapsülün Android yükseltmesi 12, iç sayfa katmanınınki 0.
+          Android ÇİZİM sırasını yükseltmeyle, RN DOKUNMA hedefini zIndex ve
+          kardeş sırasıyla belirliyor → kapsül görünür ÜSTTE, dokunuş ALTTA.
+          Web yükseltmeyi yok saydığı için sahnede görünmedi.
+          Katman çubuğu örttüğünde (disc/notif dışı) yükseltme 0: iki sıra
+          yeniden aynı katmanı gösteriyor. Tek yer, 29 iç sayfa.
+          🆕 SINIF: "ANDROID'DE GÖRÜNEN ÜST İLE DOKUNULAN ÜST AYRI
+          KURALLARLA BELİRLENİR — YÜKSELTME VERDİĞİN HER ŞEY, ÜSTÜNE
+          ÇIKACAK KATMANDAN DAHA ALÇAK OLMALI." */}
       <View style={{ flexDirection: "row", backgroundColor: C.surface, borderRadius: ARA[30],
                      borderTopWidth: 1, borderTopColor: C.parlama || "transparent",
                      paddingTop: ARA[10], paddingBottom: ARA[10], paddingHorizontal: ARA[6],
                      shadowColor: C.golgeRenk, shadowOpacity: 0.55, shadowRadius: 24,
-                     shadowOffset: { width: 0, height: 10 }, elevation: 12 }}>
+                     shadowOffset: { width: 0, height: 10 },
+                     elevation: topOverlay && !katmanCubuguGoster ? 0 : 12 }}>
         {tabs.map(([k, ic, lab]) => {
           // v6.1 (md.f) — vurgu GÖRÜNEN ekrana göre: Keşfet ana sayfanın üstüne
           // katman olarak açıldığında çubuk hâlâ "Ana Sayfa"yı gösteriyordu.
@@ -1921,7 +1942,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           pointerEvents="box-none"
           style={{
             position: "absolute", left: 0, right: 0, top: 0,
-            bottom: katmanCubuguGoster ? CUBUK_YUKSEKLIK : 0,
+            bottom: katmanCubuguGoster ? cubukH : 0,
             backgroundColor: C.paper,
             // ══════════════════════════════════════════════════════════
             // 🔴 12 EYLÜL — KATMAN, ALTINDAKİ EKRANIN BANDININ ALTINDA
@@ -1939,6 +1960,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             // ÜSTTE OLAN KATMAN DEĞİL Z'Sİ OLAN HERHANGİ BİR ŞEY OLUR."
             // ══════════════════════════════════════════════════════════
             zIndex: 20,
+            // 28 Eylül — çubuğu örten katman, altındaki her yükseltmeli
+            // öğeden (kart 1/4/8, kapsül 12) yüksek: Android'de görünen üst
+            // ile dokunulan üst aynı olsun. Tam ekran → gölgesi ekran dışında.
+            ...(katmanCubuguGoster ? null : KATMAN_Z),
           }}>
           {OVERLAY_VIEWS[topOverlay]()}
         </View>
@@ -1950,7 +1975,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
 // Alt sekme çubuğunun yüksekliği (paddingTop 8 + ikon 22 + etiket + 20).
 // Katman `disc` iken çubuğun üstünde bitmeli; sayı tek yerde dursun ki
 // çubuk değişirse katman da onunla değişsin.
-const CUBUK_YUKSEKLIK = 76;
+const CUBUK_YUKSEKLIK = 76;   // ilk kare için; gerçek değer onLayout'tan (cubukH)
+// Android yükseltmesi — yalnız Android'de anlamlı; iOS'ta zIndex yeter.
+const KATMAN_Z = Platform.OS === "android" ? { elevation: 16 } : null;
 
 function Onboarding({ t, onDone }) {
   const [i, setI] = useState(0);
@@ -2880,7 +2907,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
             karşılama cümlesi — tasarımın `.ust-h1` ölçüsünde ve
             satırlara bölünebilir. `ustBilgi` de tasarımdaki `.dugum`. */}
         <Hdr t={t}
-          kahraman ustBilgi={forgot ? undefined : t.login}
+          kahraman tekSatir={!forgot} ustBilgi={forgot ? undefined : t.login}
           title={forgot ? t.forgotTitle : t.welcomeBack} onBack={() => forgot ? (setForgot(false), setFSent(false), setErr("")) : go("splash")} />
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
@@ -3611,7 +3638,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         <RequestsPanel t={t} lang={lang} session={session} onOpenChat={onOpenChat} onOpenProfile={onOpenProfile} />
       )}
       <LoungeRadarCard t={t} session={session} onOpen={(r) => { setRadar(r); setTab("meet"); }} />
-      <RateReminder t={t} lang={lang}
+      <RateReminder t={t} lang={lang} tazele={akisTazele}
         onRate={(it) => it?.request_id && onOpenChat && onOpenChat({ req: { id: it.request_id }, name: it.other_name, openPanel: true })} />
       {/* 5 Eylül — ÖLÇÜLDÜ (SEED6 · host1 ana sayfa): gelen bağlantı isteği
           hem "AKSİYON GEREKLİ" kartında hem "BAĞLANTI İSTEKLERİ" panelinde,

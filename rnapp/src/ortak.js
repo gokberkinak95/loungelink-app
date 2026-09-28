@@ -36,7 +36,19 @@ import { ARA, C, ELEV, F, FS, R, SP, T, TAP, temaYenidenKur } from "./theme";
 import { MONO } from "./typography";
 import { Btn, Hdr, Sayfa, MarkaYukleyici, Serit } from "./ui";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+// ══════════════════════════════════════════════════════════════════════
+// 🔴 28 EYLÜL (Gökberk: "keşfetteki alanların çerçeveleri dar ve dikdörtgen,
+// sert") — v6 kadife kartın ışığı YALNIZ ÜST kenarda (`borderTopWidth`).
+// Android yuvarlak köşeli kutuda tek kenarlı kenarlığı köşeyi izlemeden
+// çiziyor: üstte köşelerde kesilen düz, sert bir şerit. Web doğru çizdiği
+// için sahnede görünmedi. Android'de ışık artık köşeyi izleyen saç teli
+// tam kenarlık; iOS'ta tasarımın üst ışığı aynen.
+// ══════════════════════════════════════════════════════════════════════
+export const ustIsik = (renk) => Platform.OS === "android"
+  ? { borderWidth: StyleSheet.hairlineWidth, borderColor: renk }
+  : { borderWidth: 0, borderTopWidth: 1, borderTopColor: renk };
 
 export { C, F, ACCENT } from "./theme";
 
@@ -114,7 +126,7 @@ function kurS() {
   // bir çizgi), yenisi ΔE 3.91. Tek satır, ama bu stili 100+ kart
   // kopyalıyor — yani "kutu cümbüşü"nün en büyük tek kalemi burası.
   // v6 — kadife kart: çevre çizgisi yok; yalnız ÜST kenarda 1px speküler ışık
-  card: { backgroundColor: C.surface, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || C.kartKenar, borderRadius: R.lg,
+  card: { backgroundColor: C.surface, ...ustIsik(C.parlama || C.kartKenar), borderRadius: R.lg,
           // tasarım `.kart{padding:17px;margin-bottom:13px}` — 16/12 en
           // yakın ölçek basamağı (ARA 2'nin katları). 10'du; kartlar
           // arası boşluk tasarımdakinden dardı.
@@ -130,7 +142,7 @@ function kurS() {
   // birinin yanlış olanı seçmesini garanti ediyordu.
   // 🆕 SINIF: "AYNI İŞİN İKİ TANIMI VARSA, BİRİ ÇAĞRILMIYOR OLSA BİLE
   // TEHLİKELİDİR — ÇÜNKÜ BİR GÜN ÇAĞRILACAKTIR."
-  empty: { padding: SP[6], alignItems: "center", backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", ...ELEV.card,
+  empty: { padding: SP[6], alignItems: "center", backgroundColor: C.surface, ...ustIsik(C.parlama || "transparent"), ...ELEV.card,
            borderRadius: R.lg },
   // 🔴 v2.78 — ÇİPLERİN DOKUNMA HEDEFİ 44pt'NİN ALTINDAYDI.
   // Ölçüm: `paddingVertical: SP[2]` = 8 → yaklaşık 32pt. 33 çip düğmesinden
@@ -161,7 +173,7 @@ function kurS() {
   //
   // `S.chip` denetim olarak KALDI (44px, dokunulabilir).
   // `S.roz` kart içi etiket olarak eklendi.
-  chip: { borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", borderRadius: R.full, paddingVertical: SP[2],
+  chip: { ...ustIsik(C.parlama || "transparent"), borderRadius: R.full, paddingVertical: SP[2],
           paddingHorizontal: ARA[14], backgroundColor: C.surface,
           minHeight: TAP.minHeight, justifyContent: "center",
           marginRight: SP[2], marginBottom: SP[2] },
@@ -170,9 +182,9 @@ function kurS() {
   roz: { borderWidth: 0, borderRadius: R.full,
          paddingVertical: ARA[6], paddingHorizontal: ARA[10],
          backgroundColor: "transparent", justifyContent: "center" },
-  chipOn: { borderTopColor: C.parlamaGuc || C.gold, backgroundColor: C.surfaceAlt },
+  chipOn: { borderTopColor: C.parlamaGuc || C.gold, ...(Platform.OS === "android" ? { borderColor: C.parlamaGuc || C.gold } : null), backgroundColor: C.surfaceAlt },
   err: { backgroundColor: C.hataBg, borderRadius: R.xs, padding: SP[3] - 1, marginTop: SP[3] },
-  pickBtn: { backgroundColor: C.surface, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || "transparent", borderRadius: R.sm,
+  pickBtn: { backgroundColor: C.surface, ...ustIsik(C.parlama || "transparent"), borderRadius: R.sm,
              paddingVertical: SP[3] + 1, paddingHorizontal: SP[4] - 2, ...ELEV.card },};
 }
 

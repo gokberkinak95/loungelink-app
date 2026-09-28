@@ -33,6 +33,7 @@ import { bayrak } from "./runtime";
 import { logError, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP } from "./theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
@@ -40,7 +41,7 @@ import { BosDurum, ChipIcon, ConfirmModal, Hdr, LoadFail, TOPPAD, Toggle, ToneBa
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -151,6 +152,18 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
 
   const [myRole, setMyRole] = useState(null);
   const [phoneOk, setPhoneOk] = useState(false);
+  // 28 Eylül (Gökberk: "misafir olabilirsin bilgisine çarpı ekleyelim") —
+  // kapatılınca cihazda hatırlanır. Okunana kadar null: kutu bir an görünüp
+  // kaybolmasın.
+  const [misafirIpucuKapali, setMisafirIpucuKapali] = useState(null);
+  useEffect(() => {
+    // Eşzamanlı hata da yakalanır (render sahnesinde yakalandı: depolama
+    // erişilemezse Keşfet ÇÖKÜYORDU). Okunamazsa kutu görünür kalır.
+    (async () => {
+      try { setMisafirIpucuKapali((await AsyncStorage.getItem("ll_misafir_ipucu_kapali")) === "1"); }
+      catch (e) { setMisafirIpucuKapali(false); }
+    })();
+  }, []);
   const [idOk, setIdOk] = useState(false);       // MVP: "Tam Doğrulanmış" rozeti
   const [myTrust, setMyTrust] = useState(0);     // MVP: "Yüksek Güvenli Misafir" rozeti
   // 🔴 PROP-DROP (bu ailenin 5. ornegi): App.js `scope` gonderiyordu ama
@@ -842,8 +855,17 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       <Modal visible animationType="none" onRequestClose={() => setKural(null)}>
         <KuralKarari t={t} avail={kural.avail} skor={kural.skor}
           onBack={() => setKural(null)}
-          onSend={isBlocked(kural.avail) ? null : () => { const a = kural.avail; setKural(null);
+          // 🔴 28 EYLÜL (Gökberk: "keşfette ilanda Seyahat ekle görünürken uyum
+          // ekranında İstek gönder geliyor") — bu ekran yalnız engeli soruyordu;
+          // kart ise seyahat + telefon da soruyor. Karar artık AYNI: tamamsa
+          // istek, değilse kartın gösterdiği kapı (doğrula / seyahat ekle).
+          onSend={isBlocked(kural.avail) || !(kural.avail.has_trip && phoneOk) ? null : () => { const a = kural.avail; setKural(null);
                           setTarget(a); setErr(""); setMoreOpen(false); setAdvice(null); }}
+          kapi={isBlocked(kural.avail) || (kural.avail.has_trip && phoneOk) ? null : {
+            etiket: !phoneOk ? t.gateVerifyNow : t.gateAddTripNow,
+            git: () => { const a = kural.avail; setKural(null);
+                         if (!phoneOk) { if (onVerify) onVerify(); } else if (onAddTrip) onAddTrip(a); },
+          }}
           // 🔴 v6.1 (Gökberk md.e) — "Salon kurallarını oku" burada Keşfet'e
           // dönüp "% uyum" açıklamasını açıyordu: etiket bir şey, varış
           // başka bir şey. Düğme artık KuralKarari'nin içinde programın
@@ -943,9 +965,16 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                                paddingBottom: ARA[40] }}>
 
       {/* 033: host da basvurabilir — rol bir kimlik degil, o gunku baglam */}
-      {myRole === "host" && (
+      {myRole === "host" && misafirIpucuKapali === false && (
         <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.goldLine, borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
-          <Text style={{ fontWeight: "700", color: C.goldInk, fontSize: FS.base }}>{t.hostCanApplyTitle}</Text>
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ flex: 1, fontWeight: "700", color: C.goldInk, fontSize: FS.base }}>{t.hostCanApplyTitle}</Text>
+            <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.close}
+              onPress={() => { setMisafirIpucuKapali(true); try { AsyncStorage.setItem("ll_misafir_ipucu_kapali", "1").catch(() => {}); } catch (e) { /* yalnız bu oturum */ } }}
+              style={{ marginLeft: SP[2], marginTop: -2 }}>
+              <Ikon ad="kapat" boy={16} renk={C.goldInk} />
+            </TouchableOpacity>
+          </View>
           <Text style={{ color: C.goldInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 18 }}>{t.hostCanApplyBody}</Text>
         </View>
       )}
@@ -1202,7 +1231,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 Kullanici "hicbir sey olmuyor" diye okur — ve hakli.
                 Artik DOKUNULAN kartin icinde aciliyor. */}
             {badgeInfo && badgeInfo.id === r.id && (
-              <View style={{ backgroundColor: C.card, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlamaGuc,
+              <View style={{ backgroundColor: C.card, ...ustIsik(C.parlamaGuc),
                              borderRadius: R.sm, padding: SP[3], marginBottom: ARA[10] , ...ELEV.card }}>
                 <Text style={{ ...T.label, color: C.goldText, marginBottom: SP[1] }}>{badgeInfo.label}</Text>
                 <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>{badgeInfo.info}</Text>
@@ -4882,7 +4911,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
       <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, letterSpacing: 1.2, marginBottom: SP[2] }}>
         {BUYUK(t.invAcceptedTitle)}</Text>
       {kabuller.map(r => (
-        <View key={r.id} style={[S.card, { borderTopColor: C.parlamaGuc }]}>
+        <View key={r.id} style={[S.card, ustIsik(C.parlamaGuc)]}>
           <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{shortName(r.host_name)}</Text>
           <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[2] }}>
             {[r.lounge_name || r.airport_code, fmtLongDate(r.avail_date, lang),
@@ -4941,7 +4970,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
           : soru ? t.anRuleQuestion
           : t.anWantsConnect + (niyet ? " · " + niyet : "");
         return (
-        <View key={it.id} style={[S.card, { borderTopColor: C.parlamaGuc }]}>
+        <View key={it.id} style={[S.card, ustIsik(C.parlamaGuc)]}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View style={{ width: 36, height: 36, borderRadius: R.full, backgroundColor: accentBg, alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[10] }}>
               {it.from_photo ? <Image source={{ uri: it.from_photo }} style={{ width: 36, height: 36 }} />
@@ -5303,7 +5332,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
         </View>
 
         {form.gender === "female" && (
-          <View style={{ backgroundColor: C.card, borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlamaGuc, borderRadius: R.sm, padding: ARA[14], marginBottom: ARA[14], flexDirection: "row", alignItems: "flex-start" , ...ELEV.card }}>
+          <View style={{ backgroundColor: C.card, ...ustIsik(C.parlamaGuc), borderRadius: R.sm, padding: ARA[14], marginBottom: ARA[14], flexDirection: "row", alignItems: "flex-start" , ...ELEV.card }}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: FS.sm, color: C.purple, fontWeight: "700", marginBottom: SP[1] }}>{t.stWomenMode}</Text>
               <Text style={{ fontSize: FS.xs, color: C.mutedAA, lineHeight: 16 }}>{t.epWomenModeBody}</Text>
@@ -6771,7 +6800,7 @@ export function FindHostCard({ t, session, onDiscover }) {
    satırı: ürünün en kritik ekranında bilmediğimizi söylemek, bildiğimizi
    uydurmaktan daha değerli.
    ══════════════════════════════════════════════════════════════════════ */
-export function KuralKarari({ t, avail, skor, onBack, onSend }) {
+export function KuralKarari({ t, avail, skor, onBack, onSend, kapi }) {
   const [kosullar, setKosullar] = useState(null);
   const [kart, setKart] = useState("");
   const [kaynakUrl, setKaynakUrl] = useState("");
@@ -7149,7 +7178,8 @@ export function KuralKarari({ t, avail, skor, onBack, onSend }) {
         </Text>
 
         <View style={{ marginTop: "auto", paddingTop: ARA[26] }}>
-          {onSend ? <Btn v="gold" sm label={t.ruleSendReq} onPress={onSend} sagAd="sag" /> : null}
+          {onSend ? <Btn v="gold" sm label={t.ruleSendReq} onPress={onSend} sagAd="sag" />
+            : kapi ? <Btn v="gold" sm label={kapi.etiket} onPress={kapi.git} sagAd="sag" /> : null}
           {!!kaynakUrl && (
             <Btn v="ghost" sm label={t.ruleReadVenue} sagAd="tarayici"
               onPress={() => Linking.openURL(kaynakUrl).catch(e => logError("ruleReadVenue", e))}

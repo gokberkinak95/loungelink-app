@@ -827,7 +827,12 @@ export function ayniBaslik(a, b) {
 // (uygulama_basliklari_once_sonra.jpg) onaylandı: ekran başlıkları
 // Cormorant SemiBold. Gövde, düğme, etiket ve sayı sans/mono kalıyor —
 // serif yalnız "ekranın adı" ve "insanın adı" için.
-export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, ustPay = 0 }) {
+// 28 Eylül · `tekSatir` (Gökberk: "Kaldığın yerden devam et"te "et" alt satıra kayıyor)
+// `adjustsFontSizeToFit` DEĞİL (tasma_check.js başlığı: Android'de metni
+// büyütmüştü). Ölçülmüş sabit punto: 36 pt'de 351 pt istiyor, SE 320'de
+// 276 pt var → ≤28.3 pt. `FS.display + 2` = 28.
+const TEK_SATIR_FS = FS.display + 2;
+export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, ustPay = 0, tekSatir = false }) {
   const eyebrow0 = ustBilgi || scene || null;
   const eyebrow = eyebrow0 && !ayniBaslik(eyebrow0, typeof title === "string" ? title : "") ? eyebrow0 : null;
   if (kahraman) {
@@ -854,8 +859,9 @@ export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, u
               {BUYUK(String(eyebrow))}
             </Text>
           ) : null}
-          <Text numberOfLines={3} style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, color: C.ink,
-                    letterSpacing: -0.4, lineHeight: SATIR(FS.hero + 2, "serif") }}>
+          <Text numberOfLines={tekSatir ? 1 : 3}
+                style={{ fontSize: tekSatir ? TEK_SATIR_FS : FS.hero + 2, fontFamily: F.serifGosterim, color: C.ink,
+                    letterSpacing: -0.4, lineHeight: SATIR(tekSatir ? TEK_SATIR_FS : FS.hero + 2, "serif") }}>
             {title}
           </Text>
           {sub ? <Text numberOfLines={2} style={{ fontSize: FS.sm, color: C.muted, marginTop: ARA[6],
@@ -920,10 +926,10 @@ export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, u
             🆕 SINIF: "`numberOfLines={1}` TAŞMAYI ENGELLEMEZ, YALNIZ
             GÖRÜNMEZ KILAR — SIĞMAYAN BİR BAŞLIĞIN DOĞRU CEVABI DAHA
             AZ HARF DEĞİL, DAHA ÇOK SATIRDIR." */}
-        <Text numberOfLines={kahraman ? 3 : 2}
+        <Text numberOfLines={tekSatir ? 1 : kahraman ? 3 : 2}
               style={kahraman
-                ? { fontSize: FS.hero + 2, fontFamily: F.serifGosterim, color: C.ink,
-                    letterSpacing: -0.4, lineHeight: SATIR(FS.hero + 2, "serif") }
+                ? { fontSize: tekSatir ? TEK_SATIR_FS : FS.hero + 2, fontFamily: F.serifGosterim, color: C.ink,
+                    letterSpacing: -0.4, lineHeight: SATIR(tekSatir ? TEK_SATIR_FS : FS.hero + 2, "serif") }
                 : { fontSize: FS.title + 3, fontFamily: F.serifGosterim, color: C.ink,
                     letterSpacing: -0.2, lineHeight: SATIR(FS.title + 3, "serif") }}>
           {title}
@@ -1698,7 +1704,7 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
 //
 // 🆕 SINIF: **"BİR BİLEŞEN KENDİ ÇEVRESİNİ VARSAYAMAZ — TEKİL OLMASI
 // GEREKEN HER ŞEY, TEKİLLİĞİ ÇAĞIRANIN KARARINA BIRAKMALIDIR."**
-export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ustBilgi, marka = true, kahraman, kaydir }) {
+export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ustBilgi, marka = true, kahraman, kaydir, tekSatir }) {
   // 🔴 `foto` AÇIK BİR TERCİH: her başlık fotoğraflı olmaz. Bant 520/1080
   // oranında yer kaplıyor ve bir LİSTE ekranında bu kabul edilebilir
   // (ölçüldü: iPhone SE'de ekranın %27'si, altında 3.5 ilan görünüyor);
@@ -1753,7 +1759,7 @@ export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ust
           (`ustBilgi` açıkça verildiyse o kazanır — elle seçilmiş
           olan her zaman kazanır.) */}
       {title ? (
-        <Bar title={title} sub={sub} onBack={onBack} right={right} t={t}
+        <Bar title={title} sub={sub} onBack={onBack} right={right} t={t} tekSatir={tekSatir}
              ustBilgi={ustBilgi || gorunur(scene)} kahraman={kahraman}
              ustPay={marka || kahraman ? 0 : TOPPAD + 6} />
       ) : null}

@@ -3947,7 +3947,7 @@ export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
     </Katlanir>
   );
 }
-export function RateReminder({ t, lang, onRate }) {   // v2.65: ölü `session` kaldırıldı
+export function RateReminder({ t, lang, onRate, tazele = 0 }) {   // v2.65: ölü `session` kaldırıldı
   const [items, setItems] = useState([]);
   const [erteleHatasi, setErteleHatasi] = useState("");
   const load = useCallback(async () => {
@@ -3955,7 +3955,9 @@ export function RateReminder({ t, lang, onRate }) {   // v2.65: ölü `session` 
     if (hata9) logError("ekranlar_yalin.js:3056", hata9);
     setItems(data || []);
   }, []);
-  useEffect(() => { load(); }, [load]);
+  // 28 Eylül — `tazele`: sohbet (puanlama yapılan yer) kapanınca liste yeniden
+  // okunur; puanlanan oturumun kartı ana sayfadan düşer.
+  useEffect(() => { load(); }, [load, tazele]);
 
   async function defer(sid) {
     // v2.78: "Sonra puanlarım" sessizce hiçbir şey yapmayabiliyordu.
