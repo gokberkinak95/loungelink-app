@@ -25,8 +25,8 @@ Yerel Claude Code oturumunda (`C:\LoungeLink`) ya da Cowork'te, **yeni bir sohbe
 | App (bulut) | GitHub `gokberkinak95/loungelink-app` · dal `claude/v6-gozlemler` | **6.2.0** · vc 268 · build 262 | **5.14 tabanlı**: 5.15→5.17.1 bu dalda YOK |
 | App (PC) | `C:\LoungeLink\rnapp` | **5.17.1** | Cowork teslimi; GitHub'da yok |
 | SQL | `C:\LoungeLink\sql` + app dalında `sql/` | son dosya **305** | 303–305 Supabase'de çalıştırılacak |
-| Site | GitHub `gokberkinak95/loungelink-website` · dal `claude/peaceful-brown-02srm2` | **0.68.0** | `main` 0.65'te; birleştirme bekliyor |
-| BO | `C:\LoungeLink\backoffice` | 1.95.1 zip / rehberde 1.96.0 | bu turlarda değişmedi; PC'deki hâl esas |
+| Site | GitHub `gokberkinak95/loungelink-website` · **`main`** | **0.68.0** | 28 Eylül akşam `main`e birleştirildi (fast-forward, `c5c346d`) → yayın otomatik |
+| BO | `C:\LoungeLink\backoffice` + teslim zip'inde `backoffice_1.95.1\` | **1.95.1** | bu turlarda değişmedi; `check.js` temiz; RPC sözleşmesi rnapp'ten 501/501 |
 
 **Ortak ata:** app deposunda commit **`96eb4ae`** (saf APP_v5.14.0 içe aktarımı).
 5.17.1 de 6.2 de buradan türedi. `origin/main` taban DEĞİL (içinde 6.0 var).
@@ -107,7 +107,17 @@ birebir aynı çıktığı bulutta ölçüldü: 0 satır fark).
 
 ---
 
-## 5 · Site 0.68.0'ı yayına almak
+## 5 · Site 0.68.0 — YAPILDI (28 Eylül akşam)
+
+`claude/peaceful-brown-02srm2` → `main` birleştirildi ve gönderildi. PC'deki site klasörünü güncellemek için:
+
+```powershell
+cd C:\LoungeLink\website
+git checkout main
+git pull
+```
+
+Aşağıdaki blok artık yalnız tarihçe (aynı işi elle yapmak gerekirse):
 
 ```powershell
 cd C:\LoungeLink\website
@@ -174,10 +184,10 @@ app 5.14 tabanlı. 5.17.1 birleştirmesinden sonra app'in ikonları siteye kopya
 
 1. **Birleştirme** (bölüm 3) → sonra app 6.2 build'i (EAS preview → QR).
 2. SQL 303–305'i Supabase'de çalıştır.
-3. Site 0.68'i `main`e al (bölüm 5).
+3. ~~Site 0.68'i `main`e al~~ — yapıldı. Canlı sitede (loungelink.co) hareketlerin göründüğünü bir kez kontrol et.
 4. Site ekran görüntüleri 5.17.1'den; 6.2 cihaza inince `rnapp/web_sahne/cek.py` ile tazele,
    `public/screens/SURUM.json`da `kabul_edildi` → `false`.
-5. BO: rehberde 1.96.0, bana gelen zip 1.95.1. PC'de hangisi güncel, doğrula.
+5. BO: Gökberk 28 Eylül'de 1.95.1'i yeniden gönderdi; güncel hâl bu. Rehberde geçen 1.96.0 ifadesi yanlıştı.
 6. Build sonrası cihazda bakılacaklar: splash ışığı (K1′), yükleyici (K2), kamera izni ilk taramada soruluyor mu.
 
 ---

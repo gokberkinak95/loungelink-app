@@ -24,7 +24,9 @@ SQL Editor'de, her dosyanın tamamını ayrı ayrı yapıştırıp çalıştır:
 
 ---
 
-## B · Web sitesi 0.68.0 (hemen)
+## B · Web sitesi 0.68.0 — YAPILDI (28 Eylül akşam, `main`e birleştirildi)
+
+PC'de yalnız: `cd C:\LoungeLink\website` → `git checkout main` → `git pull`. Aşağısı tarihçe.
 
 ```powershell
 cd C:\LoungeLink\website
