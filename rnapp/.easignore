@@ -36,3 +36,8 @@ mockup.py
 
 # SQL
 *.sql
+
+# 29 Eylul - web sahnesi (react-native-web + Chromium) yalniz LL_SAHNE=1 iken
+# metro.config.js tarafindan kullanilir; EAS build ona dokunmaz. Olculdu:
+# dist 9.5 MB + out 38 MB = yuklemenin yarisi (96 MB arsiv ECONNRESET ile dustu).
+web_sahne/
