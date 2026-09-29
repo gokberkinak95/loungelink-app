@@ -46,6 +46,19 @@ exec(open(os.path.join(RNAPP, 'pg_run.py'), encoding='utf-8').read()
 ns['install_fake_extensions']()
 
 PSQL = os.path.join(os.path.dirname(pgserver.__file__), 'pginstall', 'bin', 'psql')
+
+
+def _kume(dizin):
+    """28-29 Eylul - Windows'ta initdb dusuyordu: sistem yerel ayari
+    (Turkish_Turkiye.1254) pgserver'in istedigi UTF8 ile birlesmiyor.
+    Kumeyi C yerel ayariyla biz kurariz; pgserver kurulu kumeyi gorunce
+    initdb'yi atlar (rnapp/pg_run.py ile ayni cozum). Linux'ta degisiklik yok."""
+    if os.name == 'nt':
+        b = os.path.join(os.path.dirname(pgserver.__file__), 'pginstall', 'bin', 'initdb.exe')
+        os.makedirs(str(dizin), exist_ok=True)
+        subprocess.run([b, '-D', str(dizin), '--auth=trust', '--encoding=UTF8', '--locale=C', '-U', 'postgres'],
+                       check=True, capture_output=True, text=True)
+    return pgserver.get_server(dizin)
 D = '/tmp/ll_imza_dogrula'
 
 
@@ -99,7 +112,7 @@ def main():
     aday_map = {d: [tuple(k) for k in l] for d, l in adaylar}
 
     shutil.rmtree(D, ignore_errors=True)
-    srv = pgserver.get_server(D)
+    srv = _kume(D)
     uri = srv.get_uri()
     subprocess.run([PSQL, uri, '-X', '-q', '-c', ns['SHIM']], capture_output=True, text=True)
 

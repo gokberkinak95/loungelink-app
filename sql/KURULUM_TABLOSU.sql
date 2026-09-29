@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-26 uretildi · 348 dosya · son: 305)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-29 uretildi · 348 dosya · son: 305)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --

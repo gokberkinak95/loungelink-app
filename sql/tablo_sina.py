@@ -31,6 +31,19 @@ ns['install_fake_extensions']()
 PSQL = os.path.join(os.path.dirname(pgserver.__file__), 'pginstall', 'bin', 'psql')
 
 
+def _kume(dizin):
+    """28-29 Eylul - Windows'ta initdb dusuyordu: sistem yerel ayari
+    (Turkish_Turkiye.1254) pgserver'in istedigi UTF8 ile birlesmiyor.
+    Kumeyi C yerel ayariyla biz kurariz; pgserver kurulu kumeyi gorunce
+    initdb'yi atlar (rnapp/pg_run.py ile ayni cozum). Linux'ta degisiklik yok."""
+    if os.name == 'nt':
+        b = os.path.join(os.path.dirname(pgserver.__file__), 'pginstall', 'bin', 'initdb.exe')
+        os.makedirs(str(dizin), exist_ok=True)
+        subprocess.run([b, '-D', str(dizin), '--auth=trust', '--encoding=UTF8', '--locale=C', '-U', 'postgres'],
+                       check=True, capture_output=True, text=True)
+    return pgserver.get_server(dizin)
+
+
 def sirali():
     def o(f):
         m = re.match(r'^(\d{3})([a-z]?)_', f)
@@ -50,7 +63,7 @@ def sirali():
 def kur(dizin, tavan=None):
     """tavan: bu numaraya (dahil) kadar kur. None → hepsi."""
     shutil.rmtree(dizin, ignore_errors=True)
-    srv = pgserver.get_server(dizin)
+    srv = _kume(dizin)
     uri = srv.get_uri()
     subprocess.run([PSQL, uri, '-X', '-q', '-c', ns['SHIM']], capture_output=True, text=True)
     n = 0; dusen = []
@@ -167,7 +180,7 @@ if fazladan:
 
 # ── C · BOS ───────────────────────────────────────────────────────────
 shutil.rmtree('/tmp/ll_sina_bos', ignore_errors=True)
-srv3 = pgserver.get_server('/tmp/ll_sina_bos')
+srv3 = _kume('/tmp/ll_sina_bos')
 uri3 = srv3.get_uri()
 subprocess.run([PSQL, uri3, '-X', '-q', '-c', ns['SHIM']], capture_output=True, text=True)
 sC, e = calistir(uri3)

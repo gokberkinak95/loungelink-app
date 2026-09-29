@@ -1,14 +1,18 @@
-SQL SIRASI - 26 Eylul 2026 (app 6.1 turu)
+SQL SIRASI - 29 Eylul 2026 (app 6.2.2 sonrasi turu)
 
 Supabase SQL Editor'de SIRAYLA calistir (her dosyayi ayri ayri, tamamini yapistir):
 
-  1) 303_ertelenen_puan_ana_sayfadan_duser.sql   -> "Son oturumu puanla > Sonra" calisir
-  2) 304_kesfet_engelinin_gercek_sebebi.sql      -> farkli havayolu kendi gerekcesiyle
-  3) 305_erisim_kaynagi_etiketleri.sql           -> airline_status gibi ham kodlar etikete doner
+  1) 306_kural_notlari_turkce_tamam.sql   -> kural/salon notlarinda Turkce harfler geri gelir
+                                             (290'i KAPSAR; 290'i ayrica kosmana gerek yok)
+                                             Beklenen: ilk kosuda binlerce satir guncellendi,
+                                             ikinci kosuda "306: 0 satir guncellendi".
+  2) 307_zarafet_atlama_siniri.sql        -> biniş karti atlamasi: 30 gunde 2 sessiz,
+                                             3.'den itibaren host uyarisi + guven -3 (en cok -9)
 
-300 / 301 / 302 daha once calistirildi (senin serin). Tekrar gerekmez.
-Uc dosya da tekrar kosulabilir.
+Iki dosya da tekrar kosulabilir. Yeni app surumu (6.2.3) 307 olmadan da calisir:
+atlama hakki notu o zaman gizlenir.
 
-Istege bagli (yalniz test hesaplari): SEED8_AKIS_TEZGAHI.sql artik
-access_source'a etiket yaziyor ("Havayolu Statusu"). 305 zaten mevcut
-kayitlari duzeltiyor; SEED8'i yeniden kosmak sart degil.
+Onceki tur (26 Eylul) - calistirmadiysan, 306'dan ONCE:
+  303_ertelenen_puan_ana_sayfadan_duser.sql
+  304_kesfet_engelinin_gercek_sebebi.sql
+  305_erisim_kaynagi_etiketleri.sql

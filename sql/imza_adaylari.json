@@ -32197,5 +32197,142 @@
     "erisim_kaynagi_etiketle|from unnest(string_to_array(coalesce(p, ''), ',')) with ordinality as u(x, sira)"
    ]
   ]
+ ],
+ [
+  "306_kural_notlari_turkce_tamam.sql",
+  []
+ ],
+ [
+  "307_zarafet_atlama_siniri.sql",
+  [
+   [
+    "fonksiyon",
+    "binis_atlama_sayisi"
+   ],
+   [
+    "fonksiyon",
+    "binis_karti_atlama_hakki"
+   ],
+   [
+    "govde",
+    "binis_atlama_sayisi|where user_id = p_user and method = 'bypass'"
+   ],
+   [
+    "govde",
+    "binis_karti_atlama_hakki|not_authenticated"
+   ],
+   [
+    "govde",
+    "recompute_trust|if v_atla > 0 then"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet|Bu, son 30 gündeki"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|'reason', sv.reason_code, 'at', sv.created_at,"
+   ],
+   [
+    "govde",
+    "binis_atlama_sayisi|and created_at > now() - interval '30 days';"
+   ],
+   [
+    "govde",
+    "binis_karti_atlama_hakki|v_uid uuid := auth.uid(); v_n int;"
+   ],
+   [
+    "govde",
+    "recompute_trust|v_bad int; v_penalty int := 0; v_atla int;"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet|if v_atla > 2 then"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|'atlama_30g', public.binis_atlama_sayisi(sv.user_id)) as v"
+   ],
+   [
+    "govde",
+    "binis_atlama_sayisi|select count(*)::int from session_verifications"
+   ],
+   [
+    "govde",
+    "binis_karti_atlama_hakki|v_n := public.binis_atlama_sayisi(v_uid);"
+   ],
+   [
+    "govde",
+    "recompute_trust|v_atla := greatest(0, public.binis_atlama_sayisi(p_user) - 2);"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet|'atlama_30g', v_atla);"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|not_authenticated"
+   ],
+   [
+    "govde",
+    "binis_karti_atlama_hakki|if v_uid is null then raise exception 'not_authenticated'; end if;"
+   ],
+   [
+    "govde",
+    "recompute_trust|v_c := v_c || jsonb_build_object('bp_atlama', -least(9, v_atla * 3));"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet|if p_method = 'bypass' then"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|request_not_found"
+   ],
+   [
+    "govde",
+    "binis_karti_atlama_hakki|return jsonb_build_object('kullanilan', v_n, 'sessiz', 2, 'kalan', greatest(0, 2 - v_n));"
+   ],
+   [
+    "govde",
+    "recompute_trust|{\"profession\":6}"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet||| 'uyduğunuzdan emin olun.';"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|, sv.reason_code,"
+   ],
+   [
+    "govde",
+    "recompute_trust|{\"host_access\":8}"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet|perform public.recompute_trust(v_uid);"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|from session_verifications sv"
+   ],
+   [
+    "govde",
+    "recompute_trust|if v_penalty > 0 then"
+   ],
+   [
+    "govde",
+    "binis_karti_kaydet|v_q record; v_atla int := 0; v_govde text;"
+   ],
+   [
+    "govde",
+    "binis_karti_durumu|where sv.request_id = p_request_id"
+   ],
+   [
+    "govde",
+    "recompute_trust|select count(*) into v_sessions"
+   ]
+  ]
  ]
 ]

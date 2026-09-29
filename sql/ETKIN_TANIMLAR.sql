@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-09-26
+-- Uretim tarihi: 2026-09-29
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,8 +9,8 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 494
--- Birden cok dosyada tanimli (dikkat!): 143
+-- Toplam fonksiyon: 496
+-- Birden cok dosyada tanimli (dikkat!): 145
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -22,6 +22,8 @@
 --   bayat_istekleri_iade_et      -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 249_is_modeli_ve_soguk_ag.sql, 274_istek_tavani_kilidi.sql)
 --   bekleyen_hikaye_daveti       -> etkin: 296_hikaye_daveti_erteleme.sql  (ayrica: 230_host_hikayeleri.sql)
 --   bildirim_hedefi              -> etkin: 266_eksik_bildirimler.sql  (ayrica: 254_urun_bosluklari.sql)
+--   binis_karti_durumu           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
+--   binis_karti_kaydet           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   blok_gecmisi_kapat           -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 204_blok_eylem_sinirinda.sql)
 --   bo_plan_ata                  -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 253_guvenlik_kapanisi.sql)
 --   cancel_availability          -> etkin: 293_davet_cift_onay_ve_ilan_geri_cekme.sql  (ayrica: 040_visibility_and_discovery_fix.sql, 291_ilan_kaldirma_zorlu.sql)
@@ -95,7 +97,7 @@
 --   push_kanali                  -> etkin: 278_push_kanali_enum.sql  (ayrica: 276_push_kanallari.sql)
 --   rate_session                 -> etkin: 078_trust_single_writer.sql  (ayrica: 008_chat_sessions.sql, 068_fix_rate_session.sql)
 --   recompute_badge              -> etkin: 046_trust_and_host_visibility.sql  (ayrica: 032_p2_flows.sql, 033_beta_credits_dualrole_radar.sql)
---   recompute_trust              -> etkin: 080_session_lifecycle.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 046_trust_and_host_visibility.sql, 077_session_autostart_intro_slots.sql)
+--   recompute_trust              -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 046_trust_and_host_visibility.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql)
 --   redeem_reward                -> etkin: 229_odul_teslim_sozu.sql  (ayrica: 017_marketplace.sql, 029_bo_requirements.sql)
 --   remove_rating                -> etkin: 297_yetki_kapilari.sql  (ayrica: 021_moderation_tools.sql)
 --   request_account_deletion     -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 141_deletion_flow_check.sql)
@@ -4407,8 +4409,8 @@ end $z301$;
 select '301 OK — engelleme · gelmedi · test hesabı gizleme · rehber sayacı' as sonuc;
 
 -- ----------------------------------------------------------------------
--- recompute_trust   [etkin kaynak: 080_session_lifecycle.sql]
--- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- recompute_trust   [etkin kaynak: 307_zarafet_atlama_siniri.sql]
+-- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.recompute_trust(p_user uuid)
 returns int language plpgsql security definer set search_path = public as $$
@@ -4416,7 +4418,7 @@ declare
   v_c jsonb := '{}'::jsonb; v_score int := 0;
   v_p profiles%rowtype; v_v verifications%rowtype;
   v_sessions int; v_rating numeric; v_rating_n int; v_badge text;
-  v_bad int; v_penalty int := 0;
+  v_bad int; v_penalty int := 0; v_atla int;
 begin
   select * into v_p from profiles where user_id = p_user;
   select * into v_v from verifications where user_id = p_user;
@@ -4461,9 +4463,7 @@ begin
     end if;
   end if;
 
-  -- 🔴 080: SON 90 GÜNDEKİ GEÇ İPTAL + NO-SHOW CEZASI (her biri -12).
-  -- Neden 90 gün: ceza kalıcı olursa kullanıcı asla toparlanamaz; unutulan
-  -- ceza da caydırıcı olmaz. 90 gün ikisinin dengesi.
+  -- 080: son 90 gündeki geç iptal + no-show cezası (her biri -12).
   select count(*) into v_bad from sessions s
    where s.completed_at > now() - interval '90 days'
      and ((s.cancel_reason = 'late_cancel' and s.cancelled_by = p_user)
@@ -4471,6 +4471,12 @@ begin
   v_penalty := least(36, coalesce(v_bad,0) * 12);
   if v_penalty > 0 then
     v_c := v_c || jsonb_build_object('reliability', -v_penalty);
+  end if;
+
+  -- 307: 30 günde 2'yi aşan biniş kartı atlaması, her biri -3 (en çok -9).
+  v_atla := greatest(0, public.binis_atlama_sayisi(p_user) - 2);
+  if v_atla > 0 then
+    v_c := v_c || jsonb_build_object('bp_atlama', -least(9, v_atla * 3));
   end if;
 
   select coalesce(sum(value::int),0) into v_score from jsonb_each_text(v_c);
@@ -28965,22 +28971,14 @@ grant execute on function public.yerel_saat(text) to authenticated, anon;
 -- ── lounge_radar_people ─────────────────────────────────────────────
 
 -- ----------------------------------------------------------------------
--- binis_karti_kaydet   [etkin kaynak: 294_binis_karti_dogrulama.sql]
+-- binis_karti_kaydet   [etkin kaynak: 307_zarafet_atlama_siniri.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.binis_karti_kaydet(
   p_request_id uuid,
   p_method text,
   p_passed boolean,
   p_reason_code text default null,
-  -- ⚠️ `char(3)`/`char(1)` YAZMIŞTIM — İKİ SEBEPLE `text`E ÇEVİRDİM:
-  -- (a) `char(n)` değeri SESSİZCE BOŞLUKLA DOLDURUR; 'IST ' ile 'IST'
-  --     karşılaştırması ileride birini şaşırtır.
-  -- (b) `contract_check.py` imza ayrıştırıcısı parantezli tipte
-  --     parametreyi göremiyor ve çağrıyı "fazla parametre" sanıyor.
-  --     Nöbetçiyi gevşetmek yerine imzayı sadeleştirmek doğru olan:
-  --     kısıtı zaten gövde uyguluyor.
-  -- 🆕 SINIF: "BİR PARAMETRE TİPİ HEM VERİYİ HEM DENETİMİ ŞAŞIRTIYORSA,
-  -- SORUN DENETİMDE DEĞİL TİP SEÇİMİNDEDİR."
   p_airport text default null,
   p_flight_date date default null,
   p_carrier_flight text default null,
@@ -28992,7 +28990,7 @@ language plpgsql security definer set search_path = public as $fn$
 declare
   v_uid uuid := auth.uid();
   v_tuz text; v_hash text; v_id uuid; v_diger uuid; v_ad text;
-  v_q record;
+  v_q record; v_atla int := 0; v_govde text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   perform public.hesap_kapisi(v_uid);
@@ -29005,11 +29003,9 @@ begin
     raise exception 'gecersiz_yontem';
   end if;
 
-  -- Karma: yalnız BAŞARILI ve ham girdisi olan doğrulamalarda
   if p_passed and coalesce(p_pnr_girdi, '') <> '' then
     select deger into v_tuz from sunucu_sirlari where anahtar = 'bp_tuz';
     v_hash := encode(sha256(convert_to(p_pnr_girdi || '|' || coalesce(v_tuz, ''), 'UTF8')), 'hex');
-    -- Çifte kullanım: aynı biniş kartı başka bir hesapta doğrulanmışsa
     if exists (select 1 from session_verifications sv
                 where sv.bp_hash = v_hash and sv.passed and sv.user_id <> v_uid) then
       raise exception 'zaten_dogrulandi';
@@ -29026,33 +29022,41 @@ begin
           v_hash, p_duration_ms)
   returning id into v_id;
 
-  -- ── ESNEK GÜVENCE: karşı tarafa editoryal uyarı ───────────────────
-  -- 🔴 METİN GÖKBERK'İN YAZDIĞI GİBİ, KELİMESİ KELİMESİNE.
-  -- Akış KESİLMİYOR; yalnız karşı taraf bilgilendiriliyor.
+  if p_method = 'bypass' then
+    v_atla := public.binis_atlama_sayisi(v_uid);
+  end if;
+
+  -- ESNEK GÜVENCE: karşı tarafa editoryal uyarı (294 metni kelimesi kelimesine).
+  -- 307: sessiz hak (2) aşıldıysa sayı da söylenir.
   if p_method = 'bypass' or not p_passed then
     v_diger := case when v_uid = v_q.host_id then v_q.guest_id else v_q.host_id end;
     select coalesce(p.name, 'Yolcu') into v_ad from profiles p where p.user_id = v_uid;
-    insert into notifications (user_id, category, title, body, ref_id, ref_type)
-    values (v_diger, 'requests', 'Biniş kartı doğrulanamadı',
-            'Dijital biniş kartı doğrulaması sistem şartlarından dolayı tamamlanamadı. '
+    v_govde := 'Dijital biniş kartı doğrulaması sistem şartlarından dolayı tamamlanamadı. '
             || 'Lütfen turnike geçişi esnasında salon kurallarına manuel olarak '
-            || 'uyduğunuzdan emin olun.',
-            p_request_id, 'request');
+            || 'uyduğunuzdan emin olun.';
+    if v_atla > 2 then
+      v_govde := v_govde || ' Bu, son 30 gündeki ' || v_atla || '. atlama.';
+    end if;
+    insert into notifications (user_id, category, title, body, ref_id, ref_type)
+    values (v_diger, 'requests', 'Biniş kartı doğrulanamadı', v_govde, p_request_id, 'request');
   end if;
 
-  return jsonb_build_object('ok', true, 'id', v_id, 'method', p_method, 'passed', p_passed);
+  if v_atla > 2 then
+    perform public.recompute_trust(v_uid);
+  end if;
+
+  return jsonb_build_object('ok', true, 'id', v_id, 'method', p_method, 'passed', p_passed,
+                            'atlama_30g', v_atla);
 end $fn$;
 
-drop function if exists public.binis_karti_kaydet(uuid, text, boolean, text, char, date, text, char, text, int);
 grant execute on function public.binis_karti_kaydet(uuid, text, boolean, text, text, date, text, text, text, int)
   to authenticated;
 
--- ── 4 · BU İSTEKTE DOĞRULAMA DURUMU ────────────────────────────────────
--- Sohbet ekranı iki tarafın da durumunu gösterir: kim doğruladı, kim
--- atladı. "Karşı tarafın ekranına düşsün" tam olarak bu.
+-- ── 5 · DURUM (294 + taraf başına 30 günlük atlama sayısı) ──────────────
 
 -- ----------------------------------------------------------------------
--- binis_karti_durumu   [etkin kaynak: 294_binis_karti_dogrulama.sql]
+-- binis_karti_durumu   [etkin kaynak: 307_zarafet_atlama_siniri.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.binis_karti_durumu(p_request_id uuid)
 returns jsonb
@@ -29068,7 +29072,8 @@ begin
   select jsonb_object_agg(k, v) into v_out from (
     select case when sv.user_id = v_q.host_id then 'host' else 'guest' end as k,
            jsonb_build_object('method', sv.method, 'passed', sv.passed,
-                              'reason', sv.reason_code, 'at', sv.created_at) as v
+                              'reason', sv.reason_code, 'at', sv.created_at,
+                              'atlama_30g', public.binis_atlama_sayisi(sv.user_id)) as v
       from session_verifications sv
      where sv.request_id = p_request_id
        and sv.id = (select sv2.id from session_verifications sv2
@@ -29080,83 +29085,7 @@ end $fn$;
 
 grant execute on function public.binis_karti_durumu(uuid) to authenticated;
 
--- ── 5 · KENDİ SINAMASI ─────────────────────────────────────────────────
-do $$
-declare
-  hd uuid; g uuid; lng uuid; av uuid; rq uuid; s jsonb; v_n int; v_ham text;
-begin
-  select id into hd from users where role = 'host' and deleted_at is null limit 1;
-  select id into lng from lounges where airport_code = 'IST' limit 1;
-  if hd is null or lng is null then raise notice '294 sinama: veri yok, atlandi'; return; end if;
-  select id into g from users where id <> hd and deleted_at is null limit 1;
-
-  insert into availabilities (host_id, airport_code, lounge_id, avail_date, time_from, time_to, slots, active)
-    values (hd, 'IST', lng, public.yerel_gun('IST') + 7, time '10:00', time '13:00', 2, true)
-    returning id into av;
-  insert into requests (guest_id, host_id, avail_id, status) values (g, hd, av, 'accepted') returning id into rq;
-
-  perform set_config('request.jwt.claims',
-    json_build_object('sub', g::text, 'role', 'authenticated')::text, true);
-
-  -- 1) Başarılı tarama kaydedilir, karma üretilir
-  v_ham := 'ABC123|INAK|2026-09-20';
-  s := public.binis_karti_kaydet(rq, 'scan', true, null, 'IST', date '2026-09-20', 'TK1979', 'Y', v_ham, 850);
-  if (s ->> 'ok') is distinct from 'true' then raise exception '294: kayit dusru'; end if;
-  if (select bp_hash from session_verifications where id = (s ->> 'id')::uuid) is null then
-    raise exception '294: karma uretilmedi';
-  end if;
-  -- HAM DİZE HİÇBİR KOLONDA OLMAMALI
-  if exists (select 1 from session_verifications sv where sv.id = (s ->> 'id')::uuid
-               and (sv.bp_hash like '%ABC123%' or sv.carrier_flight like '%ABC123%')) then
-    raise exception '294: HAM PNR sizdi';
-  end if;
-  raise notice '294 sinama 1 ✓ basarili tarama · karma uretildi · ham PNR sizmadi';
-
-  -- 2) Aynı biniş kartı BAŞKA hesapta reddedilmeli
-  perform set_config('request.jwt.claims',
-    json_build_object('sub', hd::text, 'role', 'authenticated')::text, true);
-  begin
-    perform public.binis_karti_kaydet(rq, 'scan', true, null, 'IST', date '2026-09-20', 'TK1979', 'Y', v_ham, 700);
-    raise exception '294: cifte kullanim engellenmedi';
-  exception when others then
-    if SQLERRM <> 'zaten_dogrulandi' then raise; end if;
-    raise notice '294 sinama 2 ✓ ayni binis karti ikinci hesapta reddedildi';
-  end;
-
-  -- 3) Bypass akışı KESMEZ ve karşı tarafa uyarı düşer
-  select count(*) into v_n from notifications where user_id = g;
-  s := public.binis_karti_kaydet(rq, 'bypass', false, 'kullanici_atladi', null, null, null, null, null, null);
-  if (s ->> 'ok') is distinct from 'true' then raise exception '294: bypass kaydi dusru'; end if;
-  if (select count(*) from notifications where user_id = g) <= v_n then
-    raise exception '294: bypassta karsi tarafa uyari gitmedi';
-  end if;
-  raise notice '294 sinama 3 ✓ bypass kaydedildi · karsi tarafa editoryal uyari gitti';
-
-  -- 4) Durum sorgusu iki tarafı da gösterir
-  s := public.binis_karti_durumu(rq);
-  if not (s ? 'host' and s ? 'guest') then
-    raise exception '294: durum sorgusu iki tarafi gostermiyor (%)', s;
-  end if;
-  raise notice '294 sinama 4 ✓ durum: %', s;
-
-  -- 5) Katılımcı olmayan kaydedemez
-  begin
-    perform set_config('request.jwt.claims',
-      json_build_object('sub', (select id from users where id not in (hd, g) and deleted_at is null limit 1)::text,
-                        'role', 'authenticated')::text, true);
-    perform public.binis_karti_kaydet(rq, 'scan', true, null, 'IST', date '2026-09-20', 'TK1979', 'Y', 'XYZ|A|B', 100);
-    raise exception '294: yabanci kullanici kaydedebildi';
-  exception when others then
-    if SQLERRM not in ('not_participant', 'hesap_kapali') then raise; end if;
-    raise notice '294 sinama 5 ✓ katilimci olmayan kaydedemiyor (%)', SQLERRM;
-  end;
-
-  raise exception 'GERI_AL_SINAMA';
-exception
-  when others then
-    if SQLERRM <> 'GERI_AL_SINAMA' then raise; end if;
-    raise notice '294 sinama: tum veri geri alindi';
-end $$;
+select '307 kuruldu' as sonuc;
 
 -- ----------------------------------------------------------------------
 -- ilani_yeniden_yayinla   [etkin kaynak: 295_ilanin_ikinci_hayati_ve_sayaclar.sql]
@@ -30368,3 +30297,36 @@ as $$
        group by e
     ) t;
 $$;
+
+-- ----------------------------------------------------------------------
+-- binis_atlama_sayisi   [etkin kaynak: 307_zarafet_atlama_siniri.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.binis_atlama_sayisi(p_user uuid)
+returns int
+language sql stable security definer set search_path = public as $fn$
+  select count(*)::int from session_verifications
+   where user_id = p_user and method = 'bypass'
+     and created_at > now() - interval '30 days';
+$fn$;
+
+revoke all on function public.binis_atlama_sayisi(uuid) from public, anon, authenticated;
+
+-- ── 2 · UYGULAMA İÇİN: kalan sessiz atlama ──────────────────────────────
+
+-- ----------------------------------------------------------------------
+-- binis_karti_atlama_hakki   [etkin kaynak: 307_zarafet_atlama_siniri.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.binis_karti_atlama_hakki()
+returns jsonb
+language plpgsql stable security definer set search_path = public as $fn$
+declare
+  v_uid uuid := auth.uid(); v_n int;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  v_n := public.binis_atlama_sayisi(v_uid);
+  return jsonb_build_object('kullanilan', v_n, 'sessiz', 2, 'kalan', greatest(0, 2 - v_n));
+end $fn$;
+
+grant execute on function public.binis_karti_atlama_hakki() to authenticated;
+
+-- ── 3 · GÜVEN PUANI (080'in gövdesi + `bp_atlama` bileşeni) ─────────────

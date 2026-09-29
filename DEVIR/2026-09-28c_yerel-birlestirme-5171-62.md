@@ -368,3 +368,31 @@ Acik: grace aylik limit, ASCII kural notu veri borcu, domain + RevenueCat.
 - Bulgular (acik): SQL 290 (kural notu Turkce harfleri) canlida kosmamis gorunuyor (cihaz ekraninda
   290'in duzelttigi sozcukler ASCII) + sozlukte eksikler (UCUNDE, KAZANILAMIYOR, planinin, pahali);
   zarafet atlamasi sinirsiz; Kesfet'te sona eren ilanlar listede; EAS arsivi 96 MB.
+
+## TUR 12 - 29 Eylul: Gokberk'in 6.2.2 notlari + olcumler (surum hala 6.2.2; sonraki build 6.2.3)
+Uygulandi (kod pc-5.17.1, build ALINMADI):
+- Kesfet basligi "Kalkisina 47 dk" OLCULDU: seyahatin time_from'unu sayiyordu. scheduled_departure
+  varsa onu sayar ("Kalkisina"), yoksa "Havalimani saatine" der.
+- Kesfet: sona eren ilanlar "Bugun sona erenler · N" katli satirda (sunucu avail_date >= bugun
+  dondurur -> sona eren ilan her zaman BUGUNUN; yarin kendiliginden duser).
+- Kural ekrani: 110+ karakterlik hukum bir kademe kucuk, 3 satirda "Devamini gor / Daralt".
+- Canli durum: govde kayar, "Oturuma git" altta sabit (kesiliyordu).
+- Uyum muhru 60/54/52 -> 44 (kural ekrani 66 -> 52); Kesfet CTA `cip` (36pt).
+- Dugme etiketi: harf araligi 1.6/1.4 -> 0.6/0.4 pt, agirlik 600 (tum dugmeler tek yerden).
+  Seyahatlerim CTA "Host bul" (tasma testi yakaladi).
+- Zarafet siniri (Gokberk onayi): SQL 307 + app notu (kalan sessiz atlama) + sohbette sayi.
+- render_check fikstur tarihi sabit 2026-08-06 idi (gecmise dusmustu) -> hep +7 gun (GUN).
+SQL (sirayla, SQL_SIRA.txt): 306_kural_notlari_turkce_tamam (850 cift, 16 kolon, 290'i kapsar,
+  idempotent olculdu: 2. kosu 0 satir; 290'daki `resm->resmî` C yerel ayarinda her kosuda î
+  ekliyordu -> harf sinifi siniri + temizlik), 307_zarafet_atlama_siniri (senaryo: 3. atlamada
+  bildirim "son 30 gundeki 3. atlama", guven bp_atlama -3).
+EAS: arsiv OLCULDU (`eas build:inspect`): 115 MB sikistirmasiz; rnapp/.easignore HIC okunmuyordu.
+  Kok .easignore -> 55 MB (kalan 46 MB .git; dokunulmadi).
+Site 0.69.4 (site-0.69 dali, 94df4ab): gorseller 6.2.2 (ss-n Turkce notlarla), package.json 0.69.0
+  -> 0.69.4 + lock; check.js'e surum nobetcisi (kodda anilan en yuksek v0.x > package.json -> kirmizi).
+  main'e merge Gokberk onayi bekliyor ("main'e al").
+Denetim: check temiz · render 77/77, 13/13, 12/12, 53, 37/37 · dokunma testi 0 dusen ·
+  site check/verify/build temiz · verify: kurulum tablosu 306/307 icin yeniden uretildi;
+  imza_dogrula/tablo_sina Windows initdb duzeltmesi eklendi (pg_run.py ile ayni).
+Tasarim onizlemesi (UYGULANMADI): tuval Tur 2 (duz panel, Gokberk begenmedi) -> Tur 3 hibrit
+  (gercek pencere basligi + atmosfer + buzlu cam; K4/K5/K7 korunur). Onay bekliyor.
