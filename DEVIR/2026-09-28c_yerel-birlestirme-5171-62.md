@@ -355,3 +355,16 @@ Testler: check.js temiz · render 77/77, 13/13, 12/12, 53 ekran 0 hata, 37/37 ·
   (hepsi onceden vardi: temel surum 8; cairosvg girdi eksigi dahil) · SQL yok.
 Surum: app 6.2.2 (versionCode 273, buildNumber 267). EAS preview APK baslatildi (Gokberk onayi).
 Acik: grace aylik limit, ASCII kural notu veri borcu, domain + RevenueCat.
+
+## TUR 11 - 29 Eylul: 6.2.2 APK hazir, site gorselleri onayda, denetim bulgulari
+- APK 6.2.2 (273): https://expo.dev/artifacts/eas/HWzQoyEkzU599X4sDMVFdsyIXtjBw7_RAc_m7_wwJZM.apk
+- Site: 15 sahne 6.2.2 ile yeniden cekildi, public/screens tazelendi (site-0.69 dali, 99eca32 + 261c150).
+  ss-n (kural ekrani) ESKI haliyle birakildi: yeni cekimde ASCII kural notu gorunuyordu.
+  SURUM.json kabul_edildi=false -> Gokberk onayi sonrasi main'e merge. verify 0 kirmizi, build ok,
+  Vercel onizleme success. BO: check.js temiz, degisiklik gerekmedi (1.96.1).
+- Kod (bir sonraki build'e): FIDS "Kalkisa" -> "Bulusmaya" (sayac salon penceresinin basini sayiyor);
+  bpPrivacy TR+EN SQL 294 ile birebir (havalimani, tarih, ucus kodu, kabin; PNR yalniz karma).
+  check temiz · render 77/77, 13/13, 12/12, 53, 37/37.
+- Bulgular (acik): SQL 290 (kural notu Turkce harfleri) canlida kosmamis gorunuyor (cihaz ekraninda
+  290'in duzelttigi sozcukler ASCII) + sozlukte eksikler (UCUNDE, KAZANILAMIYOR, planinin, pahali);
+  zarafet atlamasi sinirsiz; Kesfet'te sona eren ilanlar listede; EAS arsivi 96 MB.

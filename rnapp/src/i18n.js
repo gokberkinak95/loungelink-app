@@ -812,7 +812,9 @@ export const D = {
     bpPhysicalSub: "Kağıt biniş kartındaki barkodu tarat",
     bpGallerySub: "Biniş kartı ekran görüntüsü",
     bpFileSub: "PDF bilet",
-    bpPrivacy: "Biletin cihazından çıkmıyor. Okunduktan sonra kopyası siliniyor; yalnızca kalkış havalimanı ve tarih kaydediliyor.",
+    // 29 Eylül — vaat SQL 294 ile birebir: binis_karti_kaydet havalimanı, tarih, uçuş kodu,
+    // kabin harfi ve PNR'nin tuzlu karmasını yazıyor. "Yalnızca havalimanı ve tarih" eksikti.
+    bpPrivacy: "Biletin görseli cihazından çıkmıyor; okunduktan sonra kopyası siliniyor. Kaydedilenler: kalkış havalimanı, tarih, uçuş kodu ve kabin harfi. Rezervasyon kodu yalnız geri çevrilemez bir özet olarak tutuluyor.",
     bpScanHint: "Barkodu çerçeveye yerleştir — kağıdı hafif eğmek parlamayı keser.",
     bpSkip: "Doğrulamayı Atla ve Oturumu Başlat",
     bpRetry: "Tekrar Dene",
@@ -2030,7 +2032,8 @@ export const D = {
     // v6.3 (pano C) — sohbet FIDS şeridi
     fidsMeet: "Buluşma",
     fidsLounge: "Salon",
-    fidsLeft: "Kalkışa",
+    // 29 Eylül — sayaç salon penceresinin BAŞINI sayar (geriSayim · time_from), kalkışı değil.
+    fidsLeft: "Buluşmaya",
     fidsStatus: "Durum",
     fidsPlanned: "Planlandı",
     fidsActive: "Oturumda",
@@ -2884,7 +2887,7 @@ export const D = {
     bpPhysicalSub: "Scan the barcode on your boarding pass",
     bpGallerySub: "Boarding pass screenshot",
     bpFileSub: "PDF ticket",
-    bpPrivacy: "Your ticket never leaves your device. The copy is deleted after it is read; only the departure airport and date are stored.",
+    bpPrivacy: "The image of your ticket never leaves your device; the copy is deleted once read. Stored: departure airport, date, flight code and cabin letter. The booking code is kept only as an irreversible digest.",
     bpScanHint: "Place the barcode in the frame — tilting the paper slightly kills the glare.",
     bpSkip: "Skip Verification and Start Session",
     bpRetry: "Try Again",
@@ -3838,7 +3841,7 @@ export const D = {
     reqSentNoticeCredit: "1 credit is held: it's returned automatically if the host declines or doesn't reply before the listing time.",
     fidsMeet: "Meeting",
     fidsLounge: "Lounge",
-    fidsLeft: "Departs in",
+    fidsLeft: "Meet in",
     fidsStatus: "Status",
     fidsPlanned: "Scheduled",
     fidsActive: "In session",
