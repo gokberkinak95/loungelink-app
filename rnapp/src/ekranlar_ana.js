@@ -7106,19 +7106,16 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
           ══════════════════════════════════════════════════════════════ */}
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: ARA[22],
                                            paddingBottom: ARA[34] }}>
-        <View style={{ flexDirection: "row", alignItems: "flex-end", marginTop: ARA[26] }}>
-          <View style={{ flex: 1, minWidth: 0, marginRight: ARA[12] }}>
-            <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4, color: C.gold }}>
-              {BUYUK(t.ruleEyebrow)}
-            </Text>
-            <Text style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, letterSpacing: -0.4,
-                           lineHeight: SATIR(FS.hero + 2, "serif"), color: C.ink, marginTop: ARA[8] }}>
-              {String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
-            </Text>
-          </View>
-          {/* v6.3 (pano B) — Keşfet kartındaki mührün aynısı: dokunulan şey burada açılıyor. */}
-          <UyumMuhru deger={gosterilenSkor} boy={52} etiket={t.matchWord} kapali={!!sonaErdi} />
-        </View>
+        {/* 29 Eylül (Gökberk) — başlık zaten "neden %X?" diyor; yanındaki mühür
+            aynı sayıyı ikinci kez söylüyordu. Mühür Keşfet kartında kalır. */}
+        <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4,
+                       color: C.gold, marginTop: ARA[26] }}>
+          {BUYUK(t.ruleEyebrow)}
+        </Text>
+        <Text style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, letterSpacing: -0.4,
+                       lineHeight: SATIR(FS.hero + 2, "serif"), color: C.ink, marginTop: ARA[8] }}>
+          {String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
+        </Text>
         {/* 13 Eylül md.4 — sayıyı sıfırlayan/kısan şartı adıyla söyle. */}
         {!!sifirlayan && (
           <Text style={{ fontSize: FS.sm, lineHeight: 19, color: C.redInk, marginTop: ARA[8] }}>

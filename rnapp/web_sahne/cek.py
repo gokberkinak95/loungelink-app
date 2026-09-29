@@ -64,7 +64,8 @@ SAHNELER = {
     "12b_ilanlarim":   ("selin",   [("dokun", "Planım")]),   # host Planım → İlanlarım (öneri 5 Eylül)   # ekran: Trips
     "14b_seyahatler_host": ("selin", [("dokun", "Planım"), ("dokun_a11y", "Seyahatlerim")]),   # ekran: Trips
     "10_bildirim":     ("gokberk", [("dokun", "Profil"), ("dokun", "Bildirimler")]),   # ekran: Notifications
-    "03_kural":        ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum")]),   # ekran: KuralKarari
+    "03_kural":        ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("bekle", 2600)]),   # ekran: KuralKarari · 29 Eylül: K4 grupları 160+420ms arayla iner, bitmeden çekiliyordu
+    "03b_kural_damga": ("gokberk", [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("bekle", 3200)]),   # K4 · üç şart tutunca damga   # ekran: KuralKarari
     # ══════════════════════════════════════════════════════════════
     # 🔴 20 EYLÜL — `ayni_sahne_check.py` ÜÇ İKİZ KÜMESİ BULDU VE ÜÇÜ DE
     # SAHNE BETİĞİNİN HATASIYDI, ÜRÜNÜN DEĞİL. Teker teker ölçtüm:
