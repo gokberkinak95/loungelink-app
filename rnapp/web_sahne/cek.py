@@ -107,6 +107,8 @@ SAHNELER = {
     # DEĞİLDİR — ÖNCE SEÇİCİYİ VE ÖRTEN KATMANI ELE; ÜRÜNÜ SUÇLAMAK EN
     # SON İHTİMALDİR VE YANLIŞ SUÇLAMA GERÇEK HATAYI GİZLER."
     # ══════════════════════════════════════════════════════════════
+    "63_istekler_host":   ("selin",   [("dokun_a11y", "İstek:"), ("bekle", 1500)]),   # v6.3 md.9 · katman kuralı · host gelen istekler   # ekran: RequestsPanel
+    "64_istekler_misafir":("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500)]),   # v6.3 md.9 · gönderdiğin istek kartı   # ekran: RequestsPanel
     "06_sohbet":       ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · KAPSAM TURU — 15 SAHNE DAHA.

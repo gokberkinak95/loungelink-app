@@ -33,13 +33,16 @@
 // Aynı deseni `ui.js` jiroskop için zaten kullanıyor.
 // ══════════════════════════════════════════════════════════════════════
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Easing, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Animated, Easing, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { bcbpBul, bcbpCoz, kuralUyum } from "./bcbp";
 import { Ikon } from "./ikon";
 import { mapErr } from "./i18n";
 import { logError, supabase } from "./supabase";
 import { ARA, C, F, FS, R, SATIR, SP, TAP } from "./theme";
 import { Btn } from "./ui";
+import { ustIsik } from "./ortak";
+import { MONO } from "./typography";
+import { BUYUK } from "./i18n";
 
 // ── Tembel native yükleyiciler ────────────────────────────────────────
 function kameraModulu() {
@@ -83,11 +86,13 @@ function Cam({ children, stil, yogunluk = 26 }) {
   if (BlurView && Platform.OS === "ios") {
     return (
       <BlurView intensity={yogunluk} tint="dark" style={stil}>
-        <View style={{ backgroundColor: C.paper + "D8", flex: 1 }}>{children}</View>
+        <View style={{ backgroundColor: (C.popupZemin || C.paper) + "C8", flex: 1 }}>{children}</View>
       </BlurView>
     );
   }
-  return <View style={[{ backgroundColor: C.paper }, stil]}>{children}</View>;
+  // v6.3 (pano D) — cam sayfa: Android'de bulanıklık yok; popup zemini
+  // (#1E1B18) sohbetin kadife yüzeyinden bir kademe açık — ayrım ışıkla.
+  return <View style={[{ backgroundColor: C.popupZemin || C.paper }, stil]}>{children}</View>;
 }
 
 // ── Seçenek satırı ────────────────────────────────────────────────────
@@ -396,9 +401,9 @@ export function BinisKartiPanel({ t, request, ilan, onKapat, onDogrulandi }) {
     <TouchableOpacity
       hitSlop={TAP.slop} disabled={busy} onPress={atla}
       accessibilityRole="button" accessibilityLabel={t.bpSkip}
-      style={{ alignItems: "center", paddingVertical: SP[3], marginTop: ARA[6] }}>
-      <Text style={{ color: C.mut, fontSize: FS.sm, fontWeight: "600",
-                     textDecorationLine: "underline" }}>{t.bpSkip}</Text>
+      style={{ alignItems: "center", paddingVertical: SP[3], marginTop: ARA[6], minHeight: TAP.minHeight, justifyContent: "center" }}>
+      <Text style={{ color: C.mut, fontSize: FS.sm, fontWeight: "600" }}>{t.bpSkip}</Text>
+      <Text style={{ color: C.dim, fontSize: FS.xs, marginTop: ARA[4], textAlign: "center" }}>{t.bpSkipNote}</Text>
     </TouchableOpacity>
   );
 
@@ -430,39 +435,42 @@ export function BinisKartiPanel({ t, request, ilan, onKapat, onDogrulandi }) {
                               transform: [{ translateY: kay }] }}>
         {/* Köşe `R.xl` (22) — ürünün alt sayfa köşesi. Brief 20 diyor;
             2pt için ölçek dışına çıkmıyoruz (dosya başındaki not). */}
-        <Cam stil={{ borderTopLeftRadius: R.xl, borderTopRightRadius: R.xl, overflow: "hidden" }}>
-          <View style={{ padding: SP[5], paddingBottom: SP[5] + SP[3] }}>
-            <View style={{ alignSelf: "center", width: 42, height: 4, borderRadius: R.full,
-                           backgroundColor: C.line, marginBottom: SP[4] }} />
+        <Cam stil={{ borderTopLeftRadius: R.xl + 6, borderTopRightRadius: R.xl + 6, overflow: "hidden",
+                     ...ustIsik(C.kenarIsik || C.line) }}>
+          <View style={{ paddingHorizontal: ARA[22], paddingTop: ARA[12], paddingBottom: ARA[30] }}>
+            <View style={{ alignSelf: "center", width: 36, height: 4, borderRadius: R.full,
+                           backgroundColor: C.kenarIsik || C.line, marginBottom: SP[4] }} />
 
             {gorunum === "sonuc" ? (
-              <Sonuc t={t} sonuc={sonuc} onTekrar={() => { setSonuc(null); setGorunum("secim"); }}
+              <Sonuc t={t} sonuc={sonuc} ilan={ilan} onTekrar={() => { setSonuc(null); setGorunum("secim"); }}
                 onDevam={() => onDogrulandi && onDogrulandi(sonuc)} atla={AtlaDugmesi} />
-            ) : gorunum === "eBilet" ? (
-              <>
-                <Text style={{ color: C.ink, fontSize: FS.lg, fontFamily: F.serifGosterim,
-                               lineHeight: SATIR(FS.lg, "serif") }}>{t.bpETicket}</Text>
-                <Secenek ikon="galeri" baslik={t.bpGallery} alt={t.bpGallerySub} onPress={galeriden} disabled={busy} />
-                <Secenek ikon="dosya" baslik={t.bpFile} alt={t.bpFileSub} onPress={dosyadan} disabled={busy} />
-                <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[14],
-                               lineHeight: SATIR(FS.xs) }}>{t.bpPrivacy}</Text>
-                {!!hata && <Uyari metin={hata} />}
-                {AtlaDugmesi}
-                <Btn v="ghost" sm label={t.back} a11yLabel={t.back} onPress={() => { setHata(""); setGorunum("secim"); }} />
-              </>
             ) : (
               <>
-                <Text style={{ color: C.ink, fontSize: FS.lg, fontFamily: F.serifGosterim,
-                               lineHeight: SATIR(FS.lg, "serif") }}>{t.bpTitle}</Text>
-                <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[6],
-                               lineHeight: SATIR(FS.sm) }}>{t.bpSub}</Text>
-                <Secenek ikon="tarayici" baslik={t.bpPhysical} alt={t.bpPhysicalSub}
-                  onPress={() => { setHata(""); setGorunum("vizor"); }}
-                  disabled={busy || !kameraModulu()} />
-                <Secenek ikon="bilet" baslik={t.bpETicket} alt={t.bpETicketSub}
-                  onPress={() => { setHata(""); setGorunum("eBilet"); }} disabled={busy} />
-                <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[14],
-                               lineHeight: SATIR(FS.xs) }}>{t.bpPrivacy}</Text>
+                {/* ══ v6.3 · PANO D (Gökberk onayı) — CAM SAYFA ══════════
+                    Kaş · serif başlık · tek cümle · kilitli gizlilik satırı ·
+                    iki eşit düğme (kamera | galeri). PDF yolu kaybolmadı:
+                    düğmelerin altında sessiz bir bağlantı. */}
+                <Text style={{ color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.bpEyebrow)}</Text>
+                <Text style={{ color: C.ink, fontSize: FS.display + 4, fontFamily: F.serifGosterim, marginTop: ARA[6],
+                               lineHeight: SATIR(FS.display + 4, "serif"), letterSpacing: -0.8 }}>{t.bpTitle2}</Text>
+                <Text style={{ color: C.body, fontSize: FS.sm, marginTop: ARA[8], lineHeight: SATIR(FS.sm) }}>{t.bpSub}</Text>
+                <View style={{ flexDirection: "row", alignItems: "flex-start", marginTop: ARA[18] }}>
+                  <Ikon ad="kilit" boy={15} renk={C.goldText} stil={{ marginRight: ARA[10], marginTop: ARA[2] }} />
+                  <Text style={{ flex: 1, minWidth: 0, color: C.mut, fontSize: FS.xs, lineHeight: SATIR(FS.xs) }}>{t.bpPrivacy}</Text>
+                </View>
+                <View style={{ flexDirection: "row", marginTop: ARA[20] }}>
+                  {kameraModulu() ? (
+                    <Btn v="ghost" label={t.bpCamBtn} a11yLabel={t.bpPhysicalSub} disabled={busy}
+                      onPress={() => { setHata(""); setGorunum("vizor"); }} style={{ flex: 1, marginRight: ARA[10] }} />
+                  ) : null}
+                  <Btn v="gold" label={t.bpGalleryBtn} a11yLabel={t.bpGallerySub} disabled={busy}
+                    onPress={galeriden} style={{ flex: 1 }} />
+                </View>
+                <TouchableOpacity hitSlop={TAP.slop} disabled={busy} onPress={dosyadan}
+                  accessibilityRole="button" accessibilityLabel={t.bpFileSub}
+                  style={{ alignSelf: "center", minHeight: TAP.minHeight, justifyContent: "center", marginTop: ARA[4] }}>
+                  <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "600" }}>{t.bpFileLink}</Text>
+                </TouchableOpacity>
                 {!!hata && <Uyari metin={hata} />}
                 {AtlaDugmesi}
               </>
@@ -490,7 +498,7 @@ function Uyari({ metin }) {
 // ── Sonuç ekranı ──────────────────────────────────────────────────────
 // ⚠️ HER DALDA BİR SONRAKİ ADIM VAR. Çıkmaz sokak yok: başarısızlıkta
 // bile "tekrar dene" ve "atla" duruyor.
-function Sonuc({ t, sonuc, onTekrar, onDevam, atla }) {
+function Sonuc({ t, sonuc, ilan, onTekrar, onDevam, atla }) {
   const gecti = sonuc && sonuc.gecti;
   const kod = sonuc && sonuc.kod;
   const coz = sonuc && sonuc.coz;
@@ -508,51 +516,88 @@ function Sonuc({ t, sonuc, onTekrar, onDevam, atla }) {
     }
     return null;
   }).filter(Boolean);
+  // Okunamadı mı (barkod yok) yoksa okundu ama uyuşmadı mı? İkisi ayrı cümle.
+  const okunamadi = !gecti && !coz;
 
+  if (gecti) {
+    // ══ v6.3 · PANO D — OKUNAN | SEYAHATİN yan yana; eşleşme tek bakışta.
+    return (
+      <>
+        <Text style={{ color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.bpOkEyebrow)}</Text>
+        <Text style={{ color: C.ink, fontSize: FS.display + 4, fontFamily: F.serifGosterim, marginTop: ARA[6],
+                       lineHeight: SATIR(FS.display + 4, "serif"), letterSpacing: -0.8 }}>{t.bpOkTitle}</Text>
+        {!!coz && (
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                         marginTop: ARA[18], padding: SP[4], borderRadius: R.lg,
+                         backgroundColor: C.surfaceAlt, ...ustIsik(C.parlama || C.line) }}>
+            <View>
+              <Text style={{ color: C.mut, fontSize: FS.micro, letterSpacing: 1.2 }}>{BUYUK(t.bpRead)}</Text>
+              <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.display + 4, marginTop: ARA[4] }}>{coz.kalkis}</Text>
+            </View>
+            <View style={{ alignItems: "flex-end" }}>
+              <Text style={{ color: C.mut, fontSize: FS.micro, letterSpacing: 1.2 }}>{BUYUK(t.bpYourTrip)}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[6] }}>
+                <Ikon ad="tamam" boy={13} renk={C.ink} stil={{ marginRight: ARA[6] }} />
+                <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.sm }}>
+                  {(ilan && ilan.airport_code) || coz.kalkis} · {t.bpMatched}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+        {!!coz && (
+          <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, marginTop: ARA[10], letterSpacing: 0.4 }}>
+            {BUYUK([coz.ucusKodu, coz.ucusTarihi].filter(Boolean).join(" · "))}
+          </Text>
+        )}
+        {/* ⚠️ Kabin YALNIZ BİLGİ: harf→sınıf eşlemesi havayoluna göre değişir. */}
+        {!!(coz && coz.kabinKodu) && (
+          <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[4] }}>
+            {String(t.bpCabin || "").replace("{k}", coz.kabinKodu)}
+          </Text>
+        )}
+        {yumusak.map((y, i) => (
+          <Text key={"y" + i} style={{ color: C.goldText, fontSize: FS.xs, marginTop: ARA[8], lineHeight: SATIR(FS.xs) }}>
+            {y.kod === "ad_uyusmuyor" ? t.bpNameSoft : t.bpFlightSoft}
+          </Text>
+        ))}
+        <View style={{ marginTop: ARA[20] }}>
+          <Btn v="gold" label={t.startSessionBtn} a11yLabel={t.startSessionBtn} onPress={onDevam} />
+        </View>
+      </>
+    );
+  }
+
+  // ══ v6.3 · PANO E (Gökberk onayı) — ZARAFET: suçlamadan, numaralı sebep
+  // satırları (kutu yok, 1 px ışık çizgisi), birincil "Tekrar dene",
+  // altında atlama yolu ve kaydının dürüst notu. Çıkmaz sokak yok.
+  const satirlar = okunamadi
+    ? [cumle, t.bpTipGlare, t.bpTipScreen]
+    : [cumle, ...ayrinti];
   return (
     <>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Ikon ad={gecti ? "tamam" : "uyari"} boy={FS.lg + 4}
-              renk={gecti ? C.tealInk : C.redInk} stil={{ marginRight: ARA[10] }} />
-        <Text style={{ flex: 1, minWidth: 0, color: C.ink, fontSize: FS.lg,
-                       fontFamily: F.serifGosterim, lineHeight: SATIR(FS.lg, "serif") }}>
-          {gecti ? t.bpOkTitle : t.bpFailTitle}
-        </Text>
-      </View>
-      <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[10],
-                     lineHeight: SATIR(FS.sm) }}>{cumle}</Text>
-      {ayrinti.map((a, i) => (
-        <Text key={i} style={{ color: C.redInk, fontSize: FS.sm, marginTop: ARA[6],
-                               lineHeight: SATIR(FS.sm) }}>{a}</Text>
-      ))}
-      {gecti && !!coz && (
-        <View style={{ backgroundColor: C.surface, borderRadius: R.sm, padding: SP[3],
-                       marginTop: ARA[14] }}>
-          <Text style={{ color: C.ink, fontSize: FS.sm, fontFamily: F.mono,
-                         lineHeight: SATIR(FS.sm, "mono") }}>
-            {coz.kalkis}{coz.ucusKodu ? " · " + coz.ucusKodu : ""} · {coz.ucusTarihi}
-          </Text>
-          {/* ⚠️ Kabin YALNIZ BİLGİ: harf→sınıf eşlemesi havayoluna göre
-              değişir, bu yüzden karar vermez. */}
-          {!!coz.kabinKodu && (
-            <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[4] }}>
-              {String(t.bpCabin || "").replace("{k}", coz.kabinKodu)}
+      <Text style={{ color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>
+        {BUYUK(okunamadi ? t.bpFailEyebrow : t.bpMismatchEyebrow)}
+      </Text>
+      <Text style={{ color: C.ink, fontSize: FS.display + 2, fontFamily: F.serifGosterim, marginTop: ARA[6],
+                     lineHeight: SATIR(FS.display + 2, "serif"), letterSpacing: -0.8 }}>
+        {okunamadi ? t.bpFailTitle2 : t.bpFailTitle}
+      </Text>
+      <View style={{ marginTop: ARA[14] }}>
+        {satirlar.filter(Boolean).map((m, i) => (
+          <View key={i} style={{ flexDirection: "row", paddingVertical: ARA[10],
+                                 borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+            <Text style={{ fontFamily: MONO[500], fontSize: FS.xs, color: C.goldText, width: 24, marginTop: ARA[2] }}>
+              {String(i + 1).padStart(2, "0")}
             </Text>
-          )}
-        </View>
-      )}
-      {yumusak.map((y, i) => (
-        <Text key={"y" + i} style={{ color: C.amberInk, fontSize: FS.xs, marginTop: ARA[8],
-                                     lineHeight: SATIR(FS.xs) }}>
-          {y.kod === "ad_uyusmuyor" ? t.bpNameSoft : t.bpFlightSoft}
-        </Text>
-      ))}
-      <View style={{ marginTop: ARA[18] }}>
-        {gecti
-          ? <Btn v="gold" label={t.startSessionBtn} a11yLabel={t.startSessionBtn} onPress={onDevam} />
-          : <Btn v="ghost" label={t.bpRetry} a11yLabel={t.bpRetry} onPress={onTekrar} />}
+            <Text style={{ flex: 1, minWidth: 0, color: C.body, fontSize: FS.sm, lineHeight: SATIR(FS.sm) }}>{m}</Text>
+          </View>
+        ))}
       </View>
-      {!gecti && atla}
+      <View style={{ marginTop: ARA[14] }}>
+        <Btn v="gold" label={t.bpRetry} a11yLabel={t.bpRetry} onPress={onTekrar} />
+      </View>
+      {atla}
     </>
   );
 }

@@ -324,3 +324,34 @@ Gorseller (00-11.jpg) sonradan geldi; tur 8'de gorselsiz yapilan duzeltmeler tek
 Dosyalar: rnapp/src/theme.js, ekranlar_ana.js, ekranlar_yalin.js, screens.js
 Testler: check.js temiz · render 77/77, 13/13, 12/12, 53 ekran 0 hata, 37/37 · SQL yok.
 Acik: yeni APK (6.2.2 onerisi) Gokberk onayi bekliyor; uyarlanmis onizleme A-E onay bekliyor.
+
+## TUR 10 - 29 Eylul: md.3 hafif duzeltme, md.9 katman kurali, A-E uygulandi -> app 6.2.2 (273/267)
+Gokberk onayi: "A-E kartlarini onayliyorum ... app'in tamamina eksiksiz uygula", F-I iptal
+(md.3 I'ya gore degil, hafif duzeltme), md.9 icin katman kurali tum benzer alanlara.
+- md.3: alt cubuga dokunulmadi. Olculdu: sayfanin sol altinda bulut RGB 36-44, serit 11 ->
+  keskin kesim. atmosfer.js IsikBulutlari: son 64 pt'de 16 kademe zemine sonum.
+- md.9 katman kurali: Katlanir `seffaf` (kart listeleyen panel kutusuz; Istekler, Baglanti
+  istekleri, Baglantilarim). Istek kartlari (gelen + gonderilen) TEK YUZEY: renkli durum
+  seridi, ic baglam kutusu ve rozet haplari kalkti -> DurumSatiri (kutusuz editoryal satir:
+  fildisi=olmus, sampanya=bekliyor, kil=engel), 1 px isik cizgisi, serif isim, serif italik not.
+- A (ana sayfa): SakinGun seyahat varken BINIS KARTI (IST -> varis mono, delikli kesim, SALON/
+  KALKIS/TERMINAL yalniz veri varsa, "Host bul"). "Yanitini bekleyenler" satirlari serif, kutusuz not.
+- B (uyum muhru): ui.js UyumMuhru -> Kesfet karti, gelen istek karti, istek gonder sayfasi
+  (guven puani artik etiketli satirda), kural ekrani. Kesfet: serif salon + isik cizgisi, mono saat,
+  "TK1979 · AYNI UCUS" tek satir, 48 avatar / 26 serif isim.
+- C (sohbet): FIDS panosu (BULUSMA|SALON · KALKISA yaprak sayac · DURUM) - ucus durumu
+  bilinmedigi icin yazilmadi; balonlar: karsi taraf kadife, sen sampanya tint (dolu altin yok);
+  "Ikiniz de basinca oturum baslar · X hazir" satiri.
+- D/E (binis karti): cam sayfa (kas, serif baslik, kilitli gizlilik, Kamera | Galeri, PDF baglantisi);
+  basari OKUNAN|SEYAHATIN kutusu; zarafet: numarali sebepler, Tekrar dene, atlama notu.
+  Sohbette karsi taraf atladiysa/dogrulayamadiysa not (binis_karti_durumu RPC - SQL 294, yeni SQL YOK).
+- Tema: altinIz03 opak (tur 9), sampanyaTint, muhur* jetonlari (iki tema).
+- i18n: yeni TR+EN anahtarlar (bk*, fids*, bp* v6.3, startBothHint...); olu 12 anahtar silindi.
+- tasarim_yapi_check.py: "uyum mono" ve "balon" iddialari v6.3'e (gerekceli) guncellendi.
+- web_sahne/cek.py: 63_istekler_host, 64_istekler_misafir sahneleri. (PGPORT ile yerel pg portu verilmeli.)
+Dosyalar: rnapp/src/{atmosfer,BinisKarti,ekranlar_ana,ekranlar_yalin,i18n,ortak,Pickers,theme,ui}.js,
+  rnapp/tasarim_yapi_check.py, rnapp/web_sahne/cek.py (+out), app.json, package.json, package-lock.json
+Testler: check.js temiz · render 77/77, 13/13, 12/12, 53 ekran 0 hata, 37/37 · verify: 7 kirmizi
+  (hepsi onceden vardi: temel surum 8; cairosvg girdi eksigi dahil) · SQL yok.
+Surum: app 6.2.2 (versionCode 273, buildNumber 267). EAS preview APK baslatildi (Gokberk onayi).
+Acik: grace aylik limit, ASCII kural notu veri borcu, domain + RevenueCat.

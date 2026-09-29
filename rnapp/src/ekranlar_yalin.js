@@ -32,12 +32,12 @@ import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR} from "./theme";
-import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY } from "./ui";
+import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan } from "./hareket";
 import { yerelGun } from "./zaman";
@@ -250,7 +250,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   ].filter(Boolean).join(" · ");
 
   return (
-    <Katlanir baslik={t.homeReqPanelTitle} ozet={ozetMetni} acikBasla={acikBasla || bekleyen > 0}
+    <Katlanir seffaf baslik={t.homeReqPanelTitle} ozet={ozetMetni} acikBasla={acikBasla || bekleyen > 0}
       tint={bekleyen > 0 ? C.goldBg : undefined}
       cizgi={bekleyen > 0 ? C.goldLine : undefined}>
       {inc.length > 0 && <>
@@ -270,8 +270,6 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
           // dusuyor ve JSX icindeki `return (` onu sasirtiyor. Ayrica bu hali
           // daha okunakli.
           const fit = r.guest_fit || 0;
-          const fitC = fit >= 85 ? C.green : fit >= 65 ? C.gold : C.muted;
-          const scoreC = r.guest_score >= 70 ? C.green : r.guest_score >= 50 ? C.gold : C.muted;
           // 🔴 v2.86 (Gökberk, ekran görüntüsüyle): "hangi ilana ait olduğu
           // anlaşılmıyor". AYNI misafir host'un İKİ AYRI ilanına başvurunca
           // iki kart BİREBİR aynı çıkıyordu (aynı isim, aynı puan, aynı
@@ -290,89 +288,71 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
             r.lounge_name || null,
           ].filter(Boolean).join(" · ");
           return (
-          <View key={r.id} style={[S.card, { padding: 0, overflow: "hidden" }, isBest && { borderColor: "transparent" }]}>
-            {/* #26: MVP sira seridi — en iyi eslesme altin, digerleri gri */}
-            {r.status === "pending" && (isBest ? (
-              <View style={{ backgroundColor: C.goldBtn, paddingVertical: SP[1], paddingHorizontal: SP[3], flexDirection: "row", justifyContent: "space-between" }}>
-                <IkonMetin ad="kutlama" renk={C.onAccent} stilMetin={{ fontSize: FS.micro, color: C.onAccent, fontWeight: "600" }} metin={`${t.bestMatch} · %${fit}`} />
-                <Text style={{ fontSize: FS.micro, color: C.onAccent, opacity: 0.85 }}>#{idx + 1} / {pendCount}</Text>
+          /* v6.3 (Gökberk md.9 · katman kuralı) — gelen istek kartı da TEK
+             YÜZEY: altın/gri sıra şeridi, iç halka ve rozet hapları kalktı;
+             sıra bir editoryal satır, uyum fildişi mühür, güven sinyalleri
+             harf aralıklı metin. Bilgi aynı; yüzey sayısı beşten bire indi. */
+          <View key={r.id} style={[S.card, { padding: SP[4] }]}>
+            {r.status === "pending" && (isBest || pendCount > 1) && (
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: ARA[14] }}>
+                <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4,
+                               color: isBest ? C.goldText : C.mut }}>
+                  {BUYUK(isBest ? t.bestMatch : t.matchWord)}
+                </Text>
+                <Text style={{ fontSize: FS.xs, fontFamily: MONO[500], color: C.mut, letterSpacing: 0.6 }}>#{idx + 1} / {pendCount}</Text>
               </View>
-            ) : pendCount > 1 ? (
-              <View style={{ backgroundColor: C.bgAlt, paddingVertical: SP[1], paddingHorizontal: SP[3] }}>
-                <Text style={{ fontSize: FS.micro, color: C.mutedAA }}>#{idx + 1} / {pendCount} · %{fit} {t.matchWord}</Text>
-              </View>
-            ) : null)}
-            <View style={{ padding: SP[3] }}>
-            {/* 046: host artik misafiri GERCEKTEN goruyor.
-                guest_fit = misafirin BU ilana uyumu (30-99).
-                MVP renk dili: >=85 yesil · >=65 altin · alti gri */}
+            )}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {/* #41: avatar tiklanir — misafirin profili acilir */}
               <TouchableOpacity hitSlop={TAP.slop} disabled={!onOpenProfile} onPress={() => onOpenProfile && onOpenProfile(r.guest_id)} activeOpacity={0.7}
-                style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <View style={{ width: 42, height: 42, borderRadius: R.full, backgroundColor: C.goldBg,
-                             alignItems: "center", justifyContent: "center", marginRight: ARA[10], overflow: "hidden" }}>
+                style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0 }}>
+              <View style={{ width: 46, height: 46, borderRadius: R.full, backgroundColor: C.surfaceAlt,
+                             ...ustIsik(C.parlama || C.line),
+                             alignItems: "center", justifyContent: "center", marginRight: ARA[14], overflow: "hidden" }}>
                 {r.guest_photo
-                  ? <Image source={{ uri: r.guest_photo }} style={{ width: 42, height: 42 }} />
-                  : <Text style={{ fontWeight: "700", color: C.goldText, fontSize: FS.lg }}>{(r.guest_name || "?").charAt(0).toUpperCase()}</Text>}
+                  ? <Image source={{ uri: r.guest_photo }} style={{ width: 46, height: 46 }} />
+                  : <Text style={{ fontFamily: F.serifGosterim, color: C.ink, fontSize: FS.title }}>{(r.guest_name || "?").charAt(0).toUpperCase()}</Text>}
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{abbrevName(r.guest_name)}</Text>
-                {!!r.guest_profession && <Text style={{ color: C.mut, fontSize: FS.sm }}>{r.guest_profession}</Text>}
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.display, fontFamily: F.serifGosterim,
+                                                 lineHeight: SATIR(FS.display, "serif"), letterSpacing: -0.6 }}>{abbrevName(r.guest_name)}</Text>
+                {!!r.guest_profession && <Text numberOfLines={1} style={{ color: C.mut, fontSize: FS.micro + 0.5, letterSpacing: 1.3 }}>{BUYUK(r.guest_profession)}</Text>}
               </View>
               </TouchableOpacity>
-              {/* 🔴 v2.02 — İKİ PUAN BİRBİRİNE KARIŞIYORDU.
-                  Sağ üstteki halka EŞLEŞME puanı, chip'teki ise GÜVEN puanı.
-                  İkisi de çıplak sayıydı ve aynı karta sığıyordu; kullanıcı
-                  hangisinin ne olduğunu ayıramıyordu. Halkanın altına küçük
-                  etiket geldi, chip de artık "Güven puanı" diyor. */}
-              <View style={{ alignItems: "center" }}>
-                <View style={{ width: 38, height: 38, borderRadius: R.full, borderWidth: 2,
-                               borderColor: fit >= 65 ? fitC : C.line, alignItems: "center", justifyContent: "center" }}>
-                  <Text style={{ color: fitC, fontSize: FS.sm, fontWeight: "700" }}>{fit}</Text>
-                </View>
-                <Text style={{ fontSize: FS.micro, color: C.dim, marginTop: SP[1], letterSpacing: 0.3 }}>
-                  {t.matchScoreLabel}
+              {/* v2.02: eşleşme ile güven puanı ayrı — mühür "UYUM" der, güven aşağıda yazıyla. */}
+              <UyumMuhru deger={fit} boy={54} etiket={t.matchWord} a11y={`${t.matchScoreLabel}: ${fit}`} stil={{ marginLeft: ARA[10] }} />
+            </View>
+
+            {/* HANGİ İLANA BAŞVURDU — kutu değil, ışık çizgisi + mono satır */}
+            {!!availLine && (
+              <View style={{ marginTop: ARA[14], paddingTop: ARA[14], borderTopWidth: StyleSheet.hairlineWidth,
+                             borderTopColor: C.kenarIsik || C.line }}>
+                <Text style={{ color: C.body, fontSize: FS.xs + 0.5, fontFamily: MONO[500], letterSpacing: 0.4, lineHeight: 17 }}>
+                  {availLine}
                 </Text>
               </View>
-            </View>
-
-            {/* HANGİ İLANA BAŞVURDU — isimden hemen sonra, çiplerden önce.
-                Yeni dokunma hedefi değil, saf veri satırı (yeni i18n anahtarı
-                da gerekmiyor). */}
-            {!!availLine && (
-              <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 17, marginTop: SP[2] }}>
-                {availLine}
-              </Text>
             )}
 
-            {/* Guven sinyalleri — host'un karar vermek icin ihtiyaci olan sey */}
-            <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
-              {/* 🔴 v2.50 — CİHAZDA BOŞ ROZET: iki sebep üst üste binmişti.
-                  (1) rqIdOk İKİ KEZ tanımlıydı; JS'te son tanım sessizce
-                  kazanır ve açıklayıcı metin ölü koda döner.
-                  (2) 🪪 Unicode 14 emojisi (2021) eski Android font
-                  setlerinde YOK — IG görsellerinde de aynı tuzağa
-                  düşmüştüm. Rozet artık metne dayanır, emojiye değil. */}
-              {r.guest_id_verified && <Pill c={C.green} ad="tamam">{t.rqIdOk}</Pill>}
-              {r.guest_phone_verified && <Pill c={C.green} ad="tamam">{t.rqPhoneOk}</Pill>}
-              {r.guest_linkedin && <Pill c={C.teal}>in</Pill>}
-              {r.same_flight ? <Pill c={C.teal} ad="ucus">{t.sameFlight}</Pill>
-                : <Pill c={C.muted} ad="ucus">{r.flight_number || t.flightNone}</Pill>}
-              {r.same_purpose && <Pill c={C.purple} ad="kutlama">{t.rqSamePurpose}</Pill>}
-              {r.guest_sessions > 0 && <Pill c={C.muted}>{r.guest_sessions} {t.rqSessions}</Pill>}
-              {r.guest_rating_count >= 3 && <Pill c={C.gold} ad="degerlendirme">{Number(r.guest_rating).toFixed(1)}</Pill>}
-              <Pill c={scoreC}>{t.trust} {r.guest_score ?? 0}</Pill>
-            </View>
+            {/* Güven sinyalleri — host'un karar vermek için ihtiyacı olan şey.
+                v2.50 notu geçerli: rozet metne dayanır, emojiye değil. */}
+            <DurumSatiri stil={{ marginTop: ARA[12] }} ogeler={[
+              r.guest_id_verified ? { metin: t.rqIdOk, ton: "olmus" } : null,
+              r.guest_phone_verified ? { metin: t.rqPhoneOk, ton: "olmus" } : null,
+              r.guest_linkedin ? { metin: "LinkedIn", ton: "olmus" } : null,
+              r.same_flight ? { metin: t.sameFlight, ton: "bekliyor" }
+                : { metin: r.flight_number || t.flightNone, ton: "sessiz" },
+              r.same_purpose ? { metin: t.rqSamePurpose, ton: "bekliyor" } : null,
+              r.guest_sessions > 0 ? { metin: `${r.guest_sessions} ${t.rqSessions}`, ton: "sessiz" } : null,
+              r.guest_rating_count >= 3 ? { metin: `${Number(r.guest_rating).toFixed(1)} / 5`, ton: "bekliyor" } : null,
+              { metin: `${t.trust} ${r.guest_score ?? 0}`, ton: (r.guest_score ?? 0) >= 60 ? "olmus" : "sessiz" },
+            ]} />
 
-            {r.intro_message ? <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[2], fontStyle: "italic" }}>"{r.intro_message}"</Text> : null}
+            {r.intro_message ? <Text style={{ color: C.body, fontSize: FS.lg, marginTop: ARA[12], lineHeight: SATIR(FS.lg, "serif"),
+                                              fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.intro_message}”</Text> : null}
             {r.status === "pending" ? (
             <View style={{ flexDirection: "row", marginTop: ARA[10] }}>
-              <Btn v="gold" sm label={t.acceptGuest} onPress={() => act(r.id, "accept")} style={{ marginRight: SP[2], flex: 1 }} />
-              <TouchableOpacity hitSlop={TAP.slop} style={{ flex: 1, borderWidth: 1, borderColor: C.line, borderRadius: R.xs, paddingVertical: ARA[10], alignItems: "center" }}
-                onPress={() => act(r.id, "decline")}>
-                <Text style={{ color: C.ink, fontSize: FS.sm }}>{t.decline}</Text>
-              </TouchableOpacity>
+              <Btn v="gold" sm label={t.acceptGuest} onPress={() => act(r.id, "accept")} style={{ marginRight: SP[2], flex: 1.6 }} />
+              <Btn v="ghost" sm label={t.decline} onPress={() => act(r.id, "decline")} style={{ flex: 1 }} />
             </View>
             ) : (
             <Btn v="gold" sm label={t.openChat} onPress={() => onOpenChat && onOpenChat({ req: r, name: r.guest_name })} style={{ marginTop: ARA[10] }} />
@@ -382,7 +362,6 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                 <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 17 }}>{actErr[r.id]}</Text>
               </View>
             )}
-            </View>
           </View>
           );
         })}
@@ -443,63 +422,62 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                  satır 4 · karar notu
                  satır 5 · eylem
                ════════════════════════════════════════════════════════════ */
-            <View key={r.id} style={[S.card, { padding: 0, overflow: "hidden" }]}>
-              {/* Durum şeridi: host kartındaki "en iyi eşleşme" şeridinin
-                  misafir tarafındaki karşılığı. Kartın ne durumda olduğunu
-                  kaydırırken bile söyler. */}
-              <View style={{ backgroundColor: col + "14", paddingVertical: SP[1], paddingHorizontal: SP[3],
-                             flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, marginRight: SP[2], fontSize: FS.micro, fontWeight: "700", color: col, letterSpacing: 0.6 }}>
-                  {BUYUK(lab)}
-                </Text>
+            /* v6.3 (Gökberk md.9 · katman kuralı) — KART TEK YÜZEY.
+               Eskiden: panel kutusu > kart > renkli durum şeridi > bağlam
+               kutusu > rozet hapları = beş iç içe yüzey, ikisi aynı dolguda.
+               Şimdi: kart tek yüzey; durum kutusuz editoryal satır, bağlam
+               1 px ışık çizgisiyle ayrılır, rozetler harf aralıklı metin. */
+            <View key={r.id} style={[S.card, { padding: SP[4] }]}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0, marginRight: SP[2] }}>
+                  <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: col, marginRight: ARA[8] }} />
+                  <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, fontSize: FS.micro + 0.5, fontWeight: "600", color: col, letterSpacing: 1.4 }}>
+                    {BUYUK(lab)}
+                  </Text>
+                </View>
                 {hasSlots && (
-                  <Text style={{ flexShrink: 0, fontSize: FS.micro, fontWeight: "600", color: slotsFull ? C.red : C.green }}>
-                    {String(t.srSlots).replace("{f}", String(r.filled || 0)).replace("{n}", String(r.slots))}
+                  <Text style={{ flexShrink: 0, fontSize: FS.xs, fontFamily: MONO[500], letterSpacing: 0.6, color: slotsFull ? C.red : C.mut }}>
+                    {BUYUK(String(t.srSlots).replace("{f}", String(r.filled || 0)).replace("{n}", String(r.slots)))}
                   </Text>
                 )}
               </View>
-              <View style={{ padding: SP[3] }}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <View style={{ width: 42, height: 42, borderRadius: R.full, backgroundColor: C.tealBg,
-                               alignItems: "center", justifyContent: "center", marginRight: ARA[10], overflow: "hidden" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[14] }}>
+                <View style={{ width: 46, height: 46, borderRadius: R.full, backgroundColor: C.surfaceAlt,
+                               ...ustIsik(C.parlama || C.line),
+                               alignItems: "center", justifyContent: "center", marginRight: ARA[14], overflow: "hidden" }}>
                   {r.host_photo
-                    ? <Image source={{ uri: r.host_photo }} style={{ width: 42, height: 42 }} />
-                    : <Text style={{ fontWeight: "700", color: C.tealInk, fontSize: FS.lg }}>{(hostNm || "?").charAt(0).toUpperCase()}</Text>}
+                    ? <Image source={{ uri: r.host_photo }} style={{ width: 46, height: 46 }} />
+                    : <Text style={{ fontFamily: F.serifGosterim, color: C.ink, fontSize: FS.title }}>{(hostNm || "?").charAt(0).toUpperCase()}</Text>}
                 </View>
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.base, fontWeight: "700" }}>{shortName(hostNm)}</Text>
-                  <Text numberOfLines={1} style={{ color: C.mut, fontSize: FS.xs, marginTop: 0 }}>{t.hostWord}</Text>
+                  <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.display, fontFamily: F.serifGosterim,
+                                                   lineHeight: SATIR(FS.display, "serif"), letterSpacing: -0.6 }}>{shortName(hostNm)}</Text>
+                  <Text numberOfLines={1} style={{ color: C.mut, fontSize: FS.micro + 0.5, letterSpacing: 1.3 }}>{BUYUK(t.hostWord)}</Text>
                 </View>
               </View>
 
-              {/* BAĞLAM — hangi ilana başvurdum */}
-              <View style={{ marginTop: ARA[10], backgroundColor: C.bgAlt, borderRadius: R.xs, padding: ARA[10] }}>
-                <Text numberOfLines={2} style={{ color: C.ink, fontSize: FS.sm, fontWeight: "700", lineHeight: 18 }}>
+              {/* BAĞLAM — hangi ilana başvurdum: kutu değil, ışık çizgisi */}
+              <View style={{ marginTop: ARA[14], paddingTop: ARA[14], borderTopWidth: StyleSheet.hairlineWidth,
+                             borderTopColor: C.kenarIsik || C.line }}>
+                <Text numberOfLines={2} style={{ color: C.ink, fontSize: FS.lg, fontFamily: F.serifGosterim,
+                                                 lineHeight: SATIR(FS.lg, "serif") }}>
                   {r.lounge_name || hostNm}
                 </Text>
-                {!!timeLine && <Text style={{ color: C.mutedAA, fontSize: FS.sm, marginTop: SP[1] }}>{timeLine}</Text>}
-                {!!flightLine && <Text style={{ color: C.mutedAA, fontSize: FS.sm, marginTop: 0 }}>{flightLine}</Text>}
+                {!!timeLine && <Text style={{ color: C.mut, fontSize: FS.xs + 0.5, fontFamily: MONO[500], letterSpacing: 0.4, marginTop: ARA[4] }}>{BUYUK(timeLine)}</Text>}
+                {!!flightLine && <Text style={{ color: C.body, fontSize: FS.xs + 0.5, fontFamily: MONO[500], letterSpacing: 0.4, marginTop: ARA[2] }}>{BUYUK(flightLine)}</Text>}
               </View>
 
-              {/* ROZETLER — hepsi aynı bileşen, aynı yükseklik, üst üste binmez */}
-              <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: SP[2] }}>
-                {!!r.host_badge && <Pill c={C.teal}>• {badgeLabel(t, r.host_badge)}</Pill>}
-                {/* 🔴 v2.87 (madde 9) — "2/2 DOLU" YANINDA KENDİ DURUMUN.
-                    Gökberk: "2'de 2 dolu olmasına rağmen sohbeti aç falan
-                    geliyo... bu ilana kabul alan kişilerden olup olmadığımı
-                    anlamıyorum." Kapasite ("2/2") ile kişisel sonuç
-                    ("kabul edildin") iki AYRI bilgi; kart yalnız birincisini
-                    yüksek sesle söylüyordu. Sağ üstteki durum metni (`lab`)
-                    oturum durumuna göre değiştiği için ("Devam ediyor",
-                    "Tamamlandı") başvurunun kendisini artık anlatmıyordu.
-                    Bu rozet TEK BİR SORUYU cevaplar: bu ilana giren
-                    kişilerden biri ben miyim? */}
-                <ReqStateBadge status={r.status} t={t} />
-              </View>
+              {/* DURUM SATIRI — "doğrulanmış" fildişi, "yanıt bekliyor" şampanya.
+                  (v2.87 md.9: kapasite ile kişisel sonuç ayrı bilgi — ikisi de burada.) */}
+              <DurumSatiri stil={{ marginTop: ARA[14] }} ogeler={[
+                r.host_badge ? { metin: badgeLabel(t, r.host_badge), ton: "olmus" } : null,
+                reqDurumOgesi(r.status, t),
+              ]} />
 
               {/* karar notu — host'un gerekçesi; yoksa "henüz yanıtlamadı" */}
               {!!r.decision_note && (
-                <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[2], lineHeight: 18, fontStyle: "italic" }}>"{r.decision_note}"</Text>
+                <Text style={{ color: C.body, fontSize: FS.lg, marginTop: ARA[12], lineHeight: SATIR(FS.lg, "serif"),
+                               fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.decision_note}”</Text>
               )}
               {r.status === "pending" && !r.responded_at && (
                 <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[2] }}>{t.srNoAnswer}</Text>
@@ -519,7 +497,6 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                     <Text style={{ color: C.red, fontSize: FS.sm }}>{t.cancelReq}</Text>
                   </TouchableOpacity>
                 )}
-              </View>
               </View>
             </View>
           );
@@ -1101,6 +1078,26 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   const myConfirmed = sess && (isHost ? sess.host_confirmed : sess.guest_confirmed);
   // Bu kullanıcı "başlat" dedi mi (çift onaylı başlatmanın kendi tarafı)
   const iStarted = !!(sess && (isHost ? sess.host_started_at : sess.guest_started_at));
+  // v6.3 · PANO E — KARŞI TARAFIN BİNİŞ KARTI. SQL 294 atlamayı/başarısızlığı
+  // yalnız bildirim olarak düşürüyordu; sohbette görünmüyordu. Artık karşı
+  // taraf doğrulamayı atladıysa ya da doğrulayamadıysa, sohbetin üstünde
+  // Gökberk'in yazdığı editoryal not sessizce durur.
+  const [bpDurum, setBpDurum] = useState(null);
+  useEffect(() => {
+    const rid = request && request.id;
+    if (!rid) return undefined;
+    let iptal = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.rpc("binis_karti_durumu", { p_request_id: rid });
+        if (error) { logError("binis_karti_durumu", error); return; }
+        if (!iptal) setBpDurum(data || {});
+      } catch (e) { logError("binis_karti_durumu", e); }
+    })();
+    return () => { iptal = true; };
+  }, [request && request.id, sess && sess.status, bpBitti]);
+  const karsiBp = bpDurum ? bpDurum[isHost ? "guest" : "host"] : null;
+  const karsiAtladi = !!(karsiBp && (karsiBp.method === "bypass" || karsiBp.passed === false));
   const otherStarted = !!(sess && (isHost ? sess.guest_started_at : sess.host_started_at));
   // 23 Eylül · "Gelmedi mi?" — yalnız ben başlattım, karşı taraf başlatmadı
   // ve eşik doldu (varsayılan 15 dk · sunucudaki `gelmedi_bekleme_dk` ile AYNI sayı).
@@ -1304,58 +1301,62 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           /* 4 Eylül — şerit BULUŞMANIN kendisi: dokununca oturum paneli açılır
              (başlatma/onay, iptal, acil durum). Tasarım 06'da başlıkta eylem
              yok; iptal ve SOS panelde — ve panelin kapısı bu şerit. */
+          /* ══════════════════════════════════════════════════════════
+             v6.3 · PANO C (Gökberk onayı) — ŞERİT BİR KALKIŞ PANOSU (FIDS).
+             Üç hücre, hepsi GERÇEK veri: nerede (buluşma noktası ya da
+             salon) · kalkışa (saniyeli yaprak sayaç) · durum (oturumun ya
+             da salon penceresinin hâli). Uçuşun "zamanında" bilgisini
+             bilmiyoruz; o yüzden yazmıyoruz. Pano, başlık yüzeyinin İÇİNDE
+             bir kademe koyu (obsidyen) — katman kuralı: iç yüzey aynı
+             dolguyu taşımaz. Dokununca oturum paneli açılır (4 Eylül).
+             ══════════════════════════════════════════════════════════ */
           <TouchableOpacity hitSlop={TAP.slop} onPress={() => setPanelOpen(true)}
                          accessibilityRole="button" accessibilityLabel={t.sceneSession}
-                         style={{ marginHorizontal: ARA[18], marginTop: SP[4], marginBottom: ARA[14] }}>
-          <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "nowrap", height: 44,
-                         /* tasarım 11px; ölçekte 11 yok, 12 en yakını.
-                            Ölçeğe yeni bir basamak eklemektense 1px sapmayı
-                            kabul ediyorum — ölçek, tek tek doğruluklardan
-                            daha değerli. */
-                         paddingHorizontal: ARA[14],
-                         /* R.sm = 12 — tasarımın `.sabit-serit{border-radius:12px}`i.
-                            Ham 12 yazmıştım; köşe ölçeği nöbetçisi haklı
-                            olarak saydı: aynı sayıyı iki yerde tutmak,
-                            ölçeği bir gün ikisinden birinde bozar. */
-                         borderWidth: 1, borderColor: C.line, borderRadius: R.sm,
-                         backgroundColor: C.camIz }}>
-            {gs ? <Sayac veri={gs} /> : null}
-            {/* Tasarımdaki kutuda sayının yanında NE OLDUĞU yazıyor:
-                "02:41:08 kalkışa". Etiketsiz bir sayaç, kullanıcıya
-                neyin geri sayıldığını tahmin ettirir — ve bu ekranda
-                iki aday var (oturum süresi ve kalkış). */}
-            {gs && gs.tur === "once" ? (
-              <Text style={{ fontSize: FS.sm, color: C.mut, marginLeft: ARA[6] }}>
-                {t.toDeparture}
-              </Text>
-            ) : null}
-            {gs && yer ? (
-              <View style={{ width: 1, height: 14, backgroundColor: C.line2 || C.line,
-                             marginHorizontal: ARA[12] }} />
-            ) : null}
-            {yer ? (
-              <View style={{ flexDirection: "row", alignItems: "center", flexShrink: 1 }}>
-                {/* 🔴 8. tur — TASARIMDA BURADA BİNA DEĞİL KAPI VAR.
-                    `I['kapi']` = kapı çerçevesi + dışarı çıkan ok. 1338
-                    Ionicons glifi ölçüldü: `log-out-outline` 0.633,
-                    `exit-outline` 0.625, benim çizdiğim `business-outline`
-                    0.378. İlk ikisi ölçüm farkı gürültü kadar; ADI doğru
-                    olanı seçtim — "çıkış kapısı" bir buluşma noktasıdır,
-                    "oturumu kapat" değil. Bir sonraki okuyucu adı okuyacak.
-                    🆕 SINIF: "İKİ ADAY ÖLÇÜMDE EŞİTSE, ARALARINDAKİ FARKI
-                    ADLARININ NE ANLATTIĞI BELİRLER." */}
-                <Ikon ad="kapi" boy={13} kutu={15} renk={C.mut} />
-                <Text numberOfLines={1} style={{ fontSize: FS.sm, color: C.mut, marginLeft: ARA[6] }}>
-                  {yer}
-                </Text>
-              </View>
-            ) : null}
-          </View>
+                         style={{ marginHorizontal: ARA[18], marginTop: SP[3], marginBottom: ARA[14] }}>
+            {(() => {
+              // Pano hücresi dar: durum KISA söylenir (tam cümle panelde).
+              const durum = sess && sess.status === "completed" ? t.fidsDone
+                : sess && sess.status === "active" ? t.fidsActive
+                : gs && gs.tur === "bitti" ? t.cdEnded
+                : gs && gs.tur === "acik" ? t.cdNow
+                : t.fidsPlanned;
+              const hucre = (etiket, icerik, esnek) => (
+                <View style={{ flex: esnek || 1, minWidth: 0, marginRight: ARA[8] }}>
+                  <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: "600", letterSpacing: 1.2, color: C.mut }}>{BUYUK(etiket)}</Text>
+                  <View style={{ height: 26, justifyContent: "center", marginTop: ARA[4] }}>{icerik}</View>
+                </View>
+              );
+              return (
+                <View style={{ flexDirection: "row", alignItems: "flex-start", borderRadius: R.md,
+                               backgroundColor: C.bg, ...ustIsik(C.parlama || C.line),
+                               paddingVertical: ARA[10], paddingLeft: ARA[14], paddingRight: ARA[6] }}>
+                  {yer ? hucre(bulusma ? t.fidsMeet : t.fidsLounge,
+                    <Text numberOfLines={1} style={{ fontFamily: MONO[500], fontSize: FS.sm, color: C.ink, letterSpacing: 0.4 }}>{BUYUK(yer)}</Text>, 1.3) : null}
+                  {gs && gs.tur === "once" ? hucre(t.fidsLeft, <Serit metin={gs.metin} boy={13} renk={C.ink} />, 1.5) : null}
+                  {hucre(t.fidsStatus,
+                    <Text numberOfLines={2} style={{ fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6,
+                                                     color: gs && gs.tur === "bitti" ? C.dim : C.goldText }}>{BUYUK(durum)}</Text>, 1)}
+                </View>
+              );
+            })()}
           </TouchableOpacity>
         );
       })()}
       </View>
 
+      {karsiAtladi && !klavye && (
+        <View accessibilityRole="text" style={{ flexDirection: "row", alignItems: "flex-start", marginHorizontal: ARA[18],
+                       marginTop: ARA[10], padding: ARA[14], borderRadius: R.lg,
+                       backgroundColor: C.popupZemin || C.surface, ...ustIsik(C.kenarIsik || C.line) }}>
+          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: C.goldText, marginTop: ARA[6], marginRight: ARA[12] }} />
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={{ color: C.mut, fontSize: FS.micro, fontWeight: "600", letterSpacing: 1.2 }}>
+              {BUYUK(String(t.bpOtherEyebrow).replace("{ad}", shortName(otherName || "")))}
+            </Text>
+            <Text style={{ color: C.body, fontSize: FS.xs + 0.5, lineHeight: 18, marginTop: ARA[4] }}>{t.bpOtherBody}</Text>
+          </View>
+        </View>
+      )}
       {/* Mesajlar — tasarım: ilk balon 150pt'te (132 + 18) */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[18] }}
         /* ══════════════════════════════════════════════════════════
@@ -1418,28 +1419,30 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                   MAT tutuldu — düğmelerin parlak gradyanı yok — ki asıl
                   eylem yine düğmede kalsın.
                   ══════════════════════════════════════════════════════ */}
+              {/* v6.3 · PANO C (Gökberk onayı) — balonlar KİMİN yazdığına göre:
+                  karşı taraf kadife yüzey + üst ışık; sen mat şampanya tint,
+                  mürekkep fildişi. Dolu altın kalktı: ekranın tek altın
+                  kütlesi yine "Oturumu başlat" düğmesi. */}
               {(() => {
-                const hostMu = reqFull?.host_id ? m.from_id === reqFull.host_id : !mine;
                 const kose = {
                   borderTopLeftRadius: 18, borderTopRightRadius: 18,
                   borderBottomRightRadius: mine ? 6 : 18, borderBottomLeftRadius: mine ? 18 : 6,
                 };
                 const ic = (
                   <>
-                    {!hostMu && <View pointerEvents="none" style={{ position: "absolute", left: 14, right: 14, top: 0,
-                                                                   height: 1, backgroundColor: C.btnUstIsik }} />}
-                    <Text style={{ color: hostMu ? C.body : C.onGold, fontSize: FS.base,
+                    <Text style={{ color: C.ink, fontSize: FS.base,
                                    lineHeight: Math.round(FS.base * 1.52) }}>{m.body}</Text>
-                    <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: hostMu ? C.dim : C.onGoldSoluk,
+                    <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: C.mut,
                                    marginTop: ARA[6], letterSpacing: 0.6 }}>
                       {m.created_at ? new Date(m.created_at).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : ""}
                     </Text>
                   </>
                 );
                 const dolgu = { paddingVertical: ARA[12], paddingHorizontal: ARA[14] };
-                return hostMu
-                  ? <DumanliCam stil={[kose, dolgu]}>{ic}</DumanliCam>
-                  : <View style={[kose, dolgu, { backgroundColor: C.goldBtn, overflow: "hidden" }]}>{ic}</View>;
+                return (
+                  <View style={[kose, dolgu, ustIsik(mine ? (C.parlamaGuc || C.line) : (C.parlama || C.line)),
+                                { backgroundColor: mine ? C.sampanyaTint : C.surface, overflow: "hidden" }]}>{ic}</View>
+                );
               })()}
             </View>
           );
@@ -1675,8 +1678,18 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 )}
               </View>
             ) : (
-              <Btn v="gold" onPress={baslatIstegi}
-                label={t.startSessionBtn} a11yLabel={t.startSessionBtn} />
+              <View>
+                {/* v6.3 (pano C) — iki tarafın da basması gerektiği, düğmeden
+                    ÖNCE sessizce söylenir; karşı taraf bastıysa "hazır". */}
+                <Text style={{ alignSelf: "center", color: C.mut, fontSize: FS.xs, marginBottom: ARA[8], marginTop: ARA[4] }}>
+                  {[t.startBothHint,
+                    (sess && (isHost ? sess.guest_started_at : sess.host_started_at))
+                      ? String(t.startOtherReady).replace("{ad}", shortName(otherName || "")) : null,
+                  ].filter(Boolean).join(" · ")}
+                </Text>
+                <Btn v="gold" onPress={baslatIstegi}
+                  label={t.startSessionBtn} a11yLabel={t.startSessionBtn} />
+              </View>
             )
           ) : (
             <Btn v={myConfirmed ? "goldSoft" : "gold"} label={`${myConfirmed ? t.waitingOther : t.completeSessionBtn} · ${liveClock}`} solAd={myConfirmed ? "bekliyor" : undefined} onPress={() => setPanelOpen(true)}
@@ -5448,8 +5461,7 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
     (!yalnizGelen && giden.length) ? String(t.connOutgoingN).replace("{n}", String(giden.length)) : null,
   ].filter(Boolean).join(" · ");
   return (
-    <Katlanir baslik={t.connReqPanelTitle} ozet={ozet} acikBasla={gelen.length > 0}
-      tint={gelen.length ? C.purpleBg : undefined}>
+    <Katlanir seffaf baslik={t.connReqPanelTitle} ozet={ozet} acikBasla={gelen.length > 0}>
       {!!err && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{err}</Text></View>}
       {gelen.map(kart)}
       {!yalnizGelen && giden.map(kart)}

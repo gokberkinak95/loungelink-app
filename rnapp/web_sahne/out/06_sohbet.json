@@ -1,11 +1,20 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "GÜNAYDIN",
   "Gökberk",
   "14",
   "KREDİ",
@@ -21,21 +30,26 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN",
-  "IST · BUGÜN",
+  "BUGÜN · BİNİŞ",
+  "TK1979",
+  "IST",
+  "",
+  "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
-  "Misafir olarak host bul",
+  "SALON",
+  "14:00–18:00",
+  "Host bul",
   "YANITINI BEKLEYENLER",
   "A",
   "Ayşegül D.",
   "bağlantı kurmak istiyor",
-  "\"Seninle tanışmak istiyor.\"",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
-  "\"Uçuşun aynı, güzel.\"",
+  "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -57,132 +71,127 @@
   "Deniz K.",
   "TAV Primeclass · Kapı A12 önü",
   "Bildir",
-  "",
+  "BULUŞMA",
+  "KAPI A12 ÖNÜ",
+  "KALKIŞA",
   "0",
-  "2",
-  ":",
-  "3",
   "6",
   ":",
+  "3",
+  "5",
+  ":",
+  "5",
+  "4",
   "0",
-  "1",
-  "0",
-  "kalkışa",
-  "",
-  "Kapı A12 önü",
+  "9",
+  "DURUM",
+  "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "14:53",
+  "17:22",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "14:55",
+  "17:24",
   "Lounge girişindeyim",
-  "15:00",
+  "17:29",
   "Ben de yeni geçtim, kapıdayım.",
-  "15:00",
+  "17:29",
   "Süper. Kaç numaralı kapıdasın?",
-  "15:01",
+  "17:30",
   "A12. Primeclass girişi tam karşısı.",
-  "15:01",
+  "17:30",
   "Anladım, yürüyen merdivenden çıkıyorum.",
-  "15:01",
+  "17:30",
   "Acele etme, uçuşa daha var.",
-  "15:02",
-  "Kahve ısmarlayayım mı? Burada sıra yok gibi.",
-  "15:02",
-  "Olur, ben sade içiyorum.",
-  "15:02",
-  "Not aldım.",
-  "15:03",
-  "Bu arada salonda çalışma alanı da var, prizli masalar arka tarafta. Uçuşa kadar iş çıkarmak istersen orası daha sessiz oluyor genelde."
+  "17:31"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -171,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -171,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -171,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -171,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -171,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -171,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 40,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 40,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 40,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -203,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -203,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -203,
    "tx": ""
   }
  ],

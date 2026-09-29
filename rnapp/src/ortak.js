@@ -331,6 +331,14 @@ export function CarrierChip({ code, map, t, tone = "gold" }) {
 // başvurusunun ne olduğunu göremiyordu — "dolu" ile "beni almadılar"
 // arasındaki farkı okumanın hiçbir yolu yoktu.
 // Dört durumun DÖRDÜ de yazılıyor; "başvurmadın" da bir cevaptır.
+// v6.3 (md.9 · katman kuralı) — aynı durum, kutusuz: DurumSatiri öğesi.
+export function reqDurumOgesi(status, t) {
+  return status === "accepted"  ? { metin: t.reqStateAccepted, ton: "olmus" }
+       : status === "pending"   ? { metin: t.reqStatePending, ton: "bekliyor" }
+       : status === "declined"  ? { metin: t.reqStateDeclined, ton: "engel" }
+       : status === "cancelled" ? { metin: t.reqStateCancelled, ton: "sessiz" }
+       :                          { metin: t.reqStateNone, ton: "sessiz" };
+}
 export function ReqStateBadge({ status, t }) {
   const [lab, fg, bg] =
       status === "accepted"  ? [t.reqStateAccepted, C.green, C.greenBg]

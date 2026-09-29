@@ -1,11 +1,24 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "GÜNAYDIN",
   "Selin B.",
   "• Doğrulanmış",
   "9",
@@ -25,11 +38,6 @@
   "BU AY",
   "0 misafir · +500 LoungePuan",
   "",
-  "TAV Primeclass · IST",
-  "14:20 – 16:40",
-  "",
-  "Misafir ücretsiz",
-  "Keşfet",
   "Comfort Lounge · SAW",
   "09:00 – 11:30",
   "",
@@ -40,119 +48,124 @@
   "",
   "Misafir ücretsiz",
   "Keşfet",
+  "LOUNGE · IST",
+  "10:00 – 16:00",
+  "",
+  "Misafir ücretli girer",
+  "Keşfet",
   "İSTEKLER",
   "Sana gelen 6 istek",
   "",
   "GELEN İSTEKLER · EŞLEŞME PUANINA GÖRE",
-  "#1 / 6 · %62 uyum",
+  "UYUM",
+  "#1 / 6",
   "G",
   "guest2",
-  "62",
-  "% uyum",
+  "%62",
+  "UYUM",
   "30 Eylül · 10:00–16:00",
-  "",
-  "Kimlik doğrulandı",
-  "",
-  "Telefon",
-  "",
-  "Aynı uçuş",
-  "Güven 38",
-  "\"Merhaba, aynı gün IST'teyim. Aktarmam uzun, sohbet iyi olur.\"",
+  "KİMLİK DOĞRULANDI",
+  "TELEFON",
+  "AYNI UÇUŞ",
+  "GÜVEN 38",
+  "“Merhaba, aynı gün IST'teyim. Aktarmam uzun, sohbet iyi olur.”",
   "Misafiri kabul et",
   "Reddet",
-  "#2 / 6 · %46 uyum",
+  "UYUM",
+  "#2 / 6",
   "G",
   "guest5",
-  "Yolcu",
-  "46",
-  "% uyum",
+  "YOLCU",
+  "%46",
+  "UYUM",
   "1 Ekim · 09:00–12:00",
-  "",
-  "Telefon",
-  "",
+  "TELEFON",
   "TK903",
-  "Güven 67",
-  "\"Merhaba, aynı saatlerde aktarmadayım. Yanınızda bir kişilik yer var mı?\"",
+  "GÜVEN 67",
+  "“Merhaba, aynı saatlerde aktarmadayım. Yanınızda bir kişilik yer var mı?”",
   "Misafiri kabul et",
   "Reddet",
-  "#3 / 6 · %46 uyum",
+  "UYUM",
+  "#3 / 6",
   "G",
   "guest4",
-  "Yolcu",
-  "46",
-  "% uyum",
+  "YOLCU",
+  "%46",
+  "UYUM",
   "1 Ekim · 09:00–12:00",
-  "",
-  "Telefon",
-  "",
+  "TELEFON",
   "TK902",
-  "Güven 58",
-  "\"Merhaba, aynı saatlerde aktarmadayım. Yanınızda bir kişilik yer var mı?\"",
+  "GÜVEN 58",
+  "“Merhaba, aynı saatlerde aktarmadayım. Yanınızda bir kişilik yer var mı?”",
   "Misafiri kabul et",
   "Reddet",
-  "#4 / 6 · %46 uyum",
+  "UYUM",
+  "#4 / 6",
   "G",
-  "guest4"
+  "guest4",
+  "YOLCU",
+  "%46",
+  "UYUM"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 46,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -209,
    "tx": ""
   }
  ],

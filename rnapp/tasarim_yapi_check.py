@@ -125,8 +125,10 @@ IDDIALAR = [
 
     ("uyum sayısı mono",
      r"\.uyum b\{[^}]*JetBrains Mono",
-     "ekranlar_ana.js", r"fontFamily: MONO\[600\][\s\S]{0,120}?\{ms\}",
-     "kartlar arası karşılaştırılan sayı tek genişlikte"),
+     # 🔴 29 EYLÜL · v6.3 — İDDİA BİLEREK DEĞİŞTİ (Gökberk onayı, pano B):
+     # uyum çıplak mono sayı değil, fildişi "%X UYUM" mührü — tek bileşen.
+     "ekranlar_ana.js", r"<UyumMuhru deger=\{ms\}",
+     "v6.3: uyum fildişi mühür (UyumMuhru) — tüm uyum gösterimleri tek bileşenden"),
 
     ("cüzdan sayıları mono",
      r"\.cuzdan b\{[^}]*JetBrains Mono",
@@ -219,8 +221,10 @@ IDDIALAR = [
      # "host balonları dumanlı cam, misafir balonları mat şampanya." Tint
      # kararı geri çevrildi; kanıt artık iki malzemenin kurulmuş olması.
      # Şampanya MAT (gradyansız) — asıl eylemin parlaklığı düğmede kalıyor.
-     "ekranlar_yalin.js", r"hostMu[\s\S]{0,400}?DumanliCam[\s\S]{0,200}?backgroundColor: C\.goldBtn",
-     "v6: host dumanlı cam, misafir mat şampanya — iki malzeme, çizgi yok"),
+     # 🔴 29 EYLÜL · v6.3 (pano C, Gökberk onayı): balon KİMİN yazdığına göre —
+     # karşı taraf kadife yüzey, sen mat şampanya tint; dolu altın yok.
+     "ekranlar_yalin.js", r"backgroundColor: mine \? C\.sampanyaTint : C\.surface",
+     "v6.3: karşı taraf kadife, sen şampanya tint — dolu altın değil"),
 
     ("balon saati mono ve içeride",
      r"\.bal time\{[^}]*JetBrains Mono",

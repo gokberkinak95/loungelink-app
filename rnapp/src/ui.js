@@ -2976,3 +2976,61 @@ export const POPUP_YUZEY = () => ({
   shadowColor: C.golgeRenk, shadowOpacity: 0.55, shadowRadius: 30,
   shadowOffset: { width: 0, height: 14 }, elevation: 16,
 });
+
+// ══════════════════════════════════════════════════════════════════════
+// v6.3 · UYARLANMIŞ ÖNİZLEME (Gökberk onayı, 29 Eylül) — ORTAK PARÇALAR
+//
+// UYUM MÜHRÜ (pano B): uyum artık çıplak bir mono sayı değil, fildişi bir
+// mühür: "%99 / UYUM". Uygulamada uyumun göründüğü HER yer bunu çağırır
+// (Keşfet kartı, gelen istek kartı) — tek kaynak, tek görünüş.
+// RN'de radyal gradyan yok: fildişi disk + sol üstte yumuşak parlama
+// dairesi + altta sıcak gölge halkası aynı hacmi veriyor.
+// Başvurulamıyorsa mühür SUSAR (koyu taş, sessiz metin) — v3.4 kuralı:
+// sıralama ipucu, kural motorunun cevabının önüne geçemez.
+// ══════════════════════════════════════════════════════════════════════
+export function UyumMuhru({ deger, boy = 60, kapali, onPress, a11y, stil, etiket = "UYUM" }) {
+  const d = Math.max(0, Math.min(99, Math.round(Number(deger) || 0)));
+  const ic = (
+    <View style={[{ width: boy, height: boy, borderRadius: boy / 2, overflow: "hidden",
+                    alignItems: "center", justifyContent: "center",
+                    backgroundColor: kapali ? C.surfaceAlt : C.muhurZemin,
+                    borderWidth: 1, borderColor: kapali ? (C.kenarIsik || C.line) : C.muhurGolge,
+                    ...(kapali ? null : ELEV.raised) }, stil]}>
+      {!kapali && (
+        <View pointerEvents="none" style={{ position: "absolute", width: boy * 0.7, height: boy * 0.7,
+          borderRadius: boy * 0.35, left: boy * 0.06, top: boy * 0.04,
+          backgroundColor: C.muhurParlama, opacity: 0.55 }} />
+      )}
+      <Text style={{ fontFamily: F.serifGosterim, fontSize: Math.round(boy * 0.32), lineHeight: Math.round(boy * 0.36),
+                     color: kapali ? C.mut : C.muhurMurekkep, letterSpacing: -0.3 }}>%{d}</Text>
+      <Text style={{ fontSize: Math.max(7, Math.round(boy * 0.115)), fontWeight: "600", letterSpacing: 1.4,
+                     color: kapali ? C.dim : C.muhurEtiket }}>{BUYUK(etiket)}</Text>
+    </View>
+  );
+  if (!onPress) return ic;
+  return (
+    <TouchableOpacity hitSlop={TAP.slop} onPress={onPress} accessibilityRole="button"
+      accessibilityLabel={a11y || `%${d}`} style={{ flexShrink: 0 }}>{ic}</TouchableOpacity>
+  );
+}
+
+// DURUM SATIRI (katman kuralı · md.9): hap kutusu yok. Durum, harf aralıklı
+// çıplak bir editoryal satır: fildişi = olmuş, şampanya = bekliyor,
+// kil = engel/ret. Aralık 24 pt. Rozet kutuları iç içe dördüncü bir yüzey
+// açıyordu; satır bunu yüzeysiz söylüyor.
+export function DurumSatiri({ ogeler, stil }) {
+  const liste = (ogeler || []).filter(o => o && o.metin);
+  if (!liste.length) return null;
+  const renk = (ton) => ton === "olmus" ? C.ink : ton === "bekliyor" ? C.goldText
+    : ton === "engel" ? C.red : C.mut;
+  return (
+    <View style={[{ flexDirection: "row", flexWrap: "wrap", alignItems: "center" }, stil]}>
+      {liste.map((o, i) => (
+        <Text key={i} style={{ fontSize: FS.micro + 0.5, fontWeight: "500", letterSpacing: 1.3,
+                               color: renk(o.ton), marginRight: ARA[22], marginTop: ARA[4] }}>
+          {BUYUK(String(o.metin))}
+        </Text>
+      ))}
+    </View>
+  );
+}

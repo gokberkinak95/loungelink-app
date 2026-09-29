@@ -262,9 +262,21 @@ function IsikBulutlari() {
                  transform: [{ translateX: w.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.2] }) },
                              { translateY: w.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.15] }) }] }} />
       {ZERRE.map((z, i) => <TozZerresi key={i} {...z} G={G} Y={Y} />)}
+      {/* 29 Eylul (Gokberk md.3) - SAYFA ALT KENARDA ZEMINE SONER.
+          Olculdu (03/00/05/10.jpg): mor-altin bulut sayfanin sol altinda
+          RGB 36-44'e cikiyor, alttaki sekme seridi 11 - cubuk bulutu keskin
+          bir cizgiyle kesiyor, "siyah dikdortgen" hissi buradan. Cubuga
+          dokunmadan: son 64 pt'de 16 kademe, bulut ve zerre zemin rengine
+          (C.bg = seridin rengi) iner. Kademe basina fark < 3/255: bant gorunmez. */}
+      {ALT_SONUM.map((o, i) => (
+        <View key={"s" + i} style={{ position: "absolute", left: 0, right: 0, height: 4,
+                                     bottom: (ALT_SONUM.length - 1 - i) * 4,
+                                     backgroundColor: C.bg, opacity: o }} />
+      ))}
     </View>
   );
 }
+const ALT_SONUM = Array.from({ length: 16 }, (_, i) => Math.pow((i + 1) / 16, 1.6));
 
 export function Atmosfer({ tur = "is", ufuk = 58, kaynak, yogunluk }) {
   const [, tazele] = useState(0);

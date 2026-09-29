@@ -241,15 +241,19 @@ export function CarrierPicker({
 //   · `enFazla`     — açık gövde ekranın bu oranını geçmez, içerik kayar
 //   · `acik`/`onAcik` — dışarıdan yönetilebilir (verilmezse kendi durumu)
 export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla = false, not,
-                           buyukBaslik, onKapat, enFazla, ikon, stil, bilgi }) {
+                           buyukBaslik, onKapat, enFazla, ikon, stil, bilgi, seffaf }) {
   const [acik, setAcik] = useState(!!acikBasla);
   // 29 Eylül (Gökberk md.1) — `bilgi`: sağ üstte (i); dokununca kutunun ne
   // anlama geldiğini TEK cümleyle söyler. Kutu açılıp kapanmadan da okunur.
   const [bilgiAcik, setBilgiAcik] = useState(false);
   const degis = () => setAcik(a => !a);
   const govdeYuk = enFazla ? Math.round(Dimensions.get("window").height * enFazla) : undefined;
+  // 29 Eylul (Gokberk md.9) - KATMAN KURALI: ic ice iki yuzey ayni dolguyu
+  // tasimaz. Icinde KART listeleyen panel (Istekler, Baglantilarim) `seffaf`:
+  // kutusu yok, baslik dogrudan zeminin ustunde durur; tek yuzey icteki kart.
+  const pay = seffaf ? 0 : SP[3] + 2;
   const govde = (
-    <View style={{ paddingHorizontal: SP[3] + 2, paddingBottom: SP[3] + 2 }}>
+    <View style={{ paddingHorizontal: pay, paddingBottom: seffaf ? 0 : SP[3] + 2 }}>
       {children}
       {!!not && (
         <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: SP[2], lineHeight: 16 }}>{not}</Text>
@@ -259,18 +263,19 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
   return (
     <View style={[
                   // 29 Eylül — tek kenarlı ışık Android'de köşeyi izlemiyordu (md.4 ile aynı kök).
-                  cizgi ? { borderWidth: 1, borderColor: cizgi }
+                  seffaf ? { borderWidth: 0 }
+                  : cizgi ? { borderWidth: 1, borderColor: cizgi }
                   : Platform.OS === "android" ? { borderWidth: StyleSheet.hairlineWidth, borderColor: C.parlama || C.line }
                   : { borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || C.line },
                   {
                     borderRadius: R.md, marginBottom: ARA[14], overflow: "hidden",
-                    backgroundColor: tint || C.card }, stil]}>
+                    backgroundColor: seffaf ? "transparent" : (tint || C.card) }, stil]}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity hitSlop={TAP.slop} onPress={degis}
           accessibilityRole="button" accessibilityState={{ expanded: acik }}
           accessibilityLabel={typeof baslik === "string" ? baslik : undefined}
           style={{ flex: 1, flexDirection: "row", alignItems: "center",
-                   paddingVertical: ARA[14], paddingLeft: SP[3] + 2, paddingRight: SP[2], minHeight: 48 }}>
+                   paddingVertical: ARA[14], paddingLeft: seffaf ? ARA[2] : SP[3] + 2, paddingRight: SP[2], minHeight: 48 }}>
           {!!ikon && <View style={{ marginRight: ARA[10] }}>{ikon}</View>}
           <View style={{ flex: 1, paddingRight: SP[2] }}>
             <Text style={buyukBaslik

@@ -37,9 +37,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
-import { BosDurum, ChipIcon, ConfirmModal, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY } from "./ui";
+import { BosDurum, ChipIcon, ConfirmModal, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri } from "./ui";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
-import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
 import { ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
@@ -1346,15 +1346,15 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 accessibilityRole={mine ? undefined : "button"}
                 accessibilityLabel={mine ? undefined : (h.name || "")}
                 style={{ flexDirection: "row", alignItems: "flex-start", flex: 1, minWidth: 0 }}>
-                <View style={{ width: 44, height: 44, marginRight: SP[3] }}>
+                <View style={{ width: 48, height: 48, marginRight: SP[3] }}>
                   {/* 🔴 8. tur — disk tasarımda ALTIN DEĞİL, mor-gri bir taş
                       (`linear-gradient(145deg,#2B2430,#1E1A22)`). `C.goldSoft`
                       pikselde (44,37,20) veriyordu, tasarım (39,33,43). Harf
                       altın kalıyor — kontrast oradan geliyor, zeminden değil. */}
-                  <View style={{ width: 44, height: 44, borderRadius: R.full, backgroundColor: C.avatarBg || C.goldSoft,
+                  <View style={{ width: 48, height: 48, borderRadius: R.full, backgroundColor: C.avatarBg || C.goldSoft,
                                  borderWidth: 1, borderColor: C.line2 || C.line,
                                  alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                    {h.photo ? <Image source={{ uri: h.photo }} style={{ width: 44, height: 44 }} />
+                    {h.photo ? <Image source={{ uri: h.photo }} style={{ width: 48, height: 48 }} />
                       : <Text style={{ fontSize: FS.title, fontWeight: "600", color: C.goldText,
                                        fontFamily: F.serif }}>
                           {(h.name || "?").charAt(0).toUpperCase()}</Text>}
@@ -1383,12 +1383,12 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       🆕 SINIF: "İKİ ŞEYİ AYIRMAK İÇİN ÖNCE BOYUTA
                       UZANMA — AİLE, AĞIRLIK VE RENK DAHA UCUZ VE DAHA
                       SESSİZ AYIRICILARDIR." */}
-                  <Text numberOfLines={1} style={{ fontFamily: F.serifGosterim, fontSize: FS.title,
-                                                   color: C.ink, lineHeight: SATIR(FS.title, "serif") }}>
+                  <Text numberOfLines={1} style={{ fontFamily: F.serifGosterim, fontSize: FS.display,
+                                                   color: C.ink, lineHeight: SATIR(FS.display, "serif"), letterSpacing: -0.6 }}>
                     {h.name || "—"}{mine ? ` ${t.you}` : ""}
                   </Text>
                   {!!(kartAdi[r.id] || h.prof) && (
-                    <Text numberOfLines={1} style={{ fontSize: FS.xs, color: C.mut, marginTop: ARA[3] }}>{kartAdi[r.id] || h.prof}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: FS.micro + 0.5, letterSpacing: 1.2, color: C.mut, marginTop: ARA[3] }}>{BUYUK(kartAdi[r.id] || h.prof)}</Text>
                   )}
                   {kurucu[r.host_id] ? (
                     <Text numberOfLines={1} style={{ fontFamily: MONO[500], fontSize: FS.micro, letterSpacing: 1,
@@ -1431,7 +1431,6 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
               {!mine ? (() => {
                 const ms = r.match_score || 0;
                 const kapali = !!r.blocks_request;
-                const mc = kapali ? C.dim : ms >= 85 ? C.green : ms >= 65 ? C.gold : C.muted;
                 return (
                   <TouchableOpacity hitSlop={TAP.slop}
                     /* 🔴 30 AĞUSTOS · 2. TUR — SAYIYA DOKUNMAK ARTIK
@@ -1443,8 +1442,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     onPress={() => setKural({ avail: r, skor: ms })}
                     accessibilityRole="button"
                     accessibilityLabel={`${t.matchScoreLabel}: ${ms}`}
-                    style={{ alignItems: "flex-end", marginLeft: ARA[12], flexShrink: 0,
-                             opacity: kapali ? 0.55 : 1 }}>
+                    style={{ alignItems: "flex-end", marginLeft: ARA[12], flexShrink: 0 }}>
                     {/* 🔴 30 Ağu · Gece sistemi — HALKA KALDIRILDI, SAYI MONO.
                         Tasarımda bu sayının çevresinde ÇERÇEVE YOK: sağa
                         yaslanmış iri bir mono sayı ve altında harf aralıklı
@@ -1463,11 +1461,9 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                         Tasarımın çizmediği bir durumu tasarıma sormak yerine
                         ürünün kendi kuralını koruyorum — sayının sustuğu
                         yer, kural motorunun konuştuğu yerdir. */}
-                    <Text style={{ color: mc, fontSize: FS.title, fontWeight: "600",
-                                   fontFamily: MONO[600], lineHeight: Math.round(FS.title * 1.3) }}>{ms}</Text>
-                    <Text style={{ fontSize: FS.micro, color: C.dim, marginTop: ARA[4],
-                                   fontWeight: "600",
-                                   letterSpacing: 1.4, }}>{BUYUK(t.matchWord)}</Text>
+                    {/* v6.3 (pano B · Gökberk onayı) — MONO SAYI YERİNE UYUM MÜHRÜ.
+                        Kapalı ilanda mühür susar (koyu taş); açıkta fildişi. */}
+                    <UyumMuhru deger={ms} boy={60} kapali={kapali || bitti} etiket={t.matchWord} />
                   </TouchableOpacity>
                 );
               })() : null}
@@ -1477,15 +1473,20 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 uzun salon adları (`TAV Primeclass Lounge Dış Hatlar`) tek
                 satıra sığmadığı için ya kırpılıyor ya sayıyı sıkıştırıyordu.
                 Kendi satırında iki satıra kadar nefes alabiliyor. */}
-            <Text numberOfLines={2} style={{ fontSize: FS.lg, fontWeight: "600", color: C.ink,
-                                             marginTop: SP[3], lineHeight: SATIR(FS.lg) }}>
-              {r.lounge_name || r.airport_code}
-            </Text>
+            {/* v6.3 (pano B) — kişi ile salon arasında KUTU değil 1 px ışık
+                çizgisi; salon adı serif (kural hükmü + mekân = editoryal). */}
+            <View style={{ marginTop: ARA[14], paddingTop: ARA[14], borderTopWidth: StyleSheet.hairlineWidth,
+                           borderTopColor: C.kenarIsik || C.line }}>
+              <Text numberOfLines={2} style={{ fontSize: FS.title, fontFamily: F.serifGosterim, color: C.ink,
+                                               lineHeight: SATIR(FS.title, "serif"), letterSpacing: -0.3 }}>
+                {r.lounge_name || r.airport_code}
+              </Text>
+            </View>
             {/* ── kart-term ── havalimanı · tarih · saat aralığı.
                 Tasarımdaki "Dış hatlar · Kapı A12" satırının bizdeki
                 karşılığı. Uçuş numarası varsa sonuna ekleniyor. */}
-            <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[4] }}>
-              {r.airport_code} · {fmtLongDate(r.avail_date, lang)} · {String(r.time_from).slice(0,5)}–{String(r.time_to).slice(0,5)}
+            <Text style={{ color: C.mut, fontSize: FS.xs + 0.5, marginTop: ARA[4], fontFamily: MONO[500], letterSpacing: 0.4 }}>
+              {BUYUK(`${r.airport_code} · ${fmtLongDate(r.avail_date, lang)}`)} · {String(r.time_from).slice(0,5)}–{String(r.time_to).slice(0,5)}
             </Text>
             {/* 🔴 v2.29 — "GIRINCE NE VAR?" Kural motoru "girebilir misin"i
                 cevapliyordu; bu satir digerini cevapliyor. Misafirin salonu
@@ -1552,8 +1553,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     {(gpPolitika || gpEtiket)
                       ? <KararCipi t={t} politika={gpPolitika} etiket={gpEtiket}
                                    onPress={bg && bg.info ? acKutu : undefined} /> : null}
-                    {r.flight_number ? <Olgu metin={r.flight_number} /> : null}
-                    {r.same_flight ? <Olgu metin={t.sameFlight} /> : null}
+                    {/* v6.3 (pano B) — "TK1979 · AYNI UÇUŞ": iki olgu tek şampanya satırı. */}
+                    {r.flight_number || r.same_flight
+                      ? <Olgu metin={[r.flight_number, r.same_flight ? t.sameFlight : null].filter(Boolean).join(" · ")}
+                              renk={r.same_flight ? C.goldText : undefined} /> : null}
                     {/* v6.1 (md.32) — çip zaten "Dolu" diyorsa ikinci kez yazılmaz. */}
                     {r.fully_booked && !engel ? <Olgu metin={t.fullyBooked} renk={C.amber} /> : null}
                   </>
@@ -1735,7 +1738,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                 )}
                 {/* MVP: nokta gostergesi + "2 açık" + eslesme yuzdesi ayni satirda */}
                 <Text style={{ color: C.green, fontSize: FS.sm, marginTop: SP[1], fontWeight: "600" }}>
-                  {"•".repeat(Math.max(0, (target?.slots || 0) - (target?.filled || 0)))}{"·".repeat(Math.min(target?.slots || 0, target?.filled || 0))} {Math.max(0, (target?.slots || 0) - (target?.filled || 0))} {t.openWord} · {target?.match_score || 0}% {t.matchPct}
+                  {"•".repeat(Math.max(0, (target?.slots || 0) - (target?.filled || 0)))}{"·".repeat(Math.min(target?.slots || 0, target?.filled || 0))} {Math.max(0, (target?.slots || 0) - (target?.filled || 0))} {t.openWord} · {t.trustShort} {target?.host_score || 0}
                 </Text>
               </View>
               {/* ══════════════════════════════════════════════════════
@@ -1750,13 +1753,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                   🆕 SINIF: "ETİKETSİZ BİR SAYI KENDİNİ TANIMLAMAZ —
                   EKRANDAKİ EN VURGULU KELİMENİN ANLAMINI ÜSTLENİR."
                   ══════════════════════════════════════════════════════ */}
-              <View style={{ alignItems: "center", marginLeft: SP[2] }}>
-                <View style={{ width: 42, height: 42, borderRadius: R.full, borderWidth: 2, borderColor: C.gold, alignItems: "center", justifyContent: "center" }}>
-                  <Text style={{ color: C.gold, fontWeight: "700", fontSize: FS.base }}>{target?.host_score || 0}</Text>
-                </View>
-                <Text style={{ color: C.mutedAA, fontSize: FS.micro, fontWeight: "600",
-                               letterSpacing: 0.6, marginTop: ARA[3] }}>{BUYUK(t.trustShort)}</Text>
-              </View>
+              {/* v6.3 (pano B) — çember artık UYUM MÜHRÜ; güven puanı soldaki
+                  satırda etiketiyle ("GÜVEN 38"). md.15 dersi korunuyor: iki
+                  sayı da etiketli, hiçbiri diğerinin adını çalmıyor. */}
+              <UyumMuhru deger={target?.match_score || 0} boy={52} etiket={t.matchWord}
+                a11y={`${t.matchScoreLabel}: ${target?.match_score || 0}`} stil={{ marginLeft: SP[2] }} />
             </View>
 
             {/* 🔴 MVP: uygun seyahat YOKSA en ustte uyari + cikis yolu.
@@ -4965,7 +4966,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
     <View style={{ marginTop: tamEkran ? 0 : ARA[18], marginBottom: ARA[14] }}>
       {/* Tam ekranda başlık `Hdr`de; ikinci kez yazmak tekrar olurdu. */}
       {!tamEkran && (
-        <Text style={{ fontSize: FS.xs, fontWeight: "700", color: C.gold, letterSpacing: 1.5, marginBottom: SP[2] }}>
+        <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", color: C.mut, letterSpacing: 1.4, marginBottom: ARA[10] }}>
           {t.actionNeeded}
         </Text>
       )}
@@ -4975,8 +4976,6 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
         const isInv = it.kind === "invite";
         // gece sisteminde mor yok: davet ALTIN, bağlantı TEAL (tasarım 13'ün
         // "Kabul et" çipiyle aynı aile).
-        const accent = isInv ? C.gold : C.teal;
-        const accentBg = isInv ? C.goldSoft : C.tealBg;
         // 🔴 `t.intents` bir ÇİFT LİSTESİ ([["coffee","…"],…]), sözlük değil:
         // `t.intents[it.subtitle]` hep undefined kalıyor, ekrana ham kod
         // ("· connect") düşüyordu. Listede olmayan niyet (varsayılan
@@ -4998,19 +4997,22 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
         return (
         <View key={it.id} style={[S.card, ustIsik(C.parlamaGuc)]}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ width: 36, height: 36, borderRadius: R.full, backgroundColor: accentBg, alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[10] }}>
-              {it.from_photo ? <Image source={{ uri: it.from_photo }} style={{ width: 36, height: 36 }} />
-                : <Text style={{ fontWeight: "700", color: accent }}>{shortName(it.from_name).charAt(0)}</Text>}
+            {/* v6.3 (pano A) — satır: taş avatar + serif ad + sessiz alt satır.
+                Renkli disk ve not kutusu kalktı (katman kuralı). */}
+            <View style={{ width: 40, height: 40, borderRadius: R.full, backgroundColor: C.surfaceAlt, ...ustIsik(C.parlama || C.line),
+                           alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[14] }}>
+              {it.from_photo ? <Image source={{ uri: it.from_photo }} style={{ width: 40, height: 40 }} />
+                : <Text style={{ fontFamily: F.serifGosterim, color: C.ink, fontSize: FS.lg }}>{shortName(it.from_name).charAt(0)}</Text>}
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{shortName(isInv ? (it.from_name || it.title) : (it.title || it.from_name))}</Text>
-              <Text style={{ color: accent, fontSize: FS.sm, marginTop: 0 }}>{subLine}</Text>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text numberOfLines={1} style={{ fontFamily: F.serifGosterim, color: C.ink, fontSize: FS.title,
+                                               lineHeight: SATIR(FS.title, "serif"), letterSpacing: -0.3 }}>{shortName(isInv ? (it.from_name || it.title) : (it.title || it.from_name))}</Text>
+              <Text style={{ color: C.mut, fontSize: FS.xs + 0.5, marginTop: 0, lineHeight: 17 }}>{subLine}</Text>
             </View>
           </View>
           {!!it.note && (
-            <View style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, padding: ARA[10], marginTop: SP[2] }}>
-              <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 17, fontStyle: "italic" }}>"{it.note}"</Text>
-            </View>
+            <Text style={{ color: C.body, fontSize: FS.base, lineHeight: SATIR(FS.base, "serif"), marginTop: ARA[10],
+                           fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{it.note}”</Text>
           )}
           <View style={{ flexDirection: "row", gap: SP[2], marginTop: ARA[10] }}>
             {/* Varyant `accent`in AYNI KOŞULUNDAN türüyor (isInv → altın,
@@ -5018,7 +5020,7 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
             <Btn v={isInv ? "gold" : "purple"} sm label={soru ? t.anAnswer : t.accept}
               onPress={() => respond(it.kind, it.id, true)}
               disabled={busy === it.id} busy={busy === it.id} style={{ flex: 1 }} />
-            <Btn v="muted" sm label={t.decline} onPress={() => respond(it.kind, it.id, false)}
+            <Btn v="ghost" sm label={t.decline} onPress={() => respond(it.kind, it.id, false)}
               disabled={busy === it.id} style={{ flex: 1 }} />
           </View>
         </View>
@@ -6394,7 +6396,8 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
       // yani oturumsuz kullanıcı için fazladan bir tur da eklenmiyor.
       const [vRes, { data, error }] = await Promise.all([
         uid ? supabase.from("visits")
-          .select("airport_code, visit_date").eq("user_id", uid)
+          .select("airport_code, visit_date, destination, time_from, time_to, flight_number, terminal, scheduled_departure")
+          .eq("user_id", uid)
           .gte("visit_date", yerelGun())
           .order("visit_date").limit(1)
           : Promise.resolve({ data: null, error: null }),
@@ -6416,6 +6419,75 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
     ? nabiz.find(x => x.airport_code === benimAp) : null;
   const enCanli = Array.isArray(nabiz)
     ? nabiz.filter(x => x.durum === "canli").slice(0, 3) : [];
+
+  // ══════════════════════════════════════════════════════════════════
+  // v6.3 · PANO A (Gökberk onayı, 29 Eylül) — SEYAHAT VARKEN KART BİR
+  // BİNİŞ KARTIDIR: üstte havalimanı → varış (iri mono), ortada delikli
+  // kesim, altta salon penceresi / kalkış / terminal ve "Host bul".
+  // Hücreler YALNIZ veri varsa çizilir; boş hücreye tire uydurulmaz.
+  // ══════════════════════════════════════════════════════════════════
+  if (yakin && yakin.visit_date) {
+    const gun = Math.max(0, Math.round((new Date(yakin.visit_date) - new Date(yerelGun())) / 86400000));
+    const kas = gun === 0 ? `${t.calmEyebrow} · ${t.bkBoarding}`
+      : `${t.nextTripEyebrow} · ${gun === 1 ? t.tripTomorrow : String(t.tripDaysLeft).replace("{n}", String(gun))}`;
+    const sa = (v) => v ? String(v).slice(0, 5) : null;
+    let kalkis = null;
+    if (yakin.scheduled_departure) {
+      const d = new Date(yakin.scheduled_departure);
+      if (!isNaN(d.getTime())) kalkis = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    }
+    const hucreler = [
+      (yakin.time_from && yakin.time_to) ? [t.bkCellLounge, `${sa(yakin.time_from)}–${sa(yakin.time_to)}`] : null,
+      kalkis ? [t.bkCellDep, kalkis] : null,
+      yakin.terminal ? [t.bkCellTerm, String(yakin.terminal)] : null,
+    ].filter(Boolean);
+    const varis = yakin.destination ? String(yakin.destination).trim() : "";
+    return (
+      <View style={{ backgroundColor: C.surface, borderRadius: R.xl, marginTop: ARA[14],
+                     ...ustIsik(C.parlamaGuc), ...ELEV.raised }}>
+        <View style={{ paddingHorizontal: ARA[20], paddingTop: ARA[18], paddingBottom: SP[4] }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" }}>
+            <Text style={{ color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(kas)}</Text>
+            {!!yakin.flight_number && (
+              <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6 }}>{BUYUK(yakin.flight_number)}</Text>
+            )}
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[10] }}>
+            <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.display + 6, letterSpacing: 0.6 }}>{yakin.airport_code}</Text>
+            {!!varis && (<>
+              <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: ARA[14] }}>
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <View key={i} style={{ width: 3, height: 1, backgroundColor: C.goldText, marginRight: ARA[4], opacity: 0.5 + i * 0.06 }} />
+                ))}
+                <Ikon ad="sag" boy={12} renk={C.goldText} />
+              </View>
+              <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.display + 6, letterSpacing: 0.6 }}>{varis}</Text>
+            </>)}
+          </View>
+          <Text style={{ color: C.body, fontSize: FS.sm, marginTop: ARA[8], lineHeight: 19 }}>{t.heroWithTripSub}</Text>
+        </View>
+        {/* Delikli kesim: kartı iki koçana ayıran kesik çizgi. */}
+        <View style={{ flexDirection: "row", marginHorizontal: SP[4], overflow: "hidden" }}>
+          {Array.from({ length: 44 }).map((_, i) => (
+            <View key={i} style={{ width: 4, height: 1, marginRight: ARA[4], backgroundColor: C.kenarIsik || C.line }} />
+          ))}
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                       paddingHorizontal: ARA[20], paddingTop: ARA[14], paddingBottom: ARA[18] }}>
+          <View style={{ flexDirection: "row", flex: 1, minWidth: 0, marginRight: SP[2] }}>
+            {hucreler.map(([et, d]) => (
+              <View key={et} style={{ marginRight: ARA[18] }}>
+                <Text style={{ color: C.mut, fontSize: FS.micro, letterSpacing: 1.2 }}>{BUYUK(et)}</Text>
+                <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.sm, marginTop: ARA[2] }}>{d}</Text>
+              </View>
+            ))}
+          </View>
+          <Btn v="gold" sm label={role === "host" ? t.calmFind : t.bkFindHost} onPress={onDiscover}
+            a11yLabel={role === "host" ? t.calmFind : t.fhAsGuest} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.line,
@@ -6622,7 +6694,7 @@ export function HomeConnections({ t, session, onOpenChat, tamEkran, tazele }) {
   const ozetMetni = rows.slice(0, 3).map(r => shortName(r.name)).join(", ")
     + (rows.length > 3 ? ` +${rows.length - 3}` : "");
   return (
-    <Katlanir baslik={t.myConnections} sayi={rows.length} ozet={ozetMetni}>
+    <Katlanir seffaf baslik={t.myConnections} sayi={rows.length} ozet={ozetMetni}>
       {!!sohbetHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{sohbetHatasi}</Text></View>}
       {rows.map(r => (
         <View key={r.crId} style={[S.card, { flexDirection: "row", alignItems: "center", borderColor: "transparent" }]}>
@@ -6985,14 +7057,19 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
           ══════════════════════════════════════════════════════════════ */}
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: ARA[22],
                                            paddingBottom: ARA[34] }}>
-        <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4,
-                       color: C.gold, marginTop: ARA[26] }}>
-          {BUYUK(t.ruleEyebrow)}
-        </Text>
-        <Text style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, letterSpacing: -0.4,
-                       lineHeight: SATIR(FS.hero + 2, "serif"), color: C.ink, marginTop: ARA[8] }}>
-          {String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "flex-end", marginTop: ARA[26] }}>
+          <View style={{ flex: 1, minWidth: 0, marginRight: ARA[12] }}>
+            <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4, color: C.gold }}>
+              {BUYUK(t.ruleEyebrow)}
+            </Text>
+            <Text style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, letterSpacing: -0.4,
+                           lineHeight: SATIR(FS.hero + 2, "serif"), color: C.ink, marginTop: ARA[8] }}>
+              {String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
+            </Text>
+          </View>
+          {/* v6.3 (pano B) — Keşfet kartındaki mührün aynısı: dokunulan şey burada açılıyor. */}
+          <UyumMuhru deger={gosterilenSkor} boy={66} etiket={t.matchWord} kapali={!!sonaErdi} />
+        </View>
         {/* 13 Eylül md.4 — sayıyı sıfırlayan/kısan şartı adıyla söyle. */}
         {!!sifirlayan && (
           <Text style={{ fontSize: FS.sm, lineHeight: 19, color: C.redInk, marginTop: ARA[8] }}>

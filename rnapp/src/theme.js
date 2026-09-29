@@ -97,6 +97,15 @@ export const C = {
 // bir yeniden yapilandirma sirasinda ekranlar bir anda bozulmuyor.
 C.mut = C.muted;
 C.paper = C.bg;
+// v6.3 (pano C) - kendi mesaj balonun: mat sampanya tint (acik temada altin %12).
+C.sampanyaTint = "rgba(184,148,58,0.12)";
+// v6.3 (pano B) - UYUM MUHRU: fildisi disk; iki temada da ayni (muhur bir nesne,
+// zemine gore degismez). Murekkep 3A2F22 disk uzerinde 10.6:1.
+C.muhurZemin = "#E6DCC8";
+C.muhurParlama = "#FBF7EF";
+C.muhurGolge = "#BFAF8C";
+C.muhurMurekkep = "#3A2F22";
+C.muhurEtiket = "#6B5A40";
 C.goldSoft = C.goldBg;
 
 // ============================================================================
@@ -1953,6 +1962,12 @@ KOYU.goldSoft = V61_SECILI;
 // zemin + elevation Android'de kartin icinde koseli ikinci bir kutu ciziyordu
 // (olculdu: ic RGB 36-43, kenar bandi 31-35). #171512 + %3 #D6C3A0 = #1D1A16.
 KOYU.altinIz03 = "#1D1A16";
+KOYU.sampanyaTint = "rgba(214,195,160,0.14)";   // pano C: kendi balonun
+KOYU.muhurZemin = "#E6DCC8";
+KOYU.muhurParlama = "#FBF7EF";
+KOYU.muhurGolge = "#BFAF8C";
+KOYU.muhurMurekkep = "#3A2F22";
+KOYU.muhurEtiket = "#6B5A40";
 KOYU.redBg = "#221816"; KOYU.hataBg = KOYU.redBg;
 KOYU.parlama = "rgba(244,239,230,0.06)";
 KOYU.parlamaGuc = "rgba(244,239,230,0.12)";

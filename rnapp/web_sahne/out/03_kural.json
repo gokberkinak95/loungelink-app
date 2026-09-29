@@ -18,18 +18,19 @@
   "LOUNGELINK",
   "KURAL MOTORU",
   "Bu eşleşme",
-  "neden %99?",
-  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Birlikte varış gerekir · kapıda beraber olun",
-  "KART · MİLES&SMİLES ELİTE PLUS",
+  "neden %88?",
+  "%88",
+  "UYUM",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: İç hatlar salonu · varış noktanı gir",
+  "KART · PRİORİTY PASS PRESTİGE",
   "SALON UYUMLULUĞU",
   "",
-  "Misafir hakkı var",
-  "1 KİŞİLİK",
+  "Misafir ziyareti 30 EUR (kisi basi, ziyaret basina). Uc uyelik planinin UCUNDE de ayni: Standard, Standard Plus ve Prestige. Prestige'de UYENIN kendi girisleri sinirsiz ucretsiz ama MISAFIR YINE 30 EUR — yani misafir hakki daha pahali plan alarak KAZANILAMIYOR. Ucret uyenin kartindan tahsil edilir.",
   "",
-  "2 koşul",
+  "3 koşul",
   "UÇUŞ EŞLEŞMESİ",
-  "Birlikte varış gerekir",
-  "KAPIDA BERABER OLUN",
+  "İç hatlar salonu",
+  "VARIŞ NOKTANI GİR",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",
@@ -47,92 +48,92 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 29,
+   "sol": 32,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 29,
+   "sol": 32,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 29,
+   "sol": 32,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -197,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -197,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -197,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 29,
+   "sol": 32,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 29,
+   "sol": 32,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 29,
+   "sol": 32,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -197,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -197,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -197,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 49,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 49,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 49,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -211,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -211,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -211,
    "tx": ""
   }
  ],
