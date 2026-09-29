@@ -214,18 +214,20 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
   // Kapsam verilmediyse sıradaki seyahat okunur ve sıralama ipucu olur
   // (filtre DEĞİL — liste yine tam, önce uyanlar).
   const [otoTrip, setOtoTrip] = useState(null);
+  const [bitenAcik, setBitenAcik] = useState(false);   // 29 Eylül · "Bugün sona erenler" katlı
   useEffect(() => {
     if (scope?.sortTrip || !session?.user?.id) return;
     let canli = true;
     (async () => {
       const today = yerelGun();
       const { data, error } = await supabase.from("visits")
-        .select("airport_code, visit_date, time_from")
+        .select("airport_code, visit_date, time_from, scheduled_departure")
         .eq("user_id", session.user.id).gte("visit_date", today)
         .order("visit_date").limit(1);
       if (error) { logError("disc_oto_seyahat", error); return; }
       const v = data && data[0];
-      if (canli && v) setOtoTrip({ airport: v.airport_code, date: v.visit_date, timeFrom: String(v.time_from || "").slice(0, 5) });
+      if (canli && v) setOtoTrip({ airport: v.airport_code, date: v.visit_date, timeFrom: String(v.time_from || "").slice(0, 5),
+                                   kalkis: v.scheduled_departure || null });
     })();
     return () => { canli = false; };
   }, [scope?.sortTrip, session?.user?.id]);
@@ -777,9 +779,21 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     // TASARIMIN REDDETTİĞİ BİR CÜMLE DEĞİL — BENİM UNUTTUĞUM BİR
     // İŞLEVDİR."
     if (sortTrip && sortTrip.date) {
-      const gs = geriSayim(sortTrip.date, sortTrip.timeFrom || "00:00", null, t);
+      // 🔴 29 EYLÜL (ÖLÇÜLDÜ) — "Kalkışına 47 dk" KALKIŞI SAYMIYORDU: sayaç
+      // seyahatin `time_from`unu (havalimanında olacağın pencerenin başı)
+      // sayıyordu. Gerçek kalkış (`scheduled_departure`) biliniyorsa onu
+      // sayar ve "Kalkışına" der; bilinmiyorsa pencereyi sayar ve öyle adlandırır.
+      let kd = null, ks = null;
+      if (sortTrip.kalkis) {
+        const d = new Date(sortTrip.kalkis);
+        if (!isNaN(d.getTime())) {
+          kd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+          ks = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+        }
+      }
+      const gs = kd ? geriSayim(kd, ks, null, t) : geriSayim(sortTrip.date, sortTrip.timeFrom || "00:00", null, t);
       if (gs && gs.tur === "once" && gs.metin) {
-        parcalar.push(String(t.discToDeparture || "{s}").replace("{s}", gs.ham || gs.metin));
+        parcalar.push(String((kd ? t.discToDeparture : t.discToVisit) || "{s}").replace("{s}", gs.ham || gs.metin));
       } else {
         parcalar.push(String(t.sortedByTrip || "")
           .replace("{ap}", sortTrip.airport).replace("{d}", fmtLongDate(sortTrip.date, lang)));
@@ -1202,7 +1216,19 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
             </View>
           )}
         </View>
-      ) : rows.map((r, idx) => {
+      ) : (() => {
+        // ══════════════════════════════════════════════════════════════
+        // 🔴 29 EYLÜL (Gökberk) — SONA EREN İLANLAR LİSTEYİ KALABALIKLAŞTIRIYORDU.
+        // ÖLÇÜLDÜ: sunucu `avail_date >= current_date` döndürüyor; yani saati
+        // geçen bir ilan ANCAK BUGÜNE ait olabilir ve yarın listeden kendiliğinden
+        // düşer — "Bugün sona erenler" başlığı yarın bayatlamaz.
+        // Çözüm: canlı ilanlar üstte; sona erenler en altta KATLI tek satır
+        // ("Bugün sona erenler · N"), açılınca soluk ve eylemsiz.
+        // ══════════════════════════════════════════════════════════════
+        const bittiMi = (r) => (geriSayim(r.avail_date, r.time_from, r.time_to, t) || {}).tur === "bitti";
+        const canliRows = rows.filter(r => !bittiMi(r));
+        const bitenRows = rows.filter(bittiMi);
+        const kartCiz = (r, idx) => {
         const h = hosts[r.host_id] || {};
         const mine = r.host_id === uid;
         const open = r.slots - r.filled;
@@ -1463,7 +1489,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                         yer, kural motorunun konuştuğu yerdir. */}
                     {/* v6.3 (pano B · Gökberk onayı) — MONO SAYI YERİNE UYUM MÜHRÜ.
                         Kapalı ilanda mühür susar (koyu taş); açıkta fildişi. */}
-                    <UyumMuhru deger={ms} boy={60} kapali={kapali || bitti} etiket={t.matchWord} />
+                    <UyumMuhru deger={ms} boy={44} kapali={kapali || bitti} etiket={t.matchWord} />
                   </TouchableOpacity>
                 );
               })() : null}
@@ -1651,7 +1677,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       </View>
                     </TouchableOpacity>
                   ) : (r.has_trip && phoneOk) ? (
-                    <Btn v="gold" sm full={false} sagAd="sag" label={t.reqSoon}
+                    <Btn v="gold" cip sagAd="sag" label={t.reqSoon}
                       onPress={() => { setTarget(r); setErr(""); setMoreOpen(false); setAdvice(null); }} />
                   ) : (
                     // 🔴 v2.24 — PASIF GORUNEN BUTON TIKLANABILIYORDU.
@@ -1684,7 +1710,29 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
             </View>
           </IsikliKart>
         );
-      })}
+        };
+        return (
+          <>
+            {canliRows.map(kartCiz)}
+            {bitenRows.length > 0 && (
+              <TouchableOpacity hitSlop={TAP.slop} onPress={() => setBitenAcik(v => !v)}
+                accessibilityRole="button" accessibilityState={{ expanded: bitenAcik }}
+                accessibilityLabel={String(t.discEndedToday).replace("{n}", String(bitenRows.length))}
+                style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                         minHeight: TAP.minHeight, marginTop: ARA[10], paddingHorizontal: ARA[4],
+                         borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+                <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4, color: C.mut }}>
+                  {BUYUK(String(t.discEndedToday).replace("{n}", String(bitenRows.length)))}
+                </Text>
+                <Ikon ad={bitenAcik ? "yukari" : "asagi"} boy={14} renk={C.mut} />
+              </TouchableOpacity>
+            )}
+            {bitenAcik && bitenRows.map((r, i) => (
+              <View key={"b" + r.id} style={{ opacity: 0.55 }}>{kartCiz(r, canliRows.length + i)}</View>
+            ))}
+          </>
+        );
+      })()}
       <Modal visible={!!target} animationType="slide" onRequestClose={() => setTarget(null)}>
         {/* #32: MVP Istek Gonder — tam ekran, Hdr'li */}
         <Sayfa>
@@ -1756,7 +1804,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
               {/* v6.3 (pano B) — çember artık UYUM MÜHRÜ; güven puanı soldaki
                   satırda etiketiyle ("GÜVEN 38"). md.15 dersi korunuyor: iki
                   sayı da etiketli, hiçbiri diğerinin adını çalmıyor. */}
-              <UyumMuhru deger={target?.match_score || 0} boy={52} etiket={t.matchWord}
+              <UyumMuhru deger={target?.match_score || 0} boy={44} etiket={t.matchWord}
                 a11y={`${t.matchScoreLabel}: ${target?.match_score || 0}`} stil={{ marginLeft: SP[2] }} />
             </View>
 
@@ -6904,6 +6952,7 @@ export function FindHostCard({ t, session, onDiscover }) {
    ══════════════════════════════════════════════════════════════════════ */
 export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) {
   const [kosullar, setKosullar] = useState(null);
+  const [acikMetin, setAcikMetin] = useState({});   // 29 Eylül · uzun hüküm "Devamını gör"
   const [kart, setKart] = useState("");
   const [kaynakUrl, setKaynakUrl] = useState("");
   const [hata, setHata] = useState(false);
@@ -7068,7 +7117,7 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
             </Text>
           </View>
           {/* v6.3 (pano B) — Keşfet kartındaki mührün aynısı: dokunulan şey burada açılıyor. */}
-          <UyumMuhru deger={gosterilenSkor} boy={66} etiket={t.matchWord} kapali={!!sonaErdi} />
+          <UyumMuhru deger={gosterilenSkor} boy={52} etiket={t.matchWord} kapali={!!sonaErdi} />
         </View>
         {/* 13 Eylül md.4 — sayıyı sıfırlayan/kısan şartı adıyla söyle. */}
         {!!sifirlayan && (
@@ -7209,9 +7258,32 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
                   </View>
                   {/* Hüküm SERİF — kural ekranının dili: burada konuşan biz
                       değil, havayolunun kendi tablosu. */}
-                  <Text style={{ fontFamily: F.serifGosterim, fontSize: FS.title,
-                                 lineHeight: Math.round(FS.title * 1.18), color: C.ink,
-                                 marginTop: ARA[8] }}>{hukum}</Text>
+                  {/* 🔴 29 EYLÜL (Gökberk) — UZUN NOT HÜKÜM GİBİ ÇİZİLİYORDU: 9 satırlık
+                      serif paragraf. Hüküm alanı KISA karar için; 110 karakteri
+                      aşan not bir kademe küçük, 3 satırda "…" ve "Devamını gör". */}
+                  {(() => {
+                    const uzun = String(hukum || "").length > 110;
+                    const ac = !!acikMetin[g.id];
+                    const boy = uzun ? FS.lg : FS.title;
+                    return (
+                      <>
+                        <Text numberOfLines={uzun && !ac ? 3 : undefined}
+                          style={{ fontFamily: F.serifGosterim, fontSize: boy,
+                                   lineHeight: Math.round(boy * 1.22), color: C.ink,
+                                   marginTop: ARA[8] }}>{hukum}</Text>
+                        {uzun ? (
+                          <TouchableOpacity hitSlop={TAP.slop}
+                            onPress={() => setAcikMetin((o) => ({ ...o, [g.id]: !o[g.id] }))}
+                            accessibilityRole="button" accessibilityState={{ expanded: ac }}
+                            style={{ alignSelf: "flex-start", minHeight: TAP.minHeight, justifyContent: "center" }}>
+                            <Text style={{ fontSize: FS.sm, fontWeight: "600", color: C.goldText }}>
+                              {ac ? t.readLess : t.readMore}
+                            </Text>
+                          </TouchableOpacity>
+                        ) : null}
+                      </>
+                    );
+                  })()}
                   {kanit ? (
                     <Text style={{ fontFamily: MONO[500], fontSize: FS.xs, lineHeight: 15,
                                    letterSpacing: 0.9, color: gRenk, marginTop: ARA[6] }}>{BUYUK(kanit)}</Text>

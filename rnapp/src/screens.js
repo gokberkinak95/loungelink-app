@@ -292,7 +292,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                                    gap: SP[2], marginTop: ARA[14] }}>
                       <Btn v="ghost" sm label={t.edit} solAd="duzenle" a11yLabel={t.editTrip}
                         onPress={() => onEditTrip && onEditTrip(r)} />
-                      <Btn v="gold" sm label={t.findHost} a11yLabel={t.findHost} onPress={git}
+                      <Btn v="gold" sm label={t.bkFindHost} a11yLabel={t.findHost} onPress={git}
                         style={{ flex: 1 }} />
                     </View>
                   </>

@@ -5,13 +5,17 @@
 // ============================================================
 const { renderScreen, has, t, S, session, UID, OTHER, React, fmtLongDate } = require("./runner");
 
+// 29 Eylül — sabit "2026-08-06" zamanla GEÇMİŞE düştü; sunucu geçmiş tarihli
+// ilan döndürmez (avail_date >= current_date), yani fikstür gerçekçi değildi ve
+// Keşfet'in "Bugün sona erenler" katı onları haklı olarak gizledi. Hep 7 gün ileri.
+const GUN = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
 const results = [];
 function check(scen, cond, label) { results.push({ scen, ok: !!cond, label }); }
 
 const REQ = {
   id: "req-1", host_id: UID, guest_id: OTHER, avail_id: "av-1", status: "accepted",
   intro_message: "Uçuş öncesi kahve içelim mi?",
-  availabilities: { lounge_name: "Primeclass Lounge", airport_code: "IST", time_from: "14:00:00", time_to: "18:00:00", avail_date: "2026-08-06" },
+  availabilities: { lounge_name: "Primeclass Lounge", airport_code: "IST", time_from: "14:00:00", time_to: "18:00:00", avail_date: GUN },
 };
 const now = new Date();
 const ago = (m) => new Date(now.getTime() - m * 60000).toISOString();
@@ -45,18 +49,18 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
       trust_scores: [{ user_id: UID, score: 64, badge: "verified",
                        components: { email: 10, phone: 10, id: 18, profession: 6, bio: 6, host_access: 8, sessions: 6 } }],
       availabilities: [{ id: "av-1", host_id: UID, airport_code: "IST", lounge_name: "Primeclass Lounge",
-                         avail_date: "2026-08-06", time_from: "14:00:00", time_to: "18:00:00", slots: 2, filled: 1, active: true }],
-      visits: [{ id: "v-1", user_id: UID, airport_code: "IST", visit_date: "2026-08-06", time_from: "13:00:00", time_to: "19:00:00", flight_number: "TK712" }],
+                         avail_date: GUN, time_from: "14:00:00", time_to: "18:00:00", slots: 2, filled: 1, active: true }],
+      visits: [{ id: "v-1", user_id: UID, airport_code: "IST", visit_date: GUN, time_from: "13:00:00", time_to: "19:00:00", flight_number: "TK712" }],
       notifications: [], connection_requests: [], invites: [], ratings: [], airports: [{ code: "IST", name: "İstanbul", city: "İstanbul" }],
       rewards: [], credit_ledger: [], points_ledger: [], user_balances: [{ user_id: UID, balance: 3 }],
       ...extra,
     },
     rpc: {
       discover_availabilities: [
-        { id: "av-9", host_id: "33333333-3333-4333-8333-333333333333", airport_code: "IST", lounge_name: "IGA Lounge", avail_date: "2026-08-06",
+        { id: "av-9", host_id: "33333333-3333-4333-8333-333333333333", airport_code: "IST", lounge_name: "IGA Lounge", avail_date: GUN,
           time_from: "15:00:00", time_to: "19:00:00", slots: 2, filled: 2, fully_booked: true, match_score: 92,
           host_name: "Dolu Host", host_badge: "trusted", host_score: 80, has_trip: true },
-        { id: "av-8", host_id: OTHER, airport_code: "IST", lounge_name: "Primeclass", avail_date: "2026-08-06",
+        { id: "av-8", host_id: OTHER, airport_code: "IST", lounge_name: "Primeclass", avail_date: GUN,
           time_from: "14:00:00", time_to: "18:00:00", slots: 2, filled: 0, fully_booked: false, match_score: 61,
           host_name: "Açık Host", host_badge: "verified", host_score: 64, has_trip: true },
       ],
@@ -259,7 +263,7 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
   data({});
   globalThis.__DATA.rpc.discover_availabilities = [
     { id: "av-7", host_id: OTHER, airport_code: "IST", lounge_name: "IGA Lounge",
-      avail_date: "2026-08-06", time_from: "15:00:00", time_to: "19:00:00",
+      avail_date: GUN, time_from: "15:00:00", time_to: "19:00:00",
       slots: 2, filled: 0, fully_booked: false, match_score: 70, host_name: "Açık Host" },
   ];
   r = await renderScreen("Seyahatlerim · uyumlu ilan sayısı", React.createElement(S.Trips, {
@@ -336,7 +340,7 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
 
   // ---------- 19b) YAYIN: geçmiş ilan "yer açık" SÖZÜ VERMİYOR (29 Eylül, Gökberk md.1) ----------
   data({ extra: { availabilities: [{ id: "av-2", host_id: UID, airport_code: "IST",
-    lounge_name: "Primeclass Lounge", avail_date: "2026-08-06", time_from: "14:00:00",
+    lounge_name: "Primeclass Lounge", avail_date: "2026-08-06",   // BİLEREK geçmiş: test tam da bunu ölçüyor time_from: "14:00:00",
     time_to: "18:00:00", slots: 3, filled: 1, active: true, carrier: "VF" }] } });
   r = await renderScreen("Yayın · geçmiş ilan", React.createElement(S.Hosting, {
     t, session, onOpenChat: () => {}, onAddAvail: () => {}, onAddCard: () => {} }));

@@ -254,6 +254,18 @@ export function BinisKartiPanel({ t, request, ilan, onKapat, onDogrulandi }) {
   const [hata, setHata] = useState("");
   const [sonuc, setSonuc] = useState(null);
   const gir = useRef(new Animated.Value(0)).current;
+  // 29 Eylül · SQL 307 — 30 günde 2 sessiz atlama. RPC yoksa (307 koşmadıysa) not gizlenir.
+  const [hak, setHak] = useState(null);
+  useEffect(() => {
+    let iptal = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.rpc("binis_karti_atlama_hakki");
+        if (!error && !iptal) setHak(data || null);
+      } catch (e) { /* 307 yoksa sessiz */ }
+    })();
+    return () => { iptal = true; };
+  }, []);
 
   useEffect(() => {
     Animated.timing(gir, { toValue: 1, duration: 260, easing: Easing.out(Easing.cubic),
@@ -403,7 +415,11 @@ export function BinisKartiPanel({ t, request, ilan, onKapat, onDogrulandi }) {
       accessibilityRole="button" accessibilityLabel={t.bpSkip}
       style={{ alignItems: "center", paddingVertical: SP[3], marginTop: ARA[6], minHeight: TAP.minHeight, justifyContent: "center" }}>
       <Text style={{ color: C.mut, fontSize: FS.sm, fontWeight: "600" }}>{t.bpSkip}</Text>
-      <Text style={{ color: C.dim, fontSize: FS.xs, marginTop: ARA[4], textAlign: "center" }}>{t.bpSkipNote}</Text>
+      <Text style={{ color: hak && hak.kalan === 0 ? C.goldText : C.dim, fontSize: FS.xs, marginTop: ARA[4], textAlign: "center", lineHeight: SATIR(FS.xs) }}>
+        {hak == null ? t.bpSkipNote
+          : hak.kalan > 0 ? String(t.bpSkipLeft).replace("{n}", String(hak.kalan))
+          : t.bpSkipNoneLeft}
+      </Text>
     </TouchableOpacity>
   );
 

@@ -320,7 +320,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
               </View>
               </TouchableOpacity>
               {/* v2.02: eşleşme ile güven puanı ayrı — mühür "UYUM" der, güven aşağıda yazıyla. */}
-              <UyumMuhru deger={fit} boy={54} etiket={t.matchWord} a11y={`${t.matchScoreLabel}: ${fit}`} stil={{ marginLeft: ARA[10] }} />
+              <UyumMuhru deger={fit} boy={44} etiket={t.matchWord} a11y={`${t.matchScoreLabel}: ${fit}`} stil={{ marginLeft: ARA[10] }} />
             </View>
 
             {/* HANGİ İLANA BAŞVURDU — kutu değil, ışık çizgisi + mono satır */}
@@ -1354,6 +1354,11 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
               {BUYUK(String(t.bpOtherEyebrow).replace("{ad}", shortName(otherName || "")))}
             </Text>
             <Text style={{ color: C.body, fontSize: FS.xs + 0.5, lineHeight: 18, marginTop: ARA[4] }}>{t.bpOtherBody}</Text>
+            {karsiBp && karsiBp.atlama_30g > 2 ? (
+              <Text style={{ color: C.goldText, fontSize: FS.xs, marginTop: ARA[4] }}>
+                {String(t.bpOtherCount).replace("{n}", String(karsiBp.atlama_30g))}
+              </Text>
+            ) : null}
           </View>
         </View>
       )}
@@ -3432,6 +3437,10 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneLive} title={act ? t.liveSessionTitle : t.liveTitle} onBack={onBack} />
+      {/* 🔴 29 EYLÜL (Gökberk) — "OTURUMA GİT" EKRANIN ALTINDA KESİLİYORDU.
+          Gövde kaydırılmıyordu: halka + durum listesi ekrana sığmayınca düğme
+          dışarıda kalıyordu. Gövde artık kayar; düğme altta SABİT kabında. */}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: ARA[22] }}>
       {/* v6.2 (K7) — salon penceresinin ne kadarı kaldı: Güven halkasıyla
           aynı noktalı dil; son 15 dakikada kehribar. */}
       {act && (() => {
@@ -3447,6 +3456,7 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
         );
       })()}
       {act && <LiveStatusPicker t={t} sess={act} isHost={isHost} uid={session?.user?.id} />}
+      </ScrollView>
       {/* MVP: durum kutusunun altinda "Oturuma Git" — sohbete/oturuma doner */}
       {act && onGoSession && (
         /* 🔴 12 EYLÜL · GECE — DÜĞME SAĞ KENARDAN 14pt TAŞIYORDU.
@@ -3459,8 +3469,8 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
            🆕 SINIF: "YÜZDE GENİŞLİK VE KENAR BOŞLUĞU AYNI ÖĞEDE
            BULUŞURSA TOPLAMLARI EBEVEYNİ AŞAR — BİRİ ÖĞENİN, ÖTEKİ
            KABIN İŞİDİR." */
-        <View style={{ paddingHorizontal: ARA[14], marginBottom: ARA[6] }}>
-          <Btn v="gold" sm label={t.goToSession} onPress={() => onGoSession(act.requests, isHost)} />
+        <View style={{ paddingHorizontal: ARA[18], paddingTop: ARA[10], paddingBottom: ARA[22] }}>
+          <Btn v="gold" label={t.goToSession} onPress={() => onGoSession(act.requests, isHost)} />
         </View>
       )}
       {/* 🔴 v1.82 (Gokberk 3.x — İKİNCİ KEZ): "uçuşunu ve aktif oturumunu takip

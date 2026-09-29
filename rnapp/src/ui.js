@@ -435,9 +435,14 @@ export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled
                 Aralık açıldığında aynı genişlikte AZ HARF durur ve
                 düğme "bağıran" değil "kesin" okunur. */}
             {label == null || label === "" ? null : (
-              <Text style={{ color: disabled ? C.dimAA : st.fg, fontWeight: "500",
-                             fontSize: (cip || mini) ? 11.5 : sm ? 11.5 : 13.5,
-                             letterSpacing: (cip || mini) ? 0.8 : ((sm ? 11.5 : 13.5) * 0.12) }}>{label}</Text>
+              /* 🔴 29 EYLÜL (Gökberk: "istek gönder butonu büyük kalmış, sola
+                 kaymış gibi") — ÖLÇÜLDÜ: aralık puntonun %12'si (13.5 → 1.6 pt)
+                 etiketi ~%25 uzatıyor; "Misafiri kabul et" iki satıra kırılıyor,
+                 kart içi düğme uzayıp sola taşıyordu. Aralık 0.6/0.4 pt, ağırlık
+                 600: aynı kesinlik, daha kısa ve sıkı etiket. */
+              <Text style={{ color: disabled ? C.dimAA : st.fg, fontWeight: "600", textAlign: "center",
+                             fontSize: (cip || mini) ? 12 : sm ? 12.5 : 14,
+                             letterSpacing: (cip || mini) ? 0.3 : sm ? 0.4 : 0.6 }}>{label}</Text>
             )}
             {!!sag && <View style={daire ? null : { marginLeft: ARA[6] }}>{sag}</View>}
             {!!sagAd && <Ikon ad={sagAd} boy={sm || cip || mini ? 15 : 17}

@@ -1,0 +1,65 @@
+# ============================================================
+# LoungeLink · .easignore (DEPO KOKU)
+#
+# 29 Eylul - OLCULDU (`eas build:inspect --stage archive`): EAS yok sayma
+# dosyasini YALNIZ depo kokunde okuyor. rnapp/.easignore hic uygulanmiyordu:
+# arsiv 115 MB (sikistirmasiz) idi - web_sahne 44.6 MB, sql 7.8 MB, denetim
+# betikleri dahil. Ilk 6.2.2 yuklemesi bu yuzden ECONNRESET ile dustu.
+#
+# ⚠️ Kokte .easignore varsa EAS .gitignore'u OKUMAZ - asagida onun
+# kurallari da tekrar ediliyor. rnapp/src, assets, app.json, package*.json,
+# babel/metro config, index.js, App.js ASLA buraya girmez.
+# ============================================================
+
+# --- .gitignore'dan (ayri depolar / yerel klasorler)
+/website/
+/backoffice/
+/_arsiv/
+/Claude outputs/
+/LoungeLink/
+/rnapp_yedek*/
+node_modules/
+*.zip
+/_teslim_*/
+/.claude/
+
+# --- build'e girmeyen depo parcalari
+/sql/
+/DEVIR/
+/KUR.ps1
+/.github/
+*.md
+
+# --- rnapp: denetim, uretec, sahne, tasarim kaynaklari
+/rnapp/web_sahne/
+/rnapp/render_check/
+/rnapp/tasarim_kaynak/
+/rnapp/ekranlar_oneri/
+/rnapp/tema_onizleme.png
+*.py
+__pycache__/
+/rnapp/check.js
+/rnapp/verify.js
+/rnapp/pyrun.js
+# Bütçe ve denetim verileri
+*_butce.json
+kural_iddialari.json
+tanitim_metinleri.json
+sema_kolonlari.txt
+kural_programlari.txt
+
+# Belgeler
+*.md
+
+# Mockup ve tanıtım görselleri (uygulamaya dahil değil, kökte duruyorlar)
+_*.png
+tema_onizleme.png
+brand/
+mockup.py
+
+# SQL
+*.sql
+
+# 29 Eylul - web sahnesi (react-native-web + Chromium) yalniz LL_SAHNE=1 iken
+# metro.config.js tarafindan kullanilir; EAS build ona dokunmaz. Olculdu:
+# dist 9.5 MB + out 38 MB = yuklemenin yarisi (96 MB arsiv ECONNRESET ile dustu).
