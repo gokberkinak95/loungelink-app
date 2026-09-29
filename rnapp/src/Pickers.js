@@ -269,7 +269,7 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
                   : { borderWidth: 0, borderTopWidth: 1, borderTopColor: C.parlama || C.line },
                   {
                     borderRadius: R.md, marginBottom: ARA[14], overflow: "hidden",
-                    backgroundColor: seffaf ? "transparent" : (tint || C.card) }, stil]}>
+                    backgroundColor: seffaf ? "transparent" : (tint || C.camYuzey || C.card) }, stil]}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity hitSlop={TAP.slop} onPress={degis}
           accessibilityRole="button" accessibilityState={{ expanded: acik }}

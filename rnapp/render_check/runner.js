@@ -85,8 +85,12 @@ async function renderScreen(name, element) {
   return { name, ok: true, texts, tree };
 }
 
+// 29 Eylül · v6.3 — durum satırları artık büyük harf (kaş stili). Kontrol ANLAMI
+// ölçer, harf biçimini değil: Türkçe büyük harfe çevirip karşılaştırır. Olumsuz
+// kontroller ("X YAZMIYOR") bu yüzden daha sıkı: büyük yazılsa da yakalanır.
 function has(texts, needle) {
-  return texts.some(x => x.includes(needle));
+  const n = String(needle).toLocaleUpperCase("tr");
+  return texts.some(x => String(x).toLocaleUpperCase("tr").includes(n));
 }
 
 module.exports = { renderScreen, has, t, S, session, UID, OTHER, React, TestRenderer, APP, path, fmtLongDate };

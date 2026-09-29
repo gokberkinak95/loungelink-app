@@ -11,7 +11,8 @@ import { signInWithGoogle, signInWithApple, appleAvailable, needsOnboarding, RES
 import * as ExpoLinking from "expo-linking";
 import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
-import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName } from "./src/i18n";
+import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
+import { ustIsik } from "./src/ortak";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
 import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
@@ -1977,7 +1978,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
 // çubuk değişirse katman da onunla değişsin.
 const CUBUK_YUKSEKLIK = 76;   // ilk kare için; gerçek değer onLayout'tan (cubukH)
 // Android yükseltmesi — yalnız Android'de anlamlı; iOS'ta zIndex yeter.
-const KATMAN_Z = Platform.OS === "android" ? { elevation: 16 } : null;
+const KATMAN_Z = Platform.OS === "android" ? { elevation: 16, shadowOpacity: 0 } : null;
 
 function Onboarding({ t, onDone }) {
   const [i, setI] = useState(0);
@@ -3317,12 +3318,14 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
       let hostStats = null, myAvs = [];
       if (role0 === "host") {
         const [{ data: reqs }, { data: avs }, { count: sc }] = await Promise.all([
-          supabase.from("requests").select("id, status").eq("host_id", uid),
+          supabase.from("requests").select("id, status, avail_id").eq("host_id", uid),
           supabase.from("availabilities").select("id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled").eq("host_id", uid).eq("active", true).gte("avail_date", yerelGun()).order("avail_date").limit(3),
           supabase.from("sessions").select("id, requests!inner(host_id)", { count: "exact", head: true }).eq("status", "completed").eq("requests.host_id", uid),
         ]);
         hostStats = {
           pending: (reqs || []).filter(r => r.status === "pending").length,
+          // v6.3 (pano H1) — ilan kartı "N istek bekliyor" der; sayı İLAN başına.
+          bekleyenIlan: (reqs || []).reduce((m, r) => { if (r.status === "pending") m[r.avail_id] = (m[r.avail_id] || 0) + 1; return m; }, {}),
           active: (avs || []).length,
           sessions: sc ?? 0,
         };
@@ -3342,6 +3345,9 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         hostStats.monthSessions = monthSes ?? 0;
         hostStats.monthPoints = ptsThisMonth;
         hostStats.toNextTier = nextTierAt ? nextTierAt - tot : 0;
+        // Kademe ilerlemesi (6/10/14 eşikleri): (toplam − önceki eşik) / aralık. Son kademede dolu.
+        const oncekiEsik = tot < 6 ? 0 : tot < 10 ? 6 : tot < 14 ? 10 : 14;
+        hostStats.kademeOran = nextTierAt ? Math.max(0, Math.min(1, (tot - oncekiEsik) / (nextTierAt - oncekiEsik))) : 1;
         // 🔴 4 Eylül — ilan kartındaki çip SABİT "Misafir ücretsiz" yazıyordu;
         // ücretli/misafir almayan salonlarda host'a kendi ilanı hakkında YALAN
         // söylüyordu. Kural motorunun kararı (Keşfet'teki çiple aynı kaynak).
@@ -3554,22 +3560,33 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
             ilanlar ekranın üst yarısında kalır. */}
         {/* Katlanır kart (`Katlanir` deseni): zemin ve köşe SARMALAYICIDA, dokunma
             yüzeyi içeride — bu bir düğme değil, başlığı dokunulabilir bir kart. */}
-        <View style={{ backgroundColor: C.goldBg, borderRadius: R.lg, overflow: "hidden" }}>
+        {/* ══ v6.3 · PANO H1 (Gökberk onayı) — "BU AY" KUTU DEĞİL, EDİTORYAL SATIR ══
+            Kaş + sağda sıradaki kademe · serif özet · kademe ilerleme çizgisi.
+            Dokununca eskisi gibi açılır (kademe ve kart hakkı satırları). */}
         <TouchableOpacity activeOpacity={0.85} onPress={() => setBuAyAcik(v => !v)}
           accessibilityRole="button" accessibilityLabel={t.hostMonthTitle}
           accessibilityState={{ expanded: buAyAcik }}
-          style={{ paddingVertical: ARA[14], paddingHorizontal: SP[4], minHeight: TAP.minHeight }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.micro + 0.5, letterSpacing: 1.2 }}>{BUYUK(t.hostMonthTitle)}</Text>
-              <Text numberOfLines={buAyAcik ? undefined : 1}
-                    style={{ color: C.ink, fontWeight: "600", fontSize: FS.sm + 0.5, marginTop: ARA[3], lineHeight: 18 }}>
-                {(buAyAcik ? t.hostMonthBody : t.hostMonthShort)
-                  .replace("{ses}", data.hostStats.monthSessions)
-                  .replace("{pts}", data.hostStats.monthPoints)}
-              </Text>
+          style={{ paddingVertical: ARA[8], paddingHorizontal: ARA[4], minHeight: TAP.minHeight }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.micro + 0.5, letterSpacing: 1.4 }}>{BUYUK(t.hostMonthTitle)}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {data.hostStats.toNextTier > 0 ? (
+                <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.micro + 0.5, letterSpacing: 0.6 }}>
+                  {BUYUK(String(t.hostNextTierShort || "").replace("{n}", String(data.hostStats.toNextTier)))}
+                </Text>
+              ) : null}
+              <Ikon ad={buAyAcik ? "yukari" : "asagi"} boy={14} renk={C.mut} stil={{ marginLeft: ARA[8] }} />
             </View>
-            <Ikon ad={buAyAcik ? "yukari" : "asagi"} boy={18} renk={C.goldText} stil={{ marginLeft: ARA[10] }} />
+          </View>
+          <Text numberOfLines={buAyAcik ? undefined : 1}
+                style={{ color: C.ink, fontFamily: F.serifGosterim, fontSize: FS.title + 2, letterSpacing: -0.6,
+                         marginTop: ARA[6], lineHeight: SATIR(FS.title + 2, "serif") }}>
+            {(buAyAcik ? t.hostMonthBody : t.hostMonthShort)
+              .replace("{ses}", data.hostStats.monthSessions)
+              .replace("{pts}", data.hostStats.monthPoints)}
+          </Text>
+          <View style={{ height: 2, borderRadius: R.full, backgroundColor: C.kenarIsik || C.line, marginTop: ARA[10], overflow: "hidden" }}>
+            <View style={{ width: `${Math.round((data.hostStats.kademeOran ?? 0) * 100)}%`, height: 2, backgroundColor: C.goldText }} />
           </View>
           {buAyAcik ? (
             <>
@@ -3584,39 +3601,44 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
             </>
           ) : null}
         </TouchableOpacity>
-        </View>
-        {/* ══════════════════════════════════════════════════════════
-            🔴 18 EYLÜL (Gökberk md.7) — "ana sayfada seyahatlerim ve
-            ilanlarım sekmeleri gelmiş. Neden bu var anlamadım."
-            KALDIRILDI. Ölçüm: bu iki çip, `Seyahatler` sekmesinin KENDİ
-            başlığındaki çiplerin (App.js `trips` başlığı) birebir
-            kopyasıydı ve ikisi de aynı yere gidiyordu. Ana sayfada bir
-            SEKME ÇUBUĞU çizmek, kullanıcıya "burada bir sekme var"
-            demektir — oysa alt çubukta zaten var.
-            🆕 SINIF: "BİR GEZİNTİYİ İKİNCİ BİR YERE KOPYALAMAK
-            KEŞFEDİLEBİLİRLİK DEĞİL, 'HANGİSİ DOĞRU?' SORUSUDUR."
-            Altındaki ilan kartları duruyor: onlar gezinti değil İÇERİK.
-            ══════════════════════════════════════════════════════════ */}
-        {data.myAvs.map((a) => (
-          <View key={a.id} style={{ backgroundColor: C.surface, borderWidth: 1, borderColor: C.line,
-                                    borderRadius: R.lg, padding: SP[4], marginTop: ARA[12], ...ELEV.card }}>
-            <Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.base }}>
-              {(a.lounge_name || t.lounge)} · {a.airport_code}
+        {/* 18 Eylül (md.7) notu geçerli: ana sayfada sekme çubuğu kopyası YOK.
+            Altındaki ilan kartları gezinti değil İÇERİK. */}
+        {/* v6.3 · PANO H1 — İLAN KARTI CAM: durum satırı · serif salon · mono saat ·
+            karar çipi · "N istek bekliyor" (istekler ekranı) ya da "Keşfet'te gör". */}
+        {data.myAvs.map((a) => {
+          const bekleyen = (data.hostStats.bekleyenIlan || {})[a.id] || 0;
+          const gun = String(a.avail_date || "").slice(0, 10) === yerelGun() ? t.calmEyebrow : fmtLongDate(a.avail_date, lang);
+          return (
+          <View key={a.id} style={{ backgroundColor: C.camYuzey || C.surface, ...ustIsik(C.parlama || C.line),
+                                    borderRadius: R.lg + 6, padding: SP[4] + 2, marginTop: ARA[12] }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <Text style={{ color: C.ink, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>
+                {BUYUK(String(t.hostCardLive || "").replace("{f}", String(a.filled || 0)).replace("{s}", String(a.slots || 0)))}
+              </Text>
+              <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6 }}>{a.airport_code}</Text>
+            </View>
+            <Text numberOfLines={2} style={{ color: C.ink, fontFamily: F.serifGosterim, fontSize: FS.title + 3, letterSpacing: -0.6,
+                                             marginTop: ARA[8], lineHeight: SATIR(FS.title + 3, "serif") }}>
+              {a.lounge_name || t.lounge}
             </Text>
-            <Text style={{ color: C.mutedAA, fontSize: FS.sm, marginTop: ARA[4] }}>
-              {String(a.time_from || "").slice(0, 5)} – {String(a.time_to || "").slice(0, 5)}
+            <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs + 0.5, letterSpacing: 0.4, marginTop: ARA[4] }}>
+              {BUYUK(String(gun))} · {String(a.time_from || "").slice(0, 5)}–{String(a.time_to || "").slice(0, 5)}
             </Text>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: ARA[12] }}>
-              {/* 11 Eylül — karar rozeti tek kaynaktan (`KararCipi`, ui.js).
-                  Burada "included→teal, gerisi→amber" diye kendi sözlüğünü
-                  yazıyordu; Keşfet ve ön-kontrol başka sözlük kullanıyordu. */}
+              {/* 11 Eylül — karar rozeti tek kaynaktan (`KararCipi`, ui.js). */}
               <KararCipi t={t} politika={a.guest_policy} />
-              <TouchableOpacity hitSlop={TAP.slop} onPress={onDiscover} accessibilityRole="button">
-                <Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.sm }}>{t.discTitle}</Text>
+              <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button"
+                onPress={bekleyen > 0 ? () => setShowIstekler && setShowIstekler(true) : onDiscover}
+                style={{ flexDirection: "row", alignItems: "center", minHeight: TAP.minHeight }}>
+                <Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.sm }}>
+                  {bekleyen > 0 ? String(t.hostCardPending || "").replace("{n}", String(bekleyen)) : t.hostCardSeeDisc}
+                </Text>
+                <Ikon ad="sag" boy={14} renk={C.goldText} stil={{ marginLeft: ARA[4] }} />
               </TouchableOpacity>
             </View>
           </View>
-        ))}
+          );
+        })}
         </>
       ) : null}
       {/* 4 Eylül — TASARIM 11 SIRASI: dört kutunun hemen altında BUGÜN kartı.

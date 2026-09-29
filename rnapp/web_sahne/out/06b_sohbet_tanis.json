@@ -1,11 +1,20 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -21,21 +30,26 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN",
-  "IST · BUGÜN",
+  "SIRADAKİ SEYAHATİN · YARIN",
+  "TK1979",
+  "IST",
+  "",
+  "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
-  "Misafir olarak host bul",
+  "SALON",
+  "14:00–18:00",
+  "Host bul",
   "YANITINI BEKLEYENLER",
   "A",
   "Ayşegül D.",
   "bağlantı kurmak istiyor",
-  "\"Seninle tanışmak istiyor.\"",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
-  "\"Uçuşun aynı, güzel.\"",
+  "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -62,104 +76,104 @@
   "",
   "⚠ Lounge satışı yok · Platform dışı ödeme yok · Lounge ve havayolu kurallarına uy",
   "Merhaba Ece, aynı rotadayız — IST'te kahve içelim mi?",
-  "14:45",
+  "18:16",
   "Olur! Ben 14:40'ta iniyorum, aktarmam uzun.",
-  "14:47",
+  "18:18",
   "A7 kapısındayım, lacivert ceket.",
-  "14:50",
+  "18:21",
   "Gördüm, geliyorum.",
-  "14:52",
+  "18:23",
   ""
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": -1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -168,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -168,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -168,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -1,
+   "sol": 3,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -168,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -168,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -168,
+   "sol": -172,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 28,
+   "sol": 37,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 28,
+   "sol": 37,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 28,
+   "sol": 37,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -201,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -201,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -194,
+   "sol": -201,
    "tx": ""
   }
  ],

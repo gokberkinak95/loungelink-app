@@ -5,28 +5,16 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -43,32 +31,32 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 41,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 41,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 41,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -203,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -203,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -203,
+   "sol": -199,
    "tx": ""
   }
  ],

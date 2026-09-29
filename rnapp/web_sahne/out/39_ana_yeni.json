@@ -1,11 +1,20 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Yeni",
   "5",
   "KREDİ",
@@ -24,10 +33,15 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN",
-  "IST · BUGÜN",
+  "SIRADAKİ SEYAHATİN · YARIN",
+  "TK1979",
+  "IST",
+  "",
+  "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
-  "Misafir olarak host bul",
+  "SALON",
+  "13:50–17:20",
+  "Host bul",
   "",
   "Ana Sayfa",
   "",
@@ -42,62 +56,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 48,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -209,
    "tx": ""
   }
  ],

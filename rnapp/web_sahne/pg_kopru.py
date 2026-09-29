@@ -18,8 +18,15 @@ update/upsert/delete (basit). Uygulamada olmayan şey burada da yok.
 
 Kullanım:  python3 web_sahne/pg_kopru.py [port]   (varsayılan 8765)
 """
-import http.server, json, re, sys, socketserver, traceback
-import psycopg2, psycopg2.extras
+import http.server, json, re, sys, socketserver, traceback, os
+try:
+    import psycopg2, psycopg2.extras
+except ImportError:
+    # Windows "Uygulama Denetimi" psycopg2 DLL'ini engelliyorsa (29 Eylül, ölçüldü):
+    # saf Python pg8000 üstünde aynı yüzey.
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "render_check"))
+    import pg8000_psycopg2; pg8000_psycopg2.kur()
+    import psycopg2, psycopg2.extras
 
 DSN = dict(host="127.0.0.1", dbname="ll", user="postgres", password="ll")
 _FK = None   # (table, col) -> (ftable, fcol) ve ters yön

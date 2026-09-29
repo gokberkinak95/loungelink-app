@@ -1,3 +1,16 @@
+SQL SIRASI - 29 Eylul 2026 (aksam) - YENI: yalniz 308
+
+306 ve 307'yi calistirdin (Gokberk, 29 Eylul). Simdi Supabase SQL Editor'de:
+
+  1) 308_bo_atlama_uyarisi.sql            -> BO "Uyarilar" sayfasi icin gorunum:
+                                             30 gunde 2 atlama = "izle", 3+ = "mudahale".
+                                             Yalniz service_role okur (anon/authenticated KAPALI).
+                                             Tekrar kosulabilir. Kosmazsan BO sayfasi
+                                             "SQL 308 calistirilmali" der, cokmez.
+
+---------------------------------------------------------------------------
+ONCEKI TUR (calistirildi):
+
 SQL SIRASI - 29 Eylul 2026 (app 6.2.2 sonrasi turu)
 
 Supabase SQL Editor'de SIRAYLA calistir (her dosyayi ayri ayri, tamamini yapistir):

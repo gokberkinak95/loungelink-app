@@ -5,7 +5,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -21,21 +21,26 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN",
-  "IST · BUGÜN",
+  "SIRADAKİ SEYAHATİN · YARIN",
+  "TK1979",
+  "IST",
+  "",
+  "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
-  "Misafir olarak host bul",
+  "SALON",
+  "14:00–18:00",
+  "Host bul",
   "YANITINI BEKLEYENLER",
   "A",
   "Ayşegül D.",
   "bağlantı kurmak istiyor",
-  "\"Seninle tanışmak istiyor.\"",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
-  "\"Uçuşun aynı, güzel.\"",
+  "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -65,92 +70,92 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 36,
+   "sol": 13,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 13,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 13,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -182,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -182,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -182,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 13,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 13,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 36,
+   "sol": 13,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -182,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -182,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -200,
+   "sol": -182,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -196,
    "tx": ""
   }
  ],

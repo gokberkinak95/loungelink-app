@@ -10,3 +10,6 @@ node_modules/
 *.zip
 /_teslim_*/
 /.claude/
+
+# Python derleme onbellegi
+__pycache__/

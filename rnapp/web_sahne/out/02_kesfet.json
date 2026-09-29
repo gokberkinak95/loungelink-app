@@ -5,10 +5,6 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -18,41 +14,12 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "İSTANBUL · SAW",
+  "İSTANBUL · IST",
   "İstanbul",
-  "Kalkışına 47 dk · 64 host yayında",
+  "Seyahatine göre sıralandı: IST · 29 Eylül · 55 host yayında",
   "İstanbul",
   "",
-  "Senin uçuşunda 3 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
-  "S",
-  "",
-  "Selin B.",
-  "PRİORİTY PASS · PRİORİTY PASS PRESTİGE",
-  "%88",
-  "UYUM",
-  "Comfort Lounge",
-  "SAW · 29 EYLÜL · 09:00–11:30",
-  "",
-  "Misafir ücretli girer",
-  "PC2210 · AYNI UÇUŞ",
-  "",
-  "1 sa 17 dk içinde",
-  "İstek gönder",
-  "",
-  "D",
-  "",
-  "Deniz K.",
-  "MİLES&SMİLES · ELİTE PLUS",
-  "%72",
-  "UYUM",
-  "TAV Primeclass",
-  "IST · 29 EYLÜL · 14:20–16:40",
-  "",
-  "Misafir ücretsiz",
-  "TK1979",
-  "",
-  "6 sa 37 dk içinde",
-  "Seyahat ekle",
+  "Senin uçuşunda 4 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
   "N",
   "",
   "Nehir A.",
@@ -60,7 +27,7 @@
   "%64",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 29 EYLÜL · 07:00–09:30",
+  "IST · 29 EYLÜL · 18:00–19:30",
   "",
   "Misafir ücretsiz",
   "",
@@ -73,129 +40,158 @@
   "%64",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 29 EYLÜL · 10:00–13:00",
+  "IST · 29 EYLÜL · 20:00–21:30",
+  "",
+  "Misafir ücretsiz",
+  "",
+  "1 sa 14 dk içinde",
+  "Seyahat ekle",
+  "D",
+  "",
+  "Deniz K.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%72",
+  "UYUM",
+  "TAV Primeclass",
+  "IST · 30 EYLÜL · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "2 sa 17 dk içinde",
+  "19 sa 34 dk içinde",
   "Seyahat ekle",
-  "N",
+  "S",
   "",
-  "Nehir A.",
+  "Selin B.",
   "MİLES&SMİLES · ELİTE PLUS",
   "%64",
   "UYUM",
-  "Primeclass Lounge",
-  "IST · 29 EYLÜL · 16:00–17:30",
+  "IST",
+  "IST · 30 EYLÜL · 12:00–18:00",
   "",
   "Misafir ücretsiz",
+  "TK712",
   "",
-  "8 sa 17 dk içinde",
+  "17 sa 14 dk içinde",
   "Seyahat ekle",
-  "N",
+  "S",
   "",
-  "Nehir A.",
+  "Selin B.",
   "MİLES&SMİLES · ELİTE PLUS",
   "%64",
   "UYUM",
-  "Primeclass Lounge",
-  "IST · 29 EYLÜL · 18:00–19:30",
+  "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
+  "IST · 2 EKİM · 10:00–14:00",
   "",
   "Misafir ücretsiz",
+  "TK1953",
   "",
-  "10 sa 17 dk içinde",
+  "2 g 15 sa içinde",
+  "Seyahat ekle",
+  "S",
+  "",
+  "Selin B.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%64",
+  "UYUM",
+  "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
+  "IST · 11 EKİM · 06:00–13:00",
+  "",
+  "Misafir ücretsiz",
+  "TK1957",
+  "",
+  "11 g 11 sa içinde",
   "Seyahat ekle"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 42,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 42,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 42,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 42,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 42,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 42,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 56,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 56,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 56,
+   "sol": 50,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -213,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -213,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -213,
+   "sol": -209,
    "tx": ""
   }
  ],

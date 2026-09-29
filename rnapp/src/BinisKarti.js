@@ -41,6 +41,7 @@ import { logError, supabase } from "./supabase";
 import { ARA, C, F, FS, R, SATIR, SP, TAP } from "./theme";
 import { Btn } from "./ui";
 import { ustIsik } from "./ortak";
+import { OnayDamgasi } from "./hareket";
 import { MONO } from "./typography";
 import { BUYUK } from "./i18n";
 
@@ -540,8 +541,14 @@ function Sonuc({ t, sonuc, ilan, onTekrar, onDevam, atla }) {
     return (
       <>
         <Text style={{ color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.bpOkEyebrow)}</Text>
-        <Text style={{ color: C.ink, fontSize: FS.display + 4, fontFamily: F.serifGosterim, marginTop: ARA[6],
-                       lineHeight: SATIR(FS.display + 4, "serif"), letterSpacing: -0.8 }}>{t.bpOkTitle}</Text>
+        {/* v6.3 · PANO M3 (Gökberk onayı) — doğrulandı anı K4 damgasıyla mühürlenir. */}
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ flex: 1, minWidth: 0, color: C.ink, fontSize: FS.display + 4, fontFamily: F.serifGosterim, marginTop: ARA[6],
+                         lineHeight: SATIR(FS.display + 4, "serif"), letterSpacing: -0.8 }}>{t.bpOkTitle}</Text>
+          <View style={{ width: 64, height: 64, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ transform: [{ scale: 0.72 }] }}><OnayDamgasi t={t} /></View>
+          </View>
+        </View>
         {!!coz && (
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
                          marginTop: ARA[18], padding: SP[4], borderRadius: R.lg,

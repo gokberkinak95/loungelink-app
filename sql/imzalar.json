@@ -1698,5 +1698,20 @@
   "305_erisim_kaynagi_etiketleri.sql",
   "fonksiyon",
   "erisim_kaynagi_etiketle"
+ ],
+ [
+  "306_kural_notlari_turkce_tamam.sql",
+  null,
+  null
+ ],
+ [
+  "307_zarafet_atlama_siniri.sql",
+  "fonksiyon",
+  "binis_atlama_sayisi"
+ ],
+ [
+  "308_bo_atlama_uyarisi.sql",
+  null,
+  null
  ]
 ]

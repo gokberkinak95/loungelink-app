@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -26,62 +35,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 39,
+   "sol": 54,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 39,
+   "sol": 54,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 39,
+   "sol": 54,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -147,
+   "sol": -161,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -147,
+   "sol": -161,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -147,
+   "sol": -161,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -8,
+   "sol": 6,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -8,
+   "sol": 6,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -8,
+   "sol": 6,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -140,
+   "sol": -137,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -140,
+   "sol": -137,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -140,
+   "sol": -137,
    "tx": ""
   }
  ],

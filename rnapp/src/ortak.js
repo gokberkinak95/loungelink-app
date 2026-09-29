@@ -126,7 +126,7 @@ function kurS() {
   // bir çizgi), yenisi ΔE 3.91. Tek satır, ama bu stili 100+ kart
   // kopyalıyor — yani "kutu cümbüşü"nün en büyük tek kalemi burası.
   // v6 — kadife kart: çevre çizgisi yok; yalnız ÜST kenarda 1px speküler ışık
-  card: { backgroundColor: C.surface, ...ustIsik(C.parlama || C.kartKenar), borderRadius: R.lg,
+  card: { backgroundColor: C.camYuzey || C.surface, ...ustIsik(C.parlama || C.kartKenar), borderRadius: R.lg,
           // tasarım `.kart{padding:17px;margin-bottom:13px}` — 16/12 en
           // yakın ölçek basamağı (ARA 2'nin katları). 10'du; kartlar
           // arası boşluk tasarımdakinden dardı.
@@ -142,7 +142,7 @@ function kurS() {
   // birinin yanlış olanı seçmesini garanti ediyordu.
   // 🆕 SINIF: "AYNI İŞİN İKİ TANIMI VARSA, BİRİ ÇAĞRILMIYOR OLSA BİLE
   // TEHLİKELİDİR — ÇÜNKÜ BİR GÜN ÇAĞRILACAKTIR."
-  empty: { padding: SP[6], alignItems: "center", backgroundColor: C.surface, ...ustIsik(C.parlama || "transparent"), ...ELEV.card,
+  empty: { padding: SP[6], alignItems: "center", backgroundColor: C.camYuzey || C.surface, ...ustIsik(C.parlama || "transparent"), ...ELEV.card,
            borderRadius: R.lg },
   // 🔴 v2.78 — ÇİPLERİN DOKUNMA HEDEFİ 44pt'NİN ALTINDAYDI.
   // Ölçüm: `paddingVertical: SP[2]` = 8 → yaklaşık 32pt. 33 çip düğmesinden
@@ -1142,7 +1142,9 @@ export function intentLabel(t, k) {
     : k === "networking" ? t.intNetwork
     : k === "route" ? t.intRoute
     : k === "hello" ? t.intHello
-    : k;
+    // 29 Eylül — "Diğer" eklendi; bilinmeyen kod ASLA ham basılmaz (kural: kullanıcıya ham kod yok).
+    // insan metni (ör. "Lounge oturumunda tanışıldı") olduğu gibi; tanınmayan KOD ise "Diğer".
+    : (/^[a-z_]+$/.test(String(k || "")) ? (t.intOther || "—") : String(k || ""));
 }
 
 // ============================================================================

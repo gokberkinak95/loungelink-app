@@ -1,24 +1,11 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -34,7 +21,7 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN · BİNİŞ",
+  "SIRADAKİ SEYAHATİN · YARIN",
   "TK1979",
   "IST",
   "",
@@ -74,62 +61,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 51,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 51,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 51,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 51,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 51,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 51,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -199,
    "tx": ""
   }
  ],

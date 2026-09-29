@@ -13,28 +13,13 @@
   "Uçuş",
   "Salon",
   "Rota",
-  "G",
-  "Gökberk İ.",
-  "Ürün Yönetimi",
-  "TK1979 · IST",
-  "Aynı uçuş",
-  "Aynı rota tanışma",
-  "• Temel Doğrulama · 50",
-  "",
   "A",
   "Arda K.",
   "Yazılım Mühendisi",
-  "TK1979 · IST · 29 Eylül",
+  "TK1979 · IST",
   "Aynı uçuş",
   "İş",
   "• Temel Doğrulama · 38",
-  "",
-  "Z",
-  "Zeynep A.",
-  "Akademisyen",
-  "TK1979 · IST",
-  "Aynı uçuş",
-  "• Temel Doğrulama · 32",
   "",
   "B",
   "Burak S.",
@@ -46,7 +31,7 @@
   "Y",
   "Yeni Üye",
   "Mühendis",
-  "TK1979 · IST",
+  "TK1979 · IST · 30 Eylül",
   "Aynı uçuş",
   "• Temel Doğrulama · 16",
   "",
@@ -67,62 +52,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 43,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 43,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 43,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -191,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -191,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -191,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 43,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 43,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 43,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -191,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -191,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -204,
+   "sol": -191,
    "tx": ""
   }
  ],

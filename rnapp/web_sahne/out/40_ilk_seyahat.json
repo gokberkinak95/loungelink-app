@@ -1,11 +1,24 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Boş",
   "5",
   "KREDİ",
@@ -25,7 +38,7 @@
   "Bugün sakin. Sıradaki uçuşuna bakalım mı?",
   "IST · 17 host",
   "SAW · 7 host",
-  "ESB · 5 host",
+  "ESB · 6 host",
   "Misafir olarak host bul",
   "Host olsam ne kazanırım?",
   "Salon rehberini aç",
@@ -45,65 +58,43 @@
   "PLANIM",
   "Havalimanı Ziyareti Ekle",
   "Seyahatini anlat ki havalimanındaki hostları ve yol arkadaşlarını keşfedebilelim.",
+  "1 / 3",
+  "Hangi uçuştasın?",
+  "TARİH",
+  "Bugün",
+  "Yarın",
+  "Perşembe",
+  "Cuma",
+  "Tarih seç",
+  "",
+  "HAVAYOLU",
+  "Havayolu seç…",
+  "",
+  "UÇUŞ (İSTEĞE BAĞLI)",
   "HAVALİMANI",
   "Havalimanı seç…",
   "",
   "VARIŞ (İSTEĞE BAĞLI)",
   "Havalimanı seç…",
   "",
-  "TARİH",
-  "Bugün",
-  "Yarın",
-  "Çarşamba",
-  "Perşembe",
-  "Tarih seç",
-  "",
-  "BAŞLANGIÇ",
-  "14:00",
-  "",
-  "BİTİŞ",
-  "18:00",
-  "",
-  "UÇUŞ (İSTEĞE BAĞLI)",
-  "HAVAYOLU",
-  "Havayolu seç…",
-  "",
-  "SEYAHAT AMACI",
-  "",
-  "İş",
-  "",
-  "Konferans",
-  "",
-  "Tatil",
-  "",
-  "Aktarma",
-  "",
-  "Etkinlik",
-  "İsteğe bağlı. Belirtirsen aynı amaçla seyahat edenlerle eşleşmen kolaylaşır; seçili çipe tekrar dokunarak geri alabilirsin.",
-  "KİMLER GİRİYOR",
-  "Tek başıma",
-  "2 kişi",
-  "3 kişi",
-  "4 kişi",
-  "5 kişi",
-  "6 kişi",
-  "Host'un misafir hakkı kişi sayına göre kontrol edilir; yanlış sayı kapıda geri çevrilmek demek.",
-  "Seyahat Ekle"
+  "",
+  "Uçuş kodum yok · havalimanını seçeceğim",
+  "Devam"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 44,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 44,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 44,
+   "sol": 43,
    "tx": ""
   },
   {
@@ -123,17 +114,17 @@
   },
   {
    "g": 507,
-   "sol": 44,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 44,
+   "sol": 43,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 44,
+   "sol": 43,
    "tx": ""
   },
   {
@@ -153,32 +144,32 @@
   },
   {
    "g": 507,
-   "sol": 47,
+   "sol": 48,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 47,
+   "sol": 48,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 47,
+   "sol": 48,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -208,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -208,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -208,
    "tx": ""
   }
  ],

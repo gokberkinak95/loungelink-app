@@ -32334,5 +32334,9 @@
     "recompute_trust|select count(*) into v_sessions"
    ]
   ]
+ ],
+ [
+  "308_bo_atlama_uyarisi.sql",
+  []
  ]
 ]

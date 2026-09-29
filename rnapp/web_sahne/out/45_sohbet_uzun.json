@@ -1,11 +1,20 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -21,21 +30,26 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN",
-  "IST · BUGÜN",
+  "SIRADAKİ SEYAHATİN · YARIN",
+  "TK1979",
+  "IST",
+  "",
+  "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
-  "Misafir olarak host bul",
+  "SALON",
+  "14:00–18:00",
+  "Host bul",
   "YANITINI BEKLEYENLER",
   "A",
   "Ayşegül D.",
   "bağlantı kurmak istiyor",
-  "\"Seninle tanışmak istiyor.\"",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
-  "\"Uçuşun aynı, güzel.\"",
+  "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -57,57 +71,52 @@
   "Deniz K.",
   "TAV Primeclass · Kapı A12 önü",
   "Bildir",
-  "",
-  "0",
+  "BULUŞMA",
+  "KAPI A12 ÖNÜ",
+  "BULUŞMAYA",
+  "1",
+  "9",
+  ":",
   "2",
+  "5",
   ":",
   "3",
   "1",
-  ":",
-  "5",
-  "4",
   "0",
-  "9",
-  "kalkışa",
-  "",
-  "Kapı A12 önü",
+  "DURUM",
+  "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "14:53",
+  "18:24",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "14:55",
+  "18:26",
   "Lounge girişindeyim",
-  "15:00",
+  "18:31",
   "Ben de yeni geçtim, kapıdayım.",
-  "15:00",
+  "18:32",
   "Süper. Kaç numaralı kapıdasın?",
-  "15:01",
+  "18:32",
   "A12. Primeclass girişi tam karşısı.",
-  "15:01",
+  "18:32",
   "Anladım, yürüyen merdivenden çıkıyorum.",
-  "15:01",
+  "18:33",
   "Acele etme, uçuşa daha var.",
-  "15:02",
-  "Kahve ısmarlayayım mı? Burada sıra yok gibi.",
-  "15:02",
-  "Olur, ben sade içiyorum.",
-  "15:02",
-  "Not aldım.",
-  "15:03"
+  "18:33",
+  "Kahve ısmarlayayım mı? Burada sıra yok gibi."
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": -10,
+   "sol": -11,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -10,
+   "sol": -11,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -10,
+   "sol": -11,
    "tx": ""
   },
   {
@@ -127,17 +136,17 @@
   },
   {
    "g": 507,
-   "sol": -10,
+   "sol": -11,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -10,
+   "sol": -11,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -10,
+   "sol": -11,
    "tx": ""
   },
   {
@@ -157,32 +166,32 @@
   },
   {
    "g": 507,
-   "sol": 16,
+   "sol": 17,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 16,
+   "sol": 17,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 16,
+   "sol": 17,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -184,
+   "sol": -186,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -184,
+   "sol": -186,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -184,
+   "sol": -186,
    "tx": ""
   }
  ],

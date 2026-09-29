@@ -185,7 +185,7 @@ export function OnayDamgasi({ t }) {
 const HALKA_NOKTA = 48;
 function ikiHane(n) { return String(Math.max(0, n)).padStart(2, "0"); }
 
-export function KalkisHalkasi({ t, baslangic, bitis, boy = 176 }) {
+export function KalkisHalkasi({ t, baslangic, bitis, boy = 176, metinRengi }) {
   const az = useAzHareket();
   const [simdi, setSimdi] = useState(Date.now());
   const nefes = useRef(new Animated.Value(1)).current;
@@ -205,15 +205,19 @@ export function KalkisHalkasi({ t, baslangic, bitis, boy = 176 }) {
   const toplam = bitis - baslangic;
   const gecen = Math.min(toplam, Math.max(0, simdi - baslangic));
   const oran = gecen / toplam;
-  const kalanSn = Math.max(0, Math.round((bitis - simdi) / 1000));
-  const kisa = kalanSn < 15 * 60;
+  // v6.3 · PANO K7 (Gökberk notu) — pencere henüz başlamadıysa BAŞLANGICA
+  // sayar ("Buluşmaya"); başladıysa BİTİŞE ("Oturumun bitimine").
+  const once = simdi < baslangic;
+  const etiket = once ? (t.ringToStart || t.fidsLeft || "") : (t.ringLeft || "");
+  const kalanSn = Math.max(0, Math.round(((once ? baslangic : bitis) - simdi) / 1000));
+  const kisa = !once && kalanSn < 15 * 60;
   const renk = kisa ? C.amber : C.gold;
   const dolu = Math.round(oran * HALKA_NOKTA);
   const yari = boy / 2, rr = yari - 8;
   const sa = Math.floor(kalanSn / 3600), dk = Math.floor((kalanSn % 3600) / 60), sn = kalanSn % 60;
   return (
     <View style={{ alignItems: "center" }} accessible accessibilityRole="timer"
-      accessibilityLabel={`${ikiHane(sa)}:${ikiHane(dk)} ${t.ringLeft || ""}`}>
+      accessibilityLabel={`${etiket} ${ikiHane(sa)}:${ikiHane(dk)}`}>
       <View style={{ width: boy, height: boy, alignItems: "center", justifyContent: "center" }}>
         {Array.from({ length: HALKA_NOKTA }).map((_, i) => {
           const aci = (i / HALKA_NOKTA) * 2 * Math.PI - Math.PI / 2;
@@ -224,19 +228,19 @@ export function KalkisHalkasi({ t, baslangic, bitis, boy = 176 }) {
             <View key={i} style={{
               position: "absolute", left: yari + rr * Math.cos(aci) - cap / 2,
               top: yari + rr * Math.sin(aci) - cap / 2, width: cap, height: cap,
-              borderRadius: R.full, backgroundColor: bas ? C.ink : on ? renk : C.line,
+              borderRadius: R.full, backgroundColor: bas ? (metinRengi || C.ink) : on ? renk : (metinRengi ? "rgba(247,243,236,0.18)" : C.line),
             }} />
           );
         })}
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <Text style={{ fontFamily: MONO[500], fontSize: FS.bant, color: C.ink, lineHeight: FS.bant * 1.2 }}>
+          <Text style={{ fontFamily: MONO[500], fontSize: FS.bant, color: metinRengi || C.ink, lineHeight: FS.bant * 1.2 }}>
             {ikiHane(sa)}:{ikiHane(dk)}
           </Text>
           <Animated.Text style={{ fontFamily: MONO[500], fontSize: FS.sm, color: renk, marginLeft: 2,
                                   marginBottom: 6, opacity: az ? 1 : nefes }}>:{ikiHane(sn)}</Animated.Text>
         </View>
         <Text style={{ fontSize: FS.micro, letterSpacing: 2, color: C.mut, marginTop: 2 }}>
-          {BUYUK(t.ringLeft || "")}
+          {BUYUK(etiket)}
         </Text>
       </View>
     </View>
@@ -428,7 +432,7 @@ function PanoHucresi({ oran, yazi, gec }) {
   }, [az]);
   return (
     <Animated.View style={{
-      flex: oran, height: 24, borderRadius: 3, backgroundColor: C.bgAlt,
+      flex: oran, height: 24, borderRadius: R.onay, backgroundColor: C.bgAlt,
       alignItems: "center", justifyContent: "center",
       opacity: az ? 1 : v.interpolate({ inputRange: [0, 0.7, 0.71, 0.725, 1], outputRange: [1, 1, 0.2, 1, 1] }),
     }}>

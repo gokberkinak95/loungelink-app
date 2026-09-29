@@ -1380,22 +1380,29 @@ def seyahatler():
                                 t("tripMatchCta").replace("{n}", "6"), "ok"),
                                ("SAW · Varış", "24 Ekim · 09:00 – 11:00",
                                 t("tripMatchNone"), "unknown")):
-        x, y0, g = e.kart(146 * K, y=y)
+        # 🔴 29 Eylül — v6.3 PANO H2 AYNASI: kart artık BİNİŞ KARTI
+        # (kaş · mono rota · delik çizgisi · Salon/Kalkış/Kişi hücreleri ·
+        # "Host bul"). Ayna eski kartı çiziyordu; ekranın yeni anahtarları
+        # (bkCell*, bkFindHost) önizlemede yoktu → ayna_kapsam 6→5 düştü.
+        x, y0, g = e.kart(170 * K, y=y)
         ix = x + 16 * K
-        e.metin((ix, y0 + 18 * K), ap, f(BOLD, 15), e.P["ink"])
-        e.metin((ix, y0 + 42 * K), tarih, f(REG, 12), e.P["mutedAA"])
-        # SQL 283 — kişi sayısı seyahat kartında görünür ("2 kişi · 4 yaş")
-        if ap.startswith("IST"):
-            e.cip(int(x + g - 16 * K - e.genislik("2 kişi · 4 yaş", f(SEMI, 10.5)) - 22 * K),
-                  int(y0 + 14 * K), "2 kişi · 4 yaş")
-        ayirac(e, ix, y0 + 72 * K, g - 32 * K)
-        ft = e.sigdir(es, SEMI, 12, g - 32 * K)
-        e.metin((ix, y0 + 88 * K), es, ft, e.R[ton])
+        e.metin((ix, y0 + 16 * K), tarih.split(" · ")[0].upper(), f(SEMI, 10.5), e.P["goldText"])
+        e.metin((ix, y0 + 34 * K), ap.split(" · ")[0] + "  →  LHR", f(BOLD, 20), e.P["ink"])
+        ayirac(e, ix, y0 + 70 * K, g - 32 * K)
+        hucre_x = ix
+        for et, dg in ((t("bkCellLounge"), tarih.split(" · ")[1].replace(" ", "")),
+                       (t("bkCellDep"), "17:55"),
+                       (t("bkCellParty"), "2 + 1" if ap.startswith("IST") else "1")):
+            e.metin((hucre_x, y0 + 80 * K), et.upper(), f(SEMI, 9.5), e.P["mutedAA"])
+            e.metin((hucre_x, y0 + 96 * K), dg, f(SEMI, 12), e.P["ink"])
+            hucre_x += 96 * K
+        ft = e.sigdir(es, SEMI, 12, g - 140 * K)
+        e.metin((ix, y0 + 136 * K), es, ft, e.R[ton])
         ft2 = f(SEMI, 11.5)
-        s = t("findHost")
+        s = t("bkFindHost")
         w = e.genislik(s, ft2)
-        e.metin((x + g - 16 * K - w, y0 + 114 * K), s, ft2, e.P["goldText"])
-        y = y0 + 146 * K + 12 * K
+        e.metin((x + g - 16 * K - w, y0 + 136 * K), s, ft2, e.P["goldText"])
+        y = y0 + 170 * K + 12 * K
     # 🔴 18 Eylül (Gökberk md.12) — önizleme de "Seyahat Ekle" diyor.
     # Bu düğme YENİ seyahat açıyor; etiketi "Seyahati Kaydet →" idi.
     # Ayna kapsamı (ayna_kapsam_check.py) önizleme ile ekranın AYNI

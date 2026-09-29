@@ -1,24 +1,11 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ AKŞAMLAR",
   "Selin B.",
   "• Doğrulanmış",
   "9",
@@ -36,23 +23,33 @@
   "0",
   "SORU",
   "BU AY",
-  "0 misafir · +500 LoungePuan",
+  "KADEMEYE 6 OTURUM",
   "",
-  "Comfort Lounge · SAW",
-  "09:00 – 11:30",
+  "0 misafir · +500 LoungePuan",
+  "YAYINDA · 0/1 DOLU",
+  "SAW",
+  "Comfort Lounge",
+  "BUGÜN · 09:00–11:30",
   "",
   "Misafir ücretli girer",
-  "Keşfet",
-  "LOUNGE · IST",
-  "12:00 – 18:00",
+  "Keşfet'te gör",
+  "",
+  "YAYINDA · 0/2 DOLU",
+  "IST",
+  "LOUNGE",
+  "30 EYLÜL · 12:00–18:00",
   "",
   "Misafir ücretsiz",
-  "Keşfet",
-  "LOUNGE · IST",
-  "10:00 – 16:00",
+  "Keşfet'te gör",
+  "",
+  "YAYINDA · 0/2 DOLU",
+  "IST",
+  "LOUNGE",
+  "30 EYLÜL · 10:00–16:00",
   "",
   "Misafir ücretli girer",
-  "Keşfet",
+  "1 istek bekliyor",
+  "",
   "İSTEKLER",
   "Sana gelen 6 istek",
   "",
@@ -95,77 +92,67 @@
   "1 Ekim · 09:00–12:00",
   "TELEFON",
   "TK902",
-  "GÜVEN 58",
-  "“Merhaba, aynı saatlerde aktarmadayım. Yanınızda bir kişilik yer var mı?”",
-  "Misafiri kabul et",
-  "Reddet",
-  "UYUM",
-  "#4 / 6",
-  "G",
-  "guest4",
-  "YOLCU",
-  "%46",
-  "UYUM"
+  "GÜVEN 58"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 50,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 50,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 50,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 50,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 50,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 50,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   }
  ],

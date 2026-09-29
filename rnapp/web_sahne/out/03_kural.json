@@ -18,19 +18,18 @@
   "LOUNGELINK",
   "KURAL MOTORU",
   "Bu eşleşme",
-  "neden %88?",
-  "%88",
-  "UYUM",
-  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: İç hatlar salonu · varış noktanı gir",
-  "KART · PRİORİTY PASS PRESTİGE",
+  "neden %64?",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Havayolu şartı bilinmiyor · uçuşunu gir",
+  "KART · MİLES&SMİLES ELİTE PLUS",
   "SALON UYUMLULUĞU",
   "",
-  "Misafir ziyareti 30 EUR (kisi basi, ziyaret basina). Uc uyelik planinin UCUNDE de ayni: Standard, Standard Plus ve Prestige. Prestige'de UYENIN kendi girisleri sinirsiz ucretsiz ama MISAFIR YINE 30 EUR — yani misafir hakki daha pahali plan alarak KAZANILAMIYOR. Ucret uyenin kartindan tahsil edilir.",
+  "Misafir hakkı var",
+  "1 KİŞİLİK",
   "",
-  "3 koşul",
+  "2 koşul",
   "UÇUŞ EŞLEŞMESİ",
-  "İç hatlar salonu",
-  "VARIŞ NOKTANI GİR",
+  "Havayolu şartı bilinmiyor",
+  "UÇUŞUNU GİR",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",
@@ -40,7 +39,7 @@
   "3 koşul",
   "Gri satırlar, kaynağından doğrulayamadığımız şartlar. Onları bilmiyoruz — bildiğimizi söylemiyoruz.",
   "Son karar her zaman salona aittir. Kapıda alınmazsan kredin iade edilir.",
-  "Lounge isteği gönder",
+  "Seyahat ekle",
   "",
   "Salon kurallarını oku",
   ""
@@ -48,92 +47,92 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 32,
+   "sol": -7,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": -7,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": -7,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -160,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -160,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -160,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": -7,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": -7,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": -7,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -160,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -160,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -160,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 52,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 52,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 52,
+   "sol": 14,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -211,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -211,
+   "sol": -183,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -211,
+   "sol": -183,
    "tx": ""
   }
  ],

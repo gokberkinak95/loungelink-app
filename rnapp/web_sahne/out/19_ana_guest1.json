@@ -5,7 +5,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "11",
   "KREDİ",
@@ -21,10 +21,13 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN",
-  "IST · BUGÜN",
+  "BUGÜN · BİNİŞ",
+  "PC2214",
+  "ADB",
   "Şimdi seni salona alabilecek bir host bulalım.",
-  "Misafir olarak host bul",
+  "SALON",
+  "15:00–20:00",
+  "Host bul",
   "",
   "Radar kapalı",
   "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
@@ -47,62 +50,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 48,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -200,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -200,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -200,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 48,
+   "sol": 36,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -200,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -200,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -208,
+   "sol": -200,
    "tx": ""
   }
  ],

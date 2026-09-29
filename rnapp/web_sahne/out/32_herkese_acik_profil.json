@@ -14,17 +14,9 @@
   "Salon",
   "Rota",
   "G",
-  "Gökberk İ.",
-  "Ürün Yönetimi",
-  "TK1979 · IST",
-  "Aynı uçuş",
-  "Aktarma",
-  "• Temel Doğrulama · 50",
-  "",
-  "G",
   "Gökberk İnak",
   "Ürün Yönetimi",
-  "TK1979 · IST",
+  "TK1979 · IST · 30 Eylül",
   "Aynı uçuş",
   "Aktarma",
   "• Temel Doğrulama · 44",
@@ -32,13 +24,13 @@
   "A",
   "Arda K.",
   "Yazılım Mühendisi",
-  "TK1979 · IST · 29 Eylül",
+  "TK1979 · IST",
   "Aynı uçuş",
   "İş",
   "• Temel Doğrulama · 38",
   "",
-  "Z",
-  "Zeynep A.",
+  "E",
+  "Ece Y.",
   "Akademisyen",
   "TK1979 · IST",
   "Aynı uçuş",
@@ -51,17 +43,10 @@
   "Aynı uçuş",
   "• Temel Doğrulama · 26",
   "",
-  "E",
-  "Ece Y.",
-  "Akademisyen",
-  "TK1979 · IST",
-  "Aynı uçuş",
-  "• Temel Doğrulama · 26",
-  "",
   "Y",
   "Yeni Üye",
   "Mühendis",
-  "TK1979 · IST",
+  "TK1979 · IST · 30 Eylül",
   "Aynı uçuş",
   "• Temel Doğrulama · 16",
   "",
@@ -92,97 +77,108 @@
   "İstek gönder — kabul etmek onun seçimi. Lounge yok, kredi yok. Güvenlik araçları her zaman aktif.",
   "NE ARIYORSUN",
   "",
-  "Uçuş öncesi kahve sohbeti"
+  "Uçuş öncesi kahve sohbeti",
+  "",
+  "İş / networking",
+  "",
+  "Aynı rota yol arkadaşı",
+  "",
+  "Sadece merhaba",
+  "",
+  "Diğer",
+  "KISA TANITIM",
+  "Bağlantı İsteği Gönder",
+  ""
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 32,
+   "sol": 10,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": 10,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": 10,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -179,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -179,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -179,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": 10,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": 10,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 32,
+   "sol": 10,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -179,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -179,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -179,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 49,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 49,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 49,
+   "sol": 31,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -209,
+   "sol": -196,
    "tx": ""
   }
  ],

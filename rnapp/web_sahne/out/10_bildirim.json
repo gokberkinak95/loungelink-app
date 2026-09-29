@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -87,111 +78,111 @@
   "İstekler",
   "Oturumlar",
   "Bildirimler",
+  "BUGÜN",
   "",
   "İstek kabul edildi",
-  "6 dk",
+  "7 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "22 dk",
+  "23 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
-  "",
-  "Oturum Devam Ediyor",
-  "1 sa",
-  "TAV Primeclass · Kapı A12 önü.",
   "",
   "Havalimanı güncellemesi #1",
-  "1 sa"
+  "1 sa",
+  "IST Dış Hatlar terminalinde salon kapasitesi güncellendi. Kart kurallarını yeniden kontrol ettik.",
+  "",
+  "Oturum Devam Ediyor"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 27,
+   "sol": 15,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 27,
+   "sol": 15,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 27,
+   "sol": 15,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -193,
+   "sol": -184,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -193,
+   "sol": -184,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -193,
+   "sol": -184,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 27,
+   "sol": 15,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 27,
+   "sol": 15,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 27,
+   "sol": 15,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -193,
+   "sol": -184,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -193,
+   "sol": -184,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -193,
+   "sol": -184,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 45,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 45,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 45,
+   "sol": 35,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -199,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -199,
    "tx": ""
   }
  ],

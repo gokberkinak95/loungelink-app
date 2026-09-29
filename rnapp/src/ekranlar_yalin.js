@@ -430,7 +430,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
             <View key={r.id} style={[S.card, { padding: SP[4] }]}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0, marginRight: SP[2] }}>
-                  <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: col, marginRight: ARA[8] }} />
+                  <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: col, marginRight: ARA[8] }} />
                   <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, fontSize: FS.micro + 0.5, fontWeight: "600", color: col, letterSpacing: 1.4 }}>
                     {BUYUK(lab)}
                   </Text>
@@ -1152,11 +1152,26 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     return (
       <MomentScreen t={t}
         kind="started"
+        dugum={t.momentInLounge}
         title={t.momentStartTitle}
         subtitle={t.momentStartBody}
         meta={ctx}
         primary={{ label: t.momentStartCta, onPress: () => setMomentSeen(true) }}
-      />
+      >
+        {/* v6.3 · PANO M2 (Gökberk onayı) — "SALONDASINIZ": K5 sahnesi + K7 halkası.
+            Pencere bilinmiyorsa halka çizilmez (uydurma sayaç yok). */}
+        {(() => {
+          if (!av.avail_date || !av.time_from || !av.time_to) return null;
+          const bas = new Date(`${av.avail_date}T${String(av.time_from).slice(0, 8)}`).getTime();
+          const bit = new Date(`${av.avail_date}T${String(av.time_to).slice(0, 8)}`).getTime();
+          if (!isFinite(bas) || !isFinite(bit)) return null;
+          return (
+            <View style={{ alignItems: "center", marginTop: ARA[20] }}>
+              <KalkisHalkasi t={t} baslangic={bas} bitis={bit} boy={150} metinRengi={C.paper} />
+            </View>
+          );
+        })()}
+      </MomentScreen>
     );
   }
 
@@ -1348,7 +1363,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         <View accessibilityRole="text" style={{ flexDirection: "row", alignItems: "flex-start", marginHorizontal: ARA[18],
                        marginTop: ARA[10], padding: ARA[14], borderRadius: R.lg,
                        backgroundColor: C.popupZemin || C.surface, ...ustIsik(C.kenarIsik || C.line) }}>
-          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: C.goldText, marginTop: ARA[6], marginRight: ARA[12] }} />
+          <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: C.goldText, marginTop: ARA[6], marginRight: ARA[12] }} />
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ color: C.mut, fontSize: FS.micro, fontWeight: "600", letterSpacing: 1.2 }}>
               {BUYUK(String(t.bpOtherEyebrow).replace("{ad}", shortName(otherName || "")))}
@@ -2665,51 +2680,55 @@ export function Notifications({ t, session, onRefreshBadge, onGit, onBack }) {
       ) : (
         <Kaydirma {...bnt.scrollProps}
            contentContainerStyle={{ padding: SP[4], paddingTop: bnt.ustBosluk + SP[4], paddingBottom: ARA[40] }}>
-          {shown.map(nf => (
-            <TouchableOpacity hitSlop={TAP.slop} key={nf.id} onPress={() => tap(nf)}
-              accessibilityRole="button"
-              // Bildirim satırında üç ayrı metin var (başlık, gövde, saat);
-              // ekran okuyucu üçünü ayrı ayrı okuyup okunmamış olduğunu hiç
-              // söylemiyordu. Tek bir ad + durum.
-              accessibilityLabel={`${nf.title}. ${nf.body || ""}`}
-              accessibilityState={{ selected: !nf.read_at }}
-              // Tasarımın `.kart` / `.kart.one` ayrımı: okunmamış olan
-              // altın izli kenar + çok soluk altın tint alır. 4px sol
-              // şerit gitti — bu sistemde vurgu KENARIN RENGİYLE, kalın
-              // bir dikey çubukla değil söyleniyor.
-              /* tasarım 10 satırı: 96 yüksek · 14 iç pay · okunmamış = altın
-                 iz kenar (`goldTrace`, 0.13) + %3 altın tint */
-              style={[S.card, { padding: ARA[14], marginBottom: ARA[10], minHeight: 96,
-                flexDirection: "row", alignItems: "flex-start" },
-                !nf.read && { borderColor: C.goldTrace || C.goldLine,
-                              backgroundColor: C.altinIz03 }]}>
-              {/* Tasarımın `.avatar.sm` ölçüsü (36px). Renkli benek
-                  yerine kategorinin VEKTÖR ikonu: bir benek "bu hangi
-                  kategori" sorusunu ancak renk hafızası olanlara
-                  cevaplar; ikon herkese cevaplar. */}
-              <View style={{ width: 36, height: 36, borderRadius: R.full,
-                             backgroundColor: C.bgAlt,
-                             borderWidth: 1, borderColor: C.line2 || C.line,
-                             alignItems: "center", justifyContent: "center",
-                             marginRight: ARA[12] }}>
-                <Ikon ad={catIkon[nf.category] || "bilgi"} boy={17}
-                      renk={catColor[nf.category] || C.mut} />
+          {/* ══ v6.3 · PANO H5 (Gökberk onayı) — GÜNE GÖRE GRUPLU CAM ══
+              Bugün / Dün / tarih başlığı · her gün TEK cam kutu · satırlar 1 px
+              ışıkla ayrılır · okunmamış = soldaki altın nokta + fildişi başlık.
+              Kategori ikonu (vektör) korunur: rengi hafızaya değil ikona dayanır. */}
+          {shown.reduce((gun, nf) => {
+            const g = String(nf.created_at || "").slice(0, 10);
+            const bugun = yerelGun(), dun = yerelGun(new Date(Date.now() - 86400000));
+            const ad = g === bugun ? t.calmEyebrow : g === dun ? t.dayYesterday : fmtLongDate(g, etkinDil());
+            if (!gun.length || gun[gun.length - 1].ad !== ad) gun.push({ ad, liste: [] });
+            gun[gun.length - 1].liste.push(nf);
+            return gun;
+          }, []).map((gr, gi) => (
+            <View key={"d-" + gr.ad} style={{ marginTop: gi === 0 ? 0 : ARA[14] }}>
+              <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4, color: C.mut,
+                             marginBottom: ARA[8], marginHorizontal: ARA[6] }}>{BUYUK(String(gr.ad))}</Text>
+              <View style={{ backgroundColor: C.camYuzey || C.surface, borderRadius: R.lg + 2, paddingHorizontal: ARA[14],
+                             ...ustIsik(C.parlama || C.line) }}>
+                {gr.liste.map((nf, ni) => (
+                  <TouchableOpacity hitSlop={TAP.slop} key={nf.id} onPress={() => tap(nf)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${nf.title}. ${nf.body || ""}`}
+                    accessibilityState={{ selected: !nf.read_at }}
+                    style={{ paddingVertical: ARA[14], flexDirection: "row", alignItems: "flex-start",
+                             borderTopWidth: ni === 0 ? 0 : StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+                    <View style={{ width: 6, height: 6, borderRadius: R.full, marginTop: ARA[14], marginRight: ARA[8],
+                                   backgroundColor: nf.read ? "transparent" : C.goldText }} />
+                    <View style={{ width: 34, height: 34, borderRadius: R.full, backgroundColor: C.surfaceAlt,
+                                   ...ustIsik(C.parlama || C.line),
+                                   alignItems: "center", justifyContent: "center", marginRight: ARA[12] }}>
+                      <Ikon ad={catIkon[nf.category] || "bilgi"} boy={16}
+                            renk={catColor[nf.category] || C.mut} />
+                    </View>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <Text style={{ flex: 1, fontSize: FS.base, fontWeight: nf.read ? "500" : "600",
+                                       color: nf.read ? C.body : C.ink, marginTop: ARA[2],
+                                       lineHeight: Math.round(FS.base * 1.35) }}>{nf.title}</Text>
+                        {/* saat MONO: alt alta satırlarda sütun hizalı */}
+                        <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: C.dim,
+                                       marginLeft: ARA[10], marginTop: ARA[2] }}>
+                          {zamanKisa(nf.created_at, t)}</Text>
+                      </View>
+                      {!!nf.body && <Text style={{ color: C.mutedAA, fontSize: FS.sm, marginTop: ARA[4],
+                                                   lineHeight: Math.round(FS.sm * 1.45) }}>{nf.body}</Text>}
+                    </View>
+                  </TouchableOpacity>
+                ))}
               </View>
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-                  <Text style={{ flex: 1, fontSize: FS.base, fontWeight: "600",
-                                 color: nf.read ? C.body : C.ink, marginTop: ARA[2],
-                                 lineHeight: Math.round(FS.base * 1.35) }}>{nf.title}</Text>
-                  {/* Saat MONO: liste boyunca değişen bir sayı ve sağa
-                      hizalı — orantılı ailede sütun titrer. */}
-                  <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: C.dim,
-                                 marginLeft: ARA[10], marginTop: ARA[2] }}>
-                    {zamanKisa(nf.created_at, t)}</Text>
-                </View>
-                {!!nf.body && <Text style={{ color: C.mutedAA, fontSize: FS.sm, marginTop: ARA[6],
-                                             lineHeight: Math.round(FS.sm * 1.45) }}>{nf.body}</Text>}
-              </View>
-            </TouchableOpacity>
+            </View>
           ))}
         </Kaydirma>
       )}

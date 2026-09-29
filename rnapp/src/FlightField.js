@@ -60,6 +60,9 @@ export default function FlightField({
   // yazılmış AMA doğrulanmamışsa çıkar. Doğrulanınca çıkmaz: doğrulanmış
   // bir uçuşa "eşleştirmedik" demek yalan olurdu.
   manualWarn = null,
+  // v6.3 · seyahat sihirbazı — sorgu sonucu dışarı verilir (kalkış/varış/havayolu
+  // otomatik dolsun diye). Sonuç yoksa null. Verilmezse davranış değişmez.
+  onInfo = null,
 }) {
   const [info, setInfo] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -82,6 +85,7 @@ export default function FlightField({
     try {
       const r = await flightInfo(txt.trim(), date);
       setInfo(r && r.hit ? r : null);
+      if (onInfo) onInfo(r && r.hit ? r : null);
       // 🔴 v2.80 — GÜNLÜK SORGU KOTASI ARTIK GÖRÜNÜR.
       // Kota dolduğunda kullanıcı "uçuşum bulunamadı" görüyordu ve
       // numarayı yanlış yazdığını sanıp tekrar tekrar deniyordu. Sessiz
@@ -149,6 +153,8 @@ export default function FlightField({
         value={txt}
         onChangeText={(x) => onChange(x.toUpperCase())}
         onBlur={lookup}
+        onSubmitEditing={lookup}
+        returnKeyType="search"
         placeholder="TK712"
         placeholderTextColor={C.dim}
         autoCapitalize="characters"

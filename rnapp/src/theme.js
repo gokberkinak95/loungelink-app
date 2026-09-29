@@ -441,9 +441,12 @@ export const ARA = {
 // "tablo" gibi gösteriyor. Hafif gölge kartı yüzeyden ayırıyor ve
 // dokunulabilir olduğunu söylüyor — RN'de iki platformda ayrı yazılır.
 export const ELEV = {
+  // 29 Eylül · v6.3 — Android elevation 0: kart artık yarı saydam cam; Android saydam
+  // yüzeyin gölgesini kartın İÇİNDEN çiziyor (md.7 ölçümü: köşeli iç kutu). iOS gölgesi
+  // %5 — görsel olarak kaybı yok.
   card: {
     shadowColor: "#1A1F2E", shadowOpacity: 0.05, shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 }, elevation: 1,
+    shadowOffset: { width: 0, height: 2 }, elevation: 0,
   },
   raised: {
     shadowColor: "#1A1F2E", shadowOpacity: 0.10, shadowRadius: 16,
@@ -457,6 +460,9 @@ export const ELEV = {
 // derece kaydırıldı ve kartlara ayırt edici bir yüzey verildi.
 C.surface   = "#FFFDF9";   // kart: saf beyaz değil, kremin bir tık üstü
 C.surfaceAlt= "#F4F1E9";   // kart içi blok
+// v6.3 · ATMOSFERİK HİBRİT (Gökberk onayı, 29 Eylül): içerik kartları buzlu cam.
+// Açık temada cam yok — kart opak kalır (atmosfer katmanı orada ışık bulutu çizmiyor).
+C.camYuzey  = C.surface;
 C.warmLine  = "rgba(184,148,58,0.16)";  // altın tonlu ayraç — griden sıcak
 
 // ============================================================
@@ -840,7 +846,7 @@ export const KOYU = {
   // 🆕 SINIF: "VURGU BİR MİKTARDIR; DOĞRU RENGİ YANLIŞ ŞİDDETTE
   // KULLANMAK, YANLIŞ RENK KULLANMAKLA AYNI ŞEYİ BOZAR."
   goldTrace:  "rgba(214,195,160,0.13)",
-  altinIz03:  "rgba(214,195,160,0.03)",
+  altinIz03:  "rgba(214,195,160,0.03)",   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1973
   // Koyu temada ham amber (#D97706 · C* 73) yerine paletin kendi
   // amberi (#FAA23C) %30 — aynı işlev, sistemin içinde.
   amberLine:  "rgba(250,162,60,0.30)",
@@ -1914,7 +1920,7 @@ KOYU.kartIsik   = KOYU.parlama;   // ⛔ ÖLÜ ATAMA — geçerli değer satır 
 KOYU.kabartmaIsik = "rgba(244,239,230,0.09)";  // rozet mührü: kabartmanın üst sırtı
 KOYU.kabartmaDip  = "rgba(0,0,0,0.30)";        // … ve bastırılmış alt gölgesi
 KOYU.fildisi    = "#EDE7DB";                   // mühür mürekkebi (fildişi krem)
-KOYU.muhurZemin = "rgba(237,231,219,0.06)";
+KOYU.muhurZemin = "rgba(237,231,219,0.06)";   // ⛔ ÖLÜ ATAMA — geçerli değer satır 1975
 KOYU.camKart    = "rgba(20,18,17,0.55)";       // dumanlı cam (host balonu)
 KOYU.isikSizinti = "#C9B693";                  // ortam ışığı — dokununca sızar (≤ %12)
 KOYU.onGoldSoluk = "rgba(23,18,11,0.62)";       // şampanya balon üstünde saat
@@ -1961,7 +1967,10 @@ KOYU.goldSoft = V61_SECILI;
 // 29 Eylul (md.7) - ilk/okunmamis kartin %3 altin tinti OPAK olmali: saydam
 // zemin + elevation Android'de kartin icinde koseli ikinci bir kutu ciziyordu
 // (olculdu: ic RGB 36-43, kenar bandi 31-35). #171512 + %3 #D6C3A0 = #1D1A16.
-KOYU.altinIz03 = "#1D1A16";
+// 29 Eylül · v6.3 hibrit — kartlar artık CAM (arkadaki atmosfer sızar). md.7'deki iç kutu
+// SAYDAMLIK + ANDROID GÖLGESİ birleşiminden çıkıyordu; ELEV.card.elevation 0 oldu, saydamlık geri geldi.
+KOYU.camYuzey = "rgba(20,18,17,0.55)";   // buzlu cam kart (üstte 1 px ışık, çizgi yok)
+KOYU.altinIz03 = "rgba(42,37,29,0.62)";  // ilk/okunmamış kart: camın bir tık sıcak hâli
 KOYU.sampanyaTint = "rgba(214,195,160,0.14)";   // pano C: kendi balonun
 KOYU.muhurZemin = "#E6DCC8";
 KOYU.muhurParlama = "#FBF7EF";

@@ -7,6 +7,10 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -119,92 +123,92 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 25,
+   "sol": 29,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 25,
+   "sol": 29,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 25,
+   "sol": 29,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -192,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -192,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -192,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 25,
+   "sol": 29,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 25,
+   "sol": 29,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 25,
+   "sol": 29,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -192,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -192,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -192,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 49,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 49,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 46,
+   "sol": 49,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -209,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -207,
+   "sol": -209,
    "tx": ""
   }
  ],

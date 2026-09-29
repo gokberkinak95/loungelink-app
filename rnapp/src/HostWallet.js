@@ -29,7 +29,7 @@
 // HOST'U İKNA ETMİYORUZ. HOST OLDUĞUNU HABER VERİYORUZ.
 // ============================================================
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
 import { supabase } from "./supabase";
 import { ARA, ELEV, C, F, FS, R, SP, T, TAP } from "./theme";
 // 🔴 v2.87 — KATLANIR PANELLER. Gökberk: "Yayın > İlanlarım sayfasındaki
@@ -41,6 +41,8 @@ import { ARA, ELEV, C, F, FS, R, SP, T, TAP } from "./theme";
 // tek satırlık özet gerekiyordu, o da oraya eklendi.
 import { Katlanir } from "./Pickers";
 import { MONO } from "./typography";
+import { ustIsik } from "./ortak";
+import { Ikon } from "./ikon";
 
 // ------------------------------------------------------------
 // Ortak kabuk — üç kartın da aynı ritmi tutması için tek yerde.
@@ -510,27 +512,34 @@ export function HostPanel({ onAddCard, onAdd, t = {} }) {
   ];
   return (
     <View style={{ marginBottom: SP[3] }}>
-      <View style={{ flexDirection: "row", gap: ARA[8] }}>
-        {kutular.map(k => {
+      {/* v6.3 · PANO H3 (Gökberk onayı) — ÜÇ KUTU TEK CAM ŞERİT. Hücreler sola
+          hizalı: etiket + (i) · mono değer · alt satır; 1 px ışık çizgisiyle ayrılır.
+          Değer TEK SATIR (Gökberk: "mertebede alta kayma ekranı büyütüyor"). */}
+      <View style={{ flexDirection: "row", borderRadius: R.lg + 2, overflow: "hidden",
+                     backgroundColor: C.camYuzey || C.surface || C.card, ...ustIsik(C.parlama || C.line) }}>
+        {kutular.map((k, i) => {
           const sec = acik === k.k;
           const sayi = /^[0-9—]/.test(k.deger);
           return (
             <TouchableOpacity key={k.k} onPress={() => setAcik(sec ? null : k.k)} hitSlop={TAP.slop}
               accessibilityRole="button" accessibilityLabel={`${k.etiket}: ${k.deger}`}
               accessibilityState={{ expanded: sec }}
-              style={{ flex: 1, minHeight: 74, backgroundColor: C.surface || C.card, borderWidth: 1,
-                       borderColor: sec ? C.gold : C.line, borderRadius: R.md,
-                       alignItems: "center", justifyContent: "center", paddingVertical: ARA[10], paddingHorizontal: ARA[6] }}>
+              style={{ flex: 1, minWidth: 0, minHeight: 78, paddingVertical: ARA[12], paddingHorizontal: ARA[10],
+                       backgroundColor: sec ? (C.altinIz03 || "transparent") : "transparent",
+                       borderLeftWidth: i === 0 ? 0 : StyleSheet.hairlineWidth, borderLeftColor: C.kenarIsik || C.line }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text numberOfLines={1} style={{ flexShrink: 1, fontSize: FS.micro, fontWeight: "600", letterSpacing: 1.1, color: sec ? C.goldText : C.mutedAA }}>
+                  {k.etiket}
+                </Text>
+                <Ikon ad="bilgi" boy={11} renk={C.mut} stil={{ marginLeft: ARA[4] }} />
+              </View>
               <Text numberOfLines={1} style={sayi
-                ? { fontFamily: MONO[500], fontSize: FS.lg + 2, lineHeight: Math.round((FS.lg + 2) * 1.3), color: C.gold }
-                : { fontWeight: "700", fontSize: FS.sm + 0.5, lineHeight: Math.round((FS.lg + 2) * 1.3), color: C.gold }}>
+                ? { fontFamily: MONO[500], fontSize: FS.lg + 1, lineHeight: Math.round((FS.lg + 1) * 1.3), color: C.ink, marginTop: ARA[4] }
+                : { fontFamily: MONO[500], fontSize: FS.sm + 1, lineHeight: Math.round((FS.lg + 1) * 1.3), color: C.ink, marginTop: ARA[4] }}>
                 {k.deger}
               </Text>
-              <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: "600", letterSpacing: 1.1, color: C.mutedAA, marginTop: ARA[2] }}>
-                {k.etiket}
-              </Text>
               {!!k.alt && (
-                <Text numberOfLines={1} style={{ fontSize: FS.micro + 1, color: C.dim, marginTop: ARA[3] }}>{k.alt}</Text>
+                <Text numberOfLines={1} style={{ fontSize: FS.micro + 1, color: C.dim, marginTop: ARA[2] }}>{k.alt}</Text>
               )}
             </TouchableOpacity>
           );

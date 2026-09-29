@@ -62,6 +62,7 @@ SAHNELER = {
     "09_profil":       ("selin",   [("dokun", "Profil")]),   # tasarım 09 host profili (Yayın & Davet satırı)   # ekran: Profile
     "09b_profil_misafir": ("gokberk", [("dokun", "Profil")]),   # ekran: Profile
     "12b_ilanlarim":   ("selin",   [("dokun", "Planım")]),   # host Planım → İlanlarım (öneri 5 Eylül)   # ekran: Trips
+    "12c_ilanlarim_pasif": ("selin",  [("dokun", "Planım"), ("dokun_a11y", "Yayında olmayanlar"), ("kaydir",), ("bekle", 800)]),   # v6.3 · H3 katlı bölüm açık · "Yeniden yayınla"   # ekran: Hosting
     "14b_seyahatler_host": ("selin", [("dokun", "Planım"), ("dokun_a11y", "Seyahatlerim")]),   # ekran: Trips
     "10_bildirim":     ("gokberk", [("dokun", "Profil"), ("dokun", "Bildirimler")]),   # ekran: Notifications
     "03_kural":        ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("bekle", 2600)]),   # ekran: KuralKarari · 29 Eylül: K4 grupları 160+420ms arayla iner, bitmeden çekiliyordu
@@ -110,6 +111,7 @@ SAHNELER = {
     # ══════════════════════════════════════════════════════════════
     "63_istekler_host":   ("selin",   [("dokun_a11y", "İstek:"), ("bekle", 1500)]),   # v6.3 md.9 · katman kuralı · host gelen istekler   # ekran: RequestsPanel
     "64_istekler_misafir":("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500)]),   # v6.3 md.9 · gönderdiğin istek kartı   # ekran: RequestsPanel
+    "65_ilan_ekle":       ("selin",   [("dokun", "Planım"), ("dokun_a11y", "+ İlan Ekle"), ("bekle", 1500)]),   # v6.3 · İlan sihirbazı 1/3   # ekran: HostAvailability
     "06_sohbet":       ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · KAPSAM TURU — 15 SAHNE DAHA.
@@ -367,6 +369,8 @@ def kisileri_dogrula(sahneler):
         sys.exit(1)
 
     try:
+        sys.path.insert(0, os.path.join(KOK, "..", "render_check"))
+        import pg8000_psycopg2; pg8000_psycopg2.kur()   # Windows: DLL engelliyse saf Python katman
         import psycopg2
     except ImportError:
         print("  ⚠ psycopg2 yok — kişi doğrulaması ATLANDI (sahneler boş çıkabilir).")

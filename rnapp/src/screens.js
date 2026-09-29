@@ -2,7 +2,7 @@ import FlightField from "./FlightField";
 import { HostPanel, useReciprocityMoment } from "./HostWallet";
 import MomentScreen from "./MomentScreen";
 import { CarrierPicker, Katlanir } from "./Pickers";
-import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK, gorunur } from "./i18n";
+import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK, gorunur, etkinDil } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
 import { sadeGorunumMu, sadeGorunumYaz } from "./atmosfer";
@@ -14,9 +14,9 @@ import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP } from "./theme";
 import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ustIsik, ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 
 export { C, F, ACCENT } from "./theme";
 
@@ -35,8 +35,9 @@ export { C, F, ACCENT } from "./theme";
 export * from "./ortak";
 export * from "./ekranlar_yalin";
 export * from "./ekranlar_ana";
-import { ActionNeeded, Campaigns, CompanionChat, ConfirmModal, Discovery, EditProfile, FindHostCard, HomeConnections, HostAccessSource, LoungePicker, Meet, PhoneGate, PublicProfile, Referral, Safety, SakinGun, SessionHistory, SeyahatFormu, KisiSayisi, TimeInput, TrustVisual, visOpts } from "./ekranlar_ana";
+import { ActionNeeded, Campaigns, CompanionChat, ConfirmModal, Discovery, EditProfile, FindHostCard, HomeConnections, HostAccessSource, LoungePicker, Meet, PhoneGate, PublicProfile, Referral, Safety, SakinGun, SessionHistory, SeyahatFormu, SihirbazBasi, SihirbazAlti, KisiSayisi, TimeInput, TrustVisual, visOpts } from "./ekranlar_ana";
 import { yerelGun } from "./zaman";
+import { OnayDamgasi } from "./hareket";
 
 export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt }) {
   const uid = session?.user?.id;
@@ -214,91 +215,85 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
           ) : rows.map(r => (
             /* tasarım 14 kartı 146 yüksek: başlık 18 · tarih 42 · ayraç 72 ·
                uyum 88 · "seni içeri alacak" 114 (üstten). */
-            <View key={r.id} style={[S.card, { paddingVertical: ARA[18], paddingHorizontal: SP[4] }]}>
-              {/* Tasarım 14 kartı:
-                    IST · Aktarma                       [2 kişi · 4 yaş]
-                    16 Ekim · 14:00 – 18:00
-                    ────────────────────────────────
-                    Keşfet'te 6 uyumlu ilan →  (teal)
-                                   Seni içeri alacak birini bul (altın, sağ)
-                  Başlığa dokunmak düzenler; amaç çipleri düzenleme
-                  ekranında (kart bir liste satırı, form değil). */}
-              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <TouchableOpacity hitSlop={TAP.slop} onPress={() => onEditTrip && onEditTrip(r)}
-                  accessibilityRole="button" accessibilityLabel={t.editTrip} style={{ flex: 1, minWidth: 0 }}>
-                  <Text numberOfLines={1} style={{ fontSize: FS.lg - 1, fontWeight: "700", color: C.ink }}>
-                    {r.airport_code}{r.purpose ? ` · ${gorunur((PURPOSES.find(x => x[0] === r.purpose) || [])[1] || "")}` : r.destination ? ` → ${r.destination}` : ""}
-                  </Text>
-                </TouchableOpacity>
-                {/* 🔴 13 EYLÜL (Gökberk md.17) — "2 kişi · 4 yaş ne?"
-                    Eski etiket yaşları çıplak listeliyordu; "4 yaş" tek
-                    başına ne olduğunu söylemiyor. Artık ÇOCUK SAYISI
-                    önde, yaş parantezde: "2 kişi · 1 çocuk (4 yaş)". */}
-                {/* 🔴 18 EYLÜL (Gökberk md.12) — "seyahat oluşturduğumda
-                    ilan sayfasındaki gibi düzenle butonunu da görsem daha
-                    iyi olur."
-                    Ölçtüm: düzenleme YOLU vardı — kart BAŞLIĞI dokunulabilir
-                    ve `onEditTrip` çağırıyor — ama ekranda hiçbir görsel
-                    ipucu yoktu. Bir yolun var olması, bulunabilir olması
-                    demek değil. İlan kartında (aşağıda) "Düzenle" AÇIKÇA
-                    yazıyor; seyahat kartı aynı deseni izlemiyordu.
-                    🆕 SINIF: "GİZLİ BİR DOKUNMA HEDEFİ BİR ÖZELLİK DEĞİL,
-                    YALNIZCA ONU YAZAN KİŞİNİN BİLDİĞİ BİR SIRDIR." */}
-                {Number(r.party_size) > 1 ? (
-                  <Cip etiket={(() => {
-                    const kisi = (t.partyN || "{n}").replace("{n}", String(r.party_size));
-                    const yas = (r.child_ages || []).filter(y => y != null);
-                    if (!yas.length) return kisi;
-                    return kisi + " · " + (t.partyChildAges || "{n} ({y})")
-                      .replace("{n}", String(yas.length))
-                      .replace("{y}", yas.join(", "));
-                  })()} />
-                ) : (r.flight_number ? <Cip etiket={r.flight_number} ton="notr" /> : null)}
-              </View>
-              <Text style={{ color: C.mutedAA, fontSize: FS.sm, marginTop: ARA[4] }}>
-                {fmtLongDate(r.visit_date, lang)} · {String(r.time_from).slice(0,5)} – {String(r.time_to).slice(0,5)}
-              </Text>
-              <View style={{ height: 1, backgroundColor: C.line, marginVertical: ARA[12] }} />
-              {(() => {
-                const n = uyumluSayi(r);
-                const varMi = n != null && n > 0;
-                const git = () => onDiscover && onDiscover({
-                  airport: r.airport_code, date: r.visit_date,
-                  sortTrip: { airport: r.airport_code, date: r.visit_date },
-                });
-                return (
-                  <>
-                    <TouchableOpacity disabled={n === 0} onPress={git} hitSlop={TAP.slop}
+            /* ══ v6.3 · PANO H2 (Gökberk onayı) — SEYAHAT KARTI BİR BİNİŞ KARTI ══
+               gün · amaç | uçuş · IST ‒‒‒› varış (iri mono) · delikli kesim ·
+               SALON / KALKIŞ / KİŞİ (yalnız veri varsa) · uyumlu ilan · düzenle · Host bul.
+               Davranış değişmedi: sayaç `uyumluSayi`, düzenle `onEditTrip`, git `onDiscover`. */
+            (() => {
+              const n = uyumluSayi(r);
+              const varMi = n != null && n > 0;
+              const git = () => onDiscover && onDiscover({
+                airport: r.airport_code, date: r.visit_date,
+                sortTrip: { airport: r.airport_code, date: r.visit_date },
+              });
+              const bugun = String(r.visit_date || "").slice(0, 10) === yerelGun();
+              const amac = r.purpose ? gorunur((PURPOSES.find(x => x[0] === r.purpose) || [])[1] || "") : "";
+              const kas = [bugun ? t.calmEyebrow : fmtLongDate(r.visit_date, lang), amac].filter(Boolean).join(" · ");
+              let kalkis = null;
+              if (r.scheduled_departure) {
+                const d = new Date(r.scheduled_departure);
+                if (!isNaN(d.getTime())) kalkis = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+              }
+              const cocuk = (r.child_ages || []).filter(y => y != null).length;
+              const kisi = Number(r.party_size) > 1 ? (cocuk ? `${Number(r.party_size) - cocuk} + ${cocuk}` : String(r.party_size)) : null;
+              const hucreler = [
+                [t.bkCellLounge, `${String(r.time_from).slice(0, 5)}–${String(r.time_to).slice(0, 5)}`],
+                kalkis ? [t.bkCellDep, kalkis] : null,
+                kisi ? [t.bkCellParty, kisi] : null,
+              ].filter(Boolean);
+              const varis = r.destination ? String(r.destination).trim() : "";
+              return (
+              <View key={r.id} style={[S.card, { padding: 0, borderRadius: R.xl + 2 }]}>
+                <View style={{ paddingHorizontal: ARA[18], paddingTop: SP[4], paddingBottom: ARA[12] }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(kas)}</Text>
+                    {!!r.flight_number && <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6, marginLeft: SP[2] }}>{BUYUK(r.flight_number)}</Text>}
+                  </View>
+                  <TouchableOpacity hitSlop={TAP.slop} onPress={() => onEditTrip && onEditTrip(r)}
+                    accessibilityRole="button" accessibilityLabel={t.editTrip}
+                    style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[8] }}>
+                    <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.display + 4, letterSpacing: 0.6 }}>{r.airport_code}</Text>
+                    {!!varis && (<>
+                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", marginHorizontal: ARA[12], overflow: "hidden" }}>
+                        {Array.from({ length: 14 }).map((_, k) => (
+                          <View key={k} style={{ width: 3, height: 1, backgroundColor: C.goldText, marginRight: ARA[4], opacity: 0.7 }} />
+                        ))}
+                      </View>
+                      <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.display + 4, letterSpacing: 0.6 }}>{varis}</Text>
+                    </>)}
+                  </TouchableOpacity>
+                </View>
+                <View style={{ flexDirection: "row", marginHorizontal: SP[4], overflow: "hidden" }}>
+                  {Array.from({ length: 44 }).map((_, k) => (
+                    <View key={k} style={{ width: 4, height: 1, marginRight: ARA[4], backgroundColor: C.kenarIsik || C.line }} />
+                  ))}
+                </View>
+                <View style={{ paddingHorizontal: ARA[18], paddingTop: ARA[12], paddingBottom: SP[4] }}>
+                  <View style={{ flexDirection: "row" }}>
+                    {hucreler.map(([et, d]) => (
+                      <View key={et} style={{ marginRight: ARA[20] }}>
+                        <Text style={{ color: C.mut, fontSize: FS.micro, letterSpacing: 1.2 }}>{BUYUK(et)}</Text>
+                        <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.sm, marginTop: ARA[2] }}>{d}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: ARA[14] }}>
+                    <TouchableOpacity disabled={n === 0} onPress={git} hitSlop={TAP.slop} style={{ flex: 1, minWidth: 0, minHeight: TAP.minHeight, justifyContent: "center" }}
                       accessibilityRole="button" accessibilityLabel={varMi ? t.tripMatchCta : t.tripMatchNone}>
-                      <Text style={{ color: varMi ? C.teal : C.mut, fontSize: FS.sm, fontWeight: "600" }}>
+                      <Text numberOfLines={1} style={{ color: varMi ? C.goldText : C.mut, fontSize: FS.sm, fontWeight: "600" }}>
                         {n == null ? t.tripMatchCounting
                           : n > 0 ? String(t.tripMatchCta).replace("{n}", String(n))
                           : t.tripMatchNone}
                       </Text>
                     </TouchableOpacity>
-                    {/* Tasarım 14: kartta × yok — iptal, düzenleme ekranında. */}
-                    {/* 🔴 18 EYLÜL (md.12) — "Düzenle" İLAN KARTIYLA AYNI
-                        DÜZENDE: yıkıcı/sessiz olan SOLDA, birincil olan
-                        SAĞDA ve altın. İlan kartı (bu dosyada, aşağıda)
-                        tam olarak böyle; iki liste ekranının aynı işi
-                        farklı yerlerde yapması, kullanıcıya iki ayrı
-                        alışkanlık öğretmek olurdu. */}
-                    {/* 🔴 v6.1 (Gökberk md.22) — "Düzenle" çerçevesiz bir metindi
-                        ve altın metnin yanında sahipsiz duruyordu. Artık iki
-                        gerçek düğme: solda ghost "Düzenle" (kalem), sağda
-                        altın birincil eylem. Sessiz olan solda — ilan
-                        kartıyla aynı düzen. */}
-                    <View style={{ flexDirection: "row", alignItems: "center",
-                                   gap: SP[2], marginTop: ARA[14] }}>
-                      <Btn v="ghost" sm label={t.edit} solAd="duzenle" a11yLabel={t.editTrip}
-                        onPress={() => onEditTrip && onEditTrip(r)} />
-                      <Btn v="gold" sm label={t.bkFindHost} a11yLabel={t.findHost} onPress={git}
-                        style={{ flex: 1 }} />
-                    </View>
-                  </>
-                );
-              })()}
-            </View>
+                    <Btn v="ghost" daire a11yLabel={t.editTrip} onPress={() => onEditTrip && onEditTrip(r)}
+                      sol={<Ikon ad="duzenle" boy={15} renk={C.ink} />} style={{ marginRight: SP[2] }} />
+                    <Btn v="gold" cip label={t.bkFindHost} a11yLabel={t.findHost} onPress={git} />
+                  </View>
+                </View>
+              </View>
+              );
+            })()
           ))}
           {/* Tasarım 14: altta altın "Seyahat ekle" + tek satır not */}
           {/* ══════════════════════════════════════════════════════════
@@ -488,6 +483,8 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
   const [rows, setRows] = useState(null);
   const [loadErr, setLoadErr] = useState(false);   // v2.65 — bkz. Trips
   const [adding, setAdding] = useState(false);
+  const [bolumAcik, setBolumAcik] = useState({});   // v6.3 · H3 katlı bölümler (yayında ilan yoksa açık başlar)
+  const bolumAcikMi = (d) => (bolumAcik[d] !== undefined ? bolumAcik[d] : !(rows || []).some(x => ilanDurumu(x) === "canli"));
   const [silAdayi, setSilAdayi] = useState(null);  // v2.78: ilan silme onayi
   const [acBusy, setAcBusy] = useState(null);      // md.11: yeniden yayinlama kilidi
   const [bilgi, setBilgi] = useState("");          // 13 Eyl md.2: sonuç bildirimi
@@ -776,7 +773,21 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
              uygulanmamıştı. Tek bir sözlük anahtarını iki bağlamda kullanmak,
              bağlamlardan birinde her zaman yalan söyler. */
           secondary={{ label: t.momentLater, onPress: () => setMoment(null) }}
-        />
+        >
+          {/* v6.3 · PANO M1 (Gökberk onayı) — MİSAFİR KARTI fişi: kimle, nerede, ne zaman. */}
+          {!!moment.q && (
+            <View style={{ marginTop: ARA[22], alignSelf: "stretch", borderRadius: R.lg + 2, padding: SP[4],
+                           backgroundColor: "rgba(20,18,17,0.55)", borderTopWidth: 1, borderTopColor: "rgba(247,243,236,0.10)" }}>
+              <Text style={{ color: C.gold, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.momentGuestSlip)}</Text>
+              <Text numberOfLines={1} style={{ color: C.paper, fontFamily: F.serifGosterim, fontSize: FS.title + 2, marginTop: ARA[6] }}>{moment.name}</Text>
+              <Text style={{ color: C.paper, opacity: 0.72, fontFamily: MONO[500], fontSize: FS.xs + 0.5, letterSpacing: 0.4, marginTop: ARA[6] }}>
+                {BUYUK([moment.q.lounge_name, moment.q.avail_date ? fmtLongDate(moment.q.avail_date, etkinDil()) : null,
+                        moment.q.time_from && moment.q.time_to ? `${String(moment.q.time_from).slice(0, 5)}–${String(moment.q.time_to).slice(0, 5)}` : null]
+                       .filter(Boolean).join(" · "))}
+              </Text>
+            </View>
+          )}
+        </MomentScreen>
       </View>
       </Modal>
     )}
@@ -821,6 +832,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               <Btn v="gold" cip full={false} label={t.addAvail} onPress={() => (onAddAvail ? onAddAvail() : setAdding(true))} a11yLabel={t.addAvail} />
             </View>
           )}
+          {/* Katlı bölüm: kullanıcı seçtiyse o; seçmediyse yayında ilan YOKKEN açık (boş ekran olmasın). */}
           {rows.length === 0 ? (
             <BosDurum ikon="salon" metin={t.hostEmpty} />
           ) : rows.map((r, i) => {
@@ -836,90 +848,63 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               && (durum !== "canli" || rows.some(x => ilanDurumu(x) !== "canli"));
             return (
             <React.Fragment key={r.id}>
-            {basliktaAyir && (
-              <View style={{ flexDirection: "row", alignItems: "center", marginTop: SP[4], marginBottom: SP[2] }}>
-                <View style={{ flex: 1, height: 1, backgroundColor: C.line }} />
-                <Text style={{ marginHorizontal: SP[3], fontSize: FS.xs, fontWeight: "700",
-                               color: C.mutedAA, letterSpacing: 1 }}>
-                  {BUYUK(durum === "canli" ? t.availActiveTitle : durum === "pasif" ? t.availPassiveTitle : t.availPastTitle)}
+            {basliktaAyir && (durum === "canli" ? (
+              <Text style={{ marginTop: SP[2], marginBottom: SP[2], marginHorizontal: ARA[4], fontSize: FS.micro + 0.5, fontWeight: "600",
+                             color: C.mut, letterSpacing: 1.4 }}>{BUYUK(t.availActiveTitle)}</Text>
+            ) : (
+              /* v6.3 · PANO H3 — yayında olmayanlar / geçmiş KATLI satır (varsayılan kapalı). */
+              <TouchableOpacity hitSlop={TAP.slop} onPress={() => setBolumAcik(o => ({ ...o, [durum]: !bolumAcikMi(durum) }))}
+                accessibilityRole="button" accessibilityState={{ expanded: bolumAcikMi(durum) }}
+                accessibilityLabel={durum === "pasif" ? t.availPassiveTitle : t.availPastTitle}
+                style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: TAP.minHeight,
+                         marginTop: SP[2], paddingHorizontal: ARA[4], borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.kenarIsik || C.line }}>
+                <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", color: C.mut, letterSpacing: 1.4 }}>
+                  {BUYUK(`${durum === "pasif" ? t.availPassiveTitle : t.availPastTitle} · ${rows.filter(x => ilanDurumu(x) === durum).length}`)}
                 </Text>
-                <View style={{ flex: 1, height: 1, backgroundColor: C.line }} />
-              </View>
-            )}
+                <Ikon ad={bolumAcikMi(durum) ? "yukari" : "asagi"} boy={14} renk={C.mut} />
+              </TouchableOpacity>
+            ))}
+            {(durum === "canli" || bolumAcikMi(durum) || odakId === r.id) && (
             <View
               onLayout={(e) => { kartY.current[r.id] = e.nativeEvent.layout.y; }}
-              style={[S.card,
-                      yayindaDegil && { opacity: 0.62, borderColor: C.line },
-                      odakId === r.id && { borderColor: "transparent", borderWidth: 2, backgroundColor: C.goldSoft }]}>
-              {/* 🔴 v2.95 (Gökberk madde 3) — "CANLI ibaresi alanın dışına taşıyor".
-                  Ölçtüm: satır `space-between` ama salon adında NE `flex: 1` NE
-                  `numberOfLines` vardı. RN'de esnetilmemiş bir Text kendi doğal
-                  genişliğini ister; "Turkish Airlines Lounge — Dış Hat" gibi bir
-                  ad satırı şişirir ve yanındaki rozeti kartın dışına iter.
-                  🆕 SINIF: "space-between BİR TAŞMA ÇÖZÜMÜ DEĞİLDİR; HANGİ
-                  ÇOCUĞUN KISALACAĞINI SÖYLEMEZSEN HİÇBİRİ KISALMAZ."
-                  Ad esner ve kısalır (flex:1 + numberOfLines), rozet asla
-                  kısalmaz (flexShrink:0) — çünkü "CANLI"nın yarısı bilgi değil. */}
-              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Text numberOfLines={2} style={{ flex: 1, minWidth: 0, marginRight: ARA[10], fontSize: FS.lg, fontWeight: "700", color: C.ink, lineHeight: 21 }}>
-                  {r.lounge_name || r.airport_code}
-                </Text>
-                {/* 🔴 v3.9.2 — ROZET ARTIK SABİT DEĞİL.
-                    Eskiden her kartta `• CANLI` yazıyordu; sorgu zaten
-                    yalnız aktifleri getirdiği için doğruydu. Liste artık
-                    hepsini taşıyor, rozet de gerçeği söylemek zorunda. */}
-                {/* 5 Eylül — mockup 12c: rozet `Cip` (çerçeveli hap, nane "ok" tonu);
-                    `t.live` noktayı zaten taşıyor ("• CANLI"). */}
-                <Cip stil={{ flexShrink: 0 }}
-                  ton={durum === "canli" ? "ok" : durum === "pasif" ? "amber" : "notr"}
-                  etiket={durum === "canli" ? t.live : durum === "pasif" ? t.availPassive : t.availPast} />
-              </View>
-              <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[1] }}>
-                {/* 5 Eylül — ÖLÇÜLDÜ (web sahne 12b): "2026-09-05" ham ISO
-                    çiziliyordu; tasarım 12c "5 Eylül". Seyahat kartıyla aynı biçim. */}
-                {r.airport_code} · {fmtLongDate(r.avail_date, lang)} · {String(r.time_from).slice(0,5)}–{String(r.time_to).slice(0,5)}
+              style={[S.card, { borderRadius: R.xl + 2, padding: SP[4] + 2 },
+                      yayindaDegil && { opacity: 0.62 },
+                      odakId === r.id && { backgroundColor: C.altinIz03 || C.goldSoft }]}>
+              {/* ══ v6.3 · PANO H3 (Gökberk onayı) — kartın üstü: durum satırı ·
+                  serif salon · mono tarih/saat. Taşma dersi (v2.95) geçerli:
+                  ad esner (flex:1 + numberOfLines), kod asla kısalmaz. */}
+              {(() => {
+                const acik = Math.max(0, (r.slots || 0) - (r.filled || 0));
+                const durumYazi = durum === "canli"
+                  ? (acik > 0 ? `${t.live} · ${acik} ${t.slotsOpen}` : `${t.live} · ${t.fullyBooked}`)
+                  : [durum === "pasif" ? t.availPassive : t.availPastLine,
+                     (r.filled || 0) > 0 ? String(t.availHostedN || "").replace("{n}", String(r.filled)) : null].filter(Boolean).join(" · ");
+                return (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, marginRight: ARA[10], fontSize: FS.micro + 0.5, fontWeight: "600",
+                                                     letterSpacing: 1.3, color: durum === "canli" ? (acik > 0 ? C.ink : C.goldText) : C.mut }}>
+                      {BUYUK(String(durumYazi).replace(/^•\s*/, ""))}
+                    </Text>
+                    <Text style={{ flexShrink: 0, fontFamily: MONO[500], fontSize: FS.xs, color: C.mut, letterSpacing: 0.6 }}>{r.airport_code}</Text>
+                  </View>
+                );
+              })()}
+              <Text numberOfLines={2} style={{ marginTop: ARA[8], fontSize: FS.title + 3, fontFamily: F.serifGosterim, letterSpacing: -0.6,
+                                               color: C.ink, lineHeight: SATIR(FS.title + 3, "serif") }}>
+                {r.lounge_name || r.airport_code}
               </Text>
-              {/* v2.87 (madde 5): host kendi ilanının taşıyıcısını da görür —
-                  "hangi ilana hangi havayolunu yazmıştım" sorusu bugüne kadar
-                  ekrandan cevaplanamıyordu. */}
+              <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs + 0.5, letterSpacing: 0.4, marginTop: ARA[4] }}>
+                {BUYUK(fmtLongDate(r.avail_date, lang))} · {String(r.time_from).slice(0,5)}–{String(r.time_to).slice(0,5)}
+              </Text>
+              {durum === "pasif" && (
+                <Text style={{ color: C.mut, fontSize: FS.xs + 0.5, marginTop: ARA[4] }}>{t.availPassiveLine}</Text>
+              )}
+              {/* v2.87 (madde 5): host kendi ilanının taşıyıcısını da görür. */}
               {!!r.carrier && (
-                <View style={{ marginTop: ARA[6] }}>
+                <View style={{ marginTop: ARA[8] }}>
                   <CarrierChip code={r.carrier} map={hostCarrierMap} t={t} />
                 </View>
               )}
-              {/* 🔴 v2.87 — SIFIR, İYİ HABER GİBİ OKUNUYORDU.
-                  Eski satır: `{"• ".repeat(r.slots - r.filled)}{r.slots - r.filled} {t.slotsOpen}`
-                  ve rengi HER ZAMAN C.teal. İki ayrı kusur:
-                  (a) ilan dolduğunda ekranda çıplak bir "0" kalıyordu
-                      ("• " tekrarı boş dizeye düşüyor, sayı yalnız başına
-                      kalıyor) — Gökberk'in kartta gördüğü o "0" buydu;
-                  (b) "0 slot açık" YEŞİL yazıyordu. Sıfır kapasite bir
-                      başarı değil; renk veriyle çelişince kullanıcı renge
-                      inanır, sayıya değil.
-                  Şimdi: açık slot varsa yeşil sayı, yoksa kırmızı "Dolu".
-                  `Math.max(0, ...)` çünkü `repeat()` negatif sayıda
-                  RangeError fırlatır ve tüm ekranı çökertirdi. */}
-              {(() => {
-                const acik = Math.max(0, (r.slots || 0) - (r.filled || 0));
-                // 🔴 29 Eylül (Gökberk md.1) — pasif ilanda "X yer açık" yanlış
-                // söz: kimse başvuramaz. Yayında olmayan ilan DURUMUNU ve
-                // SONUCUNU söyler (kaç misafir ağırlandı).
-                if (durum !== "canli") return (
-                  <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[1] }}>
-                    {[durum === "pasif" ? t.availPassiveLine : t.availPastLine,
-                      (r.filled || 0) > 0 ? String(t.availHostedN || "").replace("{n}", String(r.filled)) : null]
-                      .filter(Boolean).join(" · ")}
-                  </Text>
-                );
-                return (
-                  <Text style={{ color: acik > 0 ? C.green : C.red, fontSize: FS.sm, marginTop: SP[1], fontWeight: "600" }}>
-                    {/* 5 Eylül — nokta sayısı = açık slot sayısıydı ("• • 2 slot
-                        açık"); Gökberk'in "• • CANLI" diye işaretlediği çift
-                        noktayla aynı görünüyordu. Tek nokta, sayı zaten yazıyor. */}
-                    {acik > 0 ? `• ${acik} ${t.slotsOpen}` : `• ${t.fullyBooked}`}
-                  </Text>
-                );
-              })()}
               {/* v2.49 — İLANIN BAŞVURULARI: sayı her zaman görünür,
                   dokununca başvuranlar açılır; kabul/red buradan verilir. */}
               {(() => {
@@ -1027,7 +1012,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                                 // hiçbir şey olmuyor ve host tekrar tekrar basıyor.
                                 const { error } = await supabase.rpc("respond_request", { p_request_id: q.id, p_action: "accept" });
                                 if (error) { setErr(mapErr(t, error.message)); return; }
-                                setErr(""); setMoment({ name: q.guest_name, id: q.id });
+                                setErr(""); setMoment({ name: q.guest_name, id: q.id, q });
                                 load();
                                 } finally { setReqBusy(null); }
                               }}
@@ -1171,6 +1156,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               </View>
               )}
             </View>
+            )}
             </React.Fragment>
             );
           })}
@@ -1743,30 +1729,38 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
             // BAĞLAMINDAN KOPARMAKTIR — DOĞRU ÇÖZÜM ONU AİT OLDUĞU AKIŞA
             // BAĞLAMAKTIR."
             ["ayarlar", t.settings || "Ayarlar", onSettings, null],
-          ].filter(Boolean).map(([ic, lb, fn, accent]) => (
-            ic === null ? (
-              /* tasarım 09 bölüm başlığı: 9.5/700 · aralık 1.2 · altın */
-              <Text key={"h-" + lb} style={{ fontSize: FS.micro + 0.5, letterSpacing: 1.2, fontWeight: "700",
-                                              color: C.goldText, marginTop: ARA[10], marginBottom: ARA[8] }}>
-                {BUYUK(lb || "")}
-              </Text>
-            ) : (
-            <TouchableOpacity hitSlop={TAP.slop} key={lb} onPress={fn}
-              style={{ backgroundColor: C.card, borderRadius: R.sm, borderWidth: 1, borderColor: C.line,
-                       paddingVertical: ARA[14], paddingHorizontal: ARA[14], marginBottom: SP[2],
-                       flexDirection: "row", justifyContent: "space-between", alignItems: "center" , ...ELEV.card }}>
-              <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                {/* 🔴 v3.4 — EMOJİ DEĞİL İKON.
-                    Eskisi `<Text>⚙</Text>` idi: `⚙` (U+2699) METİN sunumlu
-                    bir karakterdir, cihaz onu gövde fontuyla SİYAH çizer ve
-                    o fontun genişliğine yayar. Gökberk'in "yayık siyah ikon"
-                    dediği şey buydu — ⬆ ve ★ ile birlikte üç satır. */}
-                <Ikon ad={ic} boy={19} renk={accent || C.muted} stil={{ marginRight: SP[3] }} kutu={22} />
-                <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "600" }}>{lb}</Text>
+          ].filter(Boolean).reduce((gruplar, oge) => {
+            // v6.3 · PANO H4 (Gökberk onayı) — düz liste GRUPLARA ayrılır: başlık
+            // satırı (ic === null) yeni grup açar; her grup TEK cam kutu, satırlar
+            // 1 px ışık çizgisiyle ayrılır. İkonlar ve renkleri aynen korunur.
+            if (oge[0] === null) gruplar.push({ baslik: oge[1], satir: [] });
+            else { if (!gruplar.length) gruplar.push({ baslik: null, satir: [] }); gruplar[gruplar.length - 1].satir.push(oge); }
+            return gruplar;
+          }, []).map((g, gi) => (
+            <View key={"g-" + gi + (g.baslik || "")} style={{ marginTop: gi === 0 ? 0 : ARA[10] }}>
+              {!!g.baslik && (
+                /* tasarım 09 bölüm başlığı: 9.5/700 · aralık 1.2 · altın */
+                <Text style={{ fontSize: FS.micro + 0.5, letterSpacing: 1.4, fontWeight: "600",
+                               color: C.goldText, marginBottom: ARA[8], marginHorizontal: ARA[6] }}>
+                  {BUYUK(g.baslik || "")}
+                </Text>
+              )}
+              <View style={{ backgroundColor: C.camYuzey || C.card, borderRadius: R.lg + 2, paddingHorizontal: SP[4],
+                             ...ustIsik(C.parlama || C.line) }}>
+                {g.satir.map(([ic, lb, fn, accent], si) => (
+                  <TouchableOpacity hitSlop={TAP.slop} key={lb} onPress={fn} accessibilityRole="button" accessibilityLabel={lb}
+                    style={{ minHeight: 52, flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+                             borderTopWidth: si === 0 ? 0 : StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                      {/* Eskisi `<Text>⚙</Text>` idi (U+2699 metin sunumlu, cihaz siyah çizer); Ikon vektör. */}
+                      <Ikon ad={ic} boy={19} renk={accent || C.goldText} stil={{ marginRight: ARA[14] }} kutu={22} />
+                      <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "500" }}>{lb}</Text>
+                    </View>
+                    <Ikon ad="sag" boy={16} renk={C.dim} />
+                  </TouchableOpacity>
+                ))}
               </View>
-              <Ikon ad="sag" boy={16} renk={accent || C.dim} />
-            </TouchableOpacity>
-            )
+            </View>
           ))}
 
 
@@ -1825,9 +1819,9 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
 
           {/* Cikis — MVP'de menunun EN ALTINDA, kirmizi, tek yerde */}
           <TouchableOpacity hitSlop={TAP.slop}
-            style={{ backgroundColor: C.redBg, borderRadius: R.sm, borderWidth: 1, borderColor: "transparent",
-                     paddingVertical: ARA[14], paddingHorizontal: ARA[14], marginTop: ARA[6], marginBottom: SP[2],
-                     flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+            /* v6.3 · PANO H4 — çıkış KUTUSUZ, kiremit tonlu satır (yıkıcı eylem sessiz ama belli). */
+            style={{ paddingVertical: ARA[14], paddingHorizontal: SP[4], marginTop: ARA[10], marginBottom: SP[2],
+                     minHeight: TAP.minHeight, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
             onPress={() => { setLogoutMsg(""); setConfirmOut(true); }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ikon ad="cikis" boy={19} renk={C.redInk} stil={{ marginRight: SP[3] }} kutu={22} />
@@ -2490,6 +2484,7 @@ export function AddVisit({ t, session, onBack, onDone, suggest }) {
     flight: "", carrier: "", purpose: "", kisi: 1, cocuk: [] });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [adim, setAdim] = useState(1);   // v6.3 · seyahat sihirbazı (1 uçuş · 2 zaman · 3 amaç)
   // 🔴 v2.89 (Gökberk md.11) — `suggest` YALNIZ İLK MOUNT'TA okunuyordu.
   // Ekran overlay olarak açık kalıp `suggest` sonradan değişirse (başka
   // bir ilandan "Seyahat ekle") form ESKİ ilanın verisiyle kalıyordu —
@@ -2574,13 +2569,15 @@ export function AddVisit({ t, session, onBack, onDone, suggest }) {
           </View>
         ) : null}
 
-        <SeyahatFormu t={t} f={f} set={set} airports={airports} carriers={carriers} kilitli={false} mod="ekle" />
+        <SihirbazBasi t={t} adim={adim} setAdim={setAdim} />
+        <SeyahatFormu t={t} f={f} set={set} airports={airports} carriers={carriers} kilitli={false} mod="ekle" adim={adim} />
 
         {!!err && <View style={{ backgroundColor: C.redBg, borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{err}</Text></View>}
 
         {/* md.12 — bu ekranın işi YENİ seyahat oluşturmak (`mod="ekle"`);
             "Kaydet" bir düzenlemeyi çağrıştırıyor. */}
-        <Btn v="teal" sm label={busy ? t.avSaving : t.addTrip} onPress={save} disabled={busy} />
+        <SihirbazAlti t={t} adim={adim} setAdim={setAdim} setErr={setErr} f={f} busy={busy}
+          sonEtiket={busy ? t.avSaving : t.wzSaveTrip} onSon={save} />
       </ScrollView>
     </Sayfa>
   );
@@ -2601,6 +2598,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [ok, setOk] = useState("");
+  const [adim, setAdim] = useState(1);   // v6.3 · ilan düzenleme de sihirbaz (adımlar serbest)
   const [esik, setEsik] = useState(Number(avail?.min_trust ?? 0));
   const [yogunluk, setYogunluk] = useState(null);
   const [lounges, setLounges] = useState([]);
@@ -2740,139 +2738,148 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
           </View>
         ) : null}
 
-        {/* HAVALİMANI — görünür ve kilitli, sebebiyle birlikte. */}
-        <Text style={S.label}>{t.airport}</Text>
-        <View style={[S.input, { justifyContent: "center", opacity: 0.6, minHeight: TAP.minHeight }]}>
-          <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "700" }}>{avail?.airport_code || "—"}</Text>
-        </View>
-        <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: -6, marginBottom: ARA[10], lineHeight: 16 }}>
-          {t.editAirportLocked}
-        </Text>
-
-        <LoungePicker t={t} lounges={lounges} value={f.lounge_id}
-          onSelect={v => !kilitli && set("lounge_id", v)}
-          emptyNote={loungeErr ? t.loungeLoadFail : undefined} />
-
-        <CarrierPicker t={t} carriers={carriers} value={carrier}
-          onSelect={setCarrier} label={t.carrierQ} hint={t.carrierWhy} />
-
-        {/* KOŞULLU: yalnız bu salonda kabin kuralı varsa (SQL 249). */}
-        {kabinSor === true && (<>
-        <Text style={S.label}>{t.cabinTitle}</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: ARA[6] }}>
-          {[["economy", t.cabinEconomy], ["business", t.cabinBusiness],
-            ["first", t.cabinFirst], [null, t.cabinSkip]].map(([v, lb]) => (
-            <TouchableOpacity key={String(v)} onPress={() => setCabin(v)}
-              accessibilityRole="button" accessibilityState={{ selected: cabin === v }}
-              style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center",
-                                borderColor: cabin === v ? C.gold : C.line,
-                                backgroundColor: cabin === v ? C.goldSoft : C.card }]}>
-              <Text style={{ fontSize: FS.sm, color: cabin === v ? C.gold : C.ink,
-                             fontWeight: cabin === v ? "700" : "400" }}>{lb}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {cabin === "business" && (
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
-                         borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
-            <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
+        <SihirbazBasi t={t} adim={adim} setAdim={setAdim} serbest sorular={[t.wzHQ1, t.wzHQ2, t.wzHQ3]} />
+        {adim === 1 && (<>
+          {/* HAVALİMANI — görünür ve kilitli, sebebiyle birlikte. */}
+          <Text style={S.label}>{t.airport}</Text>
+          <View style={[S.input, { justifyContent: "center", opacity: 0.6, minHeight: TAP.minHeight }]}>
+            <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "700" }}>{avail?.airport_code || "—"}</Text>
           </View>
-        )}
-        </>)}
-
-        <TouchableOpacity hitSlop={TAP.slop} onPress={() => setCharter(v => !v)}
-          accessibilityRole="checkbox" accessibilityState={{ checked: charter }}
-          accessibilityLabel={t.charterQ}
-          style={{ flexDirection: "row", alignItems: "center", marginBottom: ARA[14], minHeight: TAP.minHeight }}>
-          <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
-                         borderColor: charter ? C.amber : C.line, marginRight: SP[2],
-                         alignItems: "center", justifyContent: "center",
-                         backgroundColor: charter ? C.amber : "transparent" }}>
-            {charter && <Ikon ad="tamam" boy={FS.sm} renk={C.onAccent} />}
-          </View>
-          <Text style={{ fontSize: FS.sm, color: C.body, flex: 1 }}>{t.charterQ}</Text>
-        </TouchableOpacity>
-        {charter && (
-          <View style={{ backgroundColor: C.amberBg, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
-            <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.charterWarn}</Text>
-          </View>
-        )}
-
-        {/* TARİH ve SAAT artık düz metin kutusu DEĞİL — açma ekranındaki
-            seçicilerin aynısı. Eskiden host "2026-09-04" biçimini elle
-            yazmak zorundaydı; bir harf yanlışında sunucu hatası alıyordu. */}
-        <DateInput value={f.date} onChange={v => !kilitli && set("date", v)} />
-        <View style={{ flexDirection: "row", marginBottom: ARA[14] }}>
-          <TimeInput label={t.avStart} value={f.from} onChange={v => !kilitli && set("from", v)} />
-          <View style={{ width: 8 }} />
-          <TimeInput label={t.avEnd} value={f.to} onChange={v => !kilitli && set("to", v)} />
-        </View>
-
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[1], letterSpacing: 1 }}>{t.avFlightLabel}</Text>
-        <FlightField t={t} value={f.flight} onChange={v => set("flight", v)}
-          date={f.date} carrier={carrier} showChips={false} hideLabel
-          manualWarn={t.flightManualWarn}
-          inputStyle={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], color: C.body, fontSize: FS.sm }} />
-        <View style={{ height: 14 }} />
-
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haGuestSlots}</Text>
-        <View style={{ flexDirection: "row", marginBottom: SP[3] }}>
-          {[1, 2, 3].map(n => {
-            const sel = Number(f.slots) === n;
-            // Kabul edilmiş misafir varken kontenjan DÜŞÜRÜLEMEZ (sunucu da
-            // reddediyor); düğmeyi pasif göstermek, hatayı yemeden önce
-            // söylemektir.
-            const dis = n > maxSlots || (kilitli && n < Number(avail?.slots || 1));
-            return (
-              <TouchableOpacity key={n} disabled={dis} onPress={() => set("slots", n)}
-                accessibilityRole="radio" accessibilityState={{ checked: sel, disabled: dis }}
-                accessibilityLabel={n + " " + String(t.haGuestSlots).toLowerCase()}
-                style={{ flex: 1, backgroundColor: sel ? C.goldBg : C.card, borderWidth: 1.5, borderColor: sel ? C.gold : C.line,
-                         borderRadius: R.xs, paddingVertical: ARA[10], minHeight: TAP.minHeight, justifyContent: "center", alignItems: "center", marginRight: n < 3 ? 8 : 0, opacity: dis ? 0.35 : 1 }}>
-                <Text style={{ fontSize: FS.lg, fontWeight: "700", color: sel ? C.goldText : C.ink }}>{n}</Text>
-                <Text style={{ fontSize: FS.micro, color: C.dimAA }}>slot</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        {cap && cap < 3 ? (
-          <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: -6, marginBottom: ARA[14] }}>
-            {t.haCapDeclared} {cap}{t.haCapMore}
+          <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: -6, marginBottom: ARA[10], lineHeight: 16 }}>
+            {t.editAirportLocked}
           </Text>
-        ) : null}
 
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haVisibility}</Text>
-        {visOpts(t).map(([v, l]) => {
-          const sel = f.visibility === v;
-          return (
-            <Secim key={v} bicim="radyo" ton="gold" zemin="alt" secili={sel} etiket={l}
-              a11yRol="radio" stil={{ marginBottom: SP[2] }}
-              onPress={() => set("visibility", v)} />
-          );
-        })}
+          <LoungePicker t={t} lounges={lounges} value={f.lounge_id}
+            onSelect={v => !kilitli && set("lounge_id", v)}
+            emptyNote={loungeErr ? t.loungeLoadFail : undefined} />
 
-        {/* GÜVEN EŞİĞİ — v2.93'te burada doğdu, v2.95'te "Müsaitlik ekle"
-            ekranına da kondu. İki ekran artık aynı soruları soruyor. */}
-        <Text style={S.label}>{t.minTrustLabel}</Text>
-        <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[6] }}>
-          {t.minTrustBody}
-        </Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: SP[1] }}>
-          {[0, 40, 60, 75].map((v) => {
-            const on = Number(esik) === v;
+        </>)}
+        {adim === 2 && (<>
+          <CarrierPicker t={t} carriers={carriers} value={carrier}
+            onSelect={setCarrier} label={t.carrierQ} hint={t.carrierWhy} />
+
+          {/* KOŞULLU: yalnız bu salonda kabin kuralı varsa (SQL 249). */}
+          {kabinSor === true && (<>
+          <Text style={S.label}>{t.cabinTitle}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: ARA[6] }}>
+            {[["economy", t.cabinEconomy], ["business", t.cabinBusiness],
+              ["first", t.cabinFirst], [null, t.cabinSkip]].map(([v, lb]) => (
+              <TouchableOpacity key={String(v)} onPress={() => setCabin(v)}
+                accessibilityRole="button" accessibilityState={{ selected: cabin === v }}
+                style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center",
+                                  borderColor: cabin === v ? C.gold : C.line,
+                                  backgroundColor: cabin === v ? C.goldSoft : C.card }]}>
+                <Text style={{ fontSize: FS.sm, color: cabin === v ? C.gold : C.ink,
+                               fontWeight: cabin === v ? "700" : "400" }}>{lb}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {cabin === "business" && (
+            <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
+                           borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
+              <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
+            </View>
+          )}
+          </>)}
+
+          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setCharter(v => !v)}
+            accessibilityRole="checkbox" accessibilityState={{ checked: charter }}
+            accessibilityLabel={t.charterQ}
+            style={{ flexDirection: "row", alignItems: "center", marginBottom: ARA[14], minHeight: TAP.minHeight }}>
+            <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
+                           borderColor: charter ? C.amber : C.line, marginRight: SP[2],
+                           alignItems: "center", justifyContent: "center",
+                           backgroundColor: charter ? C.amber : "transparent" }}>
+              {charter && <Ikon ad="tamam" boy={FS.sm} renk={C.onAccent} />}
+            </View>
+            <Text style={{ fontSize: FS.sm, color: C.body, flex: 1 }}>{t.charterQ}</Text>
+          </TouchableOpacity>
+          {charter && (
+            <View style={{ backgroundColor: C.amberBg, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
+              <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.charterWarn}</Text>
+            </View>
+          )}
+
+          {/* TARİH ve SAAT artık düz metin kutusu DEĞİL — açma ekranındaki
+              seçicilerin aynısı. Eskiden host "2026-09-04" biçimini elle
+              yazmak zorundaydı; bir harf yanlışında sunucu hatası alıyordu. */}
+          <DateInput value={f.date} onChange={v => !kilitli && set("date", v)} />
+          <View style={{ flexDirection: "row", marginBottom: ARA[14] }}>
+            <TimeInput label={t.avStart} value={f.from} onChange={v => !kilitli && set("from", v)} />
+            <View style={{ width: 8 }} />
+            <TimeInput label={t.avEnd} value={f.to} onChange={v => !kilitli && set("to", v)} />
+          </View>
+
+          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[1], letterSpacing: 1 }}>{t.avFlightLabel}</Text>
+          <FlightField t={t} value={f.flight} onChange={v => set("flight", v)}
+            date={f.date} carrier={carrier} showChips={false} hideLabel
+            manualWarn={t.flightManualWarn}
+            inputStyle={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], color: C.body, fontSize: FS.sm }} />
+          <View style={{ height: 14 }} />
+
+          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haGuestSlots}</Text>
+          <View style={{ flexDirection: "row", marginBottom: SP[3] }}>
+            {[1, 2, 3].map(n => {
+              const sel = Number(f.slots) === n;
+              // Kabul edilmiş misafir varken kontenjan DÜŞÜRÜLEMEZ (sunucu da
+              // reddediyor); düğmeyi pasif göstermek, hatayı yemeden önce
+              // söylemektir.
+              const dis = n > maxSlots || (kilitli && n < Number(avail?.slots || 1));
+              return (
+                <TouchableOpacity key={n} disabled={dis} onPress={() => set("slots", n)}
+                  accessibilityRole="radio" accessibilityState={{ checked: sel, disabled: dis }}
+                  accessibilityLabel={n + " " + String(t.haGuestSlots).toLowerCase()}
+                  style={{ flex: 1, backgroundColor: sel ? C.goldBg : C.card, borderWidth: 1.5, borderColor: sel ? C.gold : C.line,
+                           borderRadius: R.xs, paddingVertical: ARA[10], minHeight: TAP.minHeight, justifyContent: "center", alignItems: "center", marginRight: n < 3 ? 8 : 0, opacity: dis ? 0.35 : 1 }}>
+                  <Text style={{ fontSize: FS.lg, fontWeight: "700", color: sel ? C.goldText : C.ink }}>{n}</Text>
+                  <Text style={{ fontSize: FS.micro, color: C.dimAA }}>slot</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          {cap && cap < 3 ? (
+            <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: -6, marginBottom: ARA[14] }}>
+              {t.haCapDeclared} {cap}{t.haCapMore}
+            </Text>
+          ) : null}
+
+        </>)}
+        {adim === 3 && (<>
+          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haVisibility}</Text>
+          {visOpts(t).map(([v, l]) => {
+            const sel = f.visibility === v;
             return (
-              <Secim key={v} ton="teal" secili={on} onPress={() => setEsik(v)}
-                etiket={v === 0 ? t.minTrustAny : String(t.minTrustAtLeast || "").replace("{n}", String(v))} />
+              <Secim key={v} bicim="radyo" ton="gold" zemin="alt" secili={sel} etiket={l}
+                a11yRol="radio" stil={{ marginBottom: SP[2] }}
+                onPress={() => set("visibility", v)} />
             );
           })}
-        </View>
 
-        <PromiseBox t={t} lounge={avail?.lounge_name || avail?.airport_code} f={f} esik={esik} yogunluk={yogunluk} />
+          {/* GÜVEN EŞİĞİ — v2.93'te burada doğdu, v2.95'te "Müsaitlik ekle"
+              ekranına da kondu. İki ekran artık aynı soruları soruyor. */}
+          <Text style={S.label}>{t.minTrustLabel}</Text>
+          <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[6] }}>
+            {t.minTrustBody}
+          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: SP[1] }}>
+            {[0, 40, 60, 75].map((v) => {
+              const on = Number(esik) === v;
+              return (
+                <Secim key={v} ton="teal" secili={on} onPress={() => setEsik(v)}
+                  etiket={v === 0 ? t.minTrustAny : String(t.minTrustAtLeast || "").replace("{n}", String(v))} />
+              );
+            })}
+          </View>
 
+          <PromiseBox t={t} lounge={avail?.lounge_name || avail?.airport_code} f={f} esik={esik} yogunluk={yogunluk} />
+
+        </>)}
         {err ? <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View> : null}
         {ok ? <Text style={{ color: C.green, fontSize: FS.sm, marginTop: ARA[10] }}>{ok}</Text> : null}
 
-        <Btn label={busy ? "…" : t.editSave} onPress={kaydet} disabled={busy} a11yLabel={t.editSave} style={{ marginTop: ARA[14] }} />
+        <SihirbazAlti t={t} adim={adim} setAdim={setAdim} setErr={setErr} f={f} busy={busy}
+          sonEtiket={busy ? "…" : t.editSave} onSon={kaydet}
+          dogrula={(n) => n === 2 && String(f.date || "").length !== 10 ? t.avFixDate : ""} />
       </ScrollView>
     </Sayfa>
   );
@@ -2925,6 +2932,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
   const [ruleOk, setRuleOk] = useState(false);
   const [phoneOk, setPhoneOk] = useState(true);
   const [cap, setCap] = useState(null);
+  const [adim, setAdim] = useState(1);   // v6.3 · ilan sihirbazı
   const [f, setF] = useState({ airport: "", lounge_id: "", date: "", from: "14:00", to: "18:00", slots: 2, flight: "", carrier: "", visibility: "all" });  // beta: bos-ag doneminde varsayilan herkes
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -3218,17 +3226,15 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneListing} title={t.addAvailTitle} onBack={onBack} />
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
-        <View style={{ alignSelf: "flex-start", backgroundColor: C.goldBg, borderRadius: R.sm, paddingVertical: SP[1], paddingHorizontal: SP[3], marginBottom: ARA[14] }}>
-          <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>• {t.hostSetupStep}</Text>
-        </View>
+        {/* v6.3 · PANO İ1–İ3 (Gökberk onayı) — İLAN SİHİRBAZI: 1 salon + kural ·
+            2 zaman, uçuş, misafir · 3 kimler görür + önizleme + yayınla. Yayın
+            kapısı (telefon, kural onayı, tarih) publish() içinde AYNEN duruyor. */}
+        <SihirbazBasi t={t} adim={adim} setAdim={setAdim} sorular={[t.wzHQ1, t.wzHQ2, t.wzHQ3]} />
         {!!hiddenWhy && (
           <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
             <IkonMetin ad="uyari" renk={C.amberInk} stilMetin={{ color: C.amberInk, fontWeight: "700", fontSize: FS.sm }} metin={t.availHiddenDisc} />
           </View>
         )}
-        <AirportPicker t={t} airports={airports} value={f.airport} onSelect={v => set("airport", v)} />
-        <LoungePicker t={t} lounges={lounges} value={f.lounge_id} onSelect={v => set("lounge_id", v)}
-          emptyNote={loungeErr ? t.loungeLoadFail : undefined} />
         {/* 🔴 v1.97 — YAYINLAMA ONAYI.
             Gokberk'in istediği: kural bilgisini "Yayınla"ya basınca da
             göster. Uyarı ya da engel varsa yayın DURUR, host ne olacağını
@@ -3263,305 +3269,341 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
           onCancel={() => { setCabinNote(""); if (onDone) onDone(); onBack(); }}
           onConfirm={() => { setCabinNote(""); if (onDone) onDone(); onBack(); }}
         />
-        {!!partners && partners.length > 0 && (
-          <View style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.line,
-                         borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] , ...ELEV.card }}>
-            {/* 🔴 v2.27 — SALONUN ANLASMALI KURUMLARI.
-                Havalimaninin kendi sayfasindan alindi. Host "benim kartimla
-                girer miyim" diye soruyor; cevabi salonun kendi listesinde.
-                ⚠ isareti: anlasmanin VARLIGI dogrulandi, KOSULLARI degil —
-                ikisini karistirmak, bilmedigimizi biliyormus gibi gostermek. */}
-            {/* 🔴 v2.79 — KATLANDI. Gökberk: "bu salona hangi kurumlarla
-                giriliyor ekranı küçültülebilir olmalı çünkü alttaki
-                alanlara inmesi zor oluyor."
-                Cihazda 16 kurum çipi alt alta duruyordu; altındaki
-                havayolu / misafir slotu / görünürlük alanlarına ulaşmak
-                uzun kaydırma istiyordu. Bilgi KAYBOLMUYOR: kapalıyken
-                bile başlıkta sayı duruyor ("20 kurum"), yani "burada bir
-                şey var" görünüyor. Paneli saklamak sorun değil, sayıyı
-                saklamak sorun olurdu.
-                🔴 Ayrıca `slice(0,14)` kaldırıldı: 20 kurumun 14'ünü
-                gösterip 6'sını sessizce düşürüyorduk ve bunu hiçbir yerde
-                yazmıyorduk. Katlanır panelde yer sorunu yok, hepsi var. */}
-            <Katlanir baslik={t.partnersTitle} sayi={partners.length} not={t.partnersNote}>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6] }}>
-                {partners.map((p, i) => (
-                  <View key={i} style={[S.chip, { paddingVertical: SP[1] }]}>
-                    <Text style={{ fontSize: FS.xs, color: C.body }}>
-                      {p.partner_name}
-                    </Text>
+        {adim === 1 && (<>
+          <AirportPicker t={t} airports={airports} value={f.airport} onSelect={v => set("airport", v)} />
+          <LoungePicker t={t} lounges={lounges} value={f.lounge_id} onSelect={v => set("lounge_id", v)}
+            emptyNote={loungeErr ? t.loungeLoadFail : undefined} />
+          {/* ============================================================
+              "ERISIMIN VAR" ROZETI (v2.30)
+
+              Rakipte en iyi tek gorsel oge buydu: salonun tepesinde tek,
+              kacirilmaz durum — acik kilit + yesil.
+
+              🔴 AMA ONLARDA BU BIR TAHMIN, BIZDE GERCEK OLABILIR.
+              Onlar "Star Alliance Gold" yaziyor ve altina "kurallar
+              degisebilir, salonla teyit edin" diyor. Biz kart tipini,
+              bolumu, tasiyiciyi ve charter durumunu BILIYORUZ. Ayni
+              gorsel dil, cok daha dogru icerik.
+
+              Uc durum: girebilirsin · kosullu · giremezsin. Ucu de acikca
+              soylenir; "belki" diye bir sey yok.
+              ============================================================ */}
+          {!!hint && !!f.lounge_id && (() => {
+            // v6.3 · PANO İ1 — kural sonucu CAM KART; tam erişimde K4 mini damga.
+            const ok = hint.severity !== "block";
+            const cond = hint.severity === "warn" || hint.confidence === "unknown";
+            const fg = !ok ? C.red : cond ? C.amberInk : C.goldText;
+            return (
+              <View style={[S.card, { flexDirection: "row", alignItems: "center", paddingVertical: SP[3] }]}>
+                <Ikon ad={ok ? "kilitAcik" : "kilit"} boy={17} renk={fg} stil={{ marginRight: ARA[10] }} />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ color: C.mut, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.hostRuleTitle || "")}</Text>
+                  <Text style={{ fontSize: FS.base, fontWeight: "600", color: fg, marginTop: ARA[2] }}>
+                    {!ok ? t.accessNo : cond ? t.accessMaybe : t.accessYes}
+                  </Text>
+                </View>
+                {ok && !cond && (
+                  <View style={{ width: 56, height: 56, alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ transform: [{ scale: 0.64 }] }}><OnayDamgasi t={t} /></View>
                   </View>
-                ))}
+                )}
               </View>
-            </Katlanir>
-          </View>
-        )}
-        {/* 🔴 v2.23 — HAVAYOLU SECIMI. Ucus numarasi kadar onemli:
-            kural motoru "misafir ayni havayolunda mi" sorusunu buna
-            bakarak yanitliyor. Turk havayollari listenin BASINDA —
-            kullanicilarimizin neredeyse tamami oradan seciyor. */}
-        {/* v2.79: elle yazılmış droplist → ortak CarrierPicker. Bu ekranda
-            AYRICA aşağıda (eski satır 9220) bir çip satırı daha vardı;
-            aynı soruyu iki kez soruyordu. Çip satırı kaldırıldı. */}
-        <CarrierPicker t={t} carriers={carriers} value={carrier}
-          onSelect={setCarrier} label={t.carrierQ} hint={t.carrierWhy} />
-
-        {/* 🔴 v2.67 (A2) — KABİN SINIFI. Mimari eksik #3'ün son halkası.
-            SQL 191 `availabilities.cabin_class`'ı açtı ve karar zincirine
-            bağladı; 15 kabin kuralı TANIMLI ama hiçbir ilanda kabin
-            girilmediği için hâlâ devre dışıydı — `cabin_rule_reach()`
-            bunu her turda raporluyordu. Kabloyu app ucundan bağlıyoruz.
-            "Belirtme" birinci sınıf cevap: boş bırakılırsa motor kabin
-            kuralını aday yapmaz, davranış bugünkü ile AYNI kalır. */}
-        {/* KOŞULLU: yalnız bu salonda kabin kuralı varsa (SQL 249). */}
-        {kabinSor === true && (<>
-        <Text style={S.label}>{t.cabinTitle}</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: ARA[6] }}>
-          {[["economy", t.cabinEconomy], ["business", t.cabinBusiness],
-            ["first", t.cabinFirst], [null, t.cabinSkip]].map(([v, lb]) => (
-            <TouchableOpacity key={String(v)} onPress={() => setCabin(v)}
-              style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center",
-                                borderColor: cabin === v ? C.gold : C.line,
-                                backgroundColor: cabin === v ? C.goldSoft : C.card }]}>
-              <Text style={{ fontSize: FS.sm, color: cabin === v ? C.gold : C.ink,
-                             fontWeight: cabin === v ? "700" : "400" }}>{lb}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {cabin === "business" && (
-          /* Resmî kural: Business bileti misafir hakkı VERMEZ. Yumuşak
-             not — engellemiyoruz, yanlış beklentiyi baştan düzeltiyoruz. */
-          <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
-                         borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
-            <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
-          </View>
-        )}
-        </>)}
-
-        {/* v2.01 — CHARTER SORUSU. Tek kutu, varsayılan "tarifeli". */}
-        <TouchableOpacity hitSlop={TAP.slop} onPress={() => setCharter(v => !v)}
-          style={{ flexDirection: "row", alignItems: "center", marginBottom: ARA[14] }}>
-          <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
-                         borderColor: charter ? C.amber : C.line, marginRight: SP[2],
-                         alignItems: "center", justifyContent: "center",
-                         backgroundColor: charter ? C.amber : "transparent" }}>
-            {charter && <Ikon ad="tamam" boy={FS.sm} renk={C.onAccent} />}
-          </View>
-          <Text style={{ fontSize: FS.sm, color: C.body, flex: 1 }}>{t.charterQ}</Text>
-        </TouchableOpacity>
-        {charter && (
-          <View style={{ backgroundColor: C.amberBg, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
-            <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.charterWarn}</Text>
-          </View>
-        )}
-        {/* ============================================================
-            "ERISIMIN VAR" ROZETI (v2.30)
-
-            Rakipte en iyi tek gorsel oge buydu: salonun tepesinde tek,
-            kacirilmaz durum — acik kilit + yesil.
-
-            🔴 AMA ONLARDA BU BIR TAHMIN, BIZDE GERCEK OLABILIR.
-            Onlar "Star Alliance Gold" yaziyor ve altina "kurallar
-            degisebilir, salonla teyit edin" diyor. Biz kart tipini,
-            bolumu, tasiyiciyi ve charter durumunu BILIYORUZ. Ayni
-            gorsel dil, cok daha dogru icerik.
-
-            Uc durum: girebilirsin · kosullu · giremezsin. Ucu de acikca
-            soylenir; "belki" diye bir sey yok.
-            ============================================================ */}
-        {!!hint && !!f.lounge_id && (() => {
-          const ok = hint.severity !== "block";
-          const cond = hint.severity === "warn" || hint.confidence === "unknown";
-          const bg = !ok ? C.hataBg : cond ? C.amberBg : C.tealTint;
-          const fg = !ok ? C.red : cond ? C.amberInk : C.teal;
-          return (
-            <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: bg,
-                           borderRadius: R.sm, paddingVertical: SP[3], paddingHorizontal: SP[3],
-                           marginBottom: ARA[10] }}>
-              <Ikon ad={ok ? "kilitAcik" : "kilit"} boy={17} renk={ok ? C.green : C.mutedAA} stil={{ marginRight: ARA[10] }} />
-              <Text style={{ flex: 1, fontSize: FS.base, fontWeight: "700", color: fg }}>
-                {!ok ? t.accessNo : cond ? t.accessMaybe : t.accessYes}
+            );
+          })()}
+          {!!hint && (hint.headline || hint.detail) && (
+            <View style={{ marginTop: -6, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3], borderWidth: 1,
+                           backgroundColor: hint.severity === "block" ? C.hataBg
+                                          : hint.severity === "warn" ? C.amberBg : C.tealBg,
+                           borderColor: hint.severity === "block" ? C.hataLine
+                                      : hint.severity === "warn" ? C.amber : C.teal }}>
+              <Text style={{ fontSize: FS.xs, letterSpacing: 0.8, fontWeight: "700", color: C.muted, marginBottom: SP[1] }}>
+                {BUYUK(t.hostRuleTitle || "")}
               </Text>
+              <Text style={{ fontSize: FS.sm, fontWeight: "700",
+                             color: hint.severity === "block" ? C.redInk
+                                  : hint.severity === "warn" ? C.amberInk : C.teal }}>
+                {hint.headline}
+              </Text>
+              {!!hint.detail && (
+                <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: SP[1] }}>{hint.detail}</Text>
+              )}
             </View>
-          );
-        })()}
-        {!!hint && (hint.headline || hint.detail) && (
-          <View style={{ marginTop: -6, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3], borderWidth: 1,
-                         backgroundColor: hint.severity === "block" ? C.hataBg
-                                        : hint.severity === "warn" ? C.amberBg : C.tealBg,
-                         borderColor: hint.severity === "block" ? C.hataLine
-                                    : hint.severity === "warn" ? C.amber : C.teal }}>
-            <Text style={{ fontSize: FS.xs, letterSpacing: 0.8, fontWeight: "700", color: C.muted, marginBottom: SP[1] }}>
-              {BUYUK(t.hostRuleTitle || "")}
-            </Text>
-            <Text style={{ fontSize: FS.sm, fontWeight: "700",
-                           color: hint.severity === "block" ? C.redInk
-                                : hint.severity === "warn" ? C.amberInk : C.teal }}>
-              {hint.headline}
-            </Text>
-            {!!hint.detail && (
-              <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: SP[1] }}>{hint.detail}</Text>
-            )}
-          </View>
-        )}
+          )}
 
-        {/* 🔴 v2.78 — HANGİ KARTIMI KULLANAYIM (SQL 216)
-            Kural kutusu "ne olacağını" söylüyor; bu kutu "HANGİ KARTINLA"
-            söylüyor. İkisi farklı sorular ve host'un cebinde birden çok
-            kart olabiliyor. Öneri sıralaması sunucuda: ücretsiz > aile
-            hakkı > uçuş şartsız > ücretli. */}
-        {!!kartOneri && (
-          <View style={{ marginTop: -2, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3],
-                         borderWidth: 1, borderColor: "transparent", backgroundColor: C.goldBg }}>
-            <Text style={{ ...T.label, color: C.muted, marginBottom: SP[1] }}>
-              {BUYUK(t.whichCardTitle || "")}
-            </Text>
-            {kartOneri.oneri ? (
-              <>
-                <Text style={{ fontSize: FS.sm, fontWeight: "700", color: C.goldInk }}>
-                  {kartOneri.oneri.program_adi}
-                  {kartOneri.oneri.kart_tipi ? " · " + kartOneri.oneri.kart_tipi : ""}
-                </Text>
-                <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: SP[1] }}>
-                  {kartOneri.oneri.misafir_hakki}
-                  {kartOneri.oneri.aile_dahil ? " (aile de dahil)" : ""}
-                  {kartOneri.oneri.ucusa_bagli && kartOneri.oneri.ucusa_bagli !== "Ucus sarti yok"
-                    ? " — " + kartOneri.oneri.ucusa_bagli : ""}
-                </Text>
-              </>
-            ) : (
-              <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>{kartOneri.neden}</Text>
-            )}
-            <TouchableOpacity
-              hitSlop={TAP.slop}
-              onPress={async () => {
-                if (kartTablo) { setKartTablo(null); return; }
-                const { data: lg, error: lgErr } = await supabase.from("lounges")
-                  .select("venue_id").eq("id", f.lounge_id).maybeSingle();
-                if (lgErr) { logError("kart_tablo_venue", lgErr); return; }
-                if (!lg?.venue_id) return;
-                const { data, error } = await supabase.rpc("salon_misafir_karsilastirmasi", { p_venue: lg.venue_id });
-                setKartTablo(error ? [] : (data || []));
-              }}>
-              <Text style={{ fontSize: FS.sm, color: C.goldInk, fontWeight: "700", marginTop: SP[2] }}>
-                {kartTablo ? (t.whichCardHide || "") : (t.whichCardAll || "").replace("{n}", String(kartOneri.salondaki_kaynak || 0))}
+          {/* 🔴 v2.78 — HANGİ KARTIMI KULLANAYIM (SQL 216)
+              Kural kutusu "ne olacağını" söylüyor; bu kutu "HANGİ KARTINLA"
+              söylüyor. İkisi farklı sorular ve host'un cebinde birden çok
+              kart olabiliyor. Öneri sıralaması sunucuda: ücretsiz > aile
+              hakkı > uçuş şartsız > ücretli. */}
+          {!!kartOneri && (
+            <View style={{ marginTop: -2, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3],
+                           borderWidth: 1, borderColor: "transparent", backgroundColor: C.goldBg }}>
+              <Text style={{ ...T.label, color: C.muted, marginBottom: SP[1] }}>
+                {BUYUK(t.whichCardTitle || "")}
               </Text>
-            </TouchableOpacity>
-            {!!kartTablo && kartTablo.length > 0 && (
-              <View style={{ marginTop: SP[2], borderTopWidth: 1, borderTopColor: C.line, paddingTop: SP[2] }}>
-                {kartTablo.slice(0, 30).map((k, i) => (
-                  <View key={i} style={{ flexDirection: "row", justifyContent: "space-between",
-                                         paddingVertical: SP[1], gap: SP[2] }}>
-                    <Text style={{ fontSize: FS.sm, color: k.bende_var ? C.goldInk : C.body, flex: 1,
-                                   fontWeight: k.bende_var ? "700" : "400" }}>
-                      {k.program_adi}{k.kart_tipi ? " · " + k.kart_tipi : ""}
-                    </Text>
-                    <Text style={{ fontSize: FS.sm, color: C.muted, flex: 1, textAlign: "right" }}>
-                      {k.misafir_hakki}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </View>
-        )}
-        <DateInput value={f.date} onChange={v => set("date", v)} />
-
-        <View style={{ flexDirection: "row", marginBottom: ARA[14] }}>
-          <TimeInput label={t.avStart} value={f.from} onChange={v => set("from", v)} />
-          <View style={{ width: 8 }} />
-          <TimeInput label={t.avEnd} value={f.to} onChange={v => set("to", v)} />
-        </View>
-
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[1], letterSpacing: 1 }}>{t.avFlightLabel}</Text>
-        {/* v2.47 — HAVAYOLU SECIMI (cihazda istendi). Kural motoru
-            tasiyiciya gore karar verir (md.17: THY yolcusu yalniz THY
-            yolcusunu davet eder; AJet listesinde IST yoktur). Secim,
-            ucus numarasinin onekini de hazirlar. */}
-        {/* 🔴 v2.79 — BU ÇİP SATIRI KALDIRILDI VE SEBEBİ GÖRÜNTÜDEN
-            DAHA CİDDİYDİ.
-            Gökberk "aynı sayfada iki havayolu seçimi var" dedi; ölçünce
-            ikisinin AYRI DEĞİŞKENLERE yazdığı çıktı:
-                çip satırı  → `f.carrier`  → create_availability(p_carrier)
-                droplist    → `carrier`    → set_availability_carrier()
-            Yani iki alan da sunucuya gidiyordu ve İKİNCİSİ BİRİNCİYİ
-            EZİYORDU. Host çipten THY, listeden Pegasus seçseydi ilan
-            sessizce Pegasus olarak açılırdı — ve kural motoru "misafir
-            aynı havayolunda mı" sorusunu YANLIŞ taşıyıcıyla yanıtlardı.
-            Çift görünen alan bir görüntü sorunu değil, bir veri sorunuydu.
-            Artık tek kaynak var: yukarıdaki CarrierPicker → `carrier`.
-            Uçuş numarası öneki de oradan türetiliyor. */}
-        {/* 🔴 v2.68 — AYNI BİLEŞEN BURADA DA. Uyarı artık KOŞULLU:
-            numara doğrulanabildiyse "elle girildi" demiyoruz (doğrulanmış
-            bir uçuşa öyle demek yalan olurdu), doğrulanamadıysa aynen
-            duruyor. Uçuş numarası burada da İSTEĞE BAĞLI. */}
-        <FlightField t={t} value={f.flight} onChange={v => set("flight", v)}
-          date={f.date} carrier={carrier} showChips={false} hideLabel
-          manualWarn={t.flightManualWarn}
-          inputStyle={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], color: C.body, fontSize: FS.sm }} />
-        <View style={{ height: 14 }} />
-
-        {/* MVP: MISAFIR SLOTU — 1/2/3 buyuk kutu */}
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haGuestSlots}</Text>
-        <View style={{ flexDirection: "row", marginBottom: SP[3] }}>
-          {[1, 2, 3].map(n => {
-            const sel = f.slots === n;
-            const dis = n > maxSlots;
-            return (
-              <TouchableOpacity key={n} disabled={dis} onPress={() => set("slots", n)}
-                accessibilityRole="radio" accessibilityState={{ checked: sel, disabled: dis }}
-                accessibilityLabel={n + " " + String(t.haGuestSlots).toLowerCase()}
-                style={{ flex: 1, backgroundColor: sel ? C.goldBg : C.card, borderWidth: 1.5, borderColor: sel ? C.gold : C.line,
-                         borderRadius: R.xs, paddingVertical: ARA[10], minHeight: TAP.minHeight, justifyContent: "center", alignItems: "center", marginRight: n < 3 ? 8 : 0, opacity: dis ? 0.35 : 1 }}>
-                <Text style={{ fontSize: FS.lg, fontWeight: "700", color: sel ? C.goldText : C.ink }}>{n}</Text>
-                <Text style={{ fontSize: FS.micro, color: C.dimAA }}>slot</Text>
+              {kartOneri.oneri ? (
+                <>
+                  <Text style={{ fontSize: FS.sm, fontWeight: "700", color: C.goldInk }}>
+                    {kartOneri.oneri.program_adi}
+                    {kartOneri.oneri.kart_tipi ? " · " + kartOneri.oneri.kart_tipi : ""}
+                  </Text>
+                  <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: SP[1] }}>
+                    {kartOneri.oneri.misafir_hakki}
+                    {kartOneri.oneri.aile_dahil ? " (aile de dahil)" : ""}
+                    {kartOneri.oneri.ucusa_bagli && kartOneri.oneri.ucusa_bagli !== "Ucus sarti yok"
+                      ? " — " + kartOneri.oneri.ucusa_bagli : ""}
+                  </Text>
+                </>
+              ) : (
+                <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>{kartOneri.neden}</Text>
+              )}
+              <TouchableOpacity
+                hitSlop={TAP.slop}
+                onPress={async () => {
+                  if (kartTablo) { setKartTablo(null); return; }
+                  const { data: lg, error: lgErr } = await supabase.from("lounges")
+                    .select("venue_id").eq("id", f.lounge_id).maybeSingle();
+                  if (lgErr) { logError("kart_tablo_venue", lgErr); return; }
+                  if (!lg?.venue_id) return;
+                  const { data, error } = await supabase.rpc("salon_misafir_karsilastirmasi", { p_venue: lg.venue_id });
+                  setKartTablo(error ? [] : (data || []));
+                }}>
+                <Text style={{ fontSize: FS.sm, color: C.goldInk, fontWeight: "700", marginTop: SP[2] }}>
+                  {kartTablo ? (t.whichCardHide || "") : (t.whichCardAll || "").replace("{n}", String(kartOneri.salondaki_kaynak || 0))}
+                </Text>
               </TouchableOpacity>
-            );
-          })}
-        </View>
-        {cap && cap < 3 ? (
-          <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: -6, marginBottom: ARA[14] }}>
-            {t.haCapDeclared} {cap}{t.haCapMore}
-          </Text>
-        ) : null}
+              {!!kartTablo && kartTablo.length > 0 && (
+                <View style={{ marginTop: SP[2], borderTopWidth: 1, borderTopColor: C.line, paddingTop: SP[2] }}>
+                  {kartTablo.slice(0, 30).map((k, i) => (
+                    <View key={i} style={{ flexDirection: "row", justifyContent: "space-between",
+                                           paddingVertical: SP[1], gap: SP[2] }}>
+                      <Text style={{ fontSize: FS.sm, color: k.bende_var ? C.goldInk : C.body, flex: 1,
+                                     fontWeight: k.bende_var ? "700" : "400" }}>
+                        {k.program_adi}{k.kart_tipi ? " · " + k.kart_tipi : ""}
+                      </Text>
+                      <Text style={{ fontSize: FS.sm, color: C.muted, flex: 1, textAlign: "right" }}>
+                        {k.misafir_hakki}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
+          {!!partners && partners.length > 0 && (
+            <View style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.line,
+                           borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] , ...ELEV.card }}>
+              {/* 🔴 v2.27 — SALONUN ANLASMALI KURUMLARI.
+                  Havalimaninin kendi sayfasindan alindi. Host "benim kartimla
+                  girer miyim" diye soruyor; cevabi salonun kendi listesinde.
+                  ⚠ isareti: anlasmanin VARLIGI dogrulandi, KOSULLARI degil —
+                  ikisini karistirmak, bilmedigimizi biliyormus gibi gostermek. */}
+              {/* 🔴 v2.79 — KATLANDI. Gökberk: "bu salona hangi kurumlarla
+                  giriliyor ekranı küçültülebilir olmalı çünkü alttaki
+                  alanlara inmesi zor oluyor."
+                  Cihazda 16 kurum çipi alt alta duruyordu; altındaki
+                  havayolu / misafir slotu / görünürlük alanlarına ulaşmak
+                  uzun kaydırma istiyordu. Bilgi KAYBOLMUYOR: kapalıyken
+                  bile başlıkta sayı duruyor ("20 kurum"), yani "burada bir
+                  şey var" görünüyor. Paneli saklamak sorun değil, sayıyı
+                  saklamak sorun olurdu.
+                  🔴 Ayrıca `slice(0,14)` kaldırıldı: 20 kurumun 14'ünü
+                  gösterip 6'sını sessizce düşürüyorduk ve bunu hiçbir yerde
+                  yazmıyorduk. Katlanır panelde yer sorunu yok, hepsi var. */}
+              <Katlanir baslik={t.partnersTitle} sayi={partners.length} not={t.partnersNote}>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6] }}>
+                  {partners.map((p, i) => (
+                    <View key={i} style={[S.chip, { paddingVertical: SP[1] }]}>
+                      <Text style={{ fontSize: FS.xs, color: C.body }}>
+                        {p.partner_name}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </Katlanir>
+            </View>
+          )}
+        </>)}
+        {adim === 2 && (<>
+          {/* 🔴 v2.23 — HAVAYOLU SECIMI. Ucus numarasi kadar onemli:
+              kural motoru "misafir ayni havayolunda mi" sorusunu buna
+              bakarak yanitliyor. Turk havayollari listenin BASINDA —
+              kullanicilarimizin neredeyse tamami oradan seciyor. */}
+          {/* v2.79: elle yazılmış droplist → ortak CarrierPicker. Bu ekranda
+              AYRICA aşağıda (eski satır 9220) bir çip satırı daha vardı;
+              aynı soruyu iki kez soruyordu. Çip satırı kaldırıldı. */}
+          <CarrierPicker t={t} carriers={carriers} value={carrier}
+            onSelect={setCarrier} label={t.carrierQ} hint={t.carrierWhy} />
 
-        {/* MVP: GORUNURLUK radio */}
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haVisibility}</Text>
-        {visOpts(t).map(([v, l]) => {
-          const sel = f.visibility === v;
-          return (
-            <Secim key={v} bicim="radyo" ton="gold" zemin="alt" secili={sel} etiket={l}
-              a11yRol="radio" stil={{ marginBottom: SP[2] }}
-              onPress={() => set("visibility", v)} />
-          );
-        })}
+          {/* 🔴 v2.67 (A2) — KABİN SINIFI. Mimari eksik #3'ün son halkası.
+              SQL 191 `availabilities.cabin_class`'ı açtı ve karar zincirine
+              bağladı; 15 kabin kuralı TANIMLI ama hiçbir ilanda kabin
+              girilmediği için hâlâ devre dışıydı — `cabin_rule_reach()`
+              bunu her turda raporluyordu. Kabloyu app ucundan bağlıyoruz.
+              "Belirtme" birinci sınıf cevap: boş bırakılırsa motor kabin
+              kuralını aday yapmaz, davranış bugünkü ile AYNI kalır. */}
+          {/* KOŞULLU: yalnız bu salonda kabin kuralı varsa (SQL 249). */}
+          {kabinSor === true && (<>
+          <Text style={S.label}>{t.cabinTitle}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: ARA[6] }}>
+            {[["economy", t.cabinEconomy], ["business", t.cabinBusiness],
+              ["first", t.cabinFirst], [null, t.cabinSkip]].map(([v, lb]) => (
+              <TouchableOpacity key={String(v)} onPress={() => setCabin(v)}
+                style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center",
+                                  borderColor: cabin === v ? C.gold : C.line,
+                                  backgroundColor: cabin === v ? C.goldSoft : C.card }]}>
+                <Text style={{ fontSize: FS.sm, color: cabin === v ? C.gold : C.ink,
+                               fontWeight: cabin === v ? "700" : "400" }}>{lb}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {cabin === "business" && (
+            /* Resmî kural: Business bileti misafir hakkı VERMEZ. Yumuşak
+               not — engellemiyoruz, yanlış beklentiyi baştan düzeltiyoruz. */
+            <View style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent",
+                           borderRadius: R.xs, padding: SP[3], marginBottom: SP[3] }}>
+              <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.cabinBizNote}</Text>
+            </View>
+          )}
+          </>)}
 
-        <Text style={S.label}>{t.minTrustLabel}</Text>
-        <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[6] }}>
-          {t.minTrustBody}
-        </Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: SP[1] }}>
-          {[0, 40, 60, 75].map((v) => {
-            const on = Number(esik) === v;
+          {/* v2.01 — CHARTER SORUSU. Tek kutu, varsayılan "tarifeli". */}
+          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setCharter(v => !v)}
+            style={{ flexDirection: "row", alignItems: "center", marginBottom: ARA[14] }}>
+            <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
+                           borderColor: charter ? C.amber : C.line, marginRight: SP[2],
+                           alignItems: "center", justifyContent: "center",
+                           backgroundColor: charter ? C.amber : "transparent" }}>
+              {charter && <Ikon ad="tamam" boy={FS.sm} renk={C.onAccent} />}
+            </View>
+            <Text style={{ fontSize: FS.sm, color: C.body, flex: 1 }}>{t.charterQ}</Text>
+          </TouchableOpacity>
+          {charter && (
+            <View style={{ backgroundColor: C.amberBg, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14] }}>
+              <Text style={{ color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.charterWarn}</Text>
+            </View>
+          )}
+          <DateInput value={f.date} onChange={v => set("date", v)} />
+
+          <View style={{ flexDirection: "row", marginBottom: ARA[14] }}>
+            <TimeInput label={t.avStart} value={f.from} onChange={v => set("from", v)} />
+            <View style={{ width: 8 }} />
+            <TimeInput label={t.avEnd} value={f.to} onChange={v => set("to", v)} />
+          </View>
+
+          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[1], letterSpacing: 1 }}>{t.avFlightLabel}</Text>
+          {/* v2.47 — HAVAYOLU SECIMI (cihazda istendi). Kural motoru
+              tasiyiciya gore karar verir (md.17: THY yolcusu yalniz THY
+              yolcusunu davet eder; AJet listesinde IST yoktur). Secim,
+              ucus numarasinin onekini de hazirlar. */}
+          {/* 🔴 v2.79 — BU ÇİP SATIRI KALDIRILDI VE SEBEBİ GÖRÜNTÜDEN
+              DAHA CİDDİYDİ.
+              Gökberk "aynı sayfada iki havayolu seçimi var" dedi; ölçünce
+              ikisinin AYRI DEĞİŞKENLERE yazdığı çıktı:
+                  çip satırı  → `f.carrier`  → create_availability(p_carrier)
+                  droplist    → `carrier`    → set_availability_carrier()
+              Yani iki alan da sunucuya gidiyordu ve İKİNCİSİ BİRİNCİYİ
+              EZİYORDU. Host çipten THY, listeden Pegasus seçseydi ilan
+              sessizce Pegasus olarak açılırdı — ve kural motoru "misafir
+              aynı havayolunda mı" sorusunu YANLIŞ taşıyıcıyla yanıtlardı.
+              Çift görünen alan bir görüntü sorunu değil, bir veri sorunuydu.
+              Artık tek kaynak var: yukarıdaki CarrierPicker → `carrier`.
+              Uçuş numarası öneki de oradan türetiliyor. */}
+          {/* 🔴 v2.68 — AYNI BİLEŞEN BURADA DA. Uyarı artık KOŞULLU:
+              numara doğrulanabildiyse "elle girildi" demiyoruz (doğrulanmış
+              bir uçuşa öyle demek yalan olurdu), doğrulanamadıysa aynen
+              duruyor. Uçuş numarası burada da İSTEĞE BAĞLI. */}
+          <FlightField t={t} value={f.flight} onChange={v => set("flight", v)}
+            date={f.date} carrier={carrier} showChips={false} hideLabel
+            manualWarn={t.flightManualWarn}
+            inputStyle={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: C.line, borderRadius: R.xs, padding: SP[3], color: C.body, fontSize: FS.sm }} />
+          <View style={{ height: 14 }} />
+
+          {/* MVP: MISAFIR SLOTU — 1/2/3 buyuk kutu */}
+          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haGuestSlots}</Text>
+          <View style={{ flexDirection: "row", marginBottom: SP[3] }}>
+            {[1, 2, 3].map(n => {
+              const sel = f.slots === n;
+              const dis = n > maxSlots;
+              return (
+                <TouchableOpacity key={n} disabled={dis} onPress={() => set("slots", n)}
+                  accessibilityRole="radio" accessibilityState={{ checked: sel, disabled: dis }}
+                  accessibilityLabel={n + " " + String(t.haGuestSlots).toLowerCase()}
+                  style={{ flex: 1, backgroundColor: sel ? C.goldBg : C.card, borderWidth: 1.5, borderColor: sel ? C.gold : C.line,
+                           borderRadius: R.xs, paddingVertical: ARA[10], minHeight: TAP.minHeight, justifyContent: "center", alignItems: "center", marginRight: n < 3 ? 8 : 0, opacity: dis ? 0.35 : 1 }}>
+                  <Text style={{ fontSize: FS.lg, fontWeight: "700", color: sel ? C.goldText : C.ink }}>{n}</Text>
+                  <Text style={{ fontSize: FS.micro, color: C.dimAA }}>slot</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          {cap && cap < 3 ? (
+            <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: -6, marginBottom: ARA[14] }}>
+              {t.haCapDeclared} {cap}{t.haCapMore}
+            </Text>
+          ) : null}
+
+        </>)}
+        {adim === 3 && (<>
+          {!!hint && !!f.lounge_id && (() => {
+            // v6.3 · PANO İ1 — kural sonucu CAM KART; tam erişimde K4 mini damga.
+            const ok = hint.severity !== "block";
+            const cond = hint.severity === "warn" || hint.confidence === "unknown";
+            const fg = !ok ? C.red : cond ? C.amberInk : C.goldText;
             return (
-              <Secim key={v} ton="teal" secili={on} onPress={() => setEsik(v)}
-                etiket={v === 0 ? t.minTrustAny : String(t.minTrustAtLeast || "").replace("{n}", String(v))} />
+              <View style={[S.card, { flexDirection: "row", alignItems: "center", paddingVertical: SP[3] }]}>
+                <Ikon ad={ok ? "kilitAcik" : "kilit"} boy={17} renk={fg} stil={{ marginRight: ARA[10] }} />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ color: C.mut, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.hostRuleTitle || "")}</Text>
+                  <Text style={{ fontSize: FS.base, fontWeight: "600", color: fg, marginTop: ARA[2] }}>
+                    {!ok ? t.accessNo : cond ? t.accessMaybe : t.accessYes}
+                  </Text>
+                </View>
+                {ok && !cond && (
+                  <View style={{ width: 56, height: 56, alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ transform: [{ scale: 0.64 }] }}><OnayDamgasi t={t} /></View>
+                  </View>
+                )}
+              </View>
+            );
+          })()}
+          {/* MVP: GORUNURLUK radio */}
+          <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haVisibility}</Text>
+          {visOpts(t).map(([v, l]) => {
+            const sel = f.visibility === v;
+            return (
+              <Secim key={v} bicim="radyo" ton="gold" zemin="alt" secili={sel} etiket={l}
+                a11yRol="radio" stil={{ marginBottom: SP[2] }}
+                onPress={() => set("visibility", v)} />
             );
           })}
-        </View>
 
-        {/* "VAAT ETTİĞİN ŞEY BU" — yayınlamadan ÖNCE okunması, düzenlerken
-            okunmasından daha değerli. Aynı bileşen, iki ekran. */}
-        <PromiseBox t={t} lounge={(lounges.find(l => l.id === f.lounge_id) || {}).name || f.airport}
-          f={f} esik={esik} yogunluk={null} />
+          <Text style={S.label}>{t.minTrustLabel}</Text>
+          <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[6] }}>
+            {t.minTrustBody}
+          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: SP[1] }}>
+            {[0, 40, 60, 75].map((v) => {
+              const on = Number(esik) === v;
+              return (
+                <Secim key={v} ton="teal" secili={on} onPress={() => setEsik(v)}
+                  etiket={v === 0 ? t.minTrustAny : String(t.minTrustAtLeast || "").replace("{n}", String(v))} />
+              );
+            })}
+          </View>
 
+          {/* "VAAT ETTİĞİN ŞEY BU" — yayınlamadan ÖNCE okunması, düzenlerken
+              okunmasından daha değerli. Aynı bileşen, iki ekran. */}
+          <PromiseBox t={t} lounge={(lounges.find(l => l.id === f.lounge_id) || {}).name || f.airport}
+            f={f} esik={esik} yogunluk={null} />
+
+        </>)}
         {!!err && <View style={{ backgroundColor: C.redBg, borderRadius: R.xs, padding: SP[3], marginTop: SP[2], marginBottom: SP[3] }}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{err}</Text></View>}
 
-        {/* 🔴 `onPress={publish}` YAZILAMAZ: React basma olayını ilk argüman
-            olarak geçirir ve `kuralOnaylandi` truthy bir olay nesnesi olur —
-            kural kapısı sessizce atlanırdı. */}
-        <Btn v="gold" sm label={busy ? t.epSaving : t.publish} onPress={() => publish()} disabled={busy} a11yLabel={t.publish} style={{ marginTop: SP[2] }} />
-
+        <SihirbazAlti t={t} adim={adim} setAdim={setAdim} setErr={setErr} f={f} busy={busy}
+          sonEtiket={busy ? t.epSaving : t.publish} onSon={() => publish()}
+          dogrula={(n) => n === 1 ? (!f.airport ? t.avPickAirport : (lounges.length > 0 && !f.lounge_id) ? (t.pickLounge || "") : "")
+                          : n === 2 ? (String(f.date || "").length !== 10 ? t.avFixDate : "") : ""} />
         {/* MVP: telefon dogrulanmamissa PhoneGate */}
         {!phoneOk && (
           <TouchableOpacity onPress={onVerify}

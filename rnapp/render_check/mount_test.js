@@ -855,7 +855,8 @@ try {
   if (tema.temaModu() !== "koyu") throw new Error("temaUygula çağrıldı ama TEMA_MOD değişmedi");
   // `S` ve `st` gerçekten tazelendi mi? (kaynak değil, DEĞER kontrolü)
   const S = require(path.join(APP, "src", "ortak.js")).S;
-  if (String(S.card.backgroundColor).toUpperCase() !== tema.KOYU.surface.toUpperCase()) {
+  // v6.3: kart koyu temada CAM (KOYU.camYuzey); jeton yoksa eski kadife yüzey.
+  if (String(S.card.backgroundColor).toUpperCase() !== String(tema.KOYU.camYuzey || tema.KOYU.surface).toUpperCase()) {
     koyuBad.push(["ortak.js S", "S.card zemini koyu palete geçmedi: " + S.card.backgroundColor]);
   }
 
@@ -989,6 +990,8 @@ if (IKON_UYARI.size) {
   for (const ad of IKON_UYARI) console.log(`  ✗ Ikon ad="${ad}" — ikon.js'te yok, boş kare çiziliyor`);
 }
 console.log(`Toplam ekran: ${CASES.length} · başarısız: ${bad.length}`);
+// 29 Eylül — sayı vardı, AD yoktu: "başarısız 1" deyip hangisi olduğunu söylemiyordu.
+for (const [ad, neden] of bad) console.log(`  ✗ ${ad} — ${neden}`);
 if (bad.length) {
   console.log("\n🔴 Bu ekranlar CİHAZDA da çökerdi — metin denetimi bunu göremezdi.");
 }

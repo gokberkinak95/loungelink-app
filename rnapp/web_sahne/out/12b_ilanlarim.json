@@ -9,43 +9,33 @@
   "Seyahatlerim",
   "İlanlarım",
   "İlanlarım",
-  "—",
   "CÜZDAN",
+  "",
+  "—",
   "KART HAKKIN",
-  "1",
   "KAÇIRILAN",
+  "",
+  "2",
   "son 30 gün",
-  "Ev Sahibi",
   "MERTEBE",
+  "",
+  "Ev Sahibi",
   "3 ağırlama",
-  "İLANLARIM · 3",
+  "İLANLARIM · 1 aktif",
   "+ İlan Ekle",
-  "TAV Primeclass",
-  "• CANLI",
-  "IST · 28 Eylül · 14:20–16:40",
-  "",
-  "TK · Türk Hava Yolları",
-  "• 1 yer açık",
-  "1 başvuru · 1 Bekliyor",
-  "İlanı kaldır",
-  "İlanı düzenle",
+  "AKTİF İLANLARIN",
+  "CANLI · DOLU",
+  "SAW",
   "Comfort Lounge",
-  "• CANLI",
-  "SAW · 29 Eylül · 09:00–11:30",
+  "30 EYLÜL · 09:00–11:30",
   "",
   "PC · Pegasus",
-  "• Dolu",
   "İlanı kaldır",
   "İlanı düzenle",
-  "YAYINDA OLMAYANLAR",
-  "TAV Primeclass",
-  "Pasif",
-  "IST · 2 Ekim · 10:00–12:30",
-  "",
-  "TK · Türk Hava Yolları",
-  "• 2 yer açık",
-  "Yeniden yayınla",
-  "İlanı düzenle",
+  "YAYINDA OLMAYANLAR · 1",
+  "",
+  "SÜRESİ DOLANLAR · 1",
+  "",
   "+ İlan Ekle",
   "",
   "Ana Sayfa",
@@ -62,62 +52,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 38,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 38,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 38,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -201,
+   "sol": -192,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -201,
+   "sol": -192,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -201,
+   "sol": -192,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 38,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 38,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 38,
+   "sol": 25,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -201,
+   "sol": -192,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -201,
+   "sol": -192,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -201,
+   "sol": -192,
    "tx": ""
   }
  ],

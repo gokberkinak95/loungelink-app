@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-29 uretildi · 348 dosya · son: 305)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-29 uretildi · 351 dosya · son: 308)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,8 +21,8 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 340 dosyanın 291 tanesi için ayırt edici imza
--- bulundu (%86). Kalan 49 tanesi BİLİNMİYOR olarak
+-- ÖLÇÜM: 343 dosyanın 292 tanesi için ayırt edici imza
+-- bulundu (%85). Kalan 51 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
 -- ════════════════════════════════════════════════════════════════════════
@@ -560,6 +560,9 @@ select z.dosya, 'tespit'
   (338, '303_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
   (339, '304_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
   (340, '305_erisim_kaynagi_etiketleri.sql', 'fonksiyon', 'erisim_kaynagi_etiketle'),
+  (341, '306_kural_notlari_turkce_tamam.sql', '', ''),
+  (342, '307_zarafet_atlama_siniri.sql', 'fonksiyon', 'binis_atlama_sayisi'),
+  (343, '308_bo_atlama_uyarisi.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -917,6 +920,9 @@ with imza(sira, dosya, tip, ad) as (
   (338, '303_ertelenen_puan_ana_sayfadan_duser.sql', 'govde', 'pending_ratings|and not (coalesce(s.rate_deferred_by, ''{}'') @> array[v_uid])'),
   (339, '304_kesfet_engelinin_gercek_sebebi.sql', 'govde', 'discovery_rule_badges|v_key := ''carrier_bad'';   v_boost := -1000;'),
   (340, '305_erisim_kaynagi_etiketleri.sql', 'fonksiyon', 'erisim_kaynagi_etiketle'),
+  (341, '306_kural_notlari_turkce_tamam.sql', '', ''),
+  (342, '307_zarafet_atlama_siniri.sql', 'fonksiyon', 'binis_atlama_sayisi'),
+  (343, '308_bo_atlama_uyarisi.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

@@ -42,45 +42,38 @@
   "İlanı var",
   "• Doğrulanmış · 58",
   "",
-  "R",
-  "Rana Aile",
-  "Egitim",
-  "ESB",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "P",
-  "Pinar ABD Karti",
-  "Finans",
-  "DLM",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "O",
-  "Ozan Corporate",
-  "Kurumsal",
-  "IST",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "N",
-  "Nazli Business",
+  "I",
+  "Irem Uzun Ilan",
   "Danismanlik",
   "IST",
   "İlanı var",
   "• Temel Doğrulama · 50",
   "",
-  "F",
-  "Funda DragonPass",
-  "Medya",
-  "SAW",
+  "S",
+  "Selin T.",
+  "Pazarlama Direktörü",
+  "ESB",
   "İlanı var",
   "• Temel Doğrulama · 50",
   "",
-  "D",
-  "Deniz AJet ESB",
-  "Egitim",
-  "ESB",
+  "T",
+  "Tuna H.",
+  "Veri Bilimci",
+  "IST",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
+  "",
+  "E",
+  "Elif Elite Plus",
+  "Teknoloji",
+  "IST",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
+  "",
+  "B",
+  "Burak Classic Plus",
+  "Finans",
+  "IST",
   "İlanı var",
   "• Temel Doğrulama · 50",
   "",
@@ -91,98 +84,105 @@
   "İlanı var",
   "• Temel Doğrulama · 50",
   "",
-  "B",
-  "Burak Classic Plus"
+  "D",
+  "Deniz AJet ESB",
+  "Egitim",
+  "ESB",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
+  "",
+  "E",
+  "Emre Priority Pass"
  ],
  "tasan": [
   {
    "g": 507,
-   "sol": 17,
+   "sol": -4,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 17,
+   "sol": -4,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 17,
+   "sol": -4,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -185,
+   "sol": -164,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -185,
+   "sol": -164,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -185,
+   "sol": -164,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 17,
+   "sol": -4,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 17,
+   "sol": -4,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 17,
+   "sol": -4,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -185,
+   "sol": -164,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -185,
+   "sol": -164,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -185,
+   "sol": -164,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 45,
+   "sol": 23,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 45,
+   "sol": 23,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 45,
+   "sol": 23,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -190,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -190,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -206,
+   "sol": -190,
    "tx": ""
   }
  ],

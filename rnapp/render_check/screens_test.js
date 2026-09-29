@@ -335,7 +335,7 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
     t, session, onOpenChat: () => {}, onAddAvail: () => {}, onAddCard: () => {} }));
   check(r.name, r.ok, r.ok ? "çökmeden açılıyor" : "ÇÖKTÜ: " + r.err);
   check(r.name, !has(r.texts, "0 slot açık"), "dolu ilanda '0 slot açık' YAZMIYOR (madde 4)");
-  check(r.name, has(r.texts, "Dolu"), "yerine 'Dolu' yazıyor");
+  check(r.name, has(r.texts, "Dolu") || has(r.texts, "DOLU"), "yerine 'Dolu' yazıyor");   // v6.3: durum satırı büyük harf
   check(r.name, has(r.texts, "AJet"), "host kendi ilanının havayolunu görüyor (madde 5)");
 
   // ---------- 19b) YAYIN: geçmiş ilan "yer açık" SÖZÜ VERMİYOR (29 Eylül, Gökberk md.1) ----------

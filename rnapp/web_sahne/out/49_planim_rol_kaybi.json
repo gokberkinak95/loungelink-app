@@ -1,6 +1,18 @@
 {
  "console": [
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
    "t": "warning",
    "s": "[sahne logError] kabuk_rol Network request failed "
   },
@@ -119,62 +131,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 40,
+   "sol": 45,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 40,
+   "sol": 45,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 40,
+   "sol": 45,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -202,
+   "sol": -206,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -202,
+   "sol": -206,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -202,
+   "sol": -206,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 40,
+   "sol": 45,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 40,
+   "sol": 45,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 40,
+   "sol": 45,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -202,
+   "sol": -206,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -202,
+   "sol": -206,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -202,
+   "sol": -206,
    "tx": ""
   }
  ],
