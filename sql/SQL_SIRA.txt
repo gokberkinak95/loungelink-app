@@ -1,3 +1,15 @@
+SQL SIRASI - 1 Ekim 2026 - YENI: 310 (app 6.2.5) — 309'dan SONRA
+
+  1) 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql
+       -> SAW THY CIP secicide yeniden acik (Gokberk karari)
+       -> THY disi TR salonlarinda M&S: 309'un "gecmez"i geri alinir -> "dogrulanmadi, kapida teyit"
+       -> Tasiyici uyusmazligi SUNUCUDA da kesin engel (create_request + on kontrol birlikte)
+       -> Guvenlik: istemcinin cagirmadigi 21 ic yardimci fonksiyon kullanicilara kapatilir
+       -> Profil fotografi klasoru yalniz sahibine listelenir
+       Beklenen NOTICE: "ic yardimci istemciye acik=0 · SAW THY CIP secicide=1 · gecmez satiri=0".
+       Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 30 Eylul 2026 - YENI: yalniz 309 (app 6.2.4)
 
 Supabase SQL Editor'de:

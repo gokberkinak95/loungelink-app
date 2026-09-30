@@ -31,6 +31,7 @@ import { bayrak } from "./runtime";
 // `ui.js` ortak.js'i içe AKTARMIYOR — yön tek, döngü yok (bagimlilik_check ölçüyor).
 import { Ikon, IkonMetin } from "./ikon";
 import { logError, supabase } from "./supabase";
+import { yeniId } from "./cevrimdisi";
 import { bildirimAyarlariniAc, pushIzniIste, pushDurumOku } from "./push";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, temaYenidenKur } from "./theme";
 import { MONO } from "./typography";
@@ -536,10 +537,21 @@ export async function pickAndUploadPhoto(uid) {
   });
   if (res.canceled || !res.assets?.[0]?.base64) return null;
   const b64 = res.assets[0].base64;
-  const path = `${uid}/avatar.jpg`;
+  // 🔴 1 Ekim (güvenlik taraması) — yol TAHMİN EDİLEBİLİRDİ: `<uid>/avatar.jpg`. Kova herkese
+  // açık, kullanıcı kimlikleri Keşfet'te görünüyor → "fotoğrafım yalnız bağlantılarıma" diyen
+  // birinin fotoğrafı adres tahminiyle açılabiliyordu (gizleme yalnız RPC'deydi). Artık her
+  // yükleme RASTGELE adla; adres yalnız fotoğrafı görmeye yetkili olana RPC'den gelir.
+  // Eski dosyalar yüklemeden sonra silinir (sahibi kendi klasörünü listeleyebilir — SQL 310).
+  const path = `${uid}/${yeniId().replace(/-/g, "")}.jpg`;
   const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const { error } = await supabase.storage.from("avatars").upload(path, bytes, { contentType: "image/jpeg", upsert: true });
+  const { error } = await supabase.storage.from("avatars").upload(path, bytes, { contentType: "image/jpeg", upsert: false });
   if (error) return null;
+  try {
+    const { data: eski, error: eListe } = await supabase.storage.from("avatars").list(uid, { limit: 50 });
+    if (eListe) logError("avatar_liste", eListe);
+    const sil = (eski || []).map(o => `${uid}/${o.name}`).filter(x => x !== path);
+    if (sil.length) await supabase.storage.from("avatars").remove(sil);
+  } catch (e) { logError("avatar_eski_sil", e); }
   const { data } = supabase.storage.from("avatars").getPublicUrl(path);
   const url = data.publicUrl + "?t=" + Date.now();
   // 23 Eylül: güncelleme hatası yutuluyordu — ekranda yeni foto görünür,
