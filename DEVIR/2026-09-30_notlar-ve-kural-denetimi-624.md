@@ -49,8 +49,11 @@ Doğrulanan davranış: THY host + AJet misafir → Keşfet kartı "başvuramazs
 ücretli" uyarısı + başvuru açık.
 
 ## Koşulan testler
-- check temiz · render 77/13/12/53/37 · e2e: flow_matrix 27/27 · tam_akis 171/171 · edge 18/18 ·
-  onboarding 16/16 · two_account geçti · rule_dims / rpc_field: aşağıda SON DURUM
+- check temiz · render 77/13/12/53/37 · e2e (309 dahil, taze kurulum): flow_matrix 27/27 · tam_akis 171/171 ·
+  rule_dims 55/55 · edge 18/18 · onboarding 16/16 · rpc_field geçti · two_account geçti
+- İlk 309 sürümü taze kurulumda DÜŞTÜ (yerel uuid'ler) — e2e yakaladı, ad+havalimanı aramasına çevrildi.
+- KURULUM_TABLOSU son: 309 (293 imzalı) · ETKIN_TANIMLAR tazelendi
+- EAS build 6.2.4: 41d887c9-3891-417b-886a-559ece96c418
 - Sahne yakalama (03_kural, 11, 14, 12b, 09, 02, 65): hata=0 db/logError=0
 
 ## Açık kalanlar / öneri
