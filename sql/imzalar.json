@@ -1713,5 +1713,10 @@
   "308_bo_atlama_uyarisi.sql",
   null,
   null
+ ],
+ [
+  "309_kural_tablosu_denetimi_ve_ilan_erisimi.sql",
+  "rpc_yuzeyi",
+  "set_availability_program"
  ]
 ]

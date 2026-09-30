@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-29 uretildi · 351 dosya · son: 308)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-30 uretildi · 352 dosya · son: 309)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,7 +21,7 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 343 dosyanın 292 tanesi için ayırt edici imza
+-- ÖLÇÜM: 344 dosyanın 293 tanesi için ayırt edici imza
 -- bulundu (%85). Kalan 51 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
@@ -563,6 +563,7 @@ select z.dosya, 'tespit'
   (341, '306_kural_notlari_turkce_tamam.sql', '', ''),
   (342, '307_zarafet_atlama_siniri.sql', 'fonksiyon', 'binis_atlama_sayisi'),
   (343, '308_bo_atlama_uyarisi.sql', '', ''),
+  (344, '309_kural_tablosu_denetimi_ve_ilan_erisimi.sql', 'rpc_yuzeyi', 'set_availability_program'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -923,6 +924,7 @@ with imza(sira, dosya, tip, ad) as (
   (341, '306_kural_notlari_turkce_tamam.sql', '', ''),
   (342, '307_zarafet_atlama_siniri.sql', 'fonksiyon', 'binis_atlama_sayisi'),
   (343, '308_bo_atlama_uyarisi.sql', '', ''),
+  (344, '309_kural_tablosu_denetimi_ve_ilan_erisimi.sql', 'rpc_yuzeyi', 'set_availability_program'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

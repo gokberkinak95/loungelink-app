@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-09-29
+-- Uretim tarihi: 2026-09-30
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,7 +9,7 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 496
+-- Toplam fonksiyon: 497
 -- Birden cok dosyada tanimli (dikkat!): 145
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
@@ -30330,3 +30330,46 @@ end $fn$;
 grant execute on function public.binis_karti_atlama_hakki() to authenticated;
 
 -- ── 3 · GÜVEN PUANI (080'in gövdesi + `bp_atlama` bileşeni) ─────────────
+
+-- ----------------------------------------------------------------------
+-- set_availability_program   [etkin kaynak: 309_kural_tablosu_denetimi_ve_ilan_erisimi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.set_availability_program(p_avail_id uuid, p_program text)
+returns jsonb language plpgsql security definer set search_path = public as $fn$
+declare v_uid uuid := auth.uid(); v_pid uuid;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  if not exists (select 1 from availabilities where id = p_avail_id and host_id = v_uid) then
+    raise exception 'availability_not_found';
+  end if;
+  select id into v_pid from lounge_programs where code = upper(btrim(coalesce(p_program,'')));
+  if v_pid is null then raise exception 'program_not_found'; end if;
+  -- Beyan edilmemiş bir hakkı ilana yazmak kuralı kandırmak olur.
+  if not exists (select 1 from host_entitlements where user_id = v_uid and program_id = v_pid) then
+    raise exception 'program_not_declared';
+  end if;
+  update availabilities set program_id = v_pid, program_source = 'beyan' where id = p_avail_id;
+  return jsonb_build_object('ok', true, 'program', upper(btrim(p_program)));
+end $fn$;
+revoke all on function public.set_availability_program(uuid, text) from public, anon;
+grant execute on function public.set_availability_program(uuid, text) to authenticated;
+
+insert into rpc_client_surface (fn_name, client, note)
+values ('set_availability_program', 'app', 'İlan ekle 1. adım: host ilanın erişim kaynağını seçer (309).')
+on conflict (fn_name) do update set client = excluded.client, note = excluded.note;
+
+-- ── Doğrulama ───────────────────────────────────────────────────────────────
+do $$
+declare v_ph int; v_saw int; v_ist int; v_d int;
+begin
+  select count(*) into v_ph
+    from lounge_venue_acceptance a join lounge_programs p on p.id = a.program_id
+    join lounge_venues v on v.id = a.venue_id
+   where p.code = 'TK_MS' and a.active and a.is_placeholder and v.active
+     and v.airport_code in (select code from airports where country ilike 't%rk%' or country = 'TR');
+  select count(*) into v_saw from lounges where venue_id = (select id from lounge_venues where airport_code = 'SAW' and name = 'Turkish Airlines CIP Lounge — İç Hat' limit 1) and active;
+  select count(*) into v_ist from lounges where venue_id = (select id from lounge_venues where airport_code = 'IST' and name = 'Turkish Airlines Lounge — İç Hat (Business)' limit 1) and active;
+  select count(*) into v_d from lounge_venue_acceptance where verified_by like 'lounge(2).zip%' or verified_by = 'kural tabloları.xlsx (Pegasus)';
+  raise notice '309: TR M&S yer tutucu kalan=% · SAW THY CIP seçicide=% · IST iç hat kopya seçicide=% · eklenen kabul=%',
+    v_ph, v_saw, v_ist, v_d;
+end $$;

@@ -32338,5 +32338,78 @@
  [
   "308_bo_atlama_uyarisi.sql",
   []
+ ],
+ [
+  "309_kural_tablosu_denetimi_ve_ilan_erisimi.sql",
+  [
+   [
+    "rpc_yuzeyi",
+    "set_availability_program"
+   ],
+   [
+    "kural_notu",
+    "lounge_venue_acceptance|lounge(2).zip · Priority Pass SAW"
+   ],
+   [
+    "fonksiyon",
+    "set_availability_program"
+   ],
+   [
+    "govde",
+    "set_availability_program|not_authenticated"
+   ],
+   [
+    "govde",
+    "set_availability_program|availability_not_found"
+   ],
+   [
+    "govde",
+    "set_availability_program|program_not_found"
+   ],
+   [
+    "govde",
+    "set_availability_program|program_not_declared"
+   ],
+   [
+    "govde",
+    "set_availability_program|raise exception 'program_not_declared';"
+   ],
+   [
+    "govde",
+    "set_availability_program|raise exception 'availability_not_found';"
+   ],
+   [
+    "govde",
+    "set_availability_program|declare v_uid uuid := auth.uid(); v_pid uuid;"
+   ],
+   [
+    "govde",
+    "set_availability_program|if v_uid is null then raise exception 'not_authenticated'; end if;"
+   ],
+   [
+    "govde",
+    "set_availability_program|if v_pid is null then raise exception 'program_not_found'; end if;"
+   ],
+   [
+    "govde",
+    "set_availability_program|return jsonb_build_object('ok', true, 'program', upper(btrim(p_program)));"
+   ],
+   [
+    "govde",
+    "set_availability_program|if not exists (select 1 from availabilities where id = p_avail_id and host_id = v_uid) then"
+   ],
+   [
+    "govde",
+    "set_availability_program|select id into v_pid from lounge_programs where code = upper(btrim(coalesce(p_program,'')));"
+   ],
+   [
+    "govde",
+    "set_availability_program|update availabilities set program_id = v_pid, program_source = 'beyan' where id = p_avail_id;"
+   ],
+   [
+    "govde",
+    "set_availability_program|if not exists (select 1 from host_entitlements where user_id = v_uid and program_id = v_pid) then"
+   ]
+  ]
  ]
 ]

@@ -1062,6 +1062,13 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   const [editTrip, setEditTrip] = useState(null);
   // Düzenleme sonrası listeleri tazelemek için sayaç (v2.47'nin kalıbı)
   const [reload, setReload] = useState(0);
+  // 🔴 30 EYLÜL (Gökberk md.4) — Seyahatlerim ilk açılışta başlık bandı SİYAH
+  // geliyordu, kaydırınca düzeliyordu. Bant App'te yaşıyor (Trips + Hosting ortak)
+  // ve yalnız alt sekme değişince sıfırlanıyordu: Planım'dan çıkıp dönünce ya da
+  // ekleme sonrası `reload` ile liste yeniden kurulunca liste 0'da başlıyor ama
+  // bant eski kaydırma değerinde (daralmış) kalıyordu. Liste her yeniden
+  // kurulduğunda bant da baştan başlar.
+  useEffect(() => { bntTrips.sifirla(); bntMeet.sifirla(); }, [tab, reload, bntTrips.sifirla, bntMeet.sifirla]);
   // ══════════════════════════════════════════════════════════════════
   // 🔴 18 EYLÜL (Gökberk md.8) — "yöneldiğim sayfalarda da back butonu
   // olmalı."
@@ -1440,6 +1447,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
       onBack={() => { setShowAddVisit(false); setPendingReqAvail(null); }}
       onDone={() => {
         setShowAddVisit(false);
+        // 🔴 30 EYLÜL (Gökberk md.a) — yeni seyahat Planım'a ancak sekmeden çıkıp
+        // girince geliyordu: düzenleme ekranları `reload` artırıyordu, ekleme
+        // ekranları artırmıyordu. Aynı kapı, aynı yenileme.
+        setReload(x => x + 1);
         // 🔴 v2.48 (cihazda görüldü): Keşfet'ten "Seyahat ekle" ile gelen
         // kullanıcı kayıttan sonra İLANI KAYBEDİYORDU — tekrar Keşfet'e
         // gidip aramak zorundaydı. Artık kayıt biter bitmez soruyoruz.
@@ -1463,7 +1474,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     // 🆕 SINIF: "BİR EKRANI AÇAN DÜĞMELERİ KAPATMAK, EKRANI KAPATMAK
     // DEĞİLDİR — KAPIYI EKRANIN ÖNÜNE KOY, DÜĞMENİN ARKASINA DEĞİL."
     addAvail: () => (role === "host"
-      ? (<HostAvailability t={t} session={session} onBack={() => setShowAddAvail(false)} onDone={() => setShowAddAvail(false)} onVerify={() => { setShowAddAvail(false); setShowVerify(true); }} />)
+      ? (<HostAvailability t={t} session={session} onBack={() => setShowAddAvail(false)} onDone={() => { setShowAddAvail(false); setReload(x => x + 1); }} onVerify={() => { setShowAddAvail(false); setShowVerify(true); }} />)
       : (<HostDaveti t={t} onBecomeHost={() => { setShowAddAvail(false); setShowAccess(true); }} onBack={() => setShowAddAvail(false)} />)),
     guide: () => (<LoungeGuide t={t} onBack={() => setShowGuide(false)}
       onDiscover={(sc) => { setShowGuide(false); setShowDisc(sc || {}); }} />),

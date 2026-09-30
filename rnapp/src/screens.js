@@ -16,7 +16,7 @@ import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ustIsik, ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ucusNo, ustIsik, ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 
 export { C, F, ACCENT } from "./theme";
 
@@ -118,7 +118,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
     const { error } = await supabase.rpc("seyahat_ekle", {
       p_airport: ap.key, p_destination: dest?.key || null,
       p_date: date, p_from: from, p_to: to,
-      p_flight: flight.trim() || null,
+      p_flight: ucusNo(flight),
       p_purpose: purpose || null,
       p_carrier: carrier || null,
       p_kisi: Number(kisi) || 1,
@@ -132,6 +132,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
   }
 
   const dateChips = [...new Set((rows || []).map(r => r.avail_date))].sort().slice(0, 8);
+  const tasiyiciAdi = (carriers || []).reduce((m, c) => { if (c && c.code) m[c.code] = c.name || c.code; return m; }, {});
 
   // 🔴 v2.87 (madde 11) — "BU SEYAHATLE UYUMLU KAÇ İLAN VAR?"
   // Gökberk: "bu seyahat ile uyumlu x ilan var gibi bir şey göstersek iyi
@@ -237,6 +238,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
               const cocuk = (r.child_ages || []).filter(y => y != null).length;
               const kisi = Number(r.party_size) > 1 ? (cocuk ? `${Number(r.party_size) - cocuk} + ${cocuk}` : String(r.party_size)) : null;
               const hucreler = [
+                ucusNo(r.flight_number) ? [t.bkCellFlight, ucusNo(r.flight_number)] : null,
                 [t.bkCellLounge, `${String(r.time_from).slice(0, 5)}–${String(r.time_to).slice(0, 5)}`],
                 kalkis ? [t.bkCellDep, kalkis] : null,
                 kisi ? [t.bkCellParty, kisi] : null,
@@ -246,8 +248,10 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
               <View key={r.id} style={[S.card, { padding: 0, borderRadius: R.xl + 2 }]}>
                 <View style={{ paddingHorizontal: ARA[18], paddingTop: SP[4], paddingBottom: ARA[12] }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    {/* 30 Eylül (Gökberk md.3) — sağ üst köşedeki çıplak kod ("TK", "PC")
+                        ne olduğunu söylemiyordu. Havayolu artık rotanın altında ADIYLA,
+                        uçuş numarası hücrelerde "UÇUŞ" etiketiyle. Köşe boş. */}
                     <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, color: C.goldText, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(kas)}</Text>
-                    {!!r.flight_number && <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6, marginLeft: SP[2] }}>{BUYUK(r.flight_number)}</Text>}
                   </View>
                   <TouchableOpacity hitSlop={TAP.slop} onPress={() => onEditTrip && onEditTrip(r)}
                     accessibilityRole="button" accessibilityLabel={t.editTrip}
@@ -262,6 +266,11 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                       <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.display + 4, letterSpacing: 0.6 }}>{varis}</Text>
                     </>)}
                   </TouchableOpacity>
+                  {!!r.carrier_code && (
+                    <View style={{ marginTop: ARA[8] }}>
+                      <CarrierChip code={r.carrier_code} map={tasiyiciAdi} t={t} />
+                    </View>
+                  )}
                 </View>
                 <View style={{ flexDirection: "row", marginHorizontal: SP[4], overflow: "hidden" }}>
                   {Array.from({ length: 44 }).map((_, k) => (
@@ -700,7 +709,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
     const { data: created, error } = await supabase.rpc("create_availability", {
       p_lounge_id: loungeId, p_airport: airportCode, p_date: date,
       p_from: from, p_to: to, p_slots: slots,
-      p_flight: flightNo, p_visibility: "all",
+      p_flight: ucusNo(flightNo), p_visibility: "all",
     });
     // 🔴 v2.89 — BU SATIR GEREKSİZDİ VE TEHLİKELİYDİ.
     // `create_availability` zaten sunucuda `update users set role='host'`
@@ -885,7 +894,6 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                                                      letterSpacing: 1.3, color: durum === "canli" ? (acik > 0 ? C.ink : C.goldText) : C.mut }}>
                       {BUYUK(String(durumYazi).replace(/^•\s*/, ""))}
                     </Text>
-                    <Text style={{ flexShrink: 0, fontFamily: MONO[500], fontSize: FS.xs, color: C.mut, letterSpacing: 0.6 }}>{r.airport_code}</Text>
                   </View>
                 );
               })()}
@@ -894,7 +902,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                 {r.lounge_name || r.airport_code}
               </Text>
               <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs + 0.5, letterSpacing: 0.4, marginTop: ARA[4] }}>
-                {BUYUK(fmtLongDate(r.avail_date, lang))} · {String(r.time_from).slice(0,5)}–{String(r.time_to).slice(0,5)}
+                {BUYUK(`${r.airport_code ? r.airport_code + " · " : ""}${fmtLongDate(r.avail_date, lang)}`)} · {String(r.time_from).slice(0,5)}–{String(r.time_to).slice(0,5)}
               </Text>
               {durum === "pasif" && (
                 <Text style={{ color: C.mut, fontSize: FS.xs + 0.5, marginTop: ARA[4] }}>{t.availPassiveLine}</Text>
@@ -1728,7 +1736,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
             // 🆕 SINIF: "ULAŞILAMAZ BİR EKRANI MENÜYE KOYARAK ÇÖZMEK, EKRANI
             // BAĞLAMINDAN KOPARMAKTIR — DOĞRU ÇÖZÜM ONU AİT OLDUĞU AKIŞA
             // BAĞLAMAKTIR."
-            ["ayarlar", t.settings || "Ayarlar", onSettings, null],
+            ["ayarlar", t.settingsRow || "Ayarlar", onSettings, null],
           ].filter(Boolean).reduce((gruplar, oge) => {
             // v6.3 · PANO H4 (Gökberk onayı) — düz liste GRUPLARA ayrılır: başlık
             // satırı (ic === null) yeni grup açar; her grup TEK cam kutu, satırlar
@@ -1818,10 +1826,13 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               birlikte yaşıyor. Profil vitrindir; başvuru bir form işidir. */}
 
           {/* Cikis — MVP'de menunun EN ALTINDA, kirmizi, tek yerde */}
-          <TouchableOpacity hitSlop={TAP.slop}
-            /* v6.3 · PANO H4 — çıkış KUTUSUZ, kiremit tonlu satır (yıkıcı eylem sessiz ama belli). */
-            style={{ paddingVertical: ARA[14], paddingHorizontal: SP[4], marginTop: ARA[10], marginBottom: SP[2],
-                     minHeight: TAP.minHeight, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+          <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.logout2}
+            /* 30 Eylül (Gökberk md.5) — çıkış satırı kutusuzdu; üstündeki gruplar cam kutuda
+               olunca "yarım kalmış" görünüyordu. Aynı cam kutu, kiremit ton korunur: yıkıcı
+               eylem ayrı kutuda, grupların altında, rengiyle ayrışır. */
+            style={{ paddingHorizontal: SP[4], marginTop: ARA[20], marginBottom: SP[2],
+                     minHeight: 52, flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+                     backgroundColor: C.camYuzey || C.card, borderRadius: R.lg + 2, ...ustIsik(C.parlama || C.line) }}
             onPress={() => { setLogoutMsg(""); setConfirmOut(true); }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ikon ad="cikis" boy={19} renk={C.redInk} stil={{ marginRight: SP[3] }} kutu={22} />
@@ -2539,7 +2550,7 @@ export function AddVisit({ t, session, onBack, onDone, suggest }) {
       p_airport: f.airport,
       p_destination: f.destination || null,
       p_date: f.date, p_from: f.from + ":00", p_to: f.to + ":00",
-      p_flight: f.flight.trim() || null,
+      p_flight: ucusNo(f.flight),
       p_carrier: f.carrier || null,
       p_purpose: f.purpose || null,
       p_kisi: Number(f.kisi) || 1,
@@ -2714,7 +2725,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
       p_to: f.to ? f.to + ":00" : null,
       p_slots: f.slots ? Number(f.slots) : null,
       p_lounge_id: f.lounge_id || null,
-      p_flight: f.flight,
+      p_flight: ucusNo(f.flight, ""),
       p_visibility: f.visibility || null,
       p_carrier: carrier || null,
       p_cabin: cabin || null,
@@ -2907,6 +2918,11 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
   // misafir kapıda kalır.
   const [kartOneri, setKartOneri] = useState(null);
   const [kartTablo, setKartTablo] = useState(null);   // null = kapalı
+  // 30 Eylül (md.7) — ilanın erişim kaynağı: seçenekler = ayarlardaki kartlardan BU
+  // salonda geçenler; secili = ilana yazılacak program kodu.
+  const [erisim, setErisim] = useState({ yuklendi: false, secenek: [], secili: null, sayim: 0 });
+  const [erisimModal, setErisimModal] = useState(false);
+  const [erisimTazele, setErisimTazele] = useState(0);
   // v2.01 — CHARTER. THY: "Charter seferde salon kullanim hakki YOKTUR,
   // business bileti ya da statu karti olsa bile." Ucus numarasindan
   // guvenilir tespit MUMKUN DEGIL, o yuzden UYDURMAK yerine SORUYORUZ.
@@ -3070,6 +3086,38 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
     return () => { alive = false; };
   }, [f.lounge_id]);
 
+  useEffect(() => {
+    if (!f.lounge_id) { setErisim({ yuklendi: false, secenek: [], secili: null, sayim: 0 }); return undefined; }
+    let alive = true;
+    (async () => {
+      const { data: lg, error: e1 } = await supabase.from("lounges").select("venue_id").eq("id", f.lounge_id).maybeSingle();
+      if (e1) logError("erisim_venue", e1);
+      if (!lg?.venue_id) { if (alive) setErisim({ yuklendi: true, secenek: [], secili: null, sayim: 0 }); return; }
+      const [tb, on] = await Promise.all([
+        supabase.rpc("salon_misafir_karsilastirmasi", { p_venue: lg.venue_id }),
+        supabase.rpc("hangi_kartimi_kullanayim", { p_venue: lg.venue_id }),
+      ]);
+      if (tb.error) logError("erisim_secenek", tb.error);
+      if (on.error) logError("erisim_oneri", on.error);
+      const gorulen = {};
+      // Yalnız misafir getirebildiğin kaynaklar: "misafir alınamaz" olan bir kartla ilan açmak
+      // boşa. Etiket programın ADI (kart tipi kodu — "ELPL" gibi — kullanıcıya gösterilmez).
+      const secenek = (tb.data || [])
+        .filter(k => k.bende_var && k.program && k.misafir_hakki !== "Misafir ALINAMAZ"
+                     && !gorulen[k.program] && (gorulen[k.program] = true))
+        .map(k => ({ program: k.program, etiket: String(k.program_adi || "").replace(/\s*\(.*\)\s*$/, "").trim() }));
+      const onerilen = on.data && on.data.oneri ? on.data.oneri.program : null;
+      if (alive) setErisim(e => ({
+        yuklendi: true, secenek, sayim: Number(on.data && on.data.kart_sayim) || 0,
+        // host bu salonda daha önce elle seçtiyse korunur; yoksa önerilen; o da yoksa tek seçenek
+        secili: secenek.some(o => o.program === e.secili) ? e.secili
+              : onerilen && secenek.some(o => o.program === onerilen) ? onerilen
+              : secenek.length === 1 ? secenek[0].program : null,
+      }));
+    })();
+    return () => { alive = false; };
+  }, [f.lounge_id, erisimTazele]);
+
   const set = (k, v) => setF(x => ({ ...x, [k]: v }));
 
   // 🔴 30 AĞUSTOS — "ANLADIM, YAYINLA" YAYINLAMIYORDU.
@@ -3099,7 +3147,9 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
     // doldururken aşağı kaydırıp onu geride bırakabiliyor. En kritik
     // bilgi (misafir ücret öder mi, uçuş şartı var mı) tam da "Yayınla"
     // anında hatırlatılmalı — kapıda öğrenmek yerine burada öğrensin.
-    if (hint && (hint.severity === "warn" || hint.severity === "block")
+    // 30 Eylül (md.7) — "uyarı" düzeyi artık host'a sorulmuyor (misafirin ekranında
+    // anlatılıyor); yalnız KESİN engelde yayın durur.
+    if (hint && hint.severity === "block"
         && !ruleOk && kuralOnaylandi !== true) {
       setConfirmRule(true);
       return;
@@ -3125,7 +3175,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
     const { data: created, error } = await supabase.rpc("create_availability", {
       p_lounge_id: f.lounge_id, p_airport: f.airport, p_date: f.date,
       p_from: f.from + ":00", p_to: f.to + ":00", p_slots: f.slots,
-      p_flight: f.flight.trim() || null, p_visibility: f.visibility,
+      p_flight: ucusNo(f.flight), p_visibility: f.visibility,
       // 🔴 v2.79 — `f.carrier` DEĞİL `carrier`. Ekranda iki ayrı havayolu
       // alanı vardı ve ikisi AYRI değişkene yazıyordu — çipler `f.carrier`,
       // droplist `carrier`. Burası birinciyi gönderiyor, aşağıdaki
@@ -3171,6 +3221,10 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
         { ad: t.fieldCharter, log: "set_availability_charter",
           p: supabase.rpc("set_availability_charter", { p_avail_id: newId, p_is_charter: charter }) },
       ];
+      if (erisim.secili) {
+        yazimlar.push({ ad: t.accTitle, log: "set_availability_program",
+          p: supabase.rpc("set_availability_program", { p_avail_id: newId, p_program: erisim.secili }) });
+      }
       if (carrier) {
         yazimlar.push({ ad: t.fieldCarrier, log: "set_availability_carrier",
           p: supabase.rpc("set_availability_carrier", { p_avail_id: newId, p_carrier: carrier }) });
@@ -3273,123 +3327,53 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
           <AirportPicker t={t} airports={airports} value={f.airport} onSelect={v => set("airport", v)} />
           <LoungePicker t={t} lounges={lounges} value={f.lounge_id} onSelect={v => set("lounge_id", v)}
             emptyNote={loungeErr ? t.loungeLoadFail : undefined} />
-          {/* ============================================================
-              "ERISIMIN VAR" ROZETI (v2.30)
-
-              Rakipte en iyi tek gorsel oge buydu: salonun tepesinde tek,
-              kacirilmaz durum — acik kilit + yesil.
-
-              🔴 AMA ONLARDA BU BIR TAHMIN, BIZDE GERCEK OLABILIR.
-              Onlar "Star Alliance Gold" yaziyor ve altina "kurallar
-              degisebilir, salonla teyit edin" diyor. Biz kart tipini,
-              bolumu, tasiyiciyi ve charter durumunu BILIYORUZ. Ayni
-              gorsel dil, cok daha dogru icerik.
-
-              Uc durum: girebilirsin · kosullu · giremezsin. Ucu de acikca
-              soylenir; "belki" diye bir sey yok.
-              ============================================================ */}
-          {!!hint && !!f.lounge_id && (() => {
-            // v6.3 · PANO İ1 — kural sonucu CAM KART; tam erişimde K4 mini damga.
-            const ok = hint.severity !== "block";
-            const cond = hint.severity === "warn" || hint.confidence === "unknown";
-            const fg = !ok ? C.red : cond ? C.amberInk : C.goldText;
-            return (
-              <View style={[S.card, { flexDirection: "row", alignItems: "center", paddingVertical: SP[3] }]}>
-                <Ikon ad={ok ? "kilitAcik" : "kilit"} boy={17} renk={fg} stil={{ marginRight: ARA[10] }} />
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ color: C.mut, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.hostRuleTitle || "")}</Text>
-                  <Text style={{ fontSize: FS.base, fontWeight: "600", color: fg, marginTop: ARA[2] }}>
-                    {!ok ? t.accessNo : cond ? t.accessMaybe : t.accessYes}
-                  </Text>
-                </View>
-                {ok && !cond && (
-                  <View style={{ width: 56, height: 56, alignItems: "center", justifyContent: "center" }}>
-                    <View style={{ transform: [{ scale: 0.64 }] }}><OnayDamgasi t={t} /></View>
-                  </View>
-                )}
-              </View>
-            );
-          })()}
-          {!!hint && (hint.headline || hint.detail) && (
-            <View style={{ marginTop: -6, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3], borderWidth: 1,
-                           backgroundColor: hint.severity === "block" ? C.hataBg
-                                          : hint.severity === "warn" ? C.amberBg : C.tealBg,
-                           borderColor: hint.severity === "block" ? C.hataLine
-                                      : hint.severity === "warn" ? C.amber : C.teal }}>
-              <Text style={{ fontSize: FS.xs, letterSpacing: 0.8, fontWeight: "700", color: C.muted, marginBottom: SP[1] }}>
-                {BUYUK(t.hostRuleTitle || "")}
-              </Text>
-              <Text style={{ fontSize: FS.sm, fontWeight: "700",
-                             color: hint.severity === "block" ? C.redInk
-                                  : hint.severity === "warn" ? C.amberInk : C.teal }}>
-                {hint.headline}
-              </Text>
-              {!!hint.detail && (
-                <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: SP[1] }}>{hint.detail}</Text>
-              )}
-            </View>
-          )}
-
-          {/* 🔴 v2.78 — HANGİ KARTIMI KULLANAYIM (SQL 216)
-              Kural kutusu "ne olacağını" söylüyor; bu kutu "HANGİ KARTINLA"
-              söylüyor. İkisi farklı sorular ve host'un cebinde birden çok
-              kart olabiliyor. Öneri sıralaması sunucuda: ücretsiz > aile
-              hakkı > uçuş şartsız > ücretli. */}
-          {!!kartOneri && (
-            <View style={{ marginTop: -2, marginBottom: ARA[14], borderRadius: R.xs, padding: SP[3],
-                           borderWidth: 1, borderColor: "transparent", backgroundColor: C.goldBg }}>
-              <Text style={{ ...T.label, color: C.muted, marginBottom: SP[1] }}>
-                {BUYUK(t.whichCardTitle || "")}
-              </Text>
-              {kartOneri.oneri ? (
-                <>
-                  <Text style={{ fontSize: FS.sm, fontWeight: "700", color: C.goldInk }}>
-                    {kartOneri.oneri.program_adi}
-                    {kartOneri.oneri.kart_tipi ? " · " + kartOneri.oneri.kart_tipi : ""}
-                  </Text>
-                  <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body, marginTop: SP[1] }}>
-                    {kartOneri.oneri.misafir_hakki}
-                    {kartOneri.oneri.aile_dahil ? " (aile de dahil)" : ""}
-                    {kartOneri.oneri.ucusa_bagli && kartOneri.oneri.ucusa_bagli !== "Ucus sarti yok"
-                      ? " — " + kartOneri.oneri.ucusa_bagli : ""}
-                  </Text>
-                </>
-              ) : (
-                <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>{kartOneri.neden}</Text>
-              )}
-              <TouchableOpacity
-                hitSlop={TAP.slop}
-                onPress={async () => {
-                  if (kartTablo) { setKartTablo(null); return; }
-                  const { data: lg, error: lgErr } = await supabase.from("lounges")
-                    .select("venue_id").eq("id", f.lounge_id).maybeSingle();
-                  if (lgErr) { logError("kart_tablo_venue", lgErr); return; }
-                  if (!lg?.venue_id) return;
-                  const { data, error } = await supabase.rpc("salon_misafir_karsilastirmasi", { p_venue: lg.venue_id });
-                  setKartTablo(error ? [] : (data || []));
-                }}>
-                <Text style={{ fontSize: FS.sm, color: C.goldInk, fontWeight: "700", marginTop: SP[2] }}>
-                  {kartTablo ? (t.whichCardHide || "") : (t.whichCardAll || "").replace("{n}", String(kartOneri.salondaki_kaynak || 0))}
-                </Text>
-              </TouchableOpacity>
-              {!!kartTablo && kartTablo.length > 0 && (
-                <View style={{ marginTop: SP[2], borderTopWidth: 1, borderTopColor: C.line, paddingTop: SP[2] }}>
-                  {kartTablo.slice(0, 30).map((k, i) => (
-                    <View key={i} style={{ flexDirection: "row", justifyContent: "space-between",
-                                           paddingVertical: SP[1], gap: SP[2] }}>
-                      <Text style={{ fontSize: FS.sm, color: k.bende_var ? C.goldInk : C.body, flex: 1,
-                                     fontWeight: k.bende_var ? "700" : "400" }}>
-                        {k.program_adi}{k.kart_tipi ? " · " + k.kart_tipi : ""}
-                      </Text>
-                      <Text style={{ fontSize: FS.sm, color: C.muted, flex: 1, textAlign: "right" }}>
-                        {k.misafir_hakki}
-                      </Text>
-                    </View>
+          {/* ══ 30 EYLÜL (Gökberk md.7) — İLAN AÇARKEN KURAL KUTULARI KALKTI ══
+              "Bu salon için kuralın" ve "Hangi kartını kullanmalısın" host'a
+              gösteriliyordu; oysa kural, BAŞVURAN MİSAFİRE söylenecek şey (Keşfet
+              kartı + kural ekranı zaten söylüyor). Host'a sorulması gereken tek şey:
+              İÇERİ ALIM HAKKIN NEREDEN GELİYOR? Seçim ilana yazılır
+              (`set_availability_program`) ve kural motoru misafire kararı BU
+              kaynağa göre verir — ölçüldü: ilanın programı değişince karar değişiyor.
+              Varsayılan: ayarlardaki kartların içinden bu salonda geçen en iyisi.
+              Hiç kart yoksa ayarlar ekranı bu sihirbazın ÜSTÜNDE açılır (form kaybolmaz). */}
+          {!!f.lounge_id && erisim.yuklendi && (
+            <View style={{ marginTop: ARA[6] }}>
+              <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", color: C.mut, letterSpacing: 1.4, marginBottom: ARA[8] }}>{BUYUK(t.accTitle)}</Text>
+              {erisim.secenek.length > 0 ? (
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8] }}>
+                  {erisim.secenek.map(o => (
+                    <Cip key={o.program} secili={erisim.secili === o.program} a11yLabel={o.etiket}
+                      etiket={o.etiket} onPress={() => setErisim(e => ({ ...e, secili: o.program }))} />
                   ))}
                 </View>
+              ) : (
+                <View style={[S.card, { paddingVertical: SP[3] }]}>
+                  <Text style={{ color: C.ink, fontSize: FS.sm + 0.5, lineHeight: SATIR(FS.sm + 0.5) }}>
+                    {erisim.sayim > 0 ? t.accNoneHere : t.accNoneYet}
+                  </Text>
+                </View>
+              )}
+              <Btn v="ghost" sm solAd="kredi" label={erisim.sayim > 0 ? t.accManage : t.accAdd}
+                onPress={() => setErisimModal(true)} style={{ marginTop: ARA[10], alignSelf: "flex-start" }} />
+              <View style={{ flexDirection: "row", alignItems: "flex-start", marginTop: ARA[10] }}>
+                <Ikon ad="bilgi" boy={14} renk={C.mut} stil={{ marginRight: ARA[8], marginTop: ARA[2] }} />
+                <Text style={{ flex: 1, minWidth: 0, color: C.mut, fontSize: FS.xs + 0.5, lineHeight: SATIR(FS.xs + 0.5) }}>{t.accWhy}</Text>
+              </View>
+              {/* Yalnız KESİN engel söylenir: seçtiğin kaynak bu salona misafir hiç sokmuyorsa
+                  ilan açmak boşa. Koşullu/ücretli durumlar misafirin ekranında anlatılır. */}
+              {!!hint && hint.severity === "block" && (
+                <View style={{ flexDirection: "row", alignItems: "flex-start", marginTop: ARA[10] }}>
+                  <Ikon ad="uyari" boy={14} renk={C.red} stil={{ marginRight: ARA[8], marginTop: ARA[2] }} />
+                  <Text style={{ flex: 1, minWidth: 0, color: C.redInk, fontSize: FS.sm, lineHeight: SATIR(FS.sm) }}>{hint.headline || t.accessNo}</Text>
+                </View>
               )}
             </View>
           )}
+          <Modal visible={erisimModal} animationType="slide" onRequestClose={() => { setErisimModal(false); setErisimTazele(x => x + 1); }}>
+            <HostAccessSource t={t} session={session}
+              onDone={() => { setErisimModal(false); setErisimTazele(x => x + 1); }}
+              onBack={() => { setErisimModal(false); setErisimTazele(x => x + 1); }} />
+          </Modal>
           {!!partners && partners.length > 0 && (
             <View style={{ backgroundColor: C.card, borderWidth: 1, borderColor: C.line,
                            borderRadius: R.xs, padding: SP[3], marginBottom: ARA[10] , ...ELEV.card }}>
@@ -3545,28 +3529,6 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
 
         </>)}
         {adim === 3 && (<>
-          {!!hint && !!f.lounge_id && (() => {
-            // v6.3 · PANO İ1 — kural sonucu CAM KART; tam erişimde K4 mini damga.
-            const ok = hint.severity !== "block";
-            const cond = hint.severity === "warn" || hint.confidence === "unknown";
-            const fg = !ok ? C.red : cond ? C.amberInk : C.goldText;
-            return (
-              <View style={[S.card, { flexDirection: "row", alignItems: "center", paddingVertical: SP[3] }]}>
-                <Ikon ad={ok ? "kilitAcik" : "kilit"} boy={17} renk={fg} stil={{ marginRight: ARA[10] }} />
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ color: C.mut, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.hostRuleTitle || "")}</Text>
-                  <Text style={{ fontSize: FS.base, fontWeight: "600", color: fg, marginTop: ARA[2] }}>
-                    {!ok ? t.accessNo : cond ? t.accessMaybe : t.accessYes}
-                  </Text>
-                </View>
-                {ok && !cond && (
-                  <View style={{ width: 56, height: 56, alignItems: "center", justifyContent: "center" }}>
-                    <View style={{ transform: [{ scale: 0.64 }] }}><OnayDamgasi t={t} /></View>
-                  </View>
-                )}
-              </View>
-            );
-          })()}
           {/* MVP: GORUNURLUK radio */}
           <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[2], letterSpacing: 1 }}>{t.haVisibility}</Text>
           {visOpts(t).map(([v, l]) => {
@@ -3602,7 +3564,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
 
         <SihirbazAlti t={t} adim={adim} setAdim={setAdim} setErr={setErr} f={f} busy={busy}
           sonEtiket={busy ? t.epSaving : t.publish} onSon={() => publish()}
-          dogrula={(n) => n === 1 ? (!f.airport ? t.avPickAirport : (lounges.length > 0 && !f.lounge_id) ? (t.pickLounge || "") : "")
+          dogrula={(n) => n === 1 ? (!f.airport ? t.avPickAirport : (lounges.length > 0 && !f.lounge_id) ? (t.pickLounge || "") : (f.lounge_id && erisim.yuklendi && erisim.sayim === 0) ? t.accNoneYet : (erisim.secenek.length > 0 && !erisim.secili) ? t.accPick : "")
                           : n === 2 ? (String(f.date || "").length !== 10 ? t.avFixDate : "") : ""} />
         {/* MVP: telefon dogrulanmamissa PhoneGate */}
         {!phoneOk && (

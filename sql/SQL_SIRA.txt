@@ -1,3 +1,20 @@
+SQL SIRASI - 30 Eylul 2026 - YENI: yalniz 309 (app 6.2.4)
+
+Supabase SQL Editor'de:
+
+  1) 309_kural_tablosu_denetimi_ve_ilan_erisimi.sql
+       -> kural tablolari.xlsx + lounge(2).zip denetimi: THY salonlarinda M&S yer tutuculari
+          gercek kabule, THY olmayan TR salonlarinda M&S "gecmez"; SAW THY CIP (gecici kapali)
+          seciciden cekilir; IST ic hat kopya kaydi kapanir; Kepler PP + Pegasus, COV Celebi ic
+          Pegasus 1260 TL, AYT CIP ic (T3) DragonPass eklenir; rakamsiz ucus no temizlenir;
+          YENI RPC set_availability_program (Ilan ekle 1. adim "Erisim hakkin").
+       Beklenen NOTICE: "309: TR M&S yer tutucu kalan=0 · SAW THY CIP secicide=0 · IST ic hat
+       kopya secicide=0 · eklenen kabul=4". Tekrar kosulabilir.
+       6.2.4 APK 309 OLMADAN da acilir ama ilan acarken erisim kaynagi yazilamaz (ilan yine acilir).
+
+---------------------------------------------------------------------------
+ONCEKI TUR (calistirildi: 306, 307, 308):
+
 SQL SIRASI - 29 Eylul 2026 (aksam) - YENI: yalniz 308
 
 306 ve 307'yi calistirdin (Gokberk, 29 Eylul). Simdi Supabase SQL Editor'de:

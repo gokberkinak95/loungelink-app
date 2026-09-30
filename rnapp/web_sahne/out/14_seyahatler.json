@@ -7,20 +7,26 @@
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
   "Seyahatlerim",
   "Seyahatlerim",
-  "30 EYLÜL · AKTARMA",
-  "TK1979",
+  "BUGÜN · AKTARMA",
   "IST",
   "LHR",
+  "",
+  "TK · Türk Hava Yolları",
+  "UÇUŞ",
+  "TK1979",
   "SALON",
   "14:00–18:00",
   "KİŞİ",
   "1 + 1",
-  "Keşfet'te 15 uyumlu ilan →",
+  "Keşfet'te 16 uyumlu ilan →",
   "",
   "Host bul",
-  "7 EKİM · TATİL",
-  "PC2210",
+  "8 EKİM · TATİL",
   "SAW",
+  "",
+  "PC · Pegasus",
+  "UÇUŞ",
+  "PC2210",
   "SALON",
   "09:00–11:00",
   "Bu güne uyumlu ilan yok",
@@ -43,62 +49,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 33,
+   "sol": 28,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 33,
+   "sol": 28,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 33,
+   "sol": 28,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 33,
+   "sol": 28,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 33,
+   "sol": 28,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 33,
+   "sol": 28,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -194,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -197,
+   "sol": -194,
    "tx": ""
   }
  ],

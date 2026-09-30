@@ -307,6 +307,14 @@ export const SECTOR_OPTS = ["Teknoloji", "Finans", "Danışmanlık", "Sağlık",
 //
 // `code` YOKSA çip HİÇ çizilmez: "havayolu belirtilmemiş" diye boş bir çip
 // koymak, ilanın taşıyıcısı varmış gibi bir izlenim bırakır.
+// 30 Eylül (Gökberk md.3) — havayolu seçilince uçuş kutusuna ÖNEK yazılıyor ("TK");
+// rakam girilmezse "TK" UÇUŞ NUMARASI diye kaydediliyordu ve kartın köşesinde
+// anlamsız bir kod olarak duruyordu. Rakamsız değer uçuş numarası değildir.
+export function ucusNo(s, bos = null) {
+  const v = String(s || "").replace(/\s+/g, "").toUpperCase();
+  return /\d/.test(v) ? v : bos;
+}
+
 export function CarrierChip({ code, map, t, tone = "gold" }) {
   if (!code) return null;
   const ad = (map && map[code]) || null;

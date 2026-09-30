@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -16,10 +25,11 @@
   "Profil",
   "",
   "LOUNGELINK",
-  "KURAL MOTORU",
+  "KURAL MOTORU · IST",
   "Bu eşleşme",
-  "neden %64?",
-  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Havayolu şartı bilinmiyor · uçuşunu gir",
+  "neden %99?",
+  "TAV Primeclass",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Birlikte varış gerekir · kapıda beraber olun",
   "KART · MİLES&SMİLES ELİTE PLUS",
   "SALON UYUMLULUĞU",
   "",
@@ -28,8 +38,8 @@
   "",
   "2 koşul",
   "UÇUŞ EŞLEŞMESİ",
-  "Havayolu şartı bilinmiyor",
-  "UÇUŞUNU GİR",
+  "Birlikte varış gerekir",
+  "KAPIDA BERABER OLUN",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",
@@ -39,7 +49,7 @@
   "3 koşul",
   "Gri satırlar, kaynağından doğrulayamadığımız şartlar. Onları bilmiyoruz — bildiğimizi söylemiyoruz.",
   "Son karar her zaman salona aittir. Kapıda alınmazsan kredin iade edilir.",
-  "Seyahat ekle",
+  "Lounge isteği gönder",
   "",
   "Salon kurallarını oku",
   ""
@@ -47,92 +57,92 @@
  "tasan": [
   {
    "g": 507,
-   "sol": -7,
+   "sol": -12,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -7,
+   "sol": -12,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -7,
+   "sol": -12,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -160,
+   "sol": -148,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -160,
+   "sol": -148,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -160,
+   "sol": -148,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -7,
+   "sol": -12,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -7,
+   "sol": -12,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": -7,
+   "sol": -12,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -160,
+   "sol": -148,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -160,
+   "sol": -148,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -160,
+   "sol": -148,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 14,
+   "sol": 17,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 14,
+   "sol": 17,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 14,
+   "sol": 17,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -183,
+   "sol": -186,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -183,
+   "sol": -186,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -183,
+   "sol": -186,
    "tx": ""
   }
  ],

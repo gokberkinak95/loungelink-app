@@ -37,11 +37,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
-import { BosDurum, ChipIcon, ConfirmModal, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri } from "./ui";
+import { BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri } from "./ui";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -843,6 +843,16 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
   // Kapıyı iki yerde ayrı ayrı yazmak, birinin bayatlaması demekti.
   const isBlocked = r => !!(r && ((badges[r.id] && badges[r.id].blocks_request)
     || r.guest_policy === "not_allowed" || r.blocks_request));
+  // Kartın sağ altındaki durumun AYNISI (aşağıda `kartCiz`): önce istek durumu,
+  // sonra kendi ilanı, sonra doluluk. null = "eylem kararını kapı/engel versin".
+  const kuralIstekDurumu = (r) => {
+    if (!r) return null;
+    if (r.host_id === uid) return "kendi";
+    const rst = myReqs[r.id];
+    if (rst === "accepted" || rst === "pending" || rst === "declined" || rst === "expired") return rst;
+    if ((Number(r.slots) || 0) - (Number(r.filled) || 0) <= 0) return "dolu";
+    return null;
+  };
 
   // 🔴 v2.79 (A7) — HOST'A KURAL SORUSU.
   // Hata YUTULMUYOR: sunucunun reddetme sebebi (doğrulanmış kural, günlük
@@ -892,6 +902,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       <Modal visible animationType="none" onRequestClose={() => setKural(null)}>
         <KuralKarari t={t} avail={kural.avail} skor={kural.skor}
           onBack={() => setKural(null)}
+          // 🔴 30 EYLÜL (Gökberk md.1) — "istek gönderilmiş ilanın uyum ekranında hâlâ
+          // Lounge isteği gönder var". Bu ekran kartın durum makinesini YENİDEN ve
+          // EKSİK kuruyordu (istek durumu, kendi ilanı, doluluk yoktu). Artık kartın
+          // okuduğu aynı kaynak (`myReqs`, `host_id`, `slots-filled`) buradan geçiyor.
+          istekDurumu={kuralIstekDurumu(kural.avail)}
           // 🔴 28 EYLÜL (Gökberk: "keşfette ilanda Seyahat ekle görünürken uyum
           // ekranında İstek gönder geliyor") — bu ekran yalnız engeli soruyordu;
           // kart ise seyahat + telefon da soruyor. Karar artık AYNI: tamamsa
@@ -900,11 +915,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           // seyahat eklenip başvurulabiliyordu. Kartın "sona erdi" kararı
           // (geriSayim) burada da geçerli: eylem yok, yalnız not.
           sonaErdi={(geriSayim(kural.avail.avail_date, kural.avail.time_from, kural.avail.time_to, t) || {}).tur === "bitti"}
-          onSend={isBlocked(kural.avail) || !(kural.avail.has_trip && phoneOk)
+          onSend={kuralIstekDurumu(kural.avail) || isBlocked(kural.avail) || !(kural.avail.has_trip && phoneOk)
                   || (geriSayim(kural.avail.avail_date, kural.avail.time_from, kural.avail.time_to, t) || {}).tur === "bitti"
                   ? null : () => { const a = kural.avail; setKural(null);
                           setTarget(a); setErr(""); setMoreOpen(false); setAdvice(null); }}
-          kapi={isBlocked(kural.avail) || (kural.avail.has_trip && phoneOk)
+          kapi={kuralIstekDurumu(kural.avail) || isBlocked(kural.avail) || (kural.avail.has_trip && phoneOk)
                 || (geriSayim(kural.avail.avail_date, kural.avail.time_from, kural.avail.time_to, t) || {}).tur === "bitti" ? null : {
             etiket: !phoneOk ? t.gateVerifyNow : t.gateAddTripNow,
             git: () => { const a = kural.avail; setKural(null);
@@ -1276,9 +1291,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           // eski çerçevenin altında kalıyor.
           // Kartın içindeki üç dokunma hedefi (avatar · rozet · düğme)
           // bozulmuyor: `IsikliKart` sorumluluk talep etmeden dinliyor.
-          <IsikliKart key={r.id} stil={[S.card, idx === 0 && !mine && !bitti && {
-                 borderColor: C.goldTrace || C.goldLine,
-                 backgroundColor: C.altinIz03 }]}>
+          // 🔴 30 EYLÜL (Gökberk md.8) — "ilk ilanın zemini alttakilerden açık".
+          // v6.3 cam geçişinde `altinIz03` yarı saydam ve daha AÇIK oldu; ilk karta
+          // verilen "öne çıkan" tinti belirgin bir renk farkına dönüştü. Ve ilk kart
+          // anlamca öne çıkan değil, yalnız sıralamada ilk. Bütün kartlar AYNI cam.
+          <IsikliKart key={r.id} stil={S.card}>
             {/* v1.86: yuzde HEM burada HEM sagdaki halkada yaziyordu — ayni
                 sayiyi iki kez gostermek bilgi degil gurultu. Halka kaldi. */}
             {/* 🔴 v2.23 — BILGI KUTUSU YANLIS KARTTA ACILIYORDU.
@@ -6275,7 +6292,7 @@ export function EditTrip({ t, visit, onBack, onDone }) {
       p_date: f.date || null,
       p_from: f.from ? f.from + ":00" : null,
       p_to: f.to ? f.to + ":00" : null,
-      p_flight: f.flight,
+      p_flight: ucusNo(f.flight, ""),
       p_carrier: f.carrier || null,
       p_purpose: f.purpose || null,
     });
@@ -6763,28 +6780,21 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
       {/* Host olmayana merdiven; host'a kendi planı. Seyahat varken kart
           tasarım 11 gibi üç parçadır; bu bağlantılar yalnız boş günde. */}
       {yakin ? null : <>
-      <TouchableOpacity onPress={role === "host" ? onPlan : onHostOl}
-        accessibilityRole="button"
-        accessibilityLabel={role === "host" ? t.calmMyPlan : t.calmBecomeHost}
-        style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.sm, minHeight: TAP.minHeight,
-                 alignItems: "center", justifyContent: "center", marginTop: SP[2] }}>
-        <Text style={{ color: C.ink, fontWeight: "600", fontSize: FS.sm }}>
-          {role === "host" ? t.calmMyPlan : t.calmBecomeHost}
-        </Text>
-      </TouchableOpacity>
-      {/* Arz sıfırken bile cevap veren tek ekran. */}
-      {onGuide ? (
-        <TouchableOpacity onPress={onGuide} hitSlop={TAP.slop}
-          accessibilityRole="button" accessibilityLabel={t.calmGuide}
-          style={{ minHeight: TAP.minHeight, alignItems: "center", justifyContent: "center", marginTop: SP[1] }}>
-          <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.calmGuide}</Text>
-        </TouchableOpacity>
-      ) : null}
-      <TouchableOpacity onPress={onMeet} hitSlop={TAP.slop}
-        accessibilityRole="button" accessibilityLabel={t.calmMeet}
-        style={{ minHeight: TAP.minHeight, alignItems: "center", justifyContent: "center", marginTop: SP[1] }}>
-        <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.calmMeet}</Text>
-      </TouchableOpacity>
+      {/* 30 Eylül (Gökberk md.6) — "Salon rehberini aç" ve "Yol arkadaşlarına bak"
+          ÇERÇEVESİZ düz metindi: dokunulabilir olduklarını ancak basan anlıyordu.
+          Hiyerarşi: altın = asıl eylem · çerçeveli tam genişlik = ikinci eylem ·
+          yan yana iki çerçeveli çip = keşif kısayolları. Her hedef sınırını gösterir. */}
+      <Btn v="ghost" full label={role === "host" ? t.calmMyPlan : t.calmBecomeHost}
+        onPress={role === "host" ? onPlan : onHostOl}
+        a11yLabel={role === "host" ? t.calmMyPlan : t.calmBecomeHost} style={{ marginTop: SP[2] }} />
+      <View style={{ flexDirection: "row", marginTop: SP[2] }}>
+        {onGuide ? (
+          <Btn v="ghost" sm solAd="salon" label={t.calmGuideShort} a11yLabel={t.calmGuide}
+            onPress={onGuide} style={{ flex: 1, marginRight: SP[2] }} />
+        ) : null}
+        <Btn v="ghost" sm solAd="kisiler" label={t.calmMeetShort} a11yLabel={t.calmMeet}
+          onPress={onMeet} style={{ flex: 1 }} />
+      </View>
       </>}
     </View>
   );
@@ -6910,10 +6920,10 @@ export function HomeConnections({ t, session, onOpenChat, tamEkran, tazele }) {
   const ozetMetni = rows.slice(0, 3).map(r => shortName(r.name)).join(", ")
     + (rows.length > 3 ? ` +${rows.length - 3}` : "");
   return (
-    <Katlanir seffaf baslik={t.myConnections} sayi={rows.length} ozet={ozetMetni}>
+    <Katlanir baslik={t.myConnections} sayi={rows.length} ozet={ozetMetni}>
       {!!sohbetHatasi && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{sohbetHatasi}</Text></View>}
       {rows.map(r => (
-        <View key={r.crId} style={[S.card, { flexDirection: "row", alignItems: "center", borderColor: "transparent" }]}>
+        <View key={r.crId} style={[{ paddingVertical: SP[3], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }, { flexDirection: "row", alignItems: "center" }]}>
           <View style={{ width: 38, height: 38, borderRadius: R.full, backgroundColor: C.purpleBg, alignItems: "center", justifyContent: "center", overflow: "hidden", marginRight: ARA[10] }}>
             {r.photo ? <Image source={{ uri: r.photo }} style={{ width: 38, height: 38 }} />
               : <Text style={{ fontWeight: "700", color: C.purpleInk }}>{shortName(r.name).charAt(0)}</Text>}
@@ -7118,7 +7128,7 @@ export function FindHostCard({ t, session, onDiscover }) {
    satırı: ürünün en kritik ekranında bilmediğimizi söylemek, bildiğimizi
    uydurmaktan daha değerli.
    ══════════════════════════════════════════════════════════════════════ */
-export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) {
+export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, istekDurumu }) {
   const [kosullar, setKosullar] = useState(null);
   const [acikMetin, setAcikMetin] = useState({});   // 29 Eylül · uzun hüküm "Devamını gör"
   const [kart, setKart] = useState("");
@@ -7226,8 +7236,12 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
   // 🆕 SINIF: "BİR SAYIYI KURALLA SIFIRLIYORSAN, O KURALI SAYININ YANINA
   // YAZ — YOKSA KULLANICI SAYIYI DEĞİL ÜRÜNÜ YANLIŞ SANIR."
   // ══════════════════════════════════════════════════════════════════════
-  const sifirlayan = (kosullar || []).find(k => k.durum === "yok");
-  const belirsiz = !sifirlayan && (kosullar || []).find(k => k.durum === "bilinmiyor");
+  // 🔴 30 EYLÜL (Gökberk md.1.1) — "kapıdan geçemezsin" YALNIZ KAPI ağırlıklı bir
+  // şart düşünce söylenir. `agirlik: "not"` satırı (ör. biniş kartı henüz
+  // doğrulanmadı) bilgi notudur; onu engel diye okumak her ilana "giremezsin"
+  // dedirtiyordu — kart ise haklı olarak istek alıyordu. İki ekran çelişiyordu.
+  const sifirlayan = (kosullar || []).find(k => k.durum === "yok" && k.agirlik === "kapi");
+  const belirsiz = !sifirlayan && (kosullar || []).find(k => k.durum === "bilinmiyor" && k.agirlik === "kapi");
 
   return (
     <Sayfa>
@@ -7241,49 +7255,18 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
 
           🆕 SINIF: "BİR KURALI ÖĞRENDİĞİN DURUMU DA ÖĞREN — KOŞULUNU
           UNUTULMUŞ BİR KURAL, İLK FARKLI BAĞLAMDA TERS ÇALIŞIR." */}
-      <View style={{ flexDirection: "row", alignItems: "center",
-                     paddingHorizontal: ARA[22], paddingTop: TOPPAD + ARA[20] }}>
-        <Btn v="ust" daire a11yLabel={t.back} onPress={onBack}
-          sol={<Ikon ad="sol" boy={20} renk={C.ink} />} />
-        <Text style={{ flex: 1, textAlign: "center", fontSize: FS.xs, fontWeight: "700",
-                       letterSpacing: 4.6, color: C.body }}>LOUNGELINK</Text>
-        {/* Tasarımdaki 20px boşluk: markayı GERÇEKTEN ortalamak için
-            sağda geri okunun dengi kadar yer bırakılıyor. */}
-        <View style={{ width: 38 }} />
-      </View>
-      {/* ══════════════════════════════════════════════════════════════
-          🔴 30 AĞUSTOS · 4. TUR — DÜĞMELER EKRANIN ALTINDA, ORTASINDA DEĞİL.
-
-          Gökberk: "butonlar tasarımda ekranın alt kısmında iken senin
-          ürettiğin görselde sayfanın ortasında."
-
-          Ölçtüm ve haklıydı. Tasarımda `.govde{flex:1}` — gövde ekranı
-          DOLDURUYOR ve eylem yığını onun sonunda; içerik kısa olduğunda
-          bile alt bölgeye yakın duruyor çünkü tasarımın kutusu daha
-          uzun. Bizde `ScrollView` içeriğe göre büzülüyordu, yani
-          düğmeler içeriğin bittiği yerde — %55'te — kalıyordu.
-
-          `flexGrow: 1` + eylem bloğunda `marginTop: "auto"`: içerik
-          kısaysa düğmeler DİBE oturuyor, uzunsa normal akıyor. Bu
-          yalnız tasarıma uymak değil, telefonda başparmak erişimi de
-          demek — bir ekranın asıl eylemi ortada durmaz.
-
-          🆕 SINIF: **"BİR EKRANIN ASIL EYLEMİ, İÇERİĞİN NEREDE
-          BİTTİĞİNE GÖRE KONUMLANMAZ — EKRANIN NEREDE BİTTİĞİNE GÖRE
-          KONUMLANIR."**
-          ══════════════════════════════════════════════════════════════ */}
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: ARA[22],
-                                           paddingBottom: ARA[34] }}>
-        {/* 29 Eylül (Gökberk) — başlık zaten "neden %X?" diyor; yanındaki mühür
-            aynı sayıyı ikinci kez söylüyordu. Mühür Keşfet kartında kalır. */}
-        <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4,
-                       color: C.gold, marginTop: ARA[26] }}>
-          {BUYUK(t.ruleEyebrow)}
-        </Text>
-        <Text style={{ fontSize: FS.hero + 2, fontFamily: F.serifGosterim, letterSpacing: -0.4,
-                       lineHeight: SATIR(FS.hero + 2, "serif"), color: C.ink, marginTop: ARA[8] }}>
-          {String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
-        </Text>
+      {/* ══ 30 EYLÜL (Gökberk md.2) — BAŞLIK FOTOĞRAF BANDINA TAŞINDI ══
+          Eskiden düz siyah bir çubuk (geri + LOUNGELINK) ve altında ayrı duran
+          kaş/başlık vardı: ekran, uygulamanın geri kalanındaki pencere-bant
+          dilinden kopuk bir "ara sayfa" gibi duruyordu. Artık Keşfet/Planım ile
+          AYNI bant: kaş "KURAL MOTORU · SAW", serif başlık "neden %X?", altında
+          salonun adı. Bant sayfayla birlikte kayar; geri oku bandın içinde. */}
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: ARA[34] }}>
+        <FotoBant marka="LOUNGELINK" geri={onBack}
+          ustBilgi={BUYUK([t.ruleEyebrow, avail?.airport_code].filter(Boolean).join(" · "))}
+          baslik={String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
+          altBilgi={avail?.lounge_name || null} />
+        <View style={{ flexGrow: 1, paddingHorizontal: ARA[22] }}>
         {/* 13 Eylül md.4 — sayıyı sıfırlayan/kısan şartı adıyla söyle. */}
         {!!sifirlayan && (
           <Text style={{ fontSize: FS.sm, lineHeight: 19, color: C.redInk, marginTop: ARA[8] }}>
@@ -7522,7 +7505,22 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
         </Text>
 
         <View style={{ marginTop: "auto", paddingTop: ARA[26] }}>
-          {sonaErdi ? (
+          {istekDurumu ? (
+            <View style={[S.card, { flexDirection: "row", alignItems: "center", paddingVertical: SP[3] }]}>
+              <Ikon ad={istekDurumu === "accepted" ? "tamam" : istekDurumu === "pending" ? "saat" : "bilgi"} boy={16}
+                renk={istekDurumu === "accepted" ? C.teal : C.goldText} stil={{ marginRight: ARA[10] }} />
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={{ color: C.ink, fontSize: FS.sm + 0.5, fontWeight: "600" }}>
+                  {istekDurumu === "pending" ? t.ruleStPending : istekDurumu === "accepted" ? t.ruleStAccepted
+                    : istekDurumu === "declined" ? t.reqDeclinedShort : istekDurumu === "expired" ? t.reqExpiredShort
+                    : istekDurumu === "kendi" ? t.ruleStOwn : t.ruleStFull}
+                </Text>
+                {(istekDurumu === "declined" || istekDurumu === "expired") && (
+                  <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[2] }}>{t.reqRefundedShort}</Text>
+                )}
+              </View>
+            </View>
+          ) : sonaErdi ? (
             <Text style={{ fontSize: FS.sm, color: C.mut, textAlign: "center", marginBottom: ARA[6] }}>{t.listingEndedCard}</Text>
           ) : onSend ? <Btn v="gold" sm label={t.ruleSendReq} onPress={onSend} sagAd="sag" />
             : kapi ? <Btn v="gold" sm label={kapi.etiket} onPress={kapi.git} sagAd="sag" /> : null}
@@ -7531,6 +7529,7 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi }) 
               onPress={() => Linking.openURL(kaynakUrl).catch(e => logError("ruleReadVenue", e))}
               style={{ marginTop: ARA[12] }} />
           )}
+        </View>
         </View>
       </ScrollView>
     </Sayfa>

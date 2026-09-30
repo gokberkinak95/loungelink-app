@@ -250,7 +250,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   ].filter(Boolean).join(" · ");
 
   return (
-    <Katlanir seffaf baslik={t.homeReqPanelTitle} ozet={ozetMetni} acikBasla={acikBasla || bekleyen > 0}
+    <Katlanir baslik={t.homeReqPanelTitle} ozet={ozetMetni} acikBasla={acikBasla || bekleyen > 0}
       tint={bekleyen > 0 ? C.goldBg : undefined}
       cizgi={bekleyen > 0 ? C.goldLine : undefined}>
       {inc.length > 0 && <>
@@ -292,7 +292,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
              YÜZEY: altın/gri sıra şeridi, iç halka ve rozet hapları kalktı;
              sıra bir editoryal satır, uyum fildişi mühür, güven sinyalleri
              harf aralıklı metin. Bilgi aynı; yüzey sayısı beşten bire indi. */
-          <View key={r.id} style={[S.card, { padding: SP[4] }]}>
+          <View key={r.id} style={{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
             {r.status === "pending" && (isBest || pendCount > 1) && (
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: ARA[14] }}>
                 <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4,
@@ -427,7 +427,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                kutusu > rozet hapları = beş iç içe yüzey, ikisi aynı dolguda.
                Şimdi: kart tek yüzey; durum kutusuz editoryal satır, bağlam
                1 px ışık çizgisiyle ayrılır, rozetler harf aralıklı metin. */
-            <View key={r.id} style={[S.card, { padding: SP[4] }]}>
+            <View key={r.id} style={{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0, marginRight: SP[2] }}>
                   <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: col, marginRight: ARA[8] }} />
@@ -5388,11 +5388,11 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
   const gelen = liste.filter(r => r.yon === "gelen" && r.durum === "pending");
   const giden = liste.filter(r => r.yon === "giden");
 
-  const kart = (r) => {
+  const kart = (r, katli) => {
     const baglam = [r.salon, r.airport_code,
       r.avail_date ? fmtLongDate(r.avail_date, lang) : null].filter(Boolean).join(" · ");
     return (
-      <View key={r.id} style={[S.card, { padding: SP[3] }]}>
+      <View key={r.id} style={katli ? { paddingVertical: SP[3], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line } : [S.card, { padding: SP[3] }]}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity hitSlop={TAP.slop} disabled={!onOpenProfile}
             onPress={() => onOpenProfile && onOpenProfile(r.peer_id)} activeOpacity={0.7}
@@ -5490,10 +5490,10 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
     (!yalnizGelen && giden.length) ? String(t.connOutgoingN).replace("{n}", String(giden.length)) : null,
   ].filter(Boolean).join(" · ");
   return (
-    <Katlanir seffaf baslik={t.connReqPanelTitle} ozet={ozet} acikBasla={gelen.length > 0}>
+    <Katlanir baslik={t.connReqPanelTitle} ozet={ozet} acikBasla={gelen.length > 0}>
       {!!err && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{err}</Text></View>}
-      {gelen.map(kart)}
-      {!yalnizGelen && giden.map(kart)}
+      {gelen.map(r => kart(r, true))}
+      {!yalnizGelen && giden.map(r => kart(r, true))}
     </Katlanir>
   );
 }
