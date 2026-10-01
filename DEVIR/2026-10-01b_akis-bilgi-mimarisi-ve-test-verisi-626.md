@@ -4,7 +4,8 @@
 
 ## Sürüm
 - app 6.2.6 · versionCode 277 · buildNumber 271 (package + lock aynı). BO/site değişmedi.
-- Build ALINMADI (Gökberk onayı bekleniyor; tasarım değişikliği → önce önizleme).
+- Önizleme onaylandı (tek yorum: misafir Oturumlar kartında "Sohbeti Aç" host'taki altın düğme olsun → yapıldı).
+- Build 6fe77d3c FINISHED · APK: https://expo.dev/artifacts/eas/w8vK7xvmN-1G_ut8lJpKSpLnuDMSRVi_2UkyX88JCvI.apk
 
 ## Supabase SQL (sırayla) — `sql/SQL_SIRA.txt` ile aynı
 1. `311_kesfet_ozeti_tek_kaynak.sql` — ana sayfa havalimanı çipleri Keşfet'in kendi listesinden
@@ -52,5 +53,4 @@
 - 312 yerelde iki kez (ikincisi "dokunulmadi"); SEED8+SEED9 312'den sonra: 3 sorunun 3'ü salon adıyla.
 
 ## Açık kalanlar / Gökberk'ten beklenen
-- Önizleme onayı (sahneler 71–78) → sonra 6.2.6 build.
 - 311, 312, SEED8, SEED9'u Supabase'de sırayla koş.
