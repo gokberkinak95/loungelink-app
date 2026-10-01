@@ -555,21 +555,19 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                 <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: SP[2] }}>{t.srNoAnswer}</Text>
               )}
 
-              <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[10] }}>
-                {r.status === "accepted" && (
-                  <TouchableOpacity style={{ flex: 1, minHeight: TAP.minHeight, justifyContent: "center" }}
-                    accessibilityRole="button" accessibilityLabel={t.openChat}
-                    onPress={() => onOpenChat && onOpenChat({ req: r, name: hostNm })}>
-                    <Text style={{ color: C.gold, fontSize: FS.sm, fontWeight: "700" }}>{t.openChat}</Text>
-                  </TouchableOpacity>)}
-                {r.status === "pending" && (
+              {/* 1 Ekim (Gökberk) — host kartıyla AYNI düğme: Oturumlar'da iki rol aynı görünür. */}
+              {r.status === "accepted" && (
+                <Btn v="gold" sm label={t.openChat} onPress={() => onOpenChat && onOpenChat({ req: r, name: hostNm })} style={{ marginTop: ARA[10] }} />
+              )}
+              {r.status === "pending" && (
+                <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[10] }}>
                   <TouchableOpacity style={{ marginLeft: "auto", minHeight: TAP.minHeight, justifyContent: "center" }}
                     accessibilityRole="button" accessibilityLabel={t.cancelReq}
                     onPress={() => act(r.id, "cancel")}>
                     <Text style={{ color: C.red, fontSize: FS.sm }}>{t.cancelReq}</Text>
                   </TouchableOpacity>
-                )}
-              </View>
+                </View>
+              )}
             </View>
           );
         })}
