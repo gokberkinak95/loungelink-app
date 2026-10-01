@@ -1,3 +1,20 @@
+SQL SIRASI - 1 Ekim 2026 (2. tur) - YENI: 311 + 312 + test verisi (app 6.2.6) - 310dan SONRA
+
+  1) 311_kesfet_ozeti_tek_kaynak.sql
+       -> ana sayfa havalimani cipleri Kesfet listesinin KENDISINDEN sayilir (IST 11 / Kesfet 3 farki biter)
+       -> ana sayfa SOHBET kutusu = baglanti sohbetleri + kabul edilmis bulusmalar (Oturumlar ve sohbetler)
+       Beklenen NOTICE: "311: kesfet_ozeti hazir". Tekrar kosulabilir.
+       6.2.6 APK 311 OLMADAN acilir ama ana sayfa havalimani cipleri bos kalir.
+  2) 312_soru_ilan_bagi_gercekten.sql
+       -> HATA DUZELTMESI: 239dan beri hicbir soru ilanina baglanmiyordu (239un korumasi yanlis
+          eslesip yamayi atliyordu) -> soru metni ve host bildirimi salon yerine "bu" diyordu,
+          Sorduklarim > Ilana git ilani bulamiyordu. Eski sorulardan emin olunanlar da duzeltilir.
+       Beklenen NOTICE: "312: ilan_kurali_sor avail_id yaziyor ...". Tekrar kosulabilir.
+  3) SEED8_AKIS_TEZGAHI.sql   (test hesaplari; SEED9dan ONCE, her seferinde ikisi birlikte)
+  4) SEED9_AKIS_GENIS.sql     -> akis.host / akis.misafir icin tum durumlar (istek, oturum, davet, soru, Kesfet)
+       Son NOTICE sayim tablosu: ana sayfa kutulari = listeler.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 1 Ekim 2026 - YENI: 310 (app 6.2.5) — 309'dan SONRA
 
   1) 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql

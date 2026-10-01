@@ -112,6 +112,16 @@ SAHNELER = {
     "63_istekler_host":   ("selin",   [("dokun_a11y", "İstek:"), ("bekle", 1500)]),   # v6.3 md.9 · katman kuralı · host gelen istekler   # ekran: RequestsPanel
     "64_istekler_misafir":("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500)]),   # v6.3 md.9 · gönderdiğin istek kartı   # ekran: RequestsPanel
     "65_ilan_ekle":       ("selin",   [("dokun", "Planım"), ("dokun_a11y", "+ İlan Ekle"), ("bekle", 1500)]),   # v6.3 · İlan sihirbazı 1/3   # ekran: HostAvailability
+    # 1 Ekim — SEED9 akış dünyası: İstek (Gelen/Gönderdiğim) · Sohbet (Oturumlar/Bağlantılar) · Keşfet kural durumları
+    "70_akis_nehir_ana":     ("nehir", [("bekle", 1500)]),   # ekran: Home
+    "71_akis_nehir_istek":   ("nehir", [("dokun", "İSTEK"), ("bekle", 1500)]),   # ekran: RequestsPanel · Gelen
+    "72_akis_nehir_giden":   ("nehir", [("dokun", "İSTEK"), ("dokun_a11y", "Gönderdiğim"), ("bekle", 1200)]),   # ekran: RequestsPanel · Gönderdiğim
+    "73_akis_nehir_oturum":  ("nehir", [("dokun", "SOHBET"), ("bekle", 1500)]),   # ekran: RequestsPanel · Oturumlar
+    "74_akis_nehir_baglanti":("nehir", [("dokun", "SOHBET"), ("dokun_a11y", "Bağlantılar"), ("bekle", 1200)]),   # ekran: HomeConnections
+    "75_akis_arda_ana":      ("arda",  [("bekle", 1500)]),   # ekran: Home
+    "76_akis_arda_kesfet":   ("arda",  [("dokun", "Keşfet"), ("bekle", 1800)]),   # ekran: Discovery
+    "77_akis_arda_oturum":   ("arda",  [("dokun", "SOHBET"), ("bekle", 1500)]),   # ekran: RequestsPanel · Oturumlar
+    "78_akis_arda_soru":     ("arda",  [("dokun", "SORU"), ("bekle", 1500)]),   # ekran: MyQuestions
     "06_sohbet":       ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · KAPSAM TURU — 15 SAHNE DAHA.

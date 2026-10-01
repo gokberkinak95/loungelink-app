@@ -14,7 +14,7 @@ import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
-import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi } from "./src/screens";
+import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi, SekmeSeridi } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
 // katlanır bileşen yazmak yerine Pickers.js'teki tek Katlanir kullanılıyor.
 import { Katlanir } from "./src/Pickers";
@@ -813,6 +813,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   // şeridindeki DAVET rozeti de tam olarak bu ikisini sayıyor.
   const [showDavetler, setShowDavetler] = useState(false);
   const [showSohbetler, setShowSohbetler] = useState(false);
+  const [sohbetSekme, setSohbetSekme] = useState("oturum");   // Sohbet ekranı: oturum | baglanti
   // 🔴 v6.1 (Gökberk md.a) — "isteği iptal ettim, ana sayfadaki sayı
   // düşmedi". Akış katmanları (İstek/Davet/Sohbet/Soru) ana sayfanın
   // üstünde açılıyor; kapandıklarında ana sayfa sayaçları eski kalıyordu.
@@ -1369,13 +1370,13 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           {/* 3 Eylül — bu ekranın TEK işi istek listesi; katlı gelirse
               kullanıcı "İstek"e basıp boş bir kutu görüyor (web sahnesinde
               ölçüldü). Burada açık başlar; ana sayfadaki katlı hâl aynen. */}
-          <RequestsPanel t={t} lang={lang} session={session} acikBasla tamEkran
+          <RequestsPanel t={t} lang={lang} session={session} acikBasla tamEkran gorunum="istek" tazele={reload}
             onOpenChat={setChat} onOpenProfile={setPubProfile} />
         </ScrollView>
       </Sayfa>),
     davetler: () => (
       <Sayfa>
-        <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowInvitesTitle} onBack={() => setShowDavetler(false)} marka={false} />
+        <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowInvitesTitle} onBack={() => setShowDavetler(false)} marka={false} />
         <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           {/* ⚠️ `tazele` `Home`un kendi state'i; bu katmanlar `Main`
               kapsamında çiziliyor. Ortak anahtar `reload` — ve katmanda
@@ -1387,10 +1388,19 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
       </Sayfa>),
     sohbetler: () => (
       <Sayfa>
-        <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowChatsTitle} onBack={() => setShowSohbetler(false)} marka={false} />
+        <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowChatsTitle} onBack={() => setShowSohbetler(false)} marka={false} />
         <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
-          <HomeConnections t={t} session={session} tamEkran tazele={reload}
-            onOpenChat={(cid, nm) => setCompChat({ channelId: cid, name: nm })} />
+          {/* 1 Ekim (Gökberk) — "oturumuma nereden ulaşırım?": kabul edilmiş buluşmalar
+              OTURUMLAR sekmesinde (durumuyla), bağlantı sohbetleri BAĞLANTILAR sekmesinde. */}
+          <SekmeSeridi secili={sohbetSekme} onSec={setSohbetSekme} secenekler={[
+            ["oturum", t.tabSessions, null], ["baglanti", t.tabConnections, null]]} />
+          {sohbetSekme === "oturum" ? (
+            <RequestsPanel t={t} lang={lang} session={session} tamEkran gorunum="oturum" tazele={reload}
+              onOpenChat={setChat} onOpenProfile={setPubProfile} />
+          ) : (
+            <HomeConnections t={t} session={session} tamEkran tazele={reload}
+              onOpenChat={(cid, nm) => setCompChat({ channelId: cid, name: nm })} />
+          )}
         </ScrollView>
       </Sayfa>),
     questions: () => (<MyQuestions t={t} lang={lang}

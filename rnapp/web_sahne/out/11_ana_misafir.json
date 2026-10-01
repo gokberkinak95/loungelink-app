@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -13,7 +22,7 @@
   "LOUNGEPUAN",
   "44",
   "GÜVEN",
-  "1",
+  "2",
   "SOHBET",
   "0",
   "İSTEK",
@@ -28,7 +37,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "14:00–18:00",
+  "04:56–08:56",
   "Host bul",
   "YANITINI BEKLEYENLER",
   "A",
@@ -61,62 +70,62 @@
  "tasan": [
   {
    "g": 507,
-   "sol": 35,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 35,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 35,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -199,
+   "sol": -210,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -199,
+   "sol": -210,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -199,
+   "sol": -210,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 35,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 35,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 507,
-   "sol": 35,
+   "sol": 52,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -199,
+   "sol": -210,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -199,
+   "sol": -210,
    "tx": ""
   },
   {
    "g": 546,
-   "sol": -199,
+   "sol": -210,
    "tx": ""
   }
  ],

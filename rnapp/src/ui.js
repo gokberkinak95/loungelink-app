@@ -1371,6 +1371,9 @@ export function useDaralanBant() {
     kaydir, olc, tam, sifirla,
     ustBosluk: tam,
     scrollProps: {
+      // 1 Ekim — Kaydirma bunu MONTAJDA çağırır (aşağıda). Liste yeniden kurulduğunda
+      // (başka ekrana gidip dönüş, katman, yenileme) içerik 0'dan başlar; bant da başlamalı.
+      bantSifirla: sifirla,
       scrollEventThrottle: 16,
       onScroll: Animated.event([{ nativeEvent: { contentOffset: { y: kaydir } } }],
                                { useNativeDriver: true }),
@@ -1384,7 +1387,16 @@ export function useDaralanBant() {
    ekran `Kaydirma`yı kullanır, hangi sınıf olduğunu bilmesi gerekmez.
    🆕 SINIF: "BİR API'NİN GİZLİ ŞARTI VARSA, O ŞARTI ÇAĞIRANA BIRAKMA —
    ŞARTI SAĞLAYAN SARMALAYICIYI VER." */
-export const Kaydirma = Animated.ScrollView;
+// 🔴 1 Ekim (Gökberk: "Keşfet'te aşağı kaydırıp uyum ekranına gidip dönünce başlık bandı
+// siyah") — GENEL SEBEP: daralan bantın kaydırma değeri ekranın DIŞINDA (App ya da ekran
+// kancası) yaşıyor; liste söküldüğünde (Keşfet uyum ekranını açarken listeyi söker, sekme
+// değişir, `reload` listeyi yeniden kurar…) yeni liste 0'dan başlıyor ama değer eski
+// kaydırmada kalıyordu → bant yukarı kaymış, yerinde boş siyah alan. Her olası akışı tek tek
+// yamalamak yerine KURAL: daralan bantlı her liste MONTAJDA bandı sıfırlar.
+export const Kaydirma = React.forwardRef(function Kaydirma({ bantSifirla, ...rest }, ref) {
+  useEffect(() => { if (bantSifirla) bantSifirla(); }, []);   // yalnız montajda
+  return <Animated.ScrollView ref={ref} {...rest} />;
+});
 
 export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktSag, children }) {
   const tam = tamProp || bantYuksekligi();

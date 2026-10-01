@@ -17,6 +17,9 @@ const KISI = {
   // 13 Eylül · Not2 — BOŞ HOST. Planım'ın boş hâli host tarafında hiç
   // çekilmemişti; üç boş kişinin üçü de misafirdi (bkz. sahne_seed.sql).
   boshost: { id: "a1b2c3d4-0000-4000-8000-000000000018", email: "boshost@sahne.loungelink.test" },
+  // 1 Ekim — SEED8 + SEED9 akış dünyası (sql/SEED9_AKIS_GENIS.sql): her durumdan veri
+  nehir:   { id: "88880000-0000-4000-8000-000000000001", email: "akis.host@seed.loungelink.test" },
+  arda:    { id: "88880000-0000-4000-8000-000000000011", email: "akis.misafir@seed.loungelink.test" },
 };
 
 export function sahneKur(ad, q) {

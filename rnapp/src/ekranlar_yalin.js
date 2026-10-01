@@ -85,14 +85,44 @@ export function Picker({ label, value, options, onPick, t }) {
 
 // Saate gore selam — kucuk bir dokunus ama ekrani "yasayan" yapiyor.
 // Cihaz saatinden okunur; sunucuya sormaya degmez.
-export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, acikBasla, tamEkran, tazele }) {
+// ══════════════════════════════════════════════════════════════════════
+// 1 Ekim (Gökberk) — AKIŞ BİLGİ MİMARİSİ
+//   İSTEK   = karar bekleyenler: sekmeler GELEN (kabul/ret sende) · GÖNDERDİĞİM
+//   SOHBET  = anlaşılmış buluşmalar + bağlantı sohbetleri: sekmeler OTURUMLAR · BAĞLANTILAR
+// Eskiden kabul edilmiş istek "İstek" listesinde bekleyenlerle karışık duruyordu ve
+// "oturumuma nereden ulaşırım?" sorusunun cevabı yoktu. Kabul edilen istek artık
+// OTURUMLAR'a taşınır ve oturumun hâlini (başlamadı / sen başlattın / karşı taraf
+// başlattı / sürüyor / onayın bekleniyor) taşır.
+// ══════════════════════════════════════════════════════════════════════
+export function SekmeSeridi({ secenekler, secili, onSec }) {
+  return (
+    <View style={{ flexDirection: "row", marginBottom: ARA[14], borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.kenarIsik || C.line }}>
+      {secenekler.map(([k, lb, n]) => {
+        const on = secili === k;
+        return (
+          <TouchableOpacity key={k} hitSlop={TAP.slop} onPress={() => onSec(k)} accessibilityRole="tab"
+            accessibilityState={{ selected: on }} accessibilityLabel={`${lb}${n != null ? " · " + n : ""}`}
+            style={{ flex: 1, alignItems: "center", paddingVertical: ARA[12], minHeight: TAP.minHeight }}>
+            <Text style={{ fontSize: FS.sm + 0.5, fontWeight: on ? "700" : "500", color: on ? C.ink : C.mut }}>
+              {lb}{n != null ? <Text style={{ fontFamily: MONO[500], color: on ? C.goldText : C.mut }}>{"  " + n}</Text> : null}
+            </Text>
+            <View style={{ position: "absolute", left: "20%", right: "20%", bottom: -StyleSheet.hairlineWidth, height: 2,
+                           borderRadius: 1, backgroundColor: on ? C.goldText : "transparent" }} />
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
+export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, acikBasla, tamEkran, tazele, gorunum }) {
   const uid = session?.user?.id;
   // 🔴 v2.65 — useState([]) "hiç isteğin yok" demekti; oysa henüz
   // okunmamıştı. null = yükleniyor. Ayrıca Promise.allSettled iki dalı da
   // reddedebilir ve o durumda ekran sessizce boşalıyordu — artık ikisi de
   // düşerse hata durumu gösteriliyor.
-  const [inc, setInc] = useState(null);
-  const [sent, setSent] = useState(null);
+  const [incS, setInc] = useState(null);
+  const [sentS, setSent] = useState(null);
   const [loadErr, setLoadErr] = useState(false);
   const [names, setNames] = useState({});
 
@@ -181,6 +211,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   // kartın altında Türkçe olarak yazılıyor.
   const [actErr, setActErr] = useState({});
   const [sessMap, setSessMap] = useState({});   // request_id -> oturum durumu (v1.81)
+  const [sekme, setSekme] = useState(null);     // İstek: gelen | giden
   async function act(id, action) {
     setActErr(e => ({ ...e, [id]: null }));
     const { error } = await supabase.rpc("respond_request", { p_request_id: id, p_action: action });
@@ -197,9 +228,12 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   if (loadErr) return (
     <View style={{ marginTop: ARA[22] }}><LoadFail t={t} onRetry={load} /></View>
   );
-  if (inc === null || sent === null) return (
+  if (incS === null || sentS === null) return (
     <View style={{ marginTop: ARA[22], height: 120 }}><Load icerik /></View>
   );
+  const incHam = incS, sentHam = sentS;
+  let inc = incS, sent = sentS;   // görünüm süzgeci (istek/oturum) aşağıda daraltır
+  // eslint-disable-next-line no-shadow
 
   // 🔴 v2.87 — ANA SAYFADAKİ İSTEK/SOHBET BLOĞU KATLANIR (Gökberk madde 7).
   // "aynısı ana sayfadaki sohbet ve ilan blokları için de."
@@ -229,9 +263,48 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   // TERFİ ETTİĞİNDE BİR BOŞ EKRANA DÖNÜŞÜR — BOŞ DURUM BİLEŞENİN
   // DEĞİL BAĞLAMIN İŞİDİR."
   // ══════════════════════════════════════════════════════════════════
+  // Oturumun hâli (her iki taraf için aynı hesap) — oturum varsa istek durumundan günceldir.
+  const oturumEtiketi = (r, iAmHost) => {
+    const sx = sessMap[r.id];
+    let [lab, col] = stMap[r.status] || [r.status, C.mut];
+    if (sx) {
+      const mineConf = iAmHost ? sx.host_confirmed : sx.guest_confirmed;
+      const otherConf = iAmHost ? sx.guest_confirmed : sx.host_confirmed;
+      const mineStart = iAmHost ? sx.host_started_at : sx.guest_started_at;
+      const otherStart = iAmHost ? sx.guest_started_at : sx.host_started_at;
+      if (sx.status === "completed") { lab = t.sessDone; col = C.mut; }
+      else if (sx.status === "active" && otherConf && !mineConf) { lab = t.awaitingYourConfirm; col = C.amber; }
+      else if (sx.status === "active" && mineConf && !otherConf) { lab = t.awaitingOtherConfirm; col = C.amber; }
+      else if (sx.status === "active") { lab = t.sessOngoing; col = C.green; }
+      else if (sx.status === "pending" && otherStart && !mineStart) { lab = t.sessOtherStarted; col = C.amber; }
+      else if (sx.status === "pending" && mineStart && !otherStart) { lab = t.sessYouStarted; col = C.amber; }
+      else if (sx.status === "pending") { lab = t.waitingStartShort; col = C.amber; }
+    } else if (r.status === "accepted") { lab = t.sessNotStarted; col = C.goldText; }
+    return [lab, col];
+  };
+  const oturumMod = gorunum === "oturum";
+  const istekMod = gorunum === "istek";
+  if (istekMod) { inc = inc.filter(r => !["accepted", "completed"].includes(r.status)); sent = sent.filter(r => !["accepted", "completed"].includes(r.status)); }
+  if (oturumMod) { inc = inc.filter(r => r.status === "accepted"); sent = sent.filter(r => r.status === "accepted"); }
+  const aktifSekme = sekme || (inc.some(r => r.status === "pending") || !sent.length ? "gelen" : "giden");
+  if (istekMod) { if (aktifSekme === "gelen") sent = []; else inc = []; }
+  const sekmeSeridi = istekMod ? (
+    <SekmeSeridi secili={aktifSekme} onSec={setSekme} secenekler={[
+      ["gelen", t.tabIncoming, (incHam || []).filter(r => r.status === "pending").length],
+      ["giden", t.tabSent, (sentHam || []).filter(r => r.status === "pending").length],
+    ]} />
+  ) : null;
   if (!inc.length && !sent.length) {
     if (!tamEkran) return null;
-    return <BosDurum ikon="bekliyor" metin={t.flowRequestsEmpty} ortala pano={{ baslik: t.panoIstekBas, durum: t.panoIstekDurum }} />;
+    const bos = oturumMod ? [t.sessEmpty, t.panoSessBas, t.panoSessDurum]
+      : istekMod && aktifSekme === "gelen" ? [t.reqInEmpty, t.panoIstekGelenBas, t.panoIstekDurum]
+      : [t.flowRequestsEmpty, t.panoIstekBas, t.panoIstekDurum];
+    return (
+      <View style={{ flexGrow: 1 }}>
+        {sekmeSeridi}
+        <BosDurum ikon={oturumMod ? "kutlama" : "bekliyor"} metin={bos[0]} ortala pano={{ baslik: bos[1], durum: bos[2] }} />
+      </View>
+    );
   }
   const bekleyen = inc.filter(r => r.status === "pending").length;
   // 🔴 v2.95 (Gökberk madde 2) — "'X gönderdiğin' yerine 'Gönderdiğin X
@@ -249,17 +322,19 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
     sent.length ? String(t.homeReqSent || "Gönderdiğin {n} istek").replace("{n}", String(sent.length)) : null,
   ].filter(Boolean).join(" · ");
 
+  const Kap = tamEkran ? View : Katlanir;
+  const kapProps = tamEkran ? {} : { baslik: t.homeReqPanelTitle, ozet: ozetMetni, acikBasla: acikBasla || bekleyen > 0,
+    tint: bekleyen > 0 ? C.goldBg : undefined, cizgi: bekleyen > 0 ? C.goldLine : undefined };
   return (
-    <Katlanir baslik={t.homeReqPanelTitle} ozet={ozetMetni} acikBasla={acikBasla || bekleyen > 0}
-      tint={bekleyen > 0 ? C.goldBg : undefined}
-      cizgi={bekleyen > 0 ? C.goldLine : undefined}>
+    <Kap {...kapProps}>
+      {sekmeSeridi}
       {inc.length > 0 && <>
-        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.dim, letterSpacing: 1.5, marginBottom: ARA[6], marginTop: ARA[14] }}>{t.incomingByMatch}</Text>
+        <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.dim, letterSpacing: 1.5, marginBottom: ARA[6], marginTop: tamEkran ? 0 : ARA[14] }}>{oturumMod ? t.sessAsHost : t.incomingByMatch}</Text>
         {/* v2.02 — KABUL SONRASI NE OLUYOR? Host kabul ettikten sonra kart
             bir süre sonra ana sayfadan düşüyor ve kullanıcı "kayboldu"
             sanıyordu. Kaybolmuyor, taşınıyor — ama bunu söylemiyorduk.
             Beklentiyi baştan kurmak, sonradan aramaktan ucuz. */}
-        {inc.some(r => r.status === "accepted") && (
+        {!oturumMod && inc.some(r => r.status === "accepted") && (
           <IkonMetin ad="bilgi" renk={C.mut} stilMetin={{ fontSize: FS.xs, color: C.mut, lineHeight: 16, marginBottom: ARA[10] }} metin={t.reqStay24} />
         )}
         {inc.map((r, idx) => {
@@ -347,6 +422,14 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
               { metin: `${t.trust} ${r.guest_score ?? 0}`, ton: (r.guest_score ?? 0) >= 60 ? "olmus" : "sessiz" },
             ]} />
 
+            {r.status === "accepted" && (
+              <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[12] }}>
+                <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: oturumEtiketi(r, true)[1], marginRight: ARA[8] }} />
+                <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4, color: oturumEtiketi(r, true)[1] }}>
+                  {BUYUK(oturumEtiketi(r, true)[0])}
+                </Text>
+              </View>
+            )}
             {r.intro_message ? <Text style={{ color: C.body, fontSize: FS.lg, marginTop: ARA[12], lineHeight: SATIR(FS.lg, "serif"),
                                               fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.intro_message}”</Text> : null}
             {r.status === "pending" ? (
@@ -367,21 +450,10 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
         })}
       </>}
       {sent.length > 0 && <>
-        <Text style={S.label}>{t.myReqs}</Text>
+        <Text style={S.label}>{oturumMod ? t.sessAsGuest : t.myReqs}</Text>
         {sent.map(r => {
-          let [lab, col] = stMap[r.status] || [r.status, C.mut];
           // Oturum durumu, istek durumundan DAHA GÜNCEL bilgidir — varsa o kazanır.
-          const sx = sessMap[r.id];
-          if (sx) {
-            const iAmHost = r.host_id === uid;
-            const mineConf = iAmHost ? sx.host_confirmed : sx.guest_confirmed;
-            const otherConf = iAmHost ? sx.guest_confirmed : sx.host_confirmed;
-            if (sx.status === "completed") { lab = t.sessDone; col = C.mut; }
-            else if (sx.status === "active" && otherConf && !mineConf) { lab = t.awaitingYourConfirm; col = C.amber; }
-            else if (sx.status === "active" && mineConf && !otherConf) { lab = t.awaitingOtherConfirm; col = C.amber; }
-            else if (sx.status === "active") { lab = t.sessOngoing; col = C.green; }
-            else if (sx.status === "pending") { lab = t.waitingStartShort; col = C.amber; }
-          }
+          const [lab, col] = oturumEtiketi(r, r.host_id === uid);
           // 🔴 v2.66 (madde 13) — KART ARTIK BAĞLAM TAŞIYOR.
           // Eski kart: host adı + tek kelime durum. Misafir hangi salona,
           // hangi güne, hangi uçuşa başvurduğunu HATIRLAMAK zorundaydı.
@@ -502,7 +574,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
           );
         })}
       </>}
-    </Katlanir>
+    </Kap>
   );
 }
 export function Chat({ t, session, request, otherName, onBack, onSafety, onReferral, onOpenProfile, onReport, onLiveStatus, openPanel }) {
@@ -3643,7 +3715,8 @@ export function HaberVer({ t, lang, airport, date }) {
 // YANLIŞTIR — FARK, KULLANICININ ORAYA BİLEREK GİDİP GİTMEDİĞİDİR."
 export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGit, onBack }) {
   const [rows, setRows] = useState(null);
-  const [acik, setAcik] = useState(false);
+  // 1 Ekim — tam ekranda AÇIK başlar: kullanıcı "Soru"ya bilerek bastı, katlı kart boş sayfa gibi görünüyordu.
+  const [acik, setAcik] = useState(!!onBack);
 
   useEffect(() => {
     let iptal = false;
@@ -3662,7 +3735,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
     if (!tamEkran) return null;
     return (
       <Sayfa>
-        <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowQuestions} onBack={onBack} />
+        <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowQuestions} onBack={onBack} marka={false} />
         <View style={{ flex: 1, justifyContent: "center", padding: ARA[20] }}>
           <BosDurum ikon="bilgi" metin={t.questionsEmpty} pano={{ baslik: t.panoSoruBas, durum: t.panoSoruDurum }} />
         </View>
@@ -3671,6 +3744,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
   }
 
   const acilan = rows.filter(r => r.ilan_acildi).length;
+  const bekleyenSoru = rows.filter(r => !["yanitlandi", "acildi"].includes(r.cevap_durumu || "")).length;
 
   const govde = (
     <View style={[S.card, { marginBottom: SP[3], borderColor: acilan ? C.green : C.line }]}>
@@ -3680,6 +3754,8 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
         <View style={{ flex: 1, paddingRight: SP[2] }}>
           <Text style={{ color: C.mut, fontSize: FS.xs, letterSpacing: 1, fontWeight: "600" }}>
             {BUYUK(t.myQuestions)}  ·  {rows.length}
+            {/* Ana sayfa "Soru" kutusu YALNIZ yanıt bekleyenleri sayar; ikisi yan yana yazılır ki sayı çelişmesin. */}
+            {bekleyenSoru > 0 && bekleyenSoru < rows.length ? `  ·  ${BUYUK(String(t.mqWaitingN || "{n}").replace("{n}", String(bekleyenSoru)))}` : ""}
           </Text>
           <Text numberOfLines={2} style={{ color: C.mut, fontSize: FS.sm, lineHeight: 17, marginTop: SP[1] }}>
             {acilan > 0 ? t.mqOpened : t.myQuestionsSub}
@@ -3787,7 +3863,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
   if (!tamEkran) return govde;
   return (
     <Sayfa>
-      <Hdr t={t} ustBilgi={t.sceneMeet} title={t.flowQuestions} onBack={onBack} />
+      <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowQuestions} onBack={onBack} marka={false} />
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {govde}
       </ScrollView>

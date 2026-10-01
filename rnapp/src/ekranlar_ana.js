@@ -824,8 +824,16 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     // çalıştığı için sayıyı korumasız okumak çökertiyordu.
     // 29 Eylul (md.6, 08.jpg) - "1 host yayinda" yaziyordu, o tek ilan sona ermisti.
     // Yayinda = saati gecmemis ilan; sona erenler listede kalir ama sayilmaz.
-    const yayinda = (rows || []).filter(r => (geriSayim(r.avail_date, r.time_from, r.time_to, t) || {}).tur !== "bitti").length;
-    if (yayinda) parcalar.push(String(t.discHostsLive || "{n}").replace("{n}", String(yayinda)));
+    // 1 Ekim (Gökberk) — "3 host yayında" yazıyordu, üçü de aynı host'undu: İLAN sayılıyordu.
+    // Tanım ana sayfa çipleriyle AYNI (SQL 311 kesfet_ozeti): saati geçmemiş, boş yeri olan,
+    // başkasının ilanı. İlan ve host ayrı sayılır.
+    const canliRowsSay = (rows || []).filter(r =>
+      r.host_id !== uid && !r.fully_booked && (Number(r.slots) || 0) - (Number(r.filled) || 0) > 0
+      && (geriSayim(r.avail_date, r.time_from, r.time_to, t) || {}).tur !== "bitti");
+    const yayinda = canliRowsSay.length;
+    const hostSay = new Set(canliRowsSay.map(r => r.host_id)).size;
+    if (yayinda) parcalar.push(String(t.discLiveCount || "{i} · {h}")
+      .replace("{i}", String(yayinda)).replace("{h}", String(hostSay)));
     // 3 Eylül — "filtrelemek için dokun" kuyruğu kalktı: tasarım 02'de alt
     // satır iki parça ("Kalkışına 3 sa 12 dk · 6 host yayında"); filtre
     // yolu sağ üstteki daire, etkin filtre varsa altın nokta onu söylüyor.
@@ -6634,11 +6642,14 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
           .gte("visit_date", yerelGun())
           .order("visit_date").limit(1)
           : Promise.resolve({ data: null, error: null }),
-        supabase.rpc("havalimani_nabzi", { p_gun: 14 }),
+        // 🔴 1 Ekim (Gökberk) — "ana sayfada IST 11 host, Keşfet'te 3 ilan". `havalimani_nabzi`
+        // bir BO panosu; Keşfet'in görünürlük kurallarının hiçbirini uygulamıyor. Sayı artık
+        // Keşfet'in KENDİ listesinden (SQL 311): saati geçmemiş, boş yeri olan, başkasının ilanı.
+        supabase.rpc("kesfet_ozeti", { p_gun: 14 }),
       ]);
       if (vRes.error) logError("sakin_gun_visit", vRes.error);
       if (!iptal) setYakin((vRes.data && vRes.data[0]) || null);
-      if (error) { logError("havalimani_nabzi", error); return; }
+      if (error) { logError("kesfet_ozeti", error); return; }
       if (!iptal) setNabiz(Array.isArray(data) ? data : []);
     })();
     return () => { iptal = true; };
@@ -6651,7 +6662,7 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
   const satir = benimAp && Array.isArray(nabiz)
     ? nabiz.find(x => x.airport_code === benimAp) : null;
   const enCanli = Array.isArray(nabiz)
-    ? nabiz.filter(x => x.durum === "canli").slice(0, 3) : [];
+    ? nabiz.filter(x => x.host_sayisi > 0).slice(0, 3) : [];
 
   // ══════════════════════════════════════════════════════════════════
   // v6.3 · PANO A (Gökberk onayı, 29 Eylül) — SEYAHAT VARKEN KART BİR
@@ -6766,15 +6777,21 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
 
       {!yakin && enCanli.length > 0 && (
         <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: SP[2] }}>
+          {/* Çipe dokununca Keşfet O HAVALİMANINA süzülü açılır — çipteki sayı ile
+              açılan listedeki host sayısı aynı kaynaktan (kesfet_ozeti ⊂ Keşfet). */}
           {enCanli.map(x => (
-            <Pill key={x.airport_code} c={C.green}>
-              {x.airport_code} · {x.host_sayisi} {t.calmHosts}
-            </Pill>
+            <TouchableOpacity key={x.airport_code} hitSlop={TAP.slop} accessibilityRole="button"
+              accessibilityLabel={`${x.airport_code} · ${x.host_sayisi} ${t.calmHosts}`}
+              onPress={() => onDiscover && onDiscover({ airport: x.airport_code })}>
+              <Pill c={C.green}>
+                {x.airport_code} · {x.host_sayisi} {t.calmHosts}
+              </Pill>
+            </TouchableOpacity>
           ))}
         </View>
       )}
 
-      <Btn v="gold" label={role === "host" ? t.calmFind : t.fhAsGuest} onPress={onDiscover}
+      <Btn v="gold" label={role === "host" ? t.calmFind : t.fhAsGuest} onPress={() => onDiscover && onDiscover({})}
         a11yLabel={role === "host" ? t.calmFind : t.fhAsGuest} style={{ marginTop: ARA[14] }} />
 
       {/* Host olmayana merdiven; host'a kendi planı. Seyahat varken kart

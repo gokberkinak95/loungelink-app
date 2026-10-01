@@ -292,6 +292,14 @@ def main():
                             values ('{G1}','requests','Test','Gövde')""")
     chk('15. Bildirim + push tetikleyicisi hata vermiyor', rc == 0, err[:110])
 
+    # --- 10) Soru → ilan bağı (312) ---
+    # 239 bu yamayı "zaten var" sanıp atlamıştı; hiçbir test ilan_kurali_sor'u
+    # çağırmadığı için aylarca görünmedi (soru metni “bu” ilanına diyordu).
+    # Kurulumdan sonra CANLI gövde okunur: INSERT avail_id yazmalı.
+    gv, _, _ = q(uri, "select position('''pending'', p_avail_id)' in "
+                      "pg_get_functiondef('public.ilan_kurali_sor(uuid)'::regprocedure)) > 0")
+    chk('16. Soru ilanına bağlanıyor (ilan_kurali_sor avail_id yazıyor)', (gv or '').strip() == 't', gv)
+
     print(f'\n  {len(ok)} geçti · {len(bad)} başarısız')
     if bad:
         print('  BAŞARISIZ: ' + ', '.join(bad))

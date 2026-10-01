@@ -957,7 +957,10 @@ try {
   const fs = require("fs");
   const kaynak = fs.readFileSync(path.join(__dirname, "..", "App.js"), "utf8");
   const i = kaynak.indexOf("function Main(");
-  const govde = i < 0 ? "" : kaynak.slice(i, i + 60000);
+  // 1 Ekim — pencere 60000 idi; Main büyüdükçe `return (` pencerenin dışına düştü ve test
+  // "ilk etiket boş" diye YANLIŞ kırmızı verdi. Bir sonraki fonksiyona kadar oku.
+  const son = i < 0 ? -1 : kaynak.indexOf("\nfunction ", i + 10);
+  const govde = i < 0 ? "" : kaynak.slice(i, son > 0 ? son : undefined);
   const r = govde.indexOf("\n  return (");
   // 🔴 PENCERE 400 KARAKTERDİ VE HEPSİ YORUMDU → süzgeçten boş çıktı,
   // test yine yanlış kırmızı verdi. Pencere, önündeki AÇIKLAMADAN uzun olmalı.
