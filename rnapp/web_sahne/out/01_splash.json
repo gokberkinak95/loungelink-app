@@ -3,18 +3,6 @@
   {
    "t": "error",
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
   }
  ],
  "errors": [],
@@ -22,41 +10,33 @@
  "metin": [
   "EN",
   "LOUNGELINK",
-  "Aktarma uçuşları bağlar,",
-  "biz yolcuları.",
-  "Başla",
+  "Aynı lounge'da,",
+  "doğru insanla.",
+  "Lounge hakkını paylaş, uçuş öncesini bir tanışmaya çevir.",
   "Önce dene: hangi salona girebilirim?",
+  "",
+  "Başla",
   "Giriş Yap"
  ],
  "tasan": [
   {
-   "g": 507,
-   "sol": 36,
+   "g": 422,
+   "sol": -16,
    "tx": ""
   },
   {
-   "g": 507,
-   "sol": 36,
+   "g": 422,
+   "sol": -16,
    "tx": ""
   },
   {
-   "g": 507,
-   "sol": 36,
+   "g": 422,
+   "sol": -16,
    "tx": ""
   },
   {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
+   "g": 422,
+   "sol": -16,
    "tx": ""
   }
  ],

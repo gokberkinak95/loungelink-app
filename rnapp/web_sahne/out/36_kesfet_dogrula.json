@@ -1,22 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -24,10 +7,10 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 18 sa 56 dk · 55 host yayında",
+  "Havalimanı saatine 17 sa 47 dk · 70 ilan · 28 host yayında",
   "İstanbul",
   "",
-  "Senin uçuşunda 2 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
+  "Senin uçuşunda 3 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
   "D",
   "",
   "Deniz K.",
@@ -35,12 +18,26 @@
   "%99",
   "UYUM",
   "TAV Primeclass",
-  "IST · 30 EYLÜL · 14:20–16:40",
+  "IST · 3 EKİM · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "19 sa 26 dk içinde",
+  "18 sa 17 dk içinde",
+  "Telefonu doğrula",
+  "N",
+  "",
+  "Nehir A.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%88",
+  "UYUM",
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 10:00–13:00",
+  "",
+  "Misafir ücretsiz",
+  "TK1979 · AYNI UÇUŞ",
+  "",
+  "13 sa 57 dk içinde",
   "Telefonu doğrula",
   "M",
   "",
@@ -49,159 +46,54 @@
   "%78",
   "UYUM",
   "THY Dış Hat Business",
-  "IST · 30 EYLÜL · 14:20–16:20",
+  "IST · 3 EKİM · 14:20–16:20",
   "",
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "19 sa 26 dk içinde",
+  "18 sa 17 dk içinde",
   "Telefonu doğrula",
-  "S",
+  "N",
   "",
-  "Selin B.",
+  "Nehir A.",
   "MİLES&SMİLES · ELİTE PLUS",
   "%74",
   "UYUM",
-  "IST",
-  "IST · 30 EYLÜL · 12:00–18:00",
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 16:00–17:30",
   "",
   "Misafir ücretsiz",
-  "TK712",
   "",
-  "17 sa 6 dk içinde",
+  "19 sa 57 dk içinde",
   "Telefonu doğrula",
-  "J",
+  "T",
   "",
-  "Jale Star Gold",
-  "STAR ALLİANCE GOLD",
-  "%64",
-  "UYUM",
-  "IST",
-  "IST · 30 EYLÜL · 11:00–14:00",
-  "",
-  "Misafir ücretsiz",
-  "LH1302",
-  "",
-  "16 sa 6 dk içinde",
-  "Telefonu doğrula",
-  "E",
-  "",
-  "Elif Elite Plus",
+  "Tuna H.",
   "MİLES&SMİLES · ELİTE PLUS",
   "%64",
   "UYUM",
-  "IST",
-  "IST · 30 EYLÜL · 13:00–16:00",
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 12:45–14:00",
   "",
   "Misafir ücretsiz",
-  "TK712",
   "",
-  "18 sa 6 dk içinde",
+  "16 sa 42 dk içinde",
   "Telefonu doğrula",
-  "S",
+  "T",
   "",
-  "Selin B.",
-  "PRİORİTY PASS · PRİORİTY PASS PRESTİGE",
-  "%74",
+  "Tuna H.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%64",
   "UYUM",
-  "IST",
-  "IST · 30 EYLÜL · 10:00–16:00",
-  "",
-  "Misafir ücretli girer",
-  "TK1980",
-  ""
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 14:15–16:00",
+  "",
+  "Misafir ücretsiz",
+  "",
+  "18 sa 12 dk içinde",
+  "Telefonu doğrula",
+  "N"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 55,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 55,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 55,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -212,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -212,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -212,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

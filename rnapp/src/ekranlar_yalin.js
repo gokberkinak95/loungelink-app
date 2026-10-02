@@ -31,7 +31,7 @@ import { bayrak } from "./runtime";
 import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
-import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR} from "./theme";
+import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
 import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -1361,8 +1361,8 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
       <View style={{ backgroundColor: C.surface, paddingTop: TOPPAD, paddingBottom: ARA[4] }}>
       <View style={{ flexDirection: "row", alignItems: "center", height: 38,
                      marginTop: ARA[20], paddingHorizontal: ARA[18] }}>
-        <Btn v="ust" daire a11yLabel={t.back || "Geri"} onPress={onBack}
-          sol={<Ikon ad="sol" boy={20} renk={C.foto.baslik} />} />
+        <Btn v={temaModu() === "v7" ? "ustAcik" : "ust"} daire a11yLabel={t.back || "Geri"} onPress={onBack}
+          sol={<Ikon ad="sol" boy={20} renk={temaModu() === "v7" ? C.ink : C.foto.baslik} />} />
         <TouchableOpacity hitSlop={TAP.slop} disabled={!(onOpenProfile && otherId)}
           onPress={() => onOpenProfile && otherId && onOpenProfile(otherId)}
           accessibilityRole="button" accessibilityLabel={t.ccViewProfile}

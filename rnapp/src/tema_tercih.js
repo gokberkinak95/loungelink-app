@@ -44,7 +44,8 @@ const ANAHTAR = "ll_tema";
 // eski dosya `_yedek_acik_tema/`de. Geri getirmek isteyen, açık paleti
 // gece sistemine göre YENİDEN TASARLADIKTAN sonra getirir.
 // ══════════════════════════════════════════════════════════════════
-export const SECENEKLER = ["koyu"];
+// v7 (2 Ekim): tek tema AVIATION LIGHT. Koyu tema kodda duruyor (geri dönüş için), seçilemez.
+export const SECENEKLER = ["v7"];
 
 // ══════════════════════════════════════════════════════════════════
 // 🔴 30 AĞUSTOS — VARSAYILAN ARTIK KOYU.
@@ -60,7 +61,7 @@ export const SECENEKLER = ["koyu"];
 //
 // 🆕 SINIF: "BİR TEMAYI VARSAYILAN YAPMAK ONU ZORUNLU YAPMAK DEĞİLDİR —
 // SEÇİM YOLUNU KAPATAN HER 'KİMLİK' KARARI, KULLANICIYI DIŞARIDA BIRAKIR."
-let TERCIH = "koyu";
+let TERCIH = "v7";
 const dinleyiciler = new Set();
 let _abone = null;
 
@@ -68,9 +69,9 @@ function sistemModu() {
   try {
     // Sistem ne derse desin KOYU. Açık tema arşivde (yukarı bak);
     // sisteme uymak, olmayan bir tasarıma uymak olurdu.
-    return "koyu";
+    return "v7";
   } catch (e) {
-    return "koyu";
+    return "v7";
   }
 }
 

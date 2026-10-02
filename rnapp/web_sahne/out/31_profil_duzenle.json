@@ -34,6 +34,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -57,7 +58,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -73,8 +74,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "HESABIM",
   "Profili Düzenle",
   "S",
@@ -91,100 +92,8 @@
   "Sessiz eşlik",
   "Yanımda biri olsun ama sessiz olsun",
   "İkramlar için buradayım",
-  "Büfeyi keşfetmeyi severim",
-  "Havalimanı kaşifi"
+  "Büfeyi keşfetmeyi severim"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 12,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -181,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -181,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -181,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 12,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 38,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 38,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 38,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

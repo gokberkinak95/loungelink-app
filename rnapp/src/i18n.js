@@ -1517,6 +1517,8 @@ export const D = {
     hostingSub: "İlan ve isteklerini yönet",   // 5 Eylül — bantta 3 noktayla kesiliyordu; kısaldı
 
     tagline1: "Aktarma uçuşları bağlar,",
+    v7Slogan1: "Aynı lounge'da,", v7Slogan2: "doğru insanla.",
+    v7SplashAlt: "Lounge hakkını paylaş, uçuş öncesini bir tanışmaya çevir.",
     // Özellik saymayı bıraktık: "doğrulanmış yolcular, emanet korumalı"
     // bir liste, bir sahne değil. Sahne kuruluyor — kalkışa iki saat var
     // ve iki kişi aynı terminalde birbirini bilmiyor.
@@ -3590,6 +3592,8 @@ export const D = {
     hostingSub: "Manage listings and requests",
 
     tagline1: "Connecting flights,",
+    v7Slogan1: "Same lounge,", v7Slogan2: "the right person.",
+    v7SplashAlt: "Share your lounge access and turn the wait before your flight into an introduction.",
     start: "Get Started",
     login: "Log In",
     name: "FULL NAME",

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -34,6 +43,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -57,7 +67,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -73,8 +83,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "HESABIM",
   "Ayarlar",
   "HESAP",
@@ -91,100 +101,8 @@
   "Profil Görünürlüğü",
   "Güvenilir üyeler",
   "Keşifte Göster",
-  "",
-  "Konum Paylaşımı"
+  ""
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 34,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 34,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 34,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -198,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -198,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -198,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -22,36 +13,6 @@
   "Devam"
  ],
  "tasan": [
-  {
-   "g": 507,
-   "sol": 33,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 33,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 33,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
   {
    "g": 447,
    "sol": -33,

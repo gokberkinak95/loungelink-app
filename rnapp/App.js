@@ -25,7 +25,7 @@ import { MONO } from "./src/typography";
 import { pushDurumOku } from "./src/push";
 import { useRecognitionMoment } from "./src/HostWallet";
 import MomentScreen from "./src/MomentScreen";
-import { AcilisIsigi } from "./src/hareket";
+import { AcilisIsigi, dokun } from "./src/hareket";
 // v2.73 — GÖVDE YAZISI ARTIK BİZİM. Tek çağrı; ayrıntısı src/typography.js.
 // Buraya, ilk render'dan ÖNCE koyuldu: sonrasında çağrılsaydı ilk ekran
 // sistem fontuyla çizilip sonra zıplardı.
@@ -448,7 +448,8 @@ function AppInner() {
   // `<StatusBar style="dark" />` koyu temada koyu ikon demek: koyu
   // zeminde koyu saat, koyu pil. Kullanıcı "uygulama bozuk" der,
   // "durum çubuğu" demez. Tema değişkeni tam da bunun için okunuyor.
-  const koyuMu = useMemo(() => temaModu() === "koyu", [temaSurum]);
+  // v7: her ekranın tepesi gece mavisi bant — durum çubuğu ikonları açık renk.
+  const koyuMu = useMemo(() => temaModu() !== "acik", [temaSurum]);
 
   // 🔴 v3.4 — AÇILIŞ GÖSTERGESİ DE MARKA. Kullanıcının uygulamada gördüğü
   // İLK hareket bu; jenerik bir çember, marka anını harcamaktır.
@@ -1896,8 +1897,11 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           Aktif sekmenin konum göstergesi KALDI — ikinci kanal (renk körü
           kullanıcı ve yürürken bakış) bir süs değil.
           ══════════════════════════════════════════════════════════════ */}
+      {/* v7 (Gökberk · prompt md.4): YÜZEN ASİMETRİK ÇUBUK. Ortadaki "Planım" kapsülden YUKARI
+          taşar; kabın üst boşluğu taşma kadar (ARA[26]) → hiçbir içeriğin üstüne binmez. */}
       <View onLayout={(e) => { const h = Math.round(e.nativeEvent.layout.height); if (h > 0 && h !== cubukH) setCubukH(h); }}
-            style={{ backgroundColor: C.bg, paddingHorizontal: ARA[14], paddingTop: ARA[6], paddingBottom: ARA[18] }}>
+            style={{ backgroundColor: C.bg, paddingHorizontal: ARA[14],
+                     paddingTop: temaModu() === "v7" ? ARA[26] : ARA[6], paddingBottom: ARA[18] }}>
       {/* 🔴 28 EYLÜL (Gökberk: "tüm iç sayfalarda tabbar görünüyor, arkadaki
           butonları örtüyor; tabbara basınca arkadaki butona basılıyor").
           KÖK: kapsülün Android yükseltmesi 12, iç sayfa katmanınınki 0.
@@ -1909,7 +1913,12 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           🆕 SINIF: "ANDROID'DE GÖRÜNEN ÜST İLE DOKUNULAN ÜST AYRI
           KURALLARLA BELİRLENİR — YÜKSELTME VERDİĞİN HER ŞEY, ÜSTÜNE
           ÇIKACAK KATMANDAN DAHA ALÇAK OLMALI." */}
-      <View style={{ flexDirection: "row", backgroundColor: C.surface, borderRadius: ARA[30],
+      <View style={temaModu() === "v7"
+        ? { flexDirection: "row", alignItems: "flex-end", backgroundColor: "rgba(255,255,255,0.86)", borderRadius: 24,
+            paddingTop: ARA[10], paddingBottom: ARA[10], paddingHorizontal: ARA[6],
+            shadowColor: "#0D1B2A", shadowOpacity: 0.10, shadowRadius: 24, shadowOffset: { width: 0, height: 10 },
+            elevation: topOverlay && !katmanCubuguGoster ? 0 : 10 }
+        : { flexDirection: "row", backgroundColor: C.surface, borderRadius: ARA[30],
                      borderTopWidth: 1, borderTopColor: C.parlama || "transparent",
                      paddingTop: ARA[10], paddingBottom: ARA[10], paddingHorizontal: ARA[6],
                      shadowColor: C.golgeRenk, shadowOpacity: 0.55, shadowRadius: 24,
@@ -1920,7 +1929,56 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           // katman olarak açıldığında çubuk hâlâ "Ana Sayfa"yı gösteriyordu.
           const gorunen = topOverlay === "disc" ? "disc" : topOverlay === "notif" ? "prof" : tab;
           const on = gorunen === k;
-          return (
+          const v7 = temaModu() === "v7";
+          // SE 320: sekme 56pt; "ANA SAYFA" 1.2 aralıkla 61.7pt → ÖLÇÜLDÜ, taştı (tasma_check).
+          // ≤0.56 sığar; 0.5 her cihazda aynı (cihaza göre değişen aralık, iki farklı marka demek).
+          const sekmeAralik = 0.5;
+          const sekmeyeBas = () => {
+            if (katmanCubuguGoster && topOverlay) OVERLAYS[topOverlay][1]();
+            if (k === "meet") setMeetSub("discover");
+            setSekmeGeri(null);
+            setTab(k);
+          };
+          // v7 · MERKEZ: "Planım" kapsülden yukarı taşan şampanya daire; iç ışıma halkası
+          // (rgba 212,195,163 · 0.15) + dokununca hafif titreşim.
+          if (v7 && k === "trips") return (
+            <TouchableOpacity hitSlop={TAP.slop} key={k} accessibilityRole="button" accessibilityLabel={lab}
+              accessibilityState={{ selected: on }}
+              onPress={() => { dokun("hafif"); sekmeyeBas(); }}
+              style={{ flex: 1, alignItems: "center", marginTop: -ARA[30] }}>
+              <View style={{ width: 70, height: 70, borderRadius: R.full, alignItems: "center", justifyContent: "center",
+                             backgroundColor: "rgba(212,195,163,0.15)" }}>
+                <View style={{ width: 60, height: 60, borderRadius: R.full, alignItems: "center", justifyContent: "center",
+                               backgroundColor: C.goldBtn, borderTopWidth: 1, borderTopColor: C.goldBtnUst,
+                               shadowColor: "#0D1B2A", shadowOpacity: 0.16, shadowRadius: 14, shadowOffset: { width: 0, height: 8 },
+                               elevation: 6 }}>
+                  <Ikon ad={on ? ic + "Dolu" : ic} boy={23} renk={C.onGold} />
+                </View>
+              </View>
+              <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: sekmeAralik,
+                                               color: C.ink, marginTop: ARA[2] }}>{lab}</Text>
+            </TouchableOpacity>
+          );
+          if (v7) return (
+            <TouchableOpacity hitSlop={TAP.slop} key={k} accessibilityRole="button" accessibilityLabel={lab}
+              accessibilityState={{ selected: on }}
+              onPress={sekmeyeBas} style={{ flex: 1, alignItems: "center", paddingVertical: ARA[2] }}>
+              {k === "prof" && unread > 0 && (
+                <View style={{ position: "absolute", top: -4, right: "50%", marginRight: -22, minWidth: 15, height: 15,
+                               borderRadius: R.full, backgroundColor: C.amberMikro || C.amber, alignItems: "center", justifyContent: "center",
+                               paddingHorizontal: ARA[2], zIndex: 2 }}>
+                  <Text style={{ fontSize: FS.micro, color: C.ink, fontWeight: "700" }}>{unread > 9 ? "9+" : unread}</Text>
+                </View>
+              )}
+              <Ikon ad={on ? ic + "Dolu" : ic} boy={21} renk={on ? C.ink : C.dim} />
+              <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: on ? "700" : "500", letterSpacing: sekmeAralik,
+                                               color: on ? C.ink : C.dim, marginTop: ARA[6] }}>{lab}</Text>
+              {/* konum göstergesi (ikinci kanal): amber mikro nokta */}
+              <View style={{ width: 4, height: 4, borderRadius: R.full, marginTop: ARA[4],
+                             backgroundColor: on ? (C.amberMikro || C.amber) : "transparent" }} />
+            </TouchableOpacity>
+          );
+                    return (
             <TouchableOpacity hitSlop={TAP.slop} key={k} style={{ flex: 1, alignItems: "center", paddingVertical: ARA[2] }}
               onPress={() => {
                 // Çubuğu gösteren katman (Keşfet/Bildirimler) açıkken sekmeye
@@ -2323,7 +2381,74 @@ function OfflineBanner({ t, onRetry, busy, kuyruk = 0 }) {
   );
 }
 
-function Splash({ t, go, lang, toggleLang }) {
+// ══════════════════════════════════════════════════════════════════════
+// v7 · AVIATION LIGHT AÇILIŞI (2 Ekim · Gökberk: "aynı lounge'da doğru insanla başlığına ve
+// altındaki metnine bayıldım… konumlaması çok iyi… logomuzu ve hareket dilini de yerleştir").
+// Uçak penceresi gece mavisinden şafak sisine ve fildişi tuvale akar (iç sayfalardaki bantla
+// aynı dil). Kanat logosu + açılış ışığı (iz · cam parıltısı · zerre) metnin hizasında, sol üstte.
+// Uydurma sayı yok: giriş öncesi canlı veri yok → "Önce dene" gerçek bir işlev olarak cam satırda.
+// ══════════════════════════════════════════════════════════════════════
+function SplashV7({ t, go, lang, toggleLang }) {
+  const G = Dimensions.get("window").width;
+  const kanatG = Math.round(G * 0.24), kanatH = Math.round(kanatG * 0.4925);
+  const basla = async () => {
+    let seen = false;
+    try { seen = (await AsyncStorage.getItem("ll_onb")) === "1"; } catch {}
+    go(seen ? "register" : "onboarding");
+  };
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Fotoğraf kabı ekranı TAŞAR (−16pt): web'de cover kırpması sol kenarda 12pt
+          fotoğrafsız şerit bırakıyordu (ölçüldü: x<12 düz lacivert). */}
+      <View pointerEvents="none" style={{ position: "absolute", left: -16, top: 0, right: -16, bottom: 0 }}>
+        <Image source={require("./assets/bant.jpg")} resizeMode="cover" style={{ width: "100%", height: "100%" }} />
+      </View>
+      <Image source={require("./assets/dikey.png")} resizeMode="stretch" tintColor={C.meshUst}
+        style={{ position: "absolute", left: 0, top: 0, right: 0, height: "62%", opacity: 0.9 }} />
+      <View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0,
+                                          backgroundColor: C.meshUst, opacity: 0.18 }} />
+      <Image source={require("./assets/dikey.png")} resizeMode="stretch" tintColor={C.doku.ufuk}
+        style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "52%", opacity: 0.96,
+                 transform: [{ scaleY: -1 }] }} />
+      <Image source={require("./assets/dikey.png")} resizeMode="stretch" tintColor={C.bg}
+        style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%",
+                 transform: [{ scaleY: -1 }] }} />
+      <View style={{ position: "absolute", right: ARA[22], top: TOPPAD + ARA[20], zIndex: 2 }}>
+        <LangBtn lang={lang} toggleLang={toggleLang} />
+      </View>
+      <View style={{ paddingTop: TOPPAD + ARA[26], paddingHorizontal: ARA[28] }}>
+        <Text style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 4.6, color: C.foto.marka }}>LOUNGELINK</Text>
+        <View style={{ width: kanatG, height: kanatH, marginTop: ARA[40] }}>
+          <AcilisIsigi g={kanatG} y={kanatH} />
+          <Image source={require("./assets/mark-kanat.png")} resizeMode="contain" style={{ width: kanatG, height: kanatH }} />
+        </View>
+        <Text style={{ fontSize: FS.hero + 14, fontFamily: F.serif, lineHeight: Math.round((FS.hero + 14) * 1.04),
+                       letterSpacing: -1, color: C.foto.baslik, marginTop: ARA[26] }}>
+          {t.v7Slogan1}{"\n"}{t.v7Slogan2}
+        </Text>
+        <Text style={{ fontSize: FS.base, lineHeight: Math.round(FS.base * 1.5), color: C.foto.alt,
+                       marginTop: ARA[14], maxWidth: 320 }}>{t.v7SplashAlt}</Text>
+      </View>
+      <View style={{ flex: 1, justifyContent: "flex-end", paddingHorizontal: ARA[22], paddingBottom: ARA[34] }}>
+        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.splashGuide}
+          onPress={() => go("guide")}
+          style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                   backgroundColor: C.camYuzey, borderRadius: R.lg, paddingHorizontal: ARA[18], minHeight: 52,
+                   shadowColor: "#0D1B2A", shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}>
+          <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "600", flex: 1 }}>{t.splashGuide}</Text>
+          <Ikon ad="sag" boy={16} renk={C.goldText} />
+        </TouchableOpacity>
+        <Btn v="gold" full label={t.start} onPress={basla} style={{ marginTop: ARA[14] }} />
+        <Btn v="ghost" full label={t.haveAcc} onPress={() => go("login")} style={{ marginTop: ARA[10] }} />
+      </View>
+    </View>
+  );
+}
+// Tema seçimi hook'lardan ÖNCE değil, ayrı bileşenle: her iki splash kendi hook'larını koşulsuz çağırır.
+function Splash(props) {
+  return temaModu() === "v7" ? <SplashV7 {...props} /> : <SplashKoyu {...props} />;
+}
+function SplashKoyu({ t, go, lang, toggleLang }) {
   // ==========================================================================
   // 🔴 v3.1 — TASARIM ARTIK BURADA.
   // Bu ekran aylardır krem zeminde ortalanmış bir ikon + metin yığınıydı.

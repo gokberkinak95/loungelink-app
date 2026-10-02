@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -13,6 +22,7 @@
   "Uçuş",
   "Salon",
   "Rota",
+  "",
   "S",
   "Selin B.",
   "Ürün Yönetimi",
@@ -30,17 +40,46 @@
   "N",
   "Nehir A.",
   "Ürün Tasarımcısı",
-  "IST",
+  "TK2125 · ESB · 4 Ekim",
+  "İş",
   "İlanı var",
   "• Doğrulanmış · 64",
   "",
   "S",
   "Selin B.",
   "Ürün Yönetimi",
-  "TK712 · IST · 30 Eylül",
+  "TK712 · IST · 7 Ekim",
   "İş",
   "İlanı var",
   "• Doğrulanmış · 58",
+  "",
+  "E",
+  "Emre Priority Pass",
+  "Saglik",
+  "IST",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
+  "",
+  "F",
+  "Funda DragonPass",
+  "Medya",
+  "SAW",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
+  "",
+  "G",
+  "Gokay Banka Karti",
+  "Insaat",
+  "ADB",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
+  "",
+  "H",
+  "Hakan Charter",
+  "Turizm",
+  "IST",
+  "İlanı var",
+  "• Temel Doğrulama · 50",
   "",
   "I",
   "Irem Uzun Ilan",
@@ -49,142 +88,21 @@
   "İlanı var",
   "• Temel Doğrulama · 50",
   "",
-  "S",
-  "Selin T.",
-  "Pazarlama Direktörü",
-  "ESB",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "T",
-  "Tuna H.",
-  "Veri Bilimci",
+  "J",
+  "Jale Star Gold",
+  "Havacilik",
   "IST",
   "İlanı var",
   "• Temel Doğrulama · 50",
   "",
-  "E",
-  "Elif Elite Plus",
-  "Teknoloji",
+  "K",
+  "Kerem Classic",
+  "Lojistik",
   "IST",
   "İlanı var",
   "• Temel Doğrulama · 50",
-  "",
-  "B",
-  "Burak Classic Plus",
-  "Finans",
-  "IST",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "C",
-  "Ceren AJet IST",
-  "Hukuk",
-  "IST",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "D",
-  "Deniz AJet ESB",
-  "Egitim",
-  "ESB",
-  "İlanı var",
-  "• Temel Doğrulama · 50",
-  "",
-  "E",
-  "Emre Priority Pass"
+  ""
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": -4,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -4,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -4,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -164,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -164,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -164,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -4,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -4,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -4,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -164,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -164,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -164,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 23,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 23,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 23,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -190,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -190,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -190,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

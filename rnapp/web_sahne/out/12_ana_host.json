@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -25,22 +34,17 @@
   "BU AY",
   "KADEMEYE 3 OTURUM",
   "",
-  "3 misafir · +360 LoungePuan",
-  "YAYINDA · 1/2 DOLU",
-  "IST",
-  "TAV Primeclass",
-  "BUGÜN · 14:20–16:40",
-  "",
-  "Misafir ücretsiz",
-  "1 istek bekliyor",
+  "1 misafir · +120 LoungePuan",
+  "İLANLARIM  ·  1",
+  "Tümü",
   "",
-  "YAYINDA · 1/1 DOLU",
+  "YAYINDA · DOLU",
   "SAW",
   "Comfort Lounge",
-  "30 EYLÜL · 09:00–11:30",
+  "BUGÜN · 09:00–11:30",
   "",
   "Yalnız kart sahibini alıyor",
-  "Keşfet'te gör",
+  "İlanı yönet",
   "",
   "İSTEKLER",
   "Sana gelen 1 istek",
@@ -51,7 +55,7 @@
   "AKADEMİSYEN",
   "%52",
   "UYUM",
-  "29 Eylül · 14:20–16:40 · TAV Primeclass",
+  "1 Ekim · 14:20–16:40 · TAV Primeclass",
   "TELEFON",
   "AYNI UÇUŞ",
   "1 OTURUM",
@@ -60,7 +64,7 @@
   "Misafiri kabul et",
   "Reddet",
   "⭐ Son oturumunu puanla",
-  "TAV Primeclass · 29 Eylül",
+  "TAV Primeclass · 1 Ekim",
   "",
   "Kaan T. ile · TK1979 · 14:20–16:40",
   "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",
@@ -78,67 +82,6 @@
   "",
   "Profil"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

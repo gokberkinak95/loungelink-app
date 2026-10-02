@@ -7,7 +7,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 5 g 15 sa · 55 host yayında",
+  "Havalimanı saatine 5 g 13 sa · 70 ilan · 28 host yayında",
   "İstanbul",
   "",
   "N",
@@ -17,11 +17,11 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 29 EYLÜL · 18:00–19:30",
+  "IST · 3 EKİM · 07:00–09:30",
   "",
   "Misafir ücretsiz",
   "",
-  "Şu an açık",
+  "10 sa 57 dk içinde",
   "Seyahat ekle",
   "N",
   "",
@@ -30,11 +30,51 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 29 EYLÜL · 20:00–21:30",
+  "IST · 3 EKİM · 10:00–13:00",
+  "",
+  "Misafir ücretsiz",
+  "TK1979",
+  "",
+  "13 sa 57 dk içinde",
+  "Seyahat ekle",
+  "N",
+  "",
+  "Nehir A.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%76",
+  "UYUM",
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 16:00–17:30",
   "",
   "Misafir ücretsiz",
   "",
-  "1 sa 6 dk içinde",
+  "19 sa 57 dk içinde",
+  "Seyahat ekle",
+  "N",
+  "",
+  "Nehir A.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%76",
+  "UYUM",
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 18:00–19:30",
+  "",
+  "Misafir ücretsiz",
+  "",
+  "21 sa 57 dk içinde",
+  "Seyahat ekle",
+  "N",
+  "",
+  "Nehir A.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%76",
+  "UYUM",
+  "Primeclass Lounge",
+  "IST · 3 EKİM · 20:00–21:30",
+  "",
+  "Misafir ücretsiz",
+  "",
+  "23 sa 57 dk içinde",
   "Seyahat ekle",
   "D",
   "",
@@ -43,148 +83,17 @@
   "%72",
   "UYUM",
   "TAV Primeclass",
-  "IST · 30 EYLÜL · 14:20–16:40",
+  "IST · 3 EKİM · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "19 sa 26 dk içinde",
+  "18 sa 17 dk içinde",
   "Seyahat ekle",
   "S",
   "",
-  "Selin B.",
-  "MİLES&SMİLES · ELİTE PLUS",
-  "%64",
-  "UYUM",
-  "IST",
-  "IST · 30 EYLÜL · 12:00–18:00",
-  "",
-  "Misafir ücretsiz",
-  "TK712",
-  "",
-  "17 sa 6 dk içinde",
-  "Seyahat ekle",
-  "S",
-  "",
-  "Selin B.",
-  "MİLES&SMİLES · ELİTE PLUS",
-  "%64",
-  "UYUM",
-  "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 2 EKİM · 10:00–14:00",
-  "",
-  "Misafir ücretsiz",
-  "TK1953",
-  "",
-  "2 g 15 sa içinde",
-  "Seyahat ekle",
-  "S",
-  "",
-  "Selin B.",
-  "MİLES&SMİLES · ELİTE PLUS",
-  "%64",
-  "UYUM",
-  "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 11 EKİM · 06:00–13:00",
-  "",
-  "Misafir ücretsiz",
-  "TK1957",
-  "",
-  "11 g 11 sa içinde",
-  "Seyahat ekle",
-  "I"
+  "Selin B."
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 39,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 39,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 39,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -202,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -202,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -202,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 39,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 39,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 39,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -202,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -202,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -202,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 55,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 55,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 55,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -212,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -212,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -212,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

@@ -1753,12 +1753,13 @@ const _TUREMIS = ["yuzey"];
 
 export function temaUygula(mod) {
   const koyu = mod === "koyu";
-  const kaynak = koyu ? KOYU : ACIK;
+  // v7 (2 Ekim): üçüncü tema — AVIATION LIGHT. `V7` dosyanın sonunda KOYU'dan türetilir.
+  const kaynak = mod === "v7" && typeof V7 !== "undefined" ? V7 : koyu ? KOYU : ACIK;
   // 🔴 4 Eylül — yalnız ACIK'ın anahtarları dolaşılıyordu: KOYU'ya eklenen
   // ama açık temada hiç tanımlanmamış bir token (`goldTrace` gibi) C'ye HİÇ
   // geçmiyordu; kod `C.goldTrace || C.goldLine` deyip sessizce kalın kenara
   // düşüyordu. İki temanın anahtar BİRLEŞİMİ dolaşılır.
-  for (const k of new Set([...Object.keys(ACIK), ...Object.keys(KOYU)])) {
+  for (const k of new Set([...Object.keys(ACIK), ...Object.keys(KOYU), ...(typeof V7 !== "undefined" ? Object.keys(V7) : [])])) {
     if (typeof ACIK[k] === "function" || typeof KOYU[k] === "function" || _TUREMIS.indexOf(k) >= 0) continue;
     const v = kaynak[k] !== undefined ? kaynak[k] : ACIK[k];
     if (v && typeof v === "object" && C[k] && typeof C[k] === "object" && !Array.isArray(v)) {
@@ -1768,7 +1769,7 @@ export function temaUygula(mod) {
       C[k] = _kopya(v);
     }
   }
-  TEMA_MOD = koyu ? "koyu" : "acik";
+  TEMA_MOD = mod === "v7" ? "v7" : koyu ? "koyu" : "acik";
   _kurucular.forEach(f => { try { f(); } catch (e) {} });
   _dinleyiciler.forEach(f => { try { f(mod); } catch (e) {} });
 }
@@ -1784,8 +1785,10 @@ temaYenidenKur(() => {
   // zeminde mor bir hale bırakıyor, kartı "kirli" gösteriyor. Ayrıca
   // koyu zeminde %5 opaklık görünmüyor — çarpan ölçülmüş bir sabit.
   const koyu = TEMA_MOD === "koyu";
-  const renk = koyu ? KOYU.golgeRenk : "#1A1F2E";
-  const carp = koyu ? KOYU.golgeCarp : 1;
+  const v7 = TEMA_MOD === "v7";
+  // v7: lacivert, YUMUŞAK ortam gölgesi (brief: gölge rengi #0D1B2A, çok düşük opaklık).
+  const renk = koyu ? KOYU.golgeRenk : v7 ? "#0D1B2A" : "#1A1F2E";
+  const carp = koyu ? KOYU.golgeCarp : v7 ? 0.6 : 1;
   ELEV.card.shadowColor = renk;
   ELEV.card.shadowOpacity = 0.05 * carp;
   ELEV.raised.shadowColor = renk;
@@ -1799,7 +1802,7 @@ temaYenidenKur(() => {
   // 🆕 SINIF: "BİR DEĞERİ BAŞLANGIÇTA AYARLAYIP BİR YERDE YENİDEN
   // YAZIYORSAN, O DEĞERİN TEK KAYNAĞI BAŞLANGIÇ DEĞİL YENİDEN YAZAN
   // YERDİR — DEĞİŞİKLİĞİNİ ORAYA YAPMADIYSAN YAPMAMIŞSINDIR."
-  BTN.golge.shadowOpacity = koyu ? 0.20 : 0.34;
+  BTN.golge.shadowOpacity = koyu ? 0.20 : v7 ? 0.30 : 0.34;
 });
 
 temaYenidenKur(() => {
@@ -1992,4 +1995,97 @@ C.kenarIsik = "rgba(26,31,46,0.14)";
 C.popupZemin = "#FFFFFF";
 C.perdeRenk = "rgba(26,31,46,0.40)";
 
-temaUygula("koyu");
+
+// ══════════════════════════════════════════════════════════════════════
+// v7.0 · AVIATION LIGHT — "FERAH SESSİZ LÜKS"   (2 Ekim, Gökberk onaylı A tasarımı)
+//
+// Kabuk: fotoğraflı başlık (uçak penceresi) gece mavisinden (#1A2B4C) şafak sisine
+// (#E6EBF0) akar ve fildişi tuvale (#F9F8F6) iner. Kartlar beyaz buzlu cam
+// (rgba 255 · 0.65 + blur 24), çevre çizgisi yok; ayrım boşluk + çok yumuşak lacivert
+// ortam gölgesi. Şampanya (#D4C3A3) yapısal vurgu ve birincil düğme; METİN olarak
+// kullanıldığı yerde okunur bronza iner (#7A6440 · fildişi üstünde 5.3:1).
+// Amber (#E28743) YALNIZ mikro: yeni/uyarı noktası ve odak ışıması (≤ %8).
+// İnce ayırıcılar (cüzdan · akış şeridi · liste satırları) %7 lacivertle GERİ GELDİ.
+//
+// KONTRAST (fildişi #F9F8F6 üstünde, ölçüldü):
+//   ink #0D1B2A 16.7:1 · body #2E3D52 10.6:1 · mut #55647A 5.9:1 · dim #66748A 4.7:1
+//   goldText #7A6440 5.3:1 · amberInk #9A521F 5.6:1 · redInk #9B3B32 6.6:1 · greenInk #2E6A4F 6.4:1
+// Koyu temanın KURALLARI aynen (derinlik merdiveni, üst ışık kenarı, durum mürekkepte);
+// yalnız ışığın yönü ters: zemin açık, gölge lacivert.
+// ══════════════════════════════════════════════════════════════════════
+// Mikro amber (yeni/uyarı noktası): açık ve koyu temada kendi amber tonları; v7'de güneş batımı.
+C.amberMikro = C.amber;
+KOYU.amberMikro = KOYU.amber;
+export const V7 = {};
+for (const k of Object.keys(KOYU)) V7[k] = _v7Kopya(KOYU[k]);
+function _v7Kopya(v) {
+  if (Array.isArray(v)) return v.map(_v7Kopya);
+  if (v && typeof v === "object") { const o = {}; for (const k of Object.keys(v)) o[k] = _v7Kopya(v[k]); return o; }
+  return v;
+}
+const V7_TUVAL = "#F9F8F6", V7_INK = "#0D1B2A", V7_SIS = "#E6EBF0", V7_GECE = "#1A2B4C";
+const V7_SAMPANYA = "#D4C3A3", V7_AMBER = "#E28743";
+const V7_CAM = "rgba(255,255,255,0.65)", V7_BLOK = "#F1EFEB", V7_SECILI = "#EFE6D6";
+const V7_CIZGI = "rgba(13,27,42,0.07)", V7_YOK = "rgba(0,0,0,0)";
+Object.assign(V7, {
+  // zemin · yüzey merdiveni
+  bg: V7_TUVAL, paper: V7_TUVAL, card: "#FFFFFF", surface: "#FFFFFF", surfaceAlt: V7_BLOK,
+  bgAlt: V7_BLOK, avatarBg: "#ECE9E3", camYuzey: V7_CAM, camKart: V7_CAM, camIz: "rgba(255,255,255,0.40)",
+  popupZemin: "#FFFFFF", goldSoft: V7_SECILI, pasifRozet: "#ECE9E3",
+  goldBg: V7_BLOK, amberBg: "#FBEFE5", goldTint: "#F6F0E4", greenBg: "#EDF4EF", purpleBg: V7_BLOK,
+  tealBg: "#EDF3F2", tealTint: "#EDF3F2", tealTint2: "#E8F0EF", balonBen: "#EFE6D6",
+  warmBlock: "#F3F1ED", warmBlock2: "#EEEBE5", warmBlock3: "#E9E5DD",
+  altinIz03: "rgba(212,195,163,0.20)", sampanyaTint: "rgba(212,195,163,0.30)",
+  // mürekkep
+  ink: V7_INK, inkSoft: "#22324A", body: "#2E3D52", mut: "#55647A", muted: "#55647A", mutedAA: "#55647A",
+  dim: "#66748A", dimAA: "#66748A", fildisi: V7_INK, gece: V7_GECE, gokMavi: "#9FB3CB",
+  // şampanya · altın (yapısal = #D4C3A3; METİN = bronz)
+  gold: "#8A7247", goldText: "#7A6440", goldInk: "#7A6440", goldDeep: "#6E5A39",
+  goldBtn: V7_SAMPANYA, goldBtnUst: "#E6DAC4", goldBtn2: "#C4AF88", goldBtnInk: V7_INK,
+  goldGolge: V7_SAMPANYA, isikSizinti: V7_SAMPANYA, onGold: V7_INK, onGoldSoluk: "rgba(13,27,42,0.58)",
+  btnUstIsik: "rgba(255,255,255,0.55)",
+  // amber — METİN olarak kullanılan yerlerde okunur (#A65A22 · 4.9:1); güneş batımı amberi
+  // (#E28743) yalnız MİKRO: yeni/uyarı noktası ve odak ışıması → `amberMikro`.
+  amber: "#A65A22", amberInk: "#9A521F", amberBtn: "#B5642B", sicak: V7_AMBER, amberMikro: V7_AMBER,
+  // durum mürekkepleri
+  green: "#2E6A4F", greenInk: "#2E6A4F", greenBtn: "#2E6A4F",
+  teal: "#2F6B5F", tealInk: "#2F6B5F", tealBtn: "#2F6B5F",
+  red: "#B2453A", redInk: "#9B3B32", redBg: "#FBEDEA", hataBg: "#FBEDEA",
+  dangerBtn: "#9B3B32", dangerBtn2: "#84322A", dangerBtnInk: "#FFFFFF",
+  purple: "#8A7247", purpleInk: V7_INK, purpleUst: "#8A7247",
+  onAccent: "#FFFFFF", brandApple: "#000000", brandAppleInk: "#FFFFFF", brandGoogle: "#4285F4",
+  // çizgi · ışık · gölge
+  line: V7_CIZGI, line2: "rgba(13,27,42,0.10)", kenarIsik: "rgba(13,27,42,0.10)",
+  goldLine: "rgba(212,195,163,0.70)", goldTrace: "rgba(212,195,163,0.28)", coolLine: "#C9D2DD",
+  amberLine: "rgba(226,135,67,0.35)", tealLine: "rgba(47,107,95,0.25)", purpleLine: V7_YOK,
+  hataLine: "rgba(178,69,58,0.25)", warmLine: V7_YOK, kartKenar: V7_YOK, camKenar: V7_YOK,
+  warmGray: "#B9C1CB", warmGray2: "#8792A0",
+  parlama: "rgba(255,255,255,0.90)", parlamaGuc: "rgba(255,255,255,1)", kartIsik: "rgba(255,255,255,0.90)",
+  kartDip: "rgba(13,27,42,0.04)", kabartmaIsik: "rgba(255,255,255,0.85)", kabartmaDip: "rgba(13,27,42,0.08)",
+  golgeRenk: V7_INK, perde: V7_INK, perdeRenk: "rgba(13,27,42,0.34)",
+  // gökyüzü başlığı
+  meshUst: V7_GECE, meshUst2: "#22365C", meshAlt: "#C9D3DF",
+  pistAsfalt: "#C9D2DD", pistIsik: V7_AMBER, pistUcak: V7_GECE,
+  // uyum mührü — birincil düğmeyle aynı şampanya (Gökberk: "fildişine yakın, belirsizleşmiş")
+  muhurZemin: V7_SAMPANYA, muhurParlama: "#EFE5D2", muhurGolge: "#B8A47C",
+  muhurMurekkep: V7_INK, muhurEtiket: "#4A3E28",
+});
+V7.badgeInk = { ok: "#2E6A4F", cost: "#7A6440", unknown: "#55647A", block: "#9B3B32", info: "#22324A" };
+V7.badge = {
+  ok:      { fg: V7.badgeInk.ok,      bg: "rgba(46,106,79,0.08)",  bd: V7_YOK },
+  cost:    { fg: V7.badgeInk.cost,    bg: "rgba(212,195,163,0.22)", bd: V7_YOK },
+  unknown: { fg: V7.badgeInk.unknown, bg: "rgba(13,27,42,0.05)",   bd: V7_YOK },
+  block:   { fg: V7.badgeInk.block,   bg: "rgba(178,69,58,0.08)",  bd: V7_YOK },
+  info:    { fg: V7.badgeInk.info,    bg: "rgba(13,27,42,0.05)",   bd: V7_YOK },
+};
+V7.doku = { ufuk: V7_SIS, bulut: "#9FB3CB", cizgi: V7_INK, yogunluk: 0.05 };
+// Fotoğraflı bandın mürekkebi: bandın ÜSTÜ gece mavisi — metin fildişi kalır.
+V7.foto = Object.assign({}, KOYU.foto || C.foto, {
+  marka: "#F9F8F6", etiket: "#F9F8F6", baslik: "#FFFFFF", alt: "rgba(249,248,246,0.88)",
+  dugum: V7_SAMPANYA, altSol: "#E6EBF0", bag: "#E6DAC4",
+});
+// Sabit ölçüler (palet dışı): gölge rengi lacivert, çarpan yumuşak.
+V7.golgeCarp = 0.6;
+
+// v7 (2 Ekim): ilk kare AVIATION LIGHT. Tercih yükleyicisi (tema_tercih.js) aynı modu uygular.
+temaUygula("v7");

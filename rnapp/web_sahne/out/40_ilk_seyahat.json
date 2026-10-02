@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -36,13 +23,15 @@
   "SORU",
   "BUGÜN",
   "Bugün sakin. Sıradaki uçuşuna bakalım mı?",
-  "IST · 17 host",
-  "SAW · 7 host",
+  "IST · 16 host",
+  "ADB · 7 host",
   "ESB · 6 host",
   "Misafir olarak host bul",
   "Host olsam ne kazanırım?",
-  "Salon rehberini aç",
-  "Yol arkadaşlarına bak",
+  "",
+  "Salon rehberi",
+  "",
+  "Yol arkadaşları",
   "",
   "Ana Sayfa",
   "",
@@ -53,8 +42,8 @@
   "Tanış",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "PLANIM",
   "Havalimanı Ziyareti Ekle",
   "Seyahatini anlat ki havalimanındaki hostları ve yol arkadaşlarını keşfedebilelim.",
@@ -63,8 +52,8 @@
   "TARİH",
   "Bugün",
   "Yarın",
-  "Perşembe",
-  "Cuma",
+  "Pazar",
+  "Pazartesi",
   "Tarih seç",
   "",
   "HAVAYOLU",
@@ -81,97 +70,6 @@
   "Uçuş kodum yok · havalimanını seçeceğim",
   "Devam"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 43,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 43,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 43,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -205,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -205,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -205,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 43,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 43,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 43,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -205,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -205,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -205,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 48,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 48,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 48,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -208,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -208,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -208,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

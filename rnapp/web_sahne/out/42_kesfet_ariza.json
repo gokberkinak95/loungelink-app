@@ -1,14 +1,6 @@
 {
  "console": [
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] discover_availabilities Network request failed "
   },
@@ -81,7 +73,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Seyahatine göre sıralandı: IST · 29 Eylül",
+  "Seyahatine göre sıralandı: IST · 2 Ekim",
   "İstanbul",
   "",
   "",
@@ -100,97 +92,6 @@
   "",
   "Profil"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 30,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 30,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 30,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 30,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 30,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 30,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 49,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 49,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 49,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -208,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -208,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -208,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

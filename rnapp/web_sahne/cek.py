@@ -117,6 +117,7 @@ SAHNELER = {
     "71_akis_nehir_istek":   ("nehir", [("dokun", "İSTEK"), ("bekle", 1500)]),   # ekran: RequestsPanel · Gelen
     "72_akis_nehir_giden":   ("nehir", [("dokun", "İSTEK"), ("dokun_a11y", "Gönderdiğim"), ("bekle", 1200)]),   # ekran: RequestsPanel · Gönderdiğim
     "73_akis_nehir_oturum":  ("nehir", [("dokun", "SOHBET"), ("bekle", 1500)]),   # ekran: RequestsPanel · Oturumlar
+    "86_akis_nehir_sohbet":  ("nehir", [("dokun", "SOHBET"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1500)]),   # ekran: Chat (v7 · gokberk dünyasında oturum yok)
     "74_akis_nehir_baglanti":("nehir", [("dokun", "SOHBET"), ("dokun_a11y", "Bağlantılar"), ("bekle", 1200)]),   # ekran: HomeConnections
     "75_akis_arda_ana":      ("arda",  [("bekle", 1500)]),   # ekran: Home
     "76_akis_arda_kesfet":   ("arda",  [("dokun", "Keşfet"), ("bekle", 1800)]),   # ekran: Discovery

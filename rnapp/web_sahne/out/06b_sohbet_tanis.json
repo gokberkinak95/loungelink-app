@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -22,7 +13,7 @@
   "LOUNGEPUAN",
   "44",
   "GÜVEN",
-  "1",
+  "2",
   "SOHBET",
   "0",
   "İSTEK",
@@ -39,17 +30,19 @@
   "SALON",
   "14:00–18:00",
   "Host bul",
-  "YANITINI BEKLEYENLER",
-  "A",
-  "Ayşegül D.",
-  "bağlantı kurmak istiyor",
-  "“Seninle tanışmak istiyor.”",
-  "Kabul et",
-  "Reddet",
+  "DAVETLER",
+  "2 bağlantı isteği",
+  "",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
   "“Uçuşun aynı, güzel.”",
+  "Kabul et",
+  "Reddet",
+  "A",
+  "Ayşegül D.",
+  "bağlantı kurmak istiyor",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -66,116 +59,41 @@
   "9+",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
-  "TANIŞ",
-  "Ece Y.",
+  "D",
+  "Deniz K.",
+  "TAV Primeclass · Kapı A12 önü",
   "Bildir",
-  "",
-  "Profili görüntüle",
-  "",
-  "⚠ Lounge satışı yok · Platform dışı ödeme yok · Lounge ve havayolu kurallarına uy",
-  "Merhaba Ece, aynı rotadayız — IST'te kahve içelim mi?",
-  "18:16",
-  "Olur! Ben 14:40'ta iniyorum, aktarmam uzun.",
-  "18:18",
-  "A7 kapısındayım, lacivert ceket.",
-  "18:21",
-  "Gördüm, geliyorum.",
-  "18:23",
-  ""
+  "BULUŞMA",
+  "KAPI A12 ÖNÜ",
+  "BULUŞMAYA",
+  "1",
+  "8",
+  ":",
+  "1",
+  "8",
+  ":",
+  "0",
+  "4",
+  "3",
+  "DURUM",
+  "OTURUMDA",
+  "Merhaba! Primeclass girişinde buluşalım mı?",
+  "19:38",
+  "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
+  "19:40",
+  "Lounge girişindeyim",
+  "19:45",
+  "Ben de yeni geçtim, kapıdayım.",
+  "19:45",
+  "Süper. Kaç numaralı kapıdasın?",
+  "19:46",
+  "A12. Primeclass girişi tam karşısı.",
+  "19:46",
+  "Anladım, yürüyen merdivenden çıkıyorum.",
+  "19:46",
+  "Acele etme, uçuşa daha var."
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 3,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -172,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -172,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -172,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 3,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -172,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -172,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -172,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 37,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 37,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 37,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

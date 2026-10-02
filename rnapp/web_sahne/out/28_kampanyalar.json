@@ -34,6 +34,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -57,7 +58,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -73,8 +74,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "BÜYÜME",
   "Kampanyalar",
   "Aktif kampanyalara katıl, kod kullan",
@@ -83,97 +84,6 @@
   "",
   "Kampanyalar burada açılır. İlk duyanlardan olmak için bildirimleri açık tut."
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -175,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 29,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 29,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 29,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -195,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

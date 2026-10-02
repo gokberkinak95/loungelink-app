@@ -7827,7 +7827,7 @@ export function AkisSeridi({ t, tazele, rol, onSohbetler, onIstekler, onDavetler
                   ekran görüntüsünde rakamların tepesi kesikti. 1.3×. */}
               {yeni ? (
                 <View pointerEvents="none" style={{ position: "absolute", top: ARA[8], right: ARA[10], width: 7, height: 7,
-                                                    borderRadius: R.full, backgroundColor: C.goldText }} />
+                                                    borderRadius: R.full, backgroundColor: C.amberMikro || C.goldText }} />
               ) : null}
               <Text style={{ fontFamily: MONO[500], fontSize: FS.title, lineHeight: MONO_YUK, color: dolu ? C.ink : C.dim }}>{n}</Text>
               {/* 🔴 30 Ağu · 5. tur — `adjustsFontSizeToFit` KALDIRILDI.

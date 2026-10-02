@@ -9,8 +9,8 @@
   "G",
   "Gökberk İnak",
   "Ürün Yönetimi · İstanbul",
-  "• Temel Doğrulama · 44",
-  "0",
+  "• Yeni Kullanıcı · 44",
+  "1",
   "OTURUM",
   "—",
   "YILDIZ",
@@ -31,6 +31,7 @@
   "",
   "",
   "Bildirimler",
+  "9+",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -54,7 +55,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -77,114 +78,22 @@
   "Bağlantılar",
   "İstekler",
   "Oturumlar",
+  "",
+  "Tümünü okundu işaretle · 18",
   "Bildirimler",
-  "BUGÜN",
+  "DÜN",
   "",
   "İstek kabul edildi",
-  "7 dk",
+  "1 g",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "23 dk",
+  "1 g",
   "Ayşegül D. seninle tanışmak istiyor.",
   "",
   "Havalimanı güncellemesi #1",
-  "1 sa",
-  "IST Dış Hatlar terminalinde salon kapasitesi güncellendi. Kart kurallarını yeniden kontrol ettik.",
-  "",
-  "Oturum Devam Ediyor"
+  "1 g"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 15,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 15,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 15,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -184,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -184,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -184,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 15,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 15,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 15,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -184,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -184,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -184,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

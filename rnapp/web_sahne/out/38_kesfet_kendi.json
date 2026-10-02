@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -16,7 +7,7 @@
   "",
   "TÜM HAVALİMANLARI VE TARİHLER",
   "Keşfet",
-  "54 host yayında",
+  "70 ilan · 28 host yayında",
   "Keşfet",
   "",
   "Sen de misafir olabilirsin",
@@ -28,13 +19,27 @@
   "MİLES&SMİLES · ELİTE PLUS",
   "%76",
   "UYUM",
+  "TAV Primeclass",
+  "IST · 5 EKİM · 14:20–16:40",
+  "",
+  "Misafir ücretsiz",
+  "TK1979",
+  "",
+  "2 g 18 sa içinde",
+  "Seyahat ekle",
+  "S",
+  "",
+  "Selin B.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%76",
+  "UYUM",
   "IST",
-  "IST · 30 EYLÜL · 12:00–18:00",
+  "IST · 7 EKİM · 12:00–18:00",
   "",
   "Misafir ücretsiz",
   "TK712",
   "",
-  "17 sa 6 dk içinde",
+  "4 g 15 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -43,12 +48,12 @@
   "%76",
   "UYUM",
   "ESB",
-  "ESB · 1 EKİM · 09:00–12:00",
+  "ESB · 8 EKİM · 09:00–12:00",
   "",
   "Misafir ücretsiz",
   "TK2104",
   "",
-  "1 g 14 sa içinde",
+  "5 g 12 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -57,12 +62,12 @@
   "%76",
   "UYUM",
   "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 2 EKİM · 10:00–14:00",
+  "IST · 9 EKİM · 10:00–14:00",
   "",
   "Misafir ücretsiz",
   "TK1953",
   "",
-  "2 g 15 sa içinde",
+  "6 g 13 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -71,12 +76,12 @@
   "%76",
   "UYUM",
   "Turkish Airlines Lounge",
-  "ESB · 5 EKİM · 08:00–12:00",
+  "ESB · 12 EKİM · 08:00–12:00",
   "",
   "Misafir ücretsiz",
   "TK2106",
   "",
-  "5 g 13 sa içinde",
+  "9 g 11 sa içinde",
   "Seyahat ekle",
   "S",
   "",
@@ -85,115 +90,10 @@
   "%76",
   "UYUM",
   "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 11 EKİM · 06:00–13:00",
-  "",
-  "Misafir ücretsiz",
-  "TK1957",
-  "",
-  "11 g 11 sa içinde",
-  "Seyahat ekle",
-  "D",
-  "",
-  "Deniz K.",
-  "MİLES&SMİLES · ELİTE PLUS",
-  "%72",
-  "UYUM",
-  "TAV Primeclass",
-  "IST · 30 EYLÜL · 14:20–16:40",
+  "IST · 18 EKİM · 06:00–13:00",
   "",
   "Misafir ücretsiz"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 41,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -203,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 56,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 56,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 56,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -213,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -213,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -213,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

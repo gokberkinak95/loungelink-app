@@ -95,7 +95,9 @@ export function BrandBar({ right }) {
 // çözer) — bu yüzden ikisi de üstte bağlanıyor, seçim çalışma anında.
 const ALTIN_KOYU = require("../assets/altin.png");
 const ALTIN_ACIK = require("../assets/altin_acik.png");
-const ALTIN_GRADYAN = () => (temaModu() === "koyu" ? ALTIN_KOYU : ALTIN_ACIK);
+// v7 (2 Ekim): şampanya #E6DAC4 → #D4C3A3 → #C4AF88, koyu temanın eğrisiyle aynı profil.
+const ALTIN_V7 = require("../assets/altin_v7.png");
+const ALTIN_GRADYAN = () => (temaModu() === "koyu" ? ALTIN_KOYU : temaModu() === "v7" ? ALTIN_V7 : ALTIN_ACIK);
 
 // ══════════════════════════════════════════════════════════════════════
 // 🔴 20 EYLÜL — BİRİNCİL DÜĞMENİN METNİ AA'NIN YARISINDAYDI.
@@ -143,6 +145,9 @@ const BTN = {
   // `ghost`tan ayrı, çünkü o GÖVDE yüzeyinde duruyor; bu MESH BAŞLIĞIN
   // üstünde ve zemininin ne olduğunu bilmiyor — o yüzden yarı saydam.
   ust:     { bg: "rgba(255,255,255,0.04)", fg: C.foto.baslik, bd: C.line2 || C.line },
+  // v7: AÇIK zemindeki daire (giriş kapısı, sohbet başlığı). `ust` beyaz camdı → fildişi
+  // üstünde görünmüyordu (ölçüldü: 16_giris, 17_kayit, 06_sohbet).
+  ustAcik: { bg: "rgba(13,27,42,0.04)", fg: C.ink, bd: "rgba(13,27,42,0.14)" },
   muted:   { bg: C.bgAlt,  fg: C.mutedAA, bd: C.line },
   // ──────────────────────────────────────────────────────────────────────
   // 🔴 v3.9 — YUMUŞAK (TINT) VARYANTLAR: `Btn`in İKİNCİ KAPSAM BOŞLUĞU.
@@ -184,6 +189,13 @@ temaYenidenKur(() => {
   BTN.tealSoft.bg = C.tealBg;     BTN.tealSoft.fg = C.tealInk;    BTN.tealSoft.bd = C.teal + "40";
   BTN.redSoft.bg = C.redBg;       BTN.redSoft.fg = C.redInk;      BTN.redSoft.bd = C.red + "40";
   BTN.greenSoft.bg = C.greenBg;   BTN.greenSoft.fg = C.greenInk;  BTN.greenSoft.bd = C.green + "40";
+  // v7 (Gökberk · prompt md.3): bant üstündeki daire gece mavisine KARIŞIYORDU.
+  // Daha dolu cam + şampanya ışık halkası: eylem olduğu ilk bakışta okunur.
+  const v7 = temaModu() === "v7";
+  BTN.ust.bg = v7 ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.04)";
+  BTN.ust.fg = C.foto.baslik;
+  BTN.ust.bd = v7 ? "rgba(212,195,163,0.60)" : (C.line2 || C.line);
+  BTN.ustAcik.fg = C.ink;
 });
 
 // ============================================================================
@@ -522,7 +534,9 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
   // 🆕 SINIF: "BİRLEŞTİRME, VAR OLAN GÖRÜNÜMLERİ SİLMEK DEĞİL, HEPSİNİ
   // TEK BİR KURALIN İÇİNDEN ÜRETEBİLMEKTİR."
   const secZemin = dolu ? T2.bd : T2.bg;
-  const secMetin = dolu ? C.onAccent : T2.fg;
+  // v7: dolu zemin şampanya olabiliyor (#D4C3A3) → beyaz metin 1.7:1 idi (ölçüldü: 05b Tanış
+  // çipleri). Açık zeminde mürekkep, koyu zeminde beyaz — zeminin parlaklığına göre.
+  const secMetin = dolu ? (temaModu() === "v7" && acikZemin(secZemin) ? C.ink : C.onAccent) : T2.fg;
   // Seçilmemiş zemin ÇAĞRI YERİNİN ÜSTÜNDE DURDUĞU YÜZEYE bağlı: bir
   // `C.card` çipi `C.card` bir kartın üstünde GÖRÜNMEZ. İki ada
   // kapatıldı — serbest renk değil.
@@ -629,23 +643,27 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
    ════════════════════════════════════════════════════════════════════ */
 export function CuzdanSeridi({ hucreler, stil }) {
   const sik = (hucreler || []).length >= 4;
+  // v7 (Gökberk 2 Ekim): şerit HER ZAMAN gece mavisi bandın içinde (ana sayfa + profil).
+  // Cam zemin + şampanya değer + hücreler arası İNCE AYIRICI (geri istendi: "kredi/
+  // loungepuan/güven arasındaki çizgiler"). Ayırıcı %38 şampanya: görünür ama çerçeve değil.
+  const v7 = temaModu() === "v7";
   return (
     <View style={[{ flexDirection: "row", alignItems: "center", marginTop: ARA[22],
-                    borderWidth: 1, borderColor: C.line, borderRadius: R.lg,
-                    backgroundColor: "rgba(255,255,255,0.035)", height: 62 }, stil]}>
+                    borderWidth: 1, borderColor: v7 ? "rgba(255,255,255,0.14)" : C.line, borderRadius: R.lg,
+                    backgroundColor: v7 ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.035)", height: 62 }, stil]}>
       {hucreler.map((h, i) => (
         <React.Fragment key={h.etiket + i}>
-          {i > 0 && <View style={{ width: 1, height: 26, backgroundColor: C.line2 || C.line }} />}
+          {i > 0 && <View style={{ width: 1, height: 26, backgroundColor: v7 ? "rgba(212,195,163,0.38)" : (C.line2 || C.line) }} />}
           <TouchableOpacity disabled={!h.onPress} onPress={h.onPress || undefined} hitSlop={TAP.slop}
             accessibilityRole={h.onPress ? "button" : undefined}
             accessibilityLabel={h.a11y || `${h.etiket}: ${h.deger}`}
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
             {/* mono satır yüksekliği ≥ 1.3× — Android üst çıkıntıyı kırpmasın */}
             <Text numberOfLines={1} style={{ fontFamily: MONO[600], fontSize: FS.title,
-                                             lineHeight: Math.round(FS.title * 1.3), color: C.gold }}>{String(h.deger)}</Text>
+                                             lineHeight: Math.round(FS.title * 1.3), color: v7 ? C.foto.dugum : C.gold }}>{String(h.deger)}</Text>
             {/* 4+ hücrede (profil şeridi) SE 320'de hücre 69pt: "LOUNGEPUAN"
                 1.3 aralıkla 76.6pt → ÖLÇÜLDÜ, taştı (0.6 ile 69.6 — hâlâ 0.6pt). Sık şeritte aralık 0.4. */}
-            <Text numberOfLines={1} style={{ fontSize: FS.micro, color: C.dim, marginTop: ARA[3], fontWeight: "600",
+            <Text numberOfLines={1} style={{ fontSize: FS.micro, color: v7 ? "rgba(249,248,246,0.74)" : C.dim, marginTop: ARA[3], fontWeight: "600",
                                              letterSpacing: sik ? 0.4 : 1.3 }}>{BUYUK(h.etiket)}</Text>
           </TouchableOpacity>
         </React.Fragment>
@@ -760,7 +778,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
       {isaret ? <Ikon ad={isaret} boy={12} kutu={12} renk={renk} stil={{ marginRight: ARA[4] }} /> : null}
       <Text numberOfLines={1} style={{ fontSize: 10.5, fontWeight: "600", lineHeight: 14,
                                        letterSpacing: 0.6,
-                                       color: secili ? C.bg : renk }}>{etiket}</Text>
+                                       color: secili ? (temaModu() === "v7" ? C.onGold : C.bg) : renk }}>{etiket}</Text>
     </View>
   );
   if (!onPress) return ic;
@@ -858,11 +876,16 @@ export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, u
       <View style={{ paddingHorizontal: ARA[22], paddingTop: TOPPAD + ARA[12], paddingBottom: ARA[8] }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {onBack ? (
-            <Btn v="ust" daire a11yLabel={geriEtiketi(t)}
-              onPress={onBack} sol={<Ikon ad="sol" boy={20} renk={C.foto.baslik} />} />
+            <Btn v={temaModu() === "v7" ? "ustAcik" : "ust"} daire a11yLabel={geriEtiketi(t)}
+              onPress={onBack} sol={<Ikon ad="sol" boy={20} renk={temaModu() === "v7" ? C.ink : C.foto.baslik} />} />
           ) : null}
-          <Text style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 4.6, color: C.foto.marka,
-                         marginLeft: onBack ? ARA[12] : 0, flex: 1 }}>LOUNGELINK</Text>
+          {temaModu() === "v7" ? (
+            <Image source={MARKA_KANAT} resizeMode="contain" tintColor={C.gold}
+              style={{ width: 26, height: 13, marginLeft: onBack ? ARA[12] : 0 }} />
+          ) : null}
+          <Text style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 4.6,
+                         color: temaModu() === "v7" ? C.ink : C.foto.marka,
+                         marginLeft: temaModu() === "v7" ? ARA[8] : onBack ? ARA[12] : 0, flex: 1 }}>LOUNGELINK</Text>
           {right ? <View style={{ marginLeft: SP[2] }}>{right}</View> : null}
         </View>
         <View style={{ marginTop: ARA[28] }}>
@@ -1140,6 +1163,16 @@ export const GOLGE_KATMAN = [
 // Splash gibi zemini GERÇEKTEN fotoğraf olan bir yer çıkarsa oraya
 // geri gelir — ve o zaman yine ÖLÇÜLEREK gelir.
 // ══════════════════════════════════════════════════════════════════
+// v7 (prompt md.2): serif başlıktaki yüzde ("%99", "%78") serif ailede orantısız büyük
+// duruyordu. Yüzde parçası JetBrains Mono'ya taşınır — bir "kupon damgası" sesi.
+function yuzdeMono(metin, boy) {
+  if (typeof metin !== "string" || temaModu() !== "v7") return metin;
+  const parca = metin.split(/(%\s?\d+|\d+\s?%)/);
+  if (parca.length === 1) return metin;
+  return parca.map((p, i) => (/^(%\s?\d+|\d+\s?%)$/.test(p)
+    ? <Text key={i} style={{ fontFamily: MONO[600], fontSize: Math.round(boy * 0.78), letterSpacing: -0.5 }}>{p}</Text>
+    : p));
+}
 function GolgeliMetin({ children, style, satir = 1, golge = false }) {
   if (!golge) {
     return <Text numberOfLines={satir} style={style}>{children}</Text>;
@@ -1435,13 +1468,15 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
       </Animated.View>
       <Animated.View pointerEvents={kompaktAktif ? "box-none" : "none"}
         style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: BANT_KOMPAKT,
-                 opacity: bel, backgroundColor: C.bg,
-                 borderBottomWidth: 1, borderBottomColor: C.kartKenar,
+                 // v7: daralmış bant da GECE MAVİSİ şerit — bandın kimliği kaybolmaz, içindeki
+                 // beyaz cam daire (filtre/profil) fildişi zeminde kaybolmaz (ölçüldü: 85_akis_arda_neden).
+                 opacity: bel, backgroundColor: temaModu() === "v7" ? C.meshUst : C.bg,
+                 borderBottomWidth: temaModu() === "v7" ? 0 : 1, borderBottomColor: C.kartKenar,
                  flexDirection: "row", alignItems: "flex-end",
                  paddingHorizontal: ARA[22], paddingBottom: ARA[14] }}>
         <Text numberOfLines={1}
           style={{ flex: 1, fontFamily: F.serifGosterim, fontSize: FS.title,
-                   color: C.ink, lineHeight: SATIR(FS.title, "serif") }}>
+                   color: temaModu() === "v7" ? C.foto.baslik : C.ink, lineHeight: SATIR(FS.title, "serif") }}>
           {kompaktBaslik || ""}
         </Text>
         {kompaktSag || null}
@@ -1450,6 +1485,18 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
   );
 }
 
+// v7: sis (şafak → fildişi) SABİT yükseklikte. Yüzdeyken uzun bantta (ana sayfa: isim +
+// cüzdan) sis 200pt'ye çıkıp cüzdan şeridini yutuyordu (ölçüldü: 70_akis_nehir_ana).
+// Metin bloğunun alt payı da aynı sabitten → hiçbir metin sise düşmez.
+const V7_SIS = 84;
+// #RRGGBB → göreli parlaklık > 0.45 mi? (rgba/isimli renkler: hayır)
+function acikZemin(renk) {
+  const m = /^#([0-9a-f]{6})$/i.exec(String(renk || ""));
+  if (!m) return false;
+  const n = parseInt(m[1], 16), k = [n >> 16, (n >> 8) & 255, n & 255].map(v => {
+    v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * k[0] + 0.7152 * k[1] + 0.0722 * k[2] > 0.45;
+}
 export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                           sag, eylem, geri, yukseklik, serifBaslik, serifYani, altIcerik }) {
   // 🔴 3 EYLÜL — `serifBaslik` ve `altIcerik` EKLENDİ.
@@ -1477,6 +1524,12 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
   const fotoOran = G / BANT_FOTO_GEN >= olculenY / BANT_FOTO_YUK ? G / BANT_FOTO_GEN : olculenY / BANT_FOTO_YUK;
   const fotoG = BANT_FOTO_GEN * fotoOran, fotoY = BANT_FOTO_YUK * fotoOran;
   const fotoSol = -Math.max(0, fotoG - G) / 2;
+  // v7: iç sayfalar da serif bant başlığı taşıyor; tek uzun kelime ("Değerlendirmeler") SE 320'de
+  // satıra sığmıyordu (tasma_check: 299pt gerek, 276 var). En uzun kelime sığacak kadar küçült
+  // (Cormorant ortalama glif ≈ 0.5em); kısa başlıklar değişmez.
+  const enUzun = typeof baslik === "string" ? Math.max(0, ...baslik.split(/\s+/).map(w => w.length)) : 0;
+  // Referans genişlik SABİT 276pt (SE 320 − 2×22): başlık her cihazda aynı boyda kalır.
+  const baslikBoy = Math.min(FS.bant + 4, enUzun ? Math.floor(276 / (enUzun * 0.45)) : FS.bant + 4);
   const fotoUst = -Math.max(0, fotoY - olculenY) * 0.42;
   return (
     // ══════════════════════════════════════════════════════════════
@@ -1562,6 +1615,35 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
           az görünüyordu — "az görünen" ile "yok" aynı şey değil.
           `dikey.png` yalnız ALFA taşıyor; rengi `tintColor` veriyor,
           yani palet değişince bu da değişiyor. */}
+      {temaModu() === "v7" ? (
+        <>
+          {/* ══════════════════════════════════════════════════════════════
+              v7 · AVIATION LIGHT (2 Ekim, Gökberk onaylı A tasarımı) — uçak penceresi
+              TAM görünür; üstü gece mavisi perdeyle okunur kalır, altı şafak sisinden
+              fildişi tuvale akar (kartlar bandın dibine değdiğinde zemin kesintisiz).
+              Katmanlar: fotoğraf → gece mavisi (üst, dikey.png alfa) → şafak sisi
+              (alt, ters dikey.png) → fildişi (en alt şerit). Metin bandın ÜST yarısında
+              kalır; fildişi metin #F9F8F6 gece mavisi üstünde 13:1.
+              ══════════════════════════════════════════════════════════════ */}
+          <Katman source={require("../assets/bant.jpg")} resizeMode="stretch"
+            style={{ position: "absolute", left: fotoSol, top: fotoUst, width: fotoG, height: fotoY }} />
+          <Katman source={require("../assets/dikey.png")} resizeMode="stretch" tintColor={C.meshUst}
+            style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, opacity: 0.88 }} />
+          <View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0,
+                                              backgroundColor: C.meshUst, opacity: 0.22 }} />
+          <Katman source={require("../assets/dikey.png")} resizeMode="stretch" tintColor={C.doku.ufuk}
+            style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: V7_SIS, opacity: 0.96,
+                     transform: [{ scaleY: -1 }] }} />
+          <Katman source={require("../assets/dikey.png")} resizeMode="stretch" tintColor={C.bg}
+            style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: Math.round(V7_SIS * 0.4),
+                     transform: [{ scaleY: -1 }] }} />
+          {/* Son piksel satırı: ölçek yuvarlaması fotoğrafı 1px sızdırıyordu (ölçüldü: y=947
+              gri 155 çizgi). Düz zemin şeridi bandı kesintisiz bitirir. */}
+          <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, bottom: -1, height: 4,
+                                              backgroundColor: C.bg }} />
+        </>
+      ) : (
+        <>
       <Katman source={require("../assets/dikey.png")} resizeMode="stretch"
         tintColor={C.meshUst}
         // Karşıt kenarla sabit (bkz. kaplama_check.py). Bu kabın dolgusu
@@ -1580,7 +1662,11 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
           (ölçüldü: alt-orta parlaklık 72, tasarım 42). */}
       <Katman source={require("../assets/bant_hale.png")} resizeMode="stretch"
         style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%" }} />
-      <View style={{ paddingHorizontal: ARA[22], paddingTop: TOPPAD + ARA[20] }}>
+        </>
+      )}
+      {/* v7: güvenli alanın ALTINDA +12 nefes — logo ve düğmeler pencerenin bulut
+          katmanında durur, çentik/Dynamic Island'a değmez. */}
+      <View style={{ paddingHorizontal: ARA[22], paddingTop: TOPPAD + ARA[20] + (temaModu() === "v7" ? ARA[12] : 0) }}>
         {/* 🔴 5 EYLÜL — ÖLÇÜLDÜ: sağda daire olmayan bantlarda (Planım) eylem
             satırı yalnız marka yazısı kadar (14pt) kalıyordu; tasarım o satırı
             HER ZAMAN 38 (`.ust-eylem` dairesi) sayar. Sonuç: üst bilgi ve
@@ -1601,7 +1687,13 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                 sol={<Ikon ad="sol" boy={20} renk={C.foto.baslik} />} />
             </View>
           ) : null}
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+            {/* v7 (Gökberk 2 Ekim: "iç sayfadaki küçük logo kullanımını geri getir") —
+                kanat işareti markanın önünde, şampanya. 26×13: kelimenin x-yüksekliğiyle hizalı. */}
+            {temaModu() === "v7" ? (
+              <Image source={MARKA_KANAT} resizeMode="contain" tintColor={C.foto.dugum}
+                style={{ width: 26, height: 13, marginRight: ARA[8] }} />
+            ) : null}
             {/* Tasarımda `.marka`: 11/700, harf aralığı .42em (≈4.6px).
                 3'lük aralık kelimeyi "kalın yazı" gibi gösteriyordu;
                 4.6'da kelime bir MARKA İŞARETİNE dönüşüyor — okunacak bir
@@ -1635,7 +1727,8 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
         {/* v6.1 (Gökberk md.24) — üst bilgi yokken (Profil) marka satırı ile
             başlık arasında 34pt boş bir kuşak kalıyordu. Boşluk artık
             taşıdığı şeye göre: üst bilgi varsa 26, yoksa 14. */}
-        <View style={{ marginTop: (ustBilgi && !ayniBaslik(ustBilgi, baslik)) ? ARA[26] : ARA[14], paddingBottom: ARA[22] }}>
+        <View style={{ marginTop: (ustBilgi && !ayniBaslik(ustBilgi, baslik)) ? ARA[26] : ARA[14],
+                       paddingBottom: ARA[22] + (temaModu() === "v7" ? V7_SIS - ARA[22] + ARA[8] : 0) }}>
           {/* ══════════════════════════════════════════════════════════
               🔴 30 AĞUSTOS · GECE SİSTEMİ — BAŞLIK HİYERARŞİSİ TASARIMDAN.
 
@@ -1666,7 +1759,7 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                toUpperCase'ini kullanır: "Selin" → "SELIN" (noktasız I).
                Tasarım "SELİN B." yazıyor. Türkçe büyük harf `BUYUK` ile. */
             <GolgeliMetin style={{ fontSize: FS.xs, fontWeight: "700",
-                                   letterSpacing: 2.4, color: C.gold }}>
+                                   letterSpacing: 2.4, color: temaModu() === "v7" ? C.foto.dugum : C.gold }}>
               {BUYUK(String(ustBilgi))}
             </GolgeliMetin>
           ) : null}
@@ -1692,10 +1785,10 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                   dört ayrı Text var, her biri kendi ölçeğini seçseydi
                   gölge asıl metinden kayardı. Uzun başlık artık bandı
                   BÜYÜTÜYOR (minHeight sayesinde), küçültülmüyor. */}
-              <GolgeliMetin satir={2} style={{ fontSize: FS.bant + 4, lineHeight: SATIR(FS.bant + 4, "serif"),
+              <GolgeliMetin satir={2} style={{ fontSize: baslikBoy, lineHeight: SATIR(baslikBoy, "serif"),
                                      fontFamily: F.serifGosterim, letterSpacing: -0.4,
                                      color: C.foto.baslik }}>
-                {baslik}
+                {yuzdeMono(baslik, baslikBoy)}
               </GolgeliMetin>
             </View>
           ) : null}
@@ -1771,6 +1864,13 @@ export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ust
         kompaktSag={right || brandRight}>
         {bant}
       </DaralanBant>
+    );
+  }
+  // v7 (Gökberk onaylı A): iç sayfalar da uçak penceresi bandını taşır.
+  if (temaModu() === "v7" && title && !kahraman) {
+    return (
+      <FotoBant marka="LOUNGELINK" ustBilgi={ustBilgi || gorunur(scene)} baslik={title}
+        altBilgi={sub} sag={brandRight} eylem={right} geri={onBack} />
     );
   }
   return (

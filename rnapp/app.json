@@ -5,12 +5,12 @@
     "version": "6.2.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
-    "backgroundColor": "#0B0A0B",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F9F8F6",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0B0A0B"
+      "backgroundColor": "#1A2B4C"
     },
     "android": {
       "package": "com.loungelink.app",
@@ -18,7 +18,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
-        "backgroundColor": "#0B0A0B"
+        "backgroundColor": "#1A2B4C"
       },
       "googleServicesFile": "./google-services.json",
       "permissions": [

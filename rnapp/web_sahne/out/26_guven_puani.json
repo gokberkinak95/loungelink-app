@@ -5,10 +5,6 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -47,6 +43,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -70,7 +67,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -86,8 +83,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "GÜVEN",
   "Güven Puanım",
   "88",
@@ -104,100 +101,8 @@
   "Meslek eklendi",
   "6/6",
   "Profili Düzenle'de mesleğini yaz.",
-  "Biyografi eklendi",
-  "0/6"
+  "Biyografi eklendi"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 11,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 11,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 11,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -180,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -180,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -180,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 11,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 11,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 11,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -180,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -180,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -180,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 36,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 36,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 36,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -200,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -200,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -200,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

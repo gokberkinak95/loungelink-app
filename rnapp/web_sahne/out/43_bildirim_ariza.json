@@ -1,22 +1,6 @@
 {
  "console": [
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] ortak.js:320 Network request failed "
   },
@@ -114,7 +98,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -142,97 +126,6 @@
   "Bağlantı bir an koptu. Verilerin duruyor.",
   "Yeniden yükle"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 32,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 32,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 32,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 32,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 32,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 32,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 50,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 50,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 50,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -209,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -209,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -209,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

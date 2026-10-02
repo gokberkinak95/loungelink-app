@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -13,10 +26,19 @@
   "Uçuş",
   "Salon",
   "Rota",
+  "",
+  "G",
+  "Gökberk İ.",
+  "Ürün Yönetimi",
+  "TK1979 · IST · 5 Ekim",
+  "Aynı uçuş",
+  "Aktarma",
+  "• Temel Doğrulama · 50",
+  "",
   "G",
   "Gökberk İnak",
   "Ürün Yönetimi",
-  "TK1979 · IST · 30 Eylül",
+  "TK1979 · IST · 3 Ekim",
   "Aynı uçuş",
   "Aktarma",
   "• Temel Doğrulama · 44",
@@ -24,7 +46,7 @@
   "A",
   "Arda K.",
   "Yazılım Mühendisi",
-  "TK1979 · IST",
+  "TK1979 · IST · 3 Ekim",
   "Aynı uçuş",
   "İş",
   "• Temel Doğrulama · 38",
@@ -33,6 +55,13 @@
   "Ece Y.",
   "Akademisyen",
   "TK1979 · IST",
+  "Aynı uçuş",
+  "• Temel Doğrulama · 32",
+  "",
+  "Z",
+  "Zeynep A.",
+  "Akademisyen",
+  "TK1979 · IST · 5 Ekim",
   "Aynı uçuş",
   "• Temel Doğrulama · 32",
   "",
@@ -46,7 +75,7 @@
   "Y",
   "Yeni Üye",
   "Mühendis",
-  "TK1979 · IST · 30 Eylül",
+  "TK1979 · IST · 3 Ekim",
   "Aynı uçuş",
   "• Temel Doğrulama · 16",
   "",
@@ -63,8 +92,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "BAĞLANTI",
   "Bağlantı kur: Burak S.",
   "B",
@@ -76,111 +105,8 @@
   "Havalimanı Yol Arkadaşı Bağlantısı",
   "İstek gönder — kabul etmek onun seçimi. Lounge yok, kredi yok. Güvenlik araçları her zaman aktif.",
   "NE ARIYORSUN",
-  "",
-  "Uçuş öncesi kahve sohbeti",
-  "",
-  "İş / networking",
-  "",
-  "Aynı rota yol arkadaşı",
-  "",
-  "Sadece merhaba",
-  "",
-  "Diğer",
-  "KISA TANITIM",
-  "Bağlantı İsteği Gönder",
-  ""
+  ""
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

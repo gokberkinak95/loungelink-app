@@ -43,6 +43,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -66,7 +67,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -82,8 +83,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "Cüzdan",
   "Kredilerin ve hareket geçmişin",
   "LOUNGELINK",
@@ -100,100 +101,8 @@
   "",
   "KREDİ PAKETLERİ",
   "Paketler üyeliğin yerine geçmez; plan kredin bittiğinde tek seferlik ek haktır.",
-  "Tek hak",
-  "1 lounge isteği"
+  "Tek hak"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

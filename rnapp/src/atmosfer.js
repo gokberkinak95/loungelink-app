@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Image, Dimensions, Animated, Easing } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { C } from "./theme";
+import { C , temaModu } from "./theme";
 import { Katman } from "./katman";
 import { useAzHareket } from "./hareket";
 
@@ -222,7 +222,8 @@ function TozZerresi({ x, gec, boy, ton, G, Y }) {
   return (
     <Animated.View style={{
       position: "absolute", left: G * x, bottom: 0, width: boy, height: boy, borderRadius: boy,
-      backgroundColor: ton === "gold" ? C.gold : C.ink,
+      // v7: zerreler şampanya (yapısal ton) — bronz metin rengi ışık gibi görünmüyordu.
+      backgroundColor: ton === "gold" ? (temaModu() === "v7" ? C.goldBtn : C.gold) : C.ink,
       opacity: az ? 0.35 : p.interpolate({ inputRange: [0, 0.2, 0.75, 1], outputRange: [0, 0.7, 0.45, 0] }),
       transform: [{ translateY: p.interpolate({ inputRange: [0, 1], outputRange: [0, -Y * 0.85] }) }],
     }} />
@@ -251,14 +252,15 @@ function IsikBulutlari() {
   const Y = H * 0.78; // katmanın yüksekliği (%22 → alt)
   return (
     <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "22%", bottom: 0, overflow: "hidden" }}>
-      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={C.gold}
+      {/* v7: bulutlar ŞAFAK — şampanya + gökyüzü sisi; altın+mor fildişini beje boyuyordu. */}
+      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={temaModu() === "v7" ? C.goldBtn : C.gold}
         style={{ position: "absolute", width: G * 1.3, height: G * 1.3, right: -G * 0.45, top: -G * 0.1,
-                 opacity: 0.16,
+                 opacity: temaModu() === "v7" ? 0.07 : 0.16,
                  transform: [{ translateX: v.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.18] }) },
                              { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.12] }) }] }} />
-      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={C.purple}
+      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={temaModu() === "v7" ? C.gokMavi : C.purple}
         style={{ position: "absolute", width: G * 1.4, height: G * 1.4, left: -G * 0.55, bottom: -G * 0.35,
-                 opacity: 0.2,
+                 opacity: temaModu() === "v7" ? 0.16 : 0.2,
                  transform: [{ translateX: w.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.2] }) },
                              { translateY: w.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.15] }) }] }} />
       {ZERRE.map((z, i) => <TozZerresi key={i} {...z} G={G} Y={Y} />)}

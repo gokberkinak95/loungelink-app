@@ -1,20 +1,11 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -22,7 +13,7 @@
   "LOUNGEPUAN",
   "44",
   "GÜVEN",
-  "2",
+  "1",
   "SOHBET",
   "0",
   "İSTEK",
@@ -30,28 +21,35 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN · BİNİŞ",
-  "TK1979",
-  "IST",
-  "",
-  "LHR",
+  "SIRADAKİ SEYAHATİN · 10 GÜN SONRA",
+  "PC2210",
+  "SAW",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "04:56–08:56",
+  "09:00–11:00",
   "Host bul",
-  "YANITINI BEKLEYENLER",
-  "A",
-  "Ayşegül D.",
-  "bağlantı kurmak istiyor",
-  "“Seninle tanışmak istiyor.”",
-  "Kabul et",
-  "Reddet",
+  "DAVETLER",
+  "2 bağlantı isteği",
+  "",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
   "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
+  "A",
+  "Ayşegül D.",
+  "bağlantı kurmak istiyor",
+  "“Seninle tanışmak istiyor.”",
+  "Kabul et",
+  "Reddet",
+  "⭐ Son oturumunu puanla",
+  "TAV Primeclass · 1 Ekim",
+  "",
+  "Deniz K. ile · TK1979 · 05:19–07:39",
+  "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",
+  "Şimdi puanla",
+  "Sonra",
   "Bağlantılarım  ·  1",
   "Ece Y.",
   "",
@@ -67,67 +65,6 @@
   "",
   "Profil"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 52,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 52,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 52,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -210,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -210,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -210,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 52,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 52,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 52,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -210,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -210,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -210,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

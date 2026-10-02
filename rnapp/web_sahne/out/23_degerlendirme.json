@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -34,6 +43,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -57,7 +67,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -73,15 +83,15 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "GÜVEN",
   "Değerlendirmeler",
   "Biten oturumlarının geri bildirimi",
   "Bekleyen · 3",
   "Tamamlanan",
   "Ağırlaman nasıl geçti?",
-  "TAV Primeclass · 29 Eylül",
+  "TAV Primeclass · 2 Ekim",
   "",
   "0/240 · 20 karakter daha",
   "Bu cümlenin LoungeLink sitesinde yayınlanmasına izin veriyorum. Yalnız yukarıdaki ad görünür.",
@@ -91,100 +101,8 @@
   "İzin vermezsen yalnız bizde kalır. İstediğin an geri alabilirsin — yayından düşer.",
   "Kartını paylaşmayı düşünen biri, bizim yazdığımız hiçbir cümleye senin bir cümlen kadar inanmaz. İki satır yeter.",
   "Kaan T.",
-  "TAV Primeclass · IST · 29 Eylül · 14:20–16:40",
-  "Ağırladın"
+  "TAV Primeclass · IST · 2 Ekim · 14:20–16:40"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 9,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 9,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 9,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -178,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -178,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -178,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 9,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 9,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 9,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -178,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -178,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -178,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 35,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -199,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

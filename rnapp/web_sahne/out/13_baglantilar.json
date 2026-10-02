@@ -21,28 +21,35 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · YARIN",
-  "TK1979",
-  "IST",
-  "",
-  "LHR",
+  "SIRADAKİ SEYAHATİN · 10 GÜN SONRA",
+  "PC2210",
+  "SAW",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "14:00–18:00",
+  "09:00–11:00",
   "Host bul",
-  "YANITINI BEKLEYENLER",
-  "A",
-  "Ayşegül D.",
-  "bağlantı kurmak istiyor",
-  "“Seninle tanışmak istiyor.”",
-  "Kabul et",
-  "Reddet",
+  "DAVETLER",
+  "2 bağlantı isteği",
+  "",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
   "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
+  "A",
+  "Ayşegül D.",
+  "bağlantı kurmak istiyor",
+  "“Seninle tanışmak istiyor.”",
+  "Kabul et",
+  "Reddet",
+  "⭐ Son oturumunu puanla",
+  "TAV Primeclass · 1 Ekim",
+  "",
+  "Deniz K. ile · TK1979 · 05:19–07:39",
+  "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",
+  "Şimdi puanla",
+  "Sonra",
   "Bağlantılarım  ·  1",
   "Ece Y.",
   "",
@@ -58,106 +65,21 @@
   "",
   "Profil",
   "",
-  "TANIŞ",
-  "Sohbetlerim",
-  "E",
-  "Ece Y.",
-  "",
-  "Bağlısınız",
-  "Sohbeti Aç",
-  ""
+  "LOUNGELINK",
+  "AKIŞ",
+  "Oturumlar ve sohbetler",
+  "Oturumlar",
+  "Bağlantılar",
+  "OTURUMLARIN",
+  "— —",
+  "— — — —",
+  "— : —",
+  "— —",
+  "— — — —",
+  "— : —",
+  "PLANLANMIŞ OTURUM YOK",
+  "Planlanmış bir oturumun yok. Bir isteği kabul ettiğinde ya da isteğin kabul edildiğinde oturum burada başlar."
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 13,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 13,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 13,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 13,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 13,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 13,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -182,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 31,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -196,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

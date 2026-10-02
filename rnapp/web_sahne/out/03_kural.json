@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -27,9 +18,9 @@
   "LOUNGELINK",
   "KURAL MOTORU · IST",
   "Bu eşleşme",
-  "neden %99?",
+  "neden %72?",
   "TAV Primeclass",
-  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Birlikte varış gerekir · kapıda beraber olun",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Havayolu şartı bilinmiyor · uçuşunu gir",
   "KART · MİLES&SMİLES ELİTE PLUS",
   "SALON UYUMLULUĞU",
   "",
@@ -38,8 +29,8 @@
   "",
   "2 koşul",
   "UÇUŞ EŞLEŞMESİ",
-  "Birlikte varış gerekir",
-  "KAPIDA BERABER OLUN",
+  "",
+  "Uçuş numarası doğrulanmadı",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",
@@ -49,102 +40,11 @@
   "3 koşul",
   "Gri satırlar, kaynağından doğrulayamadığımız şartlar. Onları bilmiyoruz — bildiğimizi söylemiyoruz.",
   "Son karar her zaman salona aittir. Kapıda alınmazsan kredin iade edilir.",
-  "Lounge isteği gönder",
+  "Seyahat ekle",
   "",
   "Salon kurallarını oku",
   ""
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": -12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -12,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -148,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -148,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -148,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -12,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -12,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -148,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -148,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -148,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 17,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 17,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 17,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -186,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -186,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -186,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -13,7 +26,7 @@
   "LOUNGEPUAN",
   "44",
   "GÜVEN",
-  "1",
+  "2",
   "SOHBET",
   "0",
   "İSTEK",
@@ -30,17 +43,19 @@
   "SALON",
   "14:00–18:00",
   "Host bul",
-  "YANITINI BEKLEYENLER",
-  "A",
-  "Ayşegül D.",
-  "bağlantı kurmak istiyor",
-  "“Seninle tanışmak istiyor.”",
-  "Kabul et",
-  "Reddet",
+  "DAVETLER",
+  "2 bağlantı isteği",
+  "",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
   "“Uçuşun aynı, güzel.”",
+  "Kabul et",
+  "Reddet",
+  "A",
+  "Ayşegül D.",
+  "bağlantı kurmak istiyor",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -57,11 +72,13 @@
   "9+",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
-  "TANIŞ",
+  "LOUNGELINK",
+  "AKIŞ",
   "Soru",
-  "SORULARIN",
+  "Gelen  0",
+  "Gönderdiğim  0",
+  "GELEN SORULAR",
   "— —",
   "— — — —",
   "— : —",
@@ -69,99 +86,8 @@
   "— — — —",
   "— : —",
   "BEKLEYEN SORU YOK",
-  "Henüz bir soru sormadın. Keşfet'te bir ilana bakarken host'a misafir hakkını sorabilirsin — cevabı burada birikir."
+  "İlanların hakkında sana gelen soru yok. Biri misafir hakkını sorarsa burada yanıtlarsın."
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 26,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 26,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 26,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -192,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -192,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -192,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 26,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 26,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 26,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -192,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -192,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -192,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 38,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 38,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 38,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -201,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

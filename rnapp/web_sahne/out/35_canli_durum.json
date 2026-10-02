@@ -1,15 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
+ "console": [],
+ "errors": [
+  "adım ('dokun_a11y', 'Sohbeti Aç'): Locator.click: Timeout 4000ms exceeded.",
+  "adım ('dokun', 'Durumumu paylaş'): Locator.click: Timeout 4000ms exceeded."
  ],
- "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
@@ -22,7 +16,7 @@
   "LOUNGEPUAN",
   "44",
   "GÜVEN",
-  "1",
+  "2",
   "SOHBET",
   "0",
   "İSTEK",
@@ -39,17 +33,19 @@
   "SALON",
   "14:00–18:00",
   "Host bul",
-  "YANITINI BEKLEYENLER",
-  "A",
-  "Ayşegül D.",
-  "bağlantı kurmak istiyor",
-  "“Seninle tanışmak istiyor.”",
-  "Kabul et",
-  "Reddet",
+  "DAVETLER",
+  "2 bağlantı isteği",
+  "",
   "D",
   "Deniz K.",
   "bağlantı kurmak istiyor",
   "“Uçuşun aynı, güzel.”",
+  "Kabul et",
+  "Reddet",
+  "A",
+  "Ayşegül D.",
+  "bağlantı kurmak istiyor",
+  "“Seninle tanışmak istiyor.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",
@@ -66,120 +62,22 @@
   "9+",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
-  "CANLI",
-  "Oturum · Canlı Durum",
-  "19:26",
-  ":52",
-  "BULUŞMAYA",
-  "Oturum Aktif",
-  "KARŞI TARAF DİYOR",
-  "",
-  "Kapı A12 önü",
-  "SENİN DURUMUN",
-  "Yeni indim / bagaj bekliyorum",
-  "Güvenlik kuyruğundayım (~10 dk)",
-  "Güvenlikten geçtim, geliyorum (~5 dk)",
-  "Lounge girişindeyim",
-  "Lounge'dayım",
-  "",
-  "Paylaşıldı — karşı taraf görebilir",
-  "",
-  "Konumun paylaşılmaz; yalnız seçtiğin durum görünür.",
-  "Oturuma Git"
+  "LOUNGELINK",
+  "AKIŞ",
+  "İstek",
+  "Gelen  0",
+  "Gönderdiğim  0",
+  "GELEN İSTEKLER",
+  "— —",
+  "— — — —",
+  "— : —",
+  "— —",
+  "— — — —",
+  "— : —",
+  "BEKLEYEN İSTEK YOK",
+  "Sana gelen bekleyen istek yok. İlanına başvuru geldiğinde burada kabul ya da reddedersin."
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": -3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -3,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -165,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -165,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -165,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -3,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": -3,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -165,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -165,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -165,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 51,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 51,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 51,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -209,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -209,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -209,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

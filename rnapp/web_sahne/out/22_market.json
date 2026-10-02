@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -34,6 +47,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -57,7 +71,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -91,100 +105,8 @@
   "+2 Misafir İsteği Kredisi",
   "Hemen hesabına",
   "500 Puan",
-  "Yetersiz",
-  ""
+  "Yetersiz"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -176,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -176,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -176,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 6,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -176,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -176,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -176,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 33,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 33,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 33,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -197,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

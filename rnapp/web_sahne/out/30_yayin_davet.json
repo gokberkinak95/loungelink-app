@@ -5,6 +5,10 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -43,6 +47,7 @@
   "",
   "",
   "Bildirimler",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -66,7 +71,7 @@
   "Plan",
   "",
   "",
-  "AYARLAR",
+  "Ayarlar",
   "",
   "",
   "Çıkış Yap",
@@ -82,8 +87,8 @@
   "1",
   "",
   "Profil",
-  "LOUNGELINK",
   "",
+  "LOUNGELINK",
   "AĞIRLAMA",
   "Yayın & Davet",
   "İlanını öne çıkar veya doğrudan davet gönder",
@@ -95,105 +100,13 @@
   "Geçmiş oturumlardan güvendiğin misafirleri bir sonraki slotuna davet et. Tanımadıklarına toplu mesaj yasaktır.",
   "Hangi ilan için?",
   "TAV Primeclass · IST",
-  "29 Eylül · 14:20–16:40",
+  "2 Ekim · 14:20–16:40",
   "1 yer açık · 1/2",
   "Comfort Lounge · SAW",
-  "30 Eylül · 09:00–11:30",
+  "3 Ekim · 09:00–11:30",
   "Dolu · 1/1",
-  "DAVET NOTU",
-  "0/140"
+  "DAVET NOTU"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 10,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -179,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 37,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 37,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 37,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -200,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -200,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -200,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

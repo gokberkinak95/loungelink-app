@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -7,21 +16,7 @@
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
   "Seyahatlerim",
   "Seyahatlerim",
-  "BUGÜN · AKTARMA",
-  "IST",
-  "LHR",
-  "",
-  "TK · Türk Hava Yolları",
-  "UÇUŞ",
-  "TK1979",
-  "SALON",
-  "14:00–18:00",
-  "KİŞİ",
-  "1 + 1",
-  "Keşfet'te 16 uyumlu ilan →",
-  "",
-  "Host bul",
-  "8 EKİM · TATİL",
+  "12 EKİM · TATİL",
   "SAW",
   "",
   "PC · Pegasus",
@@ -46,67 +41,6 @@
   "",
   "Profil"
  ],
- "tasan": [
-  {
-   "g": 507,
-   "sol": 28,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 28,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 28,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -194,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -194,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -194,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 28,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 28,
-   "tx": ""
-  },
-  {
-   "g": 507,
-   "sol": 28,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -194,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -194,
-   "tx": ""
-  },
-  {
-   "g": 546,
-   "sol": -194,
-   "tx": ""
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }
