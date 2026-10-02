@@ -1,4 +1,4 @@
-SQL SIRASI - 2 Ekim 2026 - YENI: 313 + test verisi (app 6.2.7) - 311 ve 312den SONRA
+SQL SIRASI - 2 Ekim 2026 - YENI: 313 + 314 + test verisi (app 6.2.7) - 311 ve 312den SONRA
 
   (311 ve 312yi henuz kosmadiysan once onlar - asagidaki 1 Ekim turu.)
 
@@ -7,14 +7,17 @@ SQL SIRASI - 2 Ekim 2026 - YENI: 313 + test verisi (app 6.2.7) - 311 ve 312den S
           kabulu geri al / iptal / ilani kaldir CALISIR (kredi iade, slot acilir, isimli bildirim)
        -> Bildirimler isimli ve dogru ("X kabulu geri aldi", "X oturumu baslatti - sen de bas");
           hatirlatmalar zamanlanir (1 saat kala, yarin, puanlama); bildirime dokununca dogru ekran
-       -> Soru artik BAGLANTI DEGIL: host Evet/Hayir + not ile yanitlar, sohbet acilmaz;
-          sorular Davet ekranindan cikar (Soru: Gelen / Gonderdigim)
+       -> Sorular Davet ekranindan cikar (Soru: Gelen / Gonderdigim); yanit bicimi 314'te
        -> Rozet metni, Hosta sor dugmesi ve sunucu kapisi AYNI karardan (celiski biter)
        -> Ana sayfa YENI isareti (akis_goruldu) + Tanis aramasi (kisi_ara)
        Beklenen NOTICE: "313: tamam - oturum kapisi tek tanim ...". Tekrar kosulabilir.
        pg_cron yoksa: "hatirlatma isleri zamanlanamadi" (canlida pg_cron var, kurulur).
-  2) SEED8_AKIS_TEZGAHI.sql   (test hesaplari; ikisi birlikte, bu sirayla)
-  3) SEED9_AKIS_GENIS.sql     -> soru senaryolari kurali dogrulanmamis salonlara tasindi;
+  2) 314_soru_yazili_yanit_ve_baglanti.sql  (313'ten SONRA)
+       -> Soru: host YAZILI yanit verir (Gonder); soru yine baglanti istegiyle gider,
+          kabul edilirse sohbet soru + yanitla acilir; zaten bagliysaniz soru sohbete duser.
+       Beklenen NOTICE: "314: tamam ...". Tekrar kosulabilir.
+  3) SEED8_AKIS_TEZGAHI.sql   (test hesaplari; ikisi birlikte, bu sirayla)
+  4) SEED9_AKIS_GENIS.sql     -> soru senaryolari kurali dogrulanmamis salonlara tasindi;
        son NOTICE: "ana sayfa kutulari acilan listelerle BIREBIR".
 
 ---------------------------------------------------------------------------

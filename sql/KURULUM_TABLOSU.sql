@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-02 uretildi · 357 dosya · son: 313)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-02 uretildi · 358 dosya · son: 314)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,7 +21,7 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 348 dosyanın 297 tanesi için ayırt edici imza
+-- ÖLÇÜM: 349 dosyanın 298 tanesi için ayırt edici imza
 -- bulundu (%85). Kalan 51 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
@@ -568,6 +568,7 @@ select z.dosya, 'tespit'
   (346, '311_kesfet_ozeti_tek_kaynak.sql', 'fonksiyon', 'kesfet_ozeti'),
   (347, '312_soru_ilan_bagi_gercekten.sql', 'govde', 'ilan_kurali_sor|''pending'', p_avail_id)'),
   (348, '313_akis_durum_makinesi_bildirim_soru.sql', 'fonksiyon', 'soruyu_yanitla'),
+  (349, '314_soru_yazili_yanit_ve_baglanti.sql', 'fonksiyon', 'soruya_cevap_yaz'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -934,6 +935,7 @@ with imza(sira, dosya, tip, ad) as (
   (346, '311_kesfet_ozeti_tek_kaynak.sql', 'fonksiyon', 'kesfet_ozeti'),
   (347, '312_soru_ilan_bagi_gercekten.sql', 'govde', 'ilan_kurali_sor|''pending'', p_avail_id)'),
   (348, '313_akis_durum_makinesi_bildirim_soru.sql', 'fonksiyon', 'soruyu_yanitla'),
+  (349, '314_soru_yazili_yanit_ve_baglanti.sql', 'fonksiyon', 'soruya_cevap_yaz'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

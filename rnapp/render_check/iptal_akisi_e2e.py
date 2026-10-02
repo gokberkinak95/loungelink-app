@@ -219,18 +219,29 @@ else:
         aj = {}
     chk('S5.5 Host ana sayfa SORU kutusu soruyu sayıyor, BAĞLANTI saymıyor',
         aj.get('soru', 0) >= 1 and aj.get('yeni', {}).get('soru') is True, akis[:160])
-    out, err, rc = sql(f"select public.soruyu_yanitla('{qid}','evet','Kartımda +1 var, ekliyorum')", host)
-    chk('S5.6 Host Evet + not ile yanıtlayabiliyor (bağlantı kabul etmeden)', rc == 0, (err or out)[:90])
-    st = sql(f"select status::text || '/' || coalesce(cevap,'') from connection_requests where id='{qid}'")[0]
-    chk('S5.7 Yanıtlanan soru bağlantı DEĞİL (status declined, cevap evet)', st == 'declined/evet', st)
+    # 314 — host YAZILI yanıt verir; bağlantı kararı ayrı; kabulde sohbet SORU + YANIT ile başlar
+    out, err, rc = sql(f"select public.soruya_cevap_yaz('{qid}','Kartımda +1 hakkı var, ilanıma ekliyorum.')", host)
+    chk('S5.6 Host yazılı yanıt gönderebiliyor (bağlantıyı kabul etmeden)', rc == 0, (err or out)[:90])
+    st = sql(f"select status::text || '/' || coalesce(cevap_notu,'') from connection_requests where id='{qid}'")[0]
+    chk('S5.7 Yanıt kaydedildi, bağlantı isteği hâlâ KARAR BEKLİYOR', st.startswith('pending/Kartımda'), st)
     ch = sql(f"select count(*) from chat_channels where connection_id='{qid}'")[0]
-    chk('S5.8 Sohbet kanalı AÇILMADI (Sohbetlere düşmez)', ch == '0', ch)
+    chk('S5.8 Bağlantı kabul edilmeden sohbet AÇILMADI', ch == '0', ch)
     sr = sql(f"select cevap_durumu || '/' || coalesce(cevap_notu,'') from public.sorularim() where id='{qid}'", GUEST)[0]
-    chk('S5.9 Soran Sorduklarım\'da "evet" + notu görüyor', sr.startswith('evet/Kartımda'), sr)
+    chk("S5.9 Soran Sorduklarım'da yanıtı görüyor", sr.startswith('yanitlandi/Kartımda'), sr)
     b = son_bildirim(GUEST)
-    chk('S5.10 Sorana "misafir alabildiğini söyledi" bildirimi', 'misafir alabildiğini' in b, b)
-    pv = sql(f"select count(*) from public.my_connections() c where c.other_id='{host}' and c.status='accepted'", GUEST)[0]
-    chk('S5.11 Soran host\'un BAĞLANTISI OLMADI (kabul edilmiş bağlantı yok)', pv == '0', pv)
+    chk('S5.10 Sorana "sorunu yanıtladı" bildirimi', 'sorunu yanıtladı' in b, b)
+    _, err, rc = sql(f"select public.soruya_cevap_yaz('{qid}','ikinci yanıt')", host)
+    chk('S5.11 Aynı soruya ikinci yanıt yok (already_answered)', rc != 0 and 'already_answered' in err, err[:60])
+    out, err, rc = sql(f"select public.respond_connection('{qid}', true)", host)
+    chk('S5.12 Host bağlantıyı kabul etti', rc == 0, (err or out)[:90])
+    msj = sql(f"""select string_agg(case when m.from_id='{GUEST}' then 'soran' else 'host' end, ',' order by m.created_at)
+                  from messages m join chat_channels c on c.id=m.channel_id where c.connection_id='{qid}'""")[0]
+    chk('S5.13 Sohbet SORU + YANIT ile başladı', msj == 'soran,host', msj)
+    out, err, rc = sql(f"select public.ilan_kurali_sor('{av}')", GUEST)
+    chk('S5.14 Bağlıyken tekrar sorunca: yeni istek YOK, soru sohbete düştü', rc == 0 and 'sohbete_eklendi' in out, (err or out)[:90])
+    n = sql(f"select count(*) from connection_requests where from_id='{GUEST}' and to_id='{host}'")[0]
+    m3 = sql(f"select count(*) from messages m join chat_channels c on c.id=m.channel_id where c.connection_id='{qid}'")[0]
+    chk('S5.15 Tek bağlantı kaydı · sohbette 3 mesaj', n == '1' and m3 == '3', f'istek={n} mesaj={m3}')
 
 # ── S6: YENİ işareti ──
 print("=== YENİ İŞARETİ ===")

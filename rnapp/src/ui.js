@@ -250,7 +250,10 @@ export function Btn({ label, onPress, v = "gold", sm, cip, mini, daire, disabled
   // ÇAĞRI YERİ SAYISI KADAR FARKLI DAVRANIR."
   const st = BTN[v] || BTN.gold;
   disabled = disabled || busy;
-  const anaEylem = !disabled && (v === "gold" || v === "danger");
+  // 2 Ekim (Gökberk) — `purple` 3 Eylül'den beri ALTINA eşli (renk tablosu yukarıda) ama gradyan +
+  // sıcak gölge yalnız "gold"a çiziliyordu: bağlantı kabul / sohbeti aç / bağlantı gönder düğmeleri
+  // aynı renkte ama DÜZ görünüyordu (Davet ekranında iki "Kabul et" farklı). Aynı eylem, aynı derinlik.
+  const anaEylem = !disabled && (v === "gold" || v === "purple" || v === "danger");
   const ust = v === "danger" ? C.dangerBtn : st.bg;
   const altUc = v === "danger" ? (C.dangerBtn2 || st.bg) : (C.goldBtn2 || st.bg);
   // `cip`/`mini` verildiğinde `full` otomatik kapanır: bir çip tam

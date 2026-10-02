@@ -9,7 +9,19 @@
 ## Supabase SQL (sırayla) — `sql/SQL_SIRA.txt` ile aynı
 (311, 312 koşulmadıysa önce onlar.)
 1. `313_akis_durum_makinesi_bildirim_soru.sql` (tekrar koşulabilir; yerelde iki kez temiz)
-2. `SEED8_AKIS_TEZGAHI.sql` → 3. `SEED9_AKIS_GENIS.sql`
+2. `314_soru_yazili_yanit_ve_baglanti.sql` (tekrar koşulabilir; yerelde iki kez temiz)
+3. `SEED8_AKIS_TEZGAHI.sql` → 4. `SEED9_AKIS_GENIS.sql`
+
+## 2 Ekim akşam — Gökberk'in iki notu (aynı 6.2.7)
+- **Soru = yazılı yanıt + bağlantı isteği (314)** — 313'ün Evet/Hayır'ı kalktı. Soru yine bağlantı
+  isteğiyle gider (akış korunuyor). Host yazar → Gönder (`soruya_cevap_yaz`); yanıt sorana bildirim +
+  Sorduklarım. Bağlantı kararı ayrı: "Kabul et, sohbeti aç" → sohbet SORU + YANIT ile açılır, oradan
+  sürer; "Şimdi değil" → yanıt gider, sohbet açılmaz. Zaten bağlıysanız yeni istek GİTMEZ, soru
+  aradaki sohbete mesaj olarak düşer (`ilan_kurali_sor` → `sohbete_eklendi`). Kabul edilen soru artık
+  gerçek bir bağlantı (hediye listesi dahil).
+- **Düz / derin "Kabul et"** — `purple` varyantı Eylül'den beri altına eşliydi ama gradyan + gölge yalnız
+  `gold`a çiziliyordu → bağlantı kabul / sohbeti aç / bağlantı gönder (6 yer) düz görünüyordu. Kaynağında
+  (`Btn.anaEylem`) düzeldi. Keşfet'teki elle çizilmiş düz "Host'a sor" da `Btn`'e çevrildi.
 
 ## Gökberk'in 2 Ekim maddeleri → kök neden → yapılan
 - **5 · Kabulü geri al "oturum başladı" diyordu** — ÖLÇÜLDÜ: geri alma/iptal kapısı, tek tarafın
@@ -70,7 +82,7 @@
 
 ## Testler
 - check.js temiz · render 77/13/12 · 53 ekran 0 · giriş 37/37
-- e2e: iptal_akisi 43/43 (YENİ) · tam_akis 171/171 (7. adım yeni kurala göre: "iki taraf başlattıktan
+- e2e: iptal_akisi 47/47 (YENİ; soru bölümü 314'e göre) · tam_akis 171/171 (7. adım yeni kurala göre: "iki taraf başlattıktan
   sonra istekten iptal → session_started"; eski adım tek taraflı basışı kilit sayıyordu) ·
   flow_matrix 27/27 · rule_dims 55/55 · edge 19/19 · onboarding 16/16 · rpc_field temiz · two_account 14/14
 - SEED8+SEED9 yerelde: kutu = liste (host İstek 4 · Sohbet 6 · Davet 2 · Soru 1; misafir 1 · 4 · 2 · 1)

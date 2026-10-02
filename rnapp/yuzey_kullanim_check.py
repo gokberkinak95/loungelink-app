@@ -33,6 +33,8 @@ import json, os, re, subprocess, sys, pathlib
 # Her satirin bir GEREKCESI var. Gerekce yazmadan buraya ekleme yapilmaz;
 # aksi halde bu liste "unuttuklarimin cop kutusu" olur.
 BEYAZ_LISTE = {
+    'soruyu_yanitla':
+        "313 API'si (Evet/Hayir, hic yayinlanmadi); 314'ten beri soruya_cevap_yaz'a yonlenen uyumluluk sarmalayicisi - app yazili yanit icin soruya_cevap_yaz cagiriyor.",
     'kural_sorusu_uygun_mu':
         'Rozet fonksiyonunun ICINDEN cagriliyor (221) — app dogrudan cagirmaz.',
     'etkin_plan':

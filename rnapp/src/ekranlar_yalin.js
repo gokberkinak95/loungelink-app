@@ -3984,13 +3984,14 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
   }, []);
   useEffect(() => { yukle(); }, [yukle, tazele]);
 
-  async function yanitla(r, cevap) {
-    if (busy) return;
+  async function cevapla(r) {
+    const metin = (notlar[r.id] || "").trim();
+    if (busy || metin.length < 2) return;
     setBusy(r.id); setHata(h => ({ ...h, [r.id]: "" }));
-    const { error } = await supabase.rpc("soruyu_yanitla",
-      { p_id: r.id, p_cevap: cevap, p_not: (notlar[r.id] || "").trim() || null });
+    const { error } = await supabase.rpc("soruya_cevap_yaz", { p_id: r.id, p_metin: metin });
     setBusy(null);
     if (error) { setHata(h => ({ ...h, [r.id]: mapErr(t, error.message) })); return; }
+    setNotlar(n => ({ ...n, [r.id]: "" }));
     yukle();
   }
 
@@ -4002,7 +4003,7 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
   );
   if (gelen === null || giden === null) return <Load t={t} title={t.flowQuestions} onBack={onBack} />;
 
-  const gelenBekleyen = gelen.filter(r => r.durum === "pending").length;
+  const gelenBekleyen = gelen.filter(r => !r.cevap_at && r.durum !== "declined").length;
   const gidenBekleyen = giden.filter(r => r.cevap_durumu === "bekliyor").length;
   const aktif = sekme || (gelenBekleyen > 0 || !giden.length ? "gelen" : "giden");
   const ctxOf = (r) => [r.airport_code, r.avail_date ? fmtLongDate(r.avail_date, lang) : null,
@@ -4022,13 +4023,27 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
     </View>
   );
 
+  // 314 (Gökberk, 2 Ekim akşam) — host YAZILI yanıt verir (Gönder); bağlantı kararı ayrı.
+  // Kabul ederse sohbet SORU + YANIT ile açılır ve yazışma oradan sürer.
+  async function baglantiKarar(r, kabul) {
+    if (busy) return;
+    setBusy(r.id); setHata(h => ({ ...h, [r.id]: "" }));
+    const { data, error } = await supabase.rpc("respond_connection", { p_id: r.id, p_accept: kabul });
+    setBusy(null);
+    if (error) { setHata(h => ({ ...h, [r.id]: mapErr(t, error.message) })); return; }
+    if (kabul && data && data.channel_id && onOpenCompanion) { onOpenCompanion(data.channel_id, r.soran_adi); return; }
+    yukle();
+  }
+
   const gelenKart = (r) => {
     const yeni = yeniMi(once, r.soruldu_at);
-    const bekliyor = r.durum === "pending";
-    const [durumMetni, durumRengi] = bekliyor ? [t.qInWaiting, C.goldText]
-      : r.cevap === "evet" ? [t.qInSaidYes, C.green]
-      : r.cevap === "hayir" ? [t.qInSaidNo, C.mut]
-      : [t.qInClosed, C.mut];
+    const yanitli = !!r.cevap_at;
+    const kapali = !yanitli && r.durum === "declined";
+    const [durumMetni, durumRengi] = kapali ? [t.qInClosed, C.mut]
+      : !yanitli ? [t.qInWaiting, C.goldText]
+      : r.durum === "accepted" ? [t.qInConnected, C.green]
+      : r.durum === "pending" ? [t.qInAnsweredConnPending, C.goldText]
+      : [t.qInAnswered, C.mut];
     return (
       <View key={r.id} style={kartStil(yeni)}>
         {durumSatiri(durumMetni, durumRengi, yeni)}
@@ -4044,33 +4059,44 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
           <Text style={{ color: C.body, fontSize: FS.base, marginTop: ARA[10], lineHeight: SATIR(FS.base, "serif"),
                          fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.soru}”</Text>
         )}
-        {bekliyor ? (
+        {!yanitli && !kapali ? (
           <>
             <TextInput value={notlar[r.id] || ""} onChangeText={v => setNotlar(n => ({ ...n, [r.id]: v }))}
-              maxLength={200} placeholder={t.qInNotePh} placeholderTextColor={C.dim}
-              style={{ marginTop: ARA[12], borderWidth: 1, borderColor: C.line, borderRadius: R.sm,
-                       paddingHorizontal: ARA[12], paddingVertical: ARA[10], color: C.ink, fontSize: FS.sm }} />
-            <View style={{ flexDirection: "row", marginTop: ARA[10] }}>
-              <Btn v="gold" sm label={t.qInYes} disabled={busy === r.id} onPress={() => yanitla(r, "evet")}
-                style={{ flex: 1.6, marginRight: SP[2] }} />
-              <Btn v="ghost" sm label={t.qInNo} disabled={busy === r.id} onPress={() => yanitla(r, "hayir")}
-                style={{ flex: 1 }} />
-            </View>
+              maxLength={500} multiline placeholder={t.qInReplyPh} placeholderTextColor={C.dim}
+              accessibilityLabel={t.qInReplyPh}
+              style={{ marginTop: ARA[12], minHeight: 76, textAlignVertical: "top", borderWidth: 1, borderColor: C.line,
+                       borderRadius: R.sm, paddingHorizontal: ARA[12], paddingVertical: ARA[10], color: C.ink, fontSize: FS.sm }} />
+            <Btn v="gold" sm label={t.qInSend} sagAd="sag" busy={busy === r.id}
+              disabled={busy === r.id || (notlar[r.id] || "").trim().length < 2}
+              onPress={() => cevapla(r)} style={{ marginTop: ARA[10] }} />
             <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16, marginTop: ARA[8] }}>{t.qInHint}</Text>
           </>
-        ) : (
+        ) : yanitli ? (
           <>
-            {!!r.cevap_notu && <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[8] }}>{t.qYourNote}: “{r.cevap_notu}”</Text>}
-            {r.cevap === "evet" && !r.ilan_acik && onHakEkle ? (
-              <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" onPress={() => onHakEkle(r.avail_id)}
-                style={{ marginTop: ARA[10], minHeight: TAP.minHeight, justifyContent: "center" }}>
-                <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm }} metin={t.qInAddRight} />
-              </TouchableOpacity>
-            ) : r.cevap === "evet" && r.ilan_acik ? (
-              <Text style={{ color: C.greenInk || C.green, fontSize: FS.sm, marginTop: ARA[8] }}>{t.qInListingOpen}</Text>
+            <Text style={{ color: C.mut, fontSize: FS.xs, letterSpacing: 1.2, fontWeight: "600", marginTop: ARA[12] }}>{BUYUK(t.qYourReply)}</Text>
+            <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 19, marginTop: ARA[4] }}>{r.cevap_notu}</Text>
+            {r.durum === "pending" ? (
+              <>
+                <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16, marginTop: ARA[12] }}>{t.qInConnHint}</Text>
+                <View style={{ flexDirection: "row", marginTop: ARA[8] }}>
+                  <Btn v="gold" sm label={t.qInConnAccept} busy={busy === r.id} disabled={busy === r.id}
+                    onPress={() => baglantiKarar(r, true)} style={{ flex: 1.6, marginRight: SP[2] }} />
+                  <Btn v="ghost" sm label={t.qInConnLater} disabled={busy === r.id}
+                    onPress={() => baglantiKarar(r, false)} style={{ flex: 1 }} />
+                </View>
+              </>
+            ) : r.durum === "accepted" && r.channel_id && onOpenCompanion ? (
+              <Btn v="gold" sm label={t.openChat} sagAd="sag" onPress={() => onOpenCompanion(r.channel_id, r.soran_adi)}
+                style={{ marginTop: ARA[12] }} />
             ) : null}
           </>
-        )}
+        ) : null}
+        {!r.ilan_acik && onHakEkle && !kapali ? (
+          <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" onPress={() => onHakEkle(r.avail_id)}
+            style={{ marginTop: ARA[8], minHeight: TAP.minHeight, justifyContent: "center", alignSelf: "flex-start" }}>
+            <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ color: C.goldText, fontWeight: "600", fontSize: FS.sm }} metin={t.qInAddRight} />
+          </TouchableOpacity>
+        ) : null}
         {!!hata[r.id] && <Text style={{ color: C.red, fontSize: FS.sm, marginTop: ARA[8] }}>{hata[r.id]}</Text>}
       </View>
     );
@@ -4078,16 +4104,16 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
 
   const gidenKart = (r) => {
     const yeni = yeniMi(once, r.yanit_at);
+    const bagli = r.durum === "accepted";
     const [durumMetni, durumRengi] = r.ilan_acildi ? [t.mqOpened, C.green]
-      : r.cevap_durumu === "evet" ? [t.qOutYes, C.green]
-      : r.cevap_durumu === "hayir" ? [t.qOutNo, C.mut]
-      : r.cevap_durumu === "yanitlandi" ? [t.mqAnswered, C.green]
-      : r.cevap_durumu === "reddedildi" ? [t.mqDeclined, C.mut]
+      : bagli ? [t.qOutConnected, C.green]
+      : r.cevap_durumu === "yanitlandi" ? [t.qOutAnswered, C.green]
+      : r.cevap_durumu === "reddedildi" ? [t.qOutNoConn, C.mut]
       : [t.mqPending, C.goldText];
-    const hedef = r.ilan_acildi && r.avail_id ? "ilan" : (r.cevap_durumu === "yanitlandi" && r.channel_id) ? "sohbet" : "profil";
+    const hedef = r.ilan_acildi && r.avail_id ? "ilan" : (bagli && r.channel_id) ? "sohbet" : "profil";
     const ipucu = r.ilan_acildi ? t.qOutOpenHint
-      : r.cevap_durumu === "evet" ? t.qOutYesHint
-      : r.cevap_durumu === "hayir" ? t.qOutNoHint
+      : bagli ? t.qOutConnectedHint
+      : r.cevap_durumu === "yanitlandi" ? t.qOutAnsweredHint
       : r.cevap_durumu === "bekliyor" ? t.myQuestionsSub : "";
     return (
       <TouchableOpacity key={r.id} activeOpacity={0.85} accessibilityRole="button" hitSlop={TAP.slop}
@@ -4103,8 +4129,11 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
         <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "600", marginTop: ARA[6] }}>{r.salon || t.lounge}</Text>
         {!!ctxOf(r) && <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, marginTop: 2 }}>{BUYUK(ctxOf(r))}</Text>}
         {!!r.cevap_notu && (
-          <Text style={{ color: C.body, fontSize: FS.base, marginTop: ARA[10], lineHeight: SATIR(FS.base, "serif"),
-                         fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.cevap_notu}”</Text>
+          <>
+            <Text style={{ color: C.mut, fontSize: FS.xs, letterSpacing: 1.2, fontWeight: "600", marginTop: ARA[12] }}>{BUYUK(t.qHostReply)}</Text>
+            <Text style={{ color: C.body, fontSize: FS.base, marginTop: ARA[4], lineHeight: SATIR(FS.base, "serif"),
+                           fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.cevap_notu}”</Text>
+          </>
         )}
         {!!ipucu && <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16, marginTop: ARA[8] }}>{ipucu}</Text>}
         {hedef !== "profil" && (
@@ -4144,7 +4173,7 @@ export function SoruOzeti({ t, lang, tazele, onAc }) {
       const [g, d] = await Promise.all([supabase.rpc("bana_gelen_sorular"), supabase.rpc("sorularim")]);
       if (g.error) logError("bana_gelen_sorular", g.error);
       if (d.error) logError("sorularim", d.error);
-      const gelen = (Array.isArray(g.data) ? g.data : []).filter(r => r.durum === "pending")
+      const gelen = (Array.isArray(g.data) ? g.data : []).filter(r => !r.cevap_at && r.durum !== "declined")
         .map(r => ({ id: r.id, yon: "gelen", ad: r.soran_adi, salon: r.salon, gun: r.avail_date }));
       const giden = (Array.isArray(d.data) ? d.data : []).filter(r => r.cevap_durumu === "bekliyor")
         .map(r => ({ id: r.id, yon: "giden", ad: r.host_name, salon: r.salon, gun: r.avail_date }));
@@ -4480,7 +4509,7 @@ export function HediyeBolumu({ t, onDone }) {
     // soruları). Hediye yalnız KABUL EDİLMİŞ bağlantıya gidebilir (sunucu `baglanti_yok` der);
     // listede seçilemeyecek kişi gösterilmez. Aynı kişi bir kez.
     const gorulen = new Set();
-    setKisiler((Array.isArray(c) ? c : []).filter(x => x && x.status === "accepted" && x.intent !== "kural_sorusu"
+    setKisiler((Array.isArray(c) ? c : []).filter(x => x && x.status === "accepted"
       && x.other_id && !gorulen.has(x.other_id) && gorulen.add(x.other_id)));
   }, []);
   useEffect(() => { yukle(); }, [yukle]);

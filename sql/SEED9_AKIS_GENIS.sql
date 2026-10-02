@@ -261,9 +261,10 @@ begin
   j := public.ilan_kurali_sor(su);                                                        -- Arda → Selen …
   if j->>'durum' <> 'soruldu' then raise exception 'SEED9: Arda→Selen sorusu: %', j; end if;
   perform tezgah.olarak(selen);
-  -- 313: soru bir bağlantı DEĞİL — host Evet/Hayır + notla yanıtlar, sohbet açılmaz.
-  perform public.soruyu_yanitla((j->>'baglanti_id')::uuid, 'evet',
-    'O gün First uçuyorum; First''te 1 misafir hakkım var, ilanıma ekliyorum.');           -- … EVET dedi
+  -- 314: host YAZILI yanıt verir; bağlantıyı kabul edince sohbet SORU + YANIT ile başlar.
+  perform public.soruya_cevap_yaz((j->>'baglanti_id')::uuid,
+    'O gün First uçuyorum; First''te 1 misafir hakkım var, ilanıma ekliyorum.');           -- … YANITLADI
+  perform public.respond_connection((j->>'baglanti_id')::uuid, true);                     -- … ve BAĞLANDI
   perform tezgah.olarak(bora);
   j := public.ilan_kurali_sor(nu);                                                        -- Bora → Nehir (Nehir'e GELEN soru)
   if j->>'durum' <> 'soruldu' then raise exception 'SEED9: Bora→Nehir sorusu: %', j; end if;
@@ -296,7 +297,7 @@ begin
     -- Davet kutusu (app) = lounge daveti + bana gelen bağlantı isteği = Davet ekranı (pending_actions)
     select count(*) into v_davet from public.pending_actions();
     -- Soru kutusu (313) = bana gelen yanıt bekleyen + benim yanıt beklediğim = Soru ekranı (iki sekme)
-    select (select count(*) from public.bana_gelen_sorular() where durum = 'pending')
+    select (select count(*) from public.bana_gelen_sorular() where cevap_at is null and durum <> 'declined')
          + (select count(*) from public.sorularim() where cevap_durumu = 'bekliyor') into v_soru;
     insert into tezgah.seed9_sayim values
       (r.email, 'İstek (bekleyen)', (a->>'istek')::int, v_istek),

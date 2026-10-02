@@ -900,7 +900,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     }
     const durum = data && data.durum;
     setAskState(m => ({ ...m, [availId]:
-      durum === "baglanti_var" ? (t.askHostAlreadyConnected || "Bu host ile zaten bağlantın var — Tanış sekmesinden yazabilirsin.")
+      // 314 — zaten bağlantılıysanız soru aradaki SOHBETE düşer, yeni bağlantı isteği gitmez.
+      durum === "sohbete_eklendi" ? t.askHostToChat
+      : durum === "baglanti_bekliyor" ? t.askHostConnPending
+      : durum === "baglanti_var" ? (t.askHostAlreadyConnected || "Bu host ile zaten bağlantın var — Tanış sekmesinden yazabilirsin.")
       : durum === "zaten_soruldu" ? (t.askHostAlreadyAsked || "Bu host'a zaten sordun; yanıtını bekliyoruz.")
       : (t.askHostSent || "Soru gönderildi. Host yanıtlarsa bildirim alacaksın.") }));
   }
@@ -1354,22 +1357,15 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       </Text>
                     ) : (
                       <>
-                        <TouchableOpacity
-                          disabled={askBusy}
+                        {/* 2 Ekim — elle çizilmiş DÜZ altın düğmeydi; uygulamanın diğer birincil
+                            eylemleriyle aynı derinlik için ortak `Btn`. */}
+                        <Btn v="gold" sm busy={askBusy} disabled={askBusy} sagAd="sag"
                           onPress={() => askHost(badgeInfo.id)}
-                          accessibilityRole="button"
-                          style={{ backgroundColor: askBusy ? C.goldSoft : C.gold, borderRadius: R.xs,
-                                   paddingVertical: SP[3], paddingHorizontal: ARA[14],
-                                   minHeight: TAP.minHeight, justifyContent: "center", alignItems: "center" }}>
-                          <Text style={{ color: askBusy ? C.gold : "#fff", fontSize: FS.sm, fontWeight: "700" }}>
-                            {/* 🔴 v2.89 (Gökberk md.5) — "Host'a sor" eylemin YARISINI söylüyordu.
-                                Bu düğme bir soru göndermiyor sadece; bir BAĞLANTI
-                                İSTEĞİ açıyor (connection_requests, intent='kural_sorusu').
-                                Host kabul ederse sohbet kanalı açılıyor. Kullanıcı
-                                ne yaptığını bilmeden bir bağlantı kurmamalı. */}
-                            {askBusy ? (t.askHostBusy || "Gönderiliyor…") : (t.askHostCta2 || t.askHostCta)}
-                          </Text>
-                        </TouchableOpacity>
+                          label={askBusy ? (t.askHostBusy || "Gönderiliyor…") : (t.askHostCta2 || t.askHostCta)} />
+                        {/* 🔴 v2.89 (Gökberk md.5) — düğme yalnız soru göndermiyor; bir BAĞLANTI İSTEĞİ
+                            de açıyor (intent='kural_sorusu'). 314: host yazılı yanıt verir, bağlantıyı
+                            kabul ederse sohbet soru + yanıtla açılır. Zaten bağlıysanız istek gitmez,
+                            soru sohbete düşer. Kullanıcı ne yaptığını bilmeden bağlantı kurmamalı. */}
                         <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: ARA[6], lineHeight: 16 }}>
                           {t.askHostHint}
                         </Text>

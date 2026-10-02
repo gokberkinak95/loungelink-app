@@ -9,13 +9,13 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 508
--- Birden cok dosyada tanimli (dikkat!): 150
+-- Toplam fonksiyon: 510
+-- Birden cok dosyada tanimli (dikkat!): 151
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
 --   admin_anonymize_user         -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 094_admin_erasure.sql)
---   ana_sayfa_akisi              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 263_ana_sayfa_akisi.sql, 295_ilanin_ikinci_hayati_ve_sayaclar.sql, 311_kesfet_ozeti_tek_kaynak.sql)
+--   ana_sayfa_akisi              -> etkin: 314_soru_yazili_yanit_ve_baglanti.sql  (ayrica: 263_ana_sayfa_akisi.sql, 295_ilanin_ikinci_hayati_ve_sayaclar.sql, 311_kesfet_ozeti_tek_kaynak.sql, 313_akis_durum_makinesi_bildirim_soru.sql)
 --   apply_rule_engine            -> etkin: 250_yaptirim_huni_dil_ve_kapilar.sql  (ayrica: 029_bo_requirements.sql, 212_yonetilen_ayarlar_gercekten_okunuyor.sql)
 --   apply_rule_snapshot          -> etkin: 086_lounge_rules_v3.sql  (ayrica: 085_lounge_rules_v2.sql)
 --   availability_rule_snapshot   -> etkin: 086_lounge_rules_v3.sql  (ayrica: 085_lounge_rules_v2.sql)
@@ -110,7 +110,7 @@
 --   resolve_dispute              -> etkin: 284_kural_geri_bildirim_dongusu.sql  (ayrica: 029_bo_requirements.sql)
 --   resolve_guest_rule           -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 147_tier_resolver.sql, 156_official_alignment_and_scope.sql, 157_decision_uses_resolver.sql, 163_unknown_carrier_and_coverage_audit.sql, 168_carrier_gap_and_paid_entry.sql, 172_resolver_full_definition.sql)
 --   resolve_venue_for_availability -> etkin: 161_venue_merge_and_catalog_truth.sql  (ayrica: 086_lounge_rules_v3.sql)
---   respond_connection           -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 015_connections.sql, 027_companion_chat.sql, 069_fix_respond_connection_cast.sql, 077_session_autostart_intro_slots.sql, 159_grants_home_flows_request_gate.sql)
+--   respond_connection           -> etkin: 314_soru_yazili_yanit_ve_baglanti.sql  (ayrica: 015_connections.sql, 027_companion_chat.sql, 069_fix_respond_connection_cast.sql, 077_session_autostart_intro_slots.sql, 159_grants_home_flows_request_gate.sql, 313_akis_durum_makinesi_bildirim_soru.sql)
 --   respond_invite               -> etkin: 293_davet_cift_onay_ve_ilan_geri_cekme.sql  (ayrica: 030_match_and_broadcast.sql, 077_session_autostart_intro_slots.sql, 258_olmayan_kolonlar.sql, 289_davet_kabulu_mevcut_istek.sql)
 --   respond_request              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 007_request_engine.sql, 061_fix_respond_request_and_slots.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql, 300_uctan_uca_denetim.sql)
 --   rl_guard                     -> etkin: 223_sinirlar_dogruyu_soylesin.sql  (ayrica: 082_rate_limiting.sql, 166_slot_integrity_and_flow_tests.sql, 176_flow_test_rate_limit.sql)
@@ -133,6 +133,7 @@
 --   seyahat_ekle                 -> etkin: 283_kural_motoru_on_iki_boyut.sql  (ayrica: 250_yaptirim_huni_dil_ve_kapilar.sql)
 --   seyahat_sil                  -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 250_yaptirim_huni_dil_ve_kapilar.sql)
 --   sorularim                    -> etkin: 248_duzenleme_baglanti_degerlendirme.sql  (ayrica: 235_sordugunu_gorebilmeli.sql, 239_soru_hangi_ilana_ait.sql)
+--   soruyu_yanitla               -> etkin: 314_soru_yazili_yanit_ve_baglanti.sql  (ayrica: 313_akis_durum_makinesi_bildirim_soru.sql)
 --   start_session                -> etkin: 080_session_lifecycle.sql  (ayrica: 008_chat_sessions.sql, 026_doc_parity_core.sql, 077_session_autostart_intro_slots.sql)
 --   start_session_request        -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
 --   submit_field_report          -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 095_close_the_loop.sql, 152_field_reports_loop.sql)
@@ -1483,22 +1484,19 @@ grant execute on function public.send_connection(uuid, text, text) to authentica
 -- Bir sozlesmeyi genisletmek, tasimayan bir sozlesmeyi bozmaktan ucuzdur.
 
 -- ----------------------------------------------------------------------
--- respond_connection   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
--- ⚠ Bu fonksiyon 6 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- respond_connection   [etkin kaynak: 314_soru_yazili_yanit_ve_baglanti.sql]
+-- ⚠ Bu fonksiyon 7 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.respond_connection(p_id uuid, p_accept boolean)
 returns jsonb language plpgsql security definer set search_path = public as $function$
-declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_chan uuid; v_ad text;
+declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_chan uuid; v_ad text; v_soru boolean;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   select * into v_cr from connection_requests where id = p_id for update;
   if not found then raise exception 'connection_not_found'; end if;
   if v_cr.to_id <> v_uid then raise exception 'not_recipient'; end if;
   if v_cr.status <> 'pending' then raise exception 'already_responded'; end if;
-
-  if coalesce(v_cr.intent,'') = 'kural_sorusu' then
-    return public.soruyu_yanitla(p_id, case when p_accept then 'evet' else 'hayir' end, null);
-  end if;
+  v_soru := coalesce(v_cr.intent,'') = 'kural_sorusu';
 
   update connection_requests
      set status = (case when p_accept then 'accepted' else 'declined' end)::connection_status,
@@ -1513,15 +1511,25 @@ begin
     returning id into v_chan;
     if v_chan is null then select id into v_chan from chat_channels where connection_id = p_id; end if;
 
-    if v_chan is not null and coalesce(nullif(trim(v_cr.intro),''),'') <> '' then
-      insert into messages (channel_id, from_id, body, created_at)
-      select v_chan, v_cr.from_id, trim(v_cr.intro), now()
-       where not exists (select 1 from messages m where m.channel_id = v_chan);
+    if v_chan is not null and not exists (select 1 from messages m where m.channel_id = v_chan) then
+      if coalesce(nullif(trim(v_cr.intro),''),'') <> '' then
+        insert into messages (channel_id, from_id, body, created_at)
+        values (v_chan, v_cr.from_id, trim(v_cr.intro), coalesce(v_cr.created_at, now()));
+      end if;
+      -- 314: soruya yazılmış yanıt sohbetin ikinci mesajı
+      if v_soru and coalesce(nullif(trim(v_cr.cevap_notu),''),'') <> '' then
+        insert into messages (channel_id, from_id, body, created_at)
+        values (v_chan, v_cr.to_id, trim(v_cr.cevap_notu), coalesce(v_cr.cevap_at, now()));
+      end if;
     end if;
 
     perform public.bildir(v_cr.from_id, 'connections',
-      v_ad || ' bağlantını kabul etti ✓', 'Sohbet açıldı — Oturumlar ve sohbetler › Bağlantılar.',
-      v_ad || ' accepted your connection ✓', 'The chat is open — Sessions and chats › Connections.',
+      v_ad || ' bağlantını kabul etti ✓',
+      case when v_soru then 'Sorun ve yanıtı sohbette — yazışmaya oradan devam edebilirsin.'
+           else 'Sohbet açıldı — Oturumlar ve sohbetler › Bağlantılar.' end,
+      v_ad || ' accepted your connection ✓',
+      case when v_soru then 'Your question and the answer are in the chat — continue from there.'
+           else 'The chat is open — Sessions and chats › Connections.' end,
       'connection', p_id);
   else
     perform public.bildir(v_cr.from_id, 'connections',
@@ -1533,53 +1541,7 @@ begin
   return jsonb_build_object('ok', true, 'channel_id', v_chan);
 end $function$;
 
--- Sorduklarım: yanıt alanları eklendi (dönüş tipi değişti → drop)
-drop function if exists public.sorularim();
-create function public.sorularim()
-returns table(id uuid, host_id uuid, host_name text, salon text, airport_code text, avail_id uuid,
-              durum text, cevap_durumu text, soruldu_at timestamptz, yanit_at timestamptz,
-              ilan_acildi boolean, channel_id uuid, soru text, avail_date date,
-              time_from time, time_to time, cevap text, cevap_notu text)
-language plpgsql stable security definer set search_path = public as $function$
-declare v_uid uuid := auth.uid();
-begin
-  if v_uid is null then return; end if;
-  return query
-  select cr.id, cr.to_id,
-         public.kisa_ad(cr.to_id),
-         coalesce(nullif(btrim(a.lounge_name),''), l.name, a.airport_code::text),
-         a.airport_code::text,
-         cr.avail_id,
-         cr.status::text,
-         case
-           when cr.cevap = 'evet' then 'evet'
-           when cr.cevap = 'hayir' then 'hayir'
-           when cr.status::text = 'accepted' then 'yanitlandi'
-           when cr.status::text = 'declined' then 'reddedildi'
-           when cr.avail_id is not null
-                and public.kural_sorusu_durumu(cr.avail_id) = 'gerek_yok' then 'hak_beyan_edildi'
-           else 'bekliyor'
-         end,
-         cr.created_at, coalesce(cr.cevap_at, cr.responded_at),
-         case when cr.avail_id is null then false
-              else public.kural_sorusu_durumu(cr.avail_id) = 'gerek_yok' end,
-         ch.id,
-         nullif(btrim(coalesce(cr.intro,'')),''),
-         a.avail_date, a.time_from, a.time_to,
-         cr.cevap, cr.cevap_notu
-    from connection_requests cr
-    left join availabilities a on a.id = cr.avail_id
-    left join lounges l on l.id = a.lounge_id
-    left join chat_channels ch on ch.connection_id = cr.id
-   where cr.from_id = v_uid
-     and cr.intent = 'kural_sorusu'
-   order by cr.created_at desc
-   limit 30;
-end $function$;
-revoke all on function public.sorularim() from public, anon;
-grant execute on function public.sorularim() to authenticated, service_role;
-
--- Bana gelen sorular (host). Soranın fotoğrafı yalnız "herkese açık" ise.
+-- ── 3) SORU SORARKEN: zaten bağlantılıysa yeni istek YOK, soru sohbete düşer ──
 
 -- ----------------------------------------------------------------------
 -- discover_people   [etkin kaynak: 070_discover_people_trip_data.sql]
@@ -25627,8 +25589,8 @@ begin
 end $nb261$;
 
 -- ----------------------------------------------------------------------
--- ana_sayfa_akisi   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
--- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- ana_sayfa_akisi   [etkin kaynak: 314_soru_yazili_yanit_ve_baglanti.sql]
+-- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.ana_sayfa_akisi()
 returns jsonb language plpgsql stable security definer set search_path = public as $function$
@@ -25661,7 +25623,7 @@ begin
 
   select count(*)::int into v_soru
     from connection_requests cr
-   where cr.to_id = v_uid and cr.intent = 'kural_sorusu' and cr.status = 'pending'
+   where cr.to_id = v_uid and cr.intent = 'kural_sorusu' and cr.status <> 'declined' and cr.cevap_at is null
      and not public.is_blocked_pair(v_uid, cr.from_id);
   v_soru := v_soru + (select count(*)::int from public.sorularim() s where s.cevap_durumu = 'bekliyor');
 
@@ -25674,7 +25636,6 @@ begin
    where cr.to_id = v_uid and cr.status = 'pending'
      and coalesce(cr.intent,'') <> 'kural_sorusu';
 
-  -- YENİ bayrakları
   select coalesce(max(goruldu_at) filter (where alan='sohbet'), now() - interval '24 hours'),
          coalesce(max(goruldu_at) filter (where alan='istek'),  now() - interval '24 hours'),
          coalesce(max(goruldu_at) filter (where alan='davet'),  now() - interval '24 hours'),
@@ -25691,7 +25652,7 @@ begin
                         and coalesce(cr.intent,'') <> 'kural_sorusu' and cr.created_at > g_davet);
   y_soru := exists (select 1 from connection_requests cr
                      where cr.intent = 'kural_sorusu'
-                       and ((cr.to_id = v_uid and cr.status = 'pending' and cr.created_at > g_soru)
+                       and ((cr.to_id = v_uid and cr.cevap_at is null and cr.status <> 'declined' and cr.created_at > g_soru)
                          or (cr.from_id = v_uid and coalesce(cr.cevap_at, cr.responded_at) > g_soru)));
   y_sohbet := exists (select 1 from requests r
                        where r.guest_id = v_uid and r.status = 'accepted' and r.responded_at > g_sohbet)
@@ -25708,19 +25669,30 @@ begin
                            or (cr.id is not null and v_uid in (cr.from_id, cr.to_id) and cr.status = 'accepted')));
 
   return jsonb_build_object(
-    'sohbet', coalesce(v_sohbet, 0),
-    'istek',  coalesce(v_istek, 0),
-    'davet',  coalesce(v_davet, 0),
-    'soru',   coalesce(v_soru, 0),
-    'baglanti', coalesce(v_baglanti, 0),
-    'ilan', coalesce(v_ilan, 0),
-    'yeni', jsonb_build_object('sohbet', y_sohbet, 'istek', y_istek, 'davet', y_davet, 'soru', y_soru)
-  );
+    'sohbet', coalesce(v_sohbet, 0), 'istek', coalesce(v_istek, 0), 'davet', coalesce(v_davet, 0),
+    'soru', coalesce(v_soru, 0), 'baglanti', coalesce(v_baglanti, 0), 'ilan', coalesce(v_ilan, 0),
+    'yeni', jsonb_build_object('sohbet', y_sohbet, 'istek', y_istek, 'davet', y_davet, 'soru', y_soru));
 end $function$;
 
--- ════════════════════════════════════════════════════════════════════════════
--- C2. HATIRLATMALAR — yazılmıştı ama hiçbir zamanlayıcı çağırmıyordu.
--- ════════════════════════════════════════════════════════════════════════════
+-- ── 6) BİLDİRİME DOKUNUŞ: kabul edilmiş soru-bağlantısı → sohbet (Bağlantılar) ──
+do $$
+declare g text; y text;
+begin
+  g := pg_get_functiondef('public.bildirim_hedefi(uuid)'::regprocedure);
+  if position('314_hedef' in g) > 0 then raise notice '314 bildirim_hedefi: zaten'; return; end if;
+  y := replace(g,
+    $a$    if v_cr.id is not null and coalesce(v_cr.intent,'') = 'kural_sorusu' then
+      return jsonb_build_object('ekran', 'akis', 'alt', 'soru', 'ref', n.ref_id);
+    elsif v_cr.id is not null and v_cr.status = 'accepted' then$a$,
+    $b$    if v_cr.id is not null and v_cr.status = 'accepted' then  -- 314_hedef: kabul edilen soru da bir bağlantı
+      return jsonb_build_object('ekran', 'akis', 'alt', 'baglanti', 'ref', n.ref_id);
+    elsif v_cr.id is not null and coalesce(v_cr.intent,'') = 'kural_sorusu' then
+      return jsonb_build_object('ekran', 'akis', 'alt', 'soru', 'ref', n.ref_id);
+    elsif v_cr.id is not null and v_cr.status = 'accepted' then$b$);
+  if y = g then raise exception '314: bildirim_hedefi deseni bulunamadi'; end if;
+  execute y;
+  raise notice '314 bildirim_hedefi: yamalandi';
+end $$;
 
 -- ----------------------------------------------------------------------
 -- trg_mesaj_bildirimi   [etkin kaynak: 266_eksik_bildirimler.sql]
@@ -30062,50 +30034,17 @@ exception when others then
 end $function$;
 
 -- ----------------------------------------------------------------------
--- soruyu_yanitla   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- soruyu_yanitla   [etkin kaynak: 314_soru_yazili_yanit_ve_baglanti.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.soruyu_yanitla(p_id uuid, p_cevap text, p_not text default null)
 returns jsonb language plpgsql security definer set search_path = public as $function$
-declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_ad text; v_salon text; v_not text;
 begin
-  if v_uid is null then raise exception 'not_authenticated'; end if;
-  perform public.hesap_kapisi(v_uid);
-  select * into v_cr from connection_requests where id = p_id for update;
-  if not found then raise exception 'connection_not_found'; end if;
-  if v_cr.to_id <> v_uid then raise exception 'not_recipient'; end if;
-  if coalesce(v_cr.intent,'') <> 'kural_sorusu' then raise exception 'not_a_question'; end if;
-  if v_cr.status <> 'pending' then raise exception 'already_responded'; end if;
-  if p_cevap is null or p_cevap not in ('evet','hayir') then raise exception 'invalid_answer'; end if;
-
-  v_not := nullif(left(btrim(coalesce(p_not,'')), 200), '');
-  update connection_requests
-     set status = 'declined', cevap = p_cevap, cevap_notu = v_not,
-         cevap_at = now(), responded_at = now()
-   where id = p_id;
-
-  v_ad := public.kisa_ad(v_uid);
-  v_salon := coalesce(public.salon_etiketi(v_cr.avail_id), 'İlan');
-  if p_cevap = 'evet' then
-    perform public.bildir(v_cr.from_id, 'requests',
-      v_ad || ' misafir alabildiğini söyledi',
-      v_salon || ' — hakkını ilanına eklediğinde başvuru açılır, sana haber veririz.' || coalesce(' Not: “' || v_not || '”', ''),
-      v_ad || ' says they can bring a guest',
-      v_salon || ' — once they add the right to the listing, applications open and we''ll tell you.' || coalesce(' Note: “' || v_not || '”', ''),
-      'question', p_id);
-  else
-    perform public.bildir(v_cr.from_id, 'requests',
-      v_ad || ' sorunu yanıtladı',
-      v_salon || ' — bu ilanda misafir alamıyor.' || coalesce(' Not: “' || v_not || '”', '') || ' Keşfet''te başka ilanlar var.',
-      v_ad || ' answered your question',
-      v_salon || ' — they can''t bring a guest on this listing.' || coalesce(' Note: “' || v_not || '”', '') || ' There are other listings in Discover.',
-      'question', p_id);
-  end if;
-  return jsonb_build_object('ok', true, 'avail_id', v_cr.avail_id, 'cevap', p_cevap);
+  return public.soruya_cevap_yaz(p_id, coalesce(nullif(btrim(coalesce(p_not,'')), ''),
+    case when p_cevap = 'evet' then 'Evet, misafir alabiliyorum.' else 'Bu ilanda misafir alamıyorum.' end));
 end $function$;
-revoke all on function public.soruyu_yanitla(uuid, text, text) from public, anon;
-grant execute on function public.soruyu_yanitla(uuid, text, text) to authenticated, service_role;
 
--- Eski istemci (6.2.6) soruyu respond_connection ile yanıtlıyordu: aynı yola yönlendir.
+-- ── 2) BAĞLANTI KABULÜ: soru da artık bir bağlantı isteği; kabulde sohbet SORU + YANIT ile başlar ──
 
 -- ----------------------------------------------------------------------
 -- bana_gelen_sorular   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
@@ -30343,3 +30282,185 @@ begin
   end if;
   raise notice '313: tamam — oturum kapisi tek tanim · isimli bildirimler · soru baglanti degil · yeni isareti · kisi_ara';
 end $$;
+
+-- ----------------------------------------------------------------------
+-- soruya_cevap_yaz   [etkin kaynak: 314_soru_yazili_yanit_ve_baglanti.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.soruya_cevap_yaz(p_id uuid, p_metin text)
+returns jsonb language plpgsql security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_metin text; v_ch uuid; v_ad text; v_salon text;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  perform public.hesap_kapisi(v_uid);
+  select * into v_cr from connection_requests where id = p_id for update;
+  if not found then raise exception 'connection_not_found'; end if;
+  if v_cr.to_id <> v_uid then raise exception 'not_recipient'; end if;
+  if coalesce(v_cr.intent,'') <> 'kural_sorusu' then raise exception 'not_a_question'; end if;
+  if v_cr.cevap_at is not null then raise exception 'already_answered'; end if;
+  if public.is_blocked_pair(v_cr.from_id, v_cr.to_id) then raise exception 'blocked_pair'; end if;
+  v_metin := left(btrim(coalesce(p_metin, '')), 500);
+  if char_length(v_metin) < 2 then raise exception 'answer_empty'; end if;
+
+  update connection_requests set cevap_notu = v_metin, cevap_at = now(), cevap = null where id = p_id;
+
+  -- Bağlantı zaten kabul edildiyse yanıt sohbete de düşer.
+  if v_cr.status = 'accepted' then
+    select id into v_ch from chat_channels where connection_id = p_id;
+    if v_ch is null then
+      insert into chat_channels (connection_id, kind, created_at) values (p_id, 'companion', now()) returning id into v_ch;
+    end if;
+    insert into messages (channel_id, from_id, body) values (v_ch, v_uid, v_metin);
+  end if;
+
+  v_ad := public.kisa_ad(v_uid);
+  v_salon := coalesce(public.salon_etiketi(v_cr.avail_id), 'İlan');
+  perform public.bildir(v_cr.from_id, 'requests',
+    v_ad || ' sorunu yanıtladı',
+    v_salon || ' — “' || left(v_metin, 90) || case when char_length(v_metin) > 90 then '…' else '' end || '”',
+    v_ad || ' answered your question',
+    v_salon || ' — “' || left(v_metin, 90) || case when char_length(v_metin) > 90 then '…' else '' end || '”',
+    'question', p_id);
+  return jsonb_build_object('ok', true, 'channel_id', v_ch, 'baglanti', v_cr.status::text);
+end $function$;
+revoke all on function public.soruya_cevap_yaz(uuid, text) from public, anon;
+grant execute on function public.soruya_cevap_yaz(uuid, text) to authenticated, service_role;
+
+-- 313 API'si (yayınlanmadı ama SQL'i koşulmuş olabilir): aynı yola.
+
+-- ----------------------------------------------------------------------
+-- _314_yama   [etkin kaynak: 314_soru_yazili_yanit_ve_baglanti.sql]
+-- ----------------------------------------------------------------------
+create or replace function public._314_yama(p_fn regprocedure, p_desen text, p_yeni text, p_isaret text)
+returns text language plpgsql security definer set search_path = public as $y$
+declare g text; y text;
+begin
+  g := pg_get_functiondef(p_fn);
+  if position(p_isaret in g) > 0 then return 'zaten'; end if;
+  y := regexp_replace(g, p_desen, p_yeni);
+  if y = g then raise exception '314: % icinde beklenen desen yok', p_fn; end if;
+  execute y;
+  return 'yamalandi';
+end $y$;
+revoke all on function public._314_yama(regprocedure, text, text, text) from public, anon, authenticated;
+
+do $d$
+declare s text;
+begin
+  s := public._314_yama('public.ilan_kurali_sor(uuid)'::regprocedure,
+    'select \* into v_mevcut from connection_requests\s*where \(from_id = v_uid and to_id = v_av\.host_id\)\s*or \(from_id = v_av\.host_id and to_id = v_uid\)\s*order by created_at desc limit 1;\s*if found then\s*return jsonb_build_object\(\s*''ok'', true,\s*''durum'', case when v_mevcut\.status::text = ''accepted'' then ''baglanti_var'' else ''zaten_soruldu'' end,\s*''baglanti_id'', v_mevcut\.id,\s*''salon'', v_salon\);\s*end if;',
+    $r$-- 314_sohbete: önce KABUL EDİLMİŞ bağlantı aranır
+  select * into v_mevcut from connection_requests
+   where (from_id = v_uid and to_id = v_av.host_id)
+      or (from_id = v_av.host_id and to_id = v_uid)
+   order by (status = 'accepted') desc, created_at desc limit 1;
+
+  if found and v_mevcut.status::text = 'accepted' then
+    -- Zaten bağlantılılar: yeni istek YOK, soru aradaki sohbete mesaj olarak düşer.
+    if public.is_blocked_pair(v_uid, v_av.host_id) then raise exception 'blocked_pair'; end if;
+    select id into v_id from chat_channels where connection_id = v_mevcut.id;
+    if v_id is null then
+      insert into chat_channels (connection_id, kind, created_at)
+      values (v_mevcut.id, 'companion', now()) returning id into v_id;
+    end if;
+    insert into messages (channel_id, from_id, body)
+    values (v_id, v_uid, left(coalesce(
+      replace((select value #>> '{}' from beta_settings where key = 'soru_intro_tr'), '{salon}', v_salon),
+      '“' || v_salon || '” ilanında misafir hakkın var mı?'), 400));
+    return jsonb_build_object('ok', true, 'durum', 'sohbete_eklendi', 'channel_id', v_id,
+                              'baglanti_id', v_mevcut.id, 'salon', v_salon);
+  elsif found then
+    return jsonb_build_object(
+      'ok', true,
+      'durum', case when coalesce(v_mevcut.intent,'') = 'kural_sorusu' then 'zaten_soruldu' else 'baglanti_bekliyor' end,
+      'baglanti_id', v_mevcut.id,
+      'salon', v_salon);
+  end if;$r$,
+    '314_sohbete');
+  raise notice '314 ilan_kurali_sor: %', s;
+end $d$;
+drop function if exists public._314_yama(regprocedure, text, text, text);
+
+-- ── 4) LİSTELER: yanıt = cevap_at; bağlantı durumu ayrı; host için sohbet kimliği ──
+-- 42P13 koruması: dönüş tipi 313 ile aynı, ama denetim önceki sürümlere göre bakıyor → drop + create
+drop function if exists public.sorularim();
+create function public.sorularim()
+returns table(id uuid, host_id uuid, host_name text, salon text, airport_code text, avail_id uuid,
+              durum text, cevap_durumu text, soruldu_at timestamptz, yanit_at timestamptz,
+              ilan_acildi boolean, channel_id uuid, soru text, avail_date date,
+              time_from time, time_to time, cevap text, cevap_notu text)
+language plpgsql stable security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid();
+begin
+  if v_uid is null then return; end if;
+  return query
+  select cr.id, cr.to_id,
+         public.kisa_ad(cr.to_id),
+         coalesce(nullif(btrim(a.lounge_name),''), l.name, a.airport_code::text),
+         a.airport_code::text,
+         cr.avail_id,
+         cr.status::text,
+         case
+           when cr.cevap_at is not null then 'yanitlandi'
+           when cr.status::text = 'accepted' then 'yanitlandi'
+           when cr.status::text = 'declined' then 'reddedildi'
+           when cr.avail_id is not null
+                and public.kural_sorusu_durumu(cr.avail_id) = 'gerek_yok' then 'hak_beyan_edildi'
+           else 'bekliyor'
+         end,
+         cr.created_at, coalesce(cr.cevap_at, cr.responded_at),
+         case when cr.avail_id is null then false
+              else public.kural_sorusu_durumu(cr.avail_id) = 'gerek_yok' end,
+         case when cr.status = 'accepted' then ch.id end,
+         nullif(btrim(coalesce(cr.intro,'')),''),
+         a.avail_date, a.time_from, a.time_to,
+         cr.cevap, cr.cevap_notu
+    from connection_requests cr
+    left join availabilities a on a.id = cr.avail_id
+    left join lounges l on l.id = a.lounge_id
+    left join chat_channels ch on ch.connection_id = cr.id
+   where cr.from_id = v_uid
+     and cr.intent = 'kural_sorusu'
+   order by cr.created_at desc
+   limit 30;
+end $function$;
+revoke all on function public.sorularim() from public, anon;
+grant execute on function public.sorularim() to authenticated, service_role;
+
+drop function if exists public.bana_gelen_sorular();
+create function public.bana_gelen_sorular()
+returns table(id uuid, soran_id uuid, soran_adi text, soran_foto text, soran_meslek text,
+              avail_id uuid, salon text, airport_code text, avail_date date, time_from time, time_to time,
+              soru text, durum text, cevap text, cevap_notu text, soruldu_at timestamptz, cevap_at timestamptz,
+              ilan_acik boolean, channel_id uuid)
+language plpgsql stable security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid();
+begin
+  if v_uid is null then return; end if;
+  return query
+  select cr.id, cr.from_id, public.kisa_ad(cr.from_id),
+         case when p.photo_url is not null and not coalesce(p.photo_connections_only, false) then p.photo_url end,
+         nullif(btrim(coalesce(p.profession,'')), ''),
+         cr.avail_id,
+         coalesce(nullif(btrim(a.lounge_name),''), l.name, a.airport_code::text),
+         a.airport_code::text, a.avail_date, a.time_from, a.time_to,
+         nullif(btrim(coalesce(cr.intro,'')),''),
+         cr.status::text, cr.cevap, cr.cevap_notu, cr.created_at, cr.cevap_at,
+         case when cr.avail_id is null then false
+              else coalesce((public.lounge_access_decision(cr.avail_id, null) ->> 'guest_policy'), '') <> 'not_allowed' end,
+         case when cr.status = 'accepted' then ch.id end
+    from connection_requests cr
+    left join profiles p on p.user_id = cr.from_id
+    left join availabilities a on a.id = cr.avail_id
+    left join lounges l on l.id = a.lounge_id
+    left join chat_channels ch on ch.connection_id = cr.id
+   where cr.to_id = v_uid
+     and cr.intent = 'kural_sorusu'
+     and not public.is_blocked_pair(v_uid, cr.from_id)
+     and (cr.cevap_at is null or cr.status = 'pending' or cr.created_at > now() - interval '60 days')
+   order by coalesce(cr.cevap_at is null and cr.status <> 'declined', false) desc, cr.created_at desc
+   limit 50;
+end $function$;
+revoke all on function public.bana_gelen_sorular() from public, anon;
+grant execute on function public.bana_gelen_sorular() to authenticated, service_role;
+
+-- ── 5) ANA SAYFA: SORU = yanıt bekleyen (bana gelen + benim sorduğum) ──

@@ -1738,5 +1738,10 @@
   "313_akis_durum_makinesi_bildirim_soru.sql",
   "fonksiyon",
   "soruyu_yanitla"
+ ],
+ [
+  "314_soru_yazili_yanit_ve_baglanti.sql",
+  "fonksiyon",
+  "soruya_cevap_yaz"
  ]
 ]
