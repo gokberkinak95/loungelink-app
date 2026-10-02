@@ -153,7 +153,7 @@ function isikliGiris(Bilesen) {
       ...props,
       onFocus: (e) => { setOdak(true); props.onFocus && props.onFocus(e); },
       onBlur: (e) => { setOdak(false); props.onBlur && props.onBlur(e); },
-      style: [props.style, odak ? ODAK_ISIK : null],
+      style: [props.style, odak ? odakIsik() : null],
     };
     return eski.call(this, yeni, ...rest);
   };
@@ -163,3 +163,15 @@ const ODAK_ISIK = {
   shadowOffset: { width: 0, height: 0 },
   backgroundColor: "#181614",
 };
+// v7 (Gökberk 3 Ekim: "Tanış'ta arama alanında siyah bant") — koyu temanın odak zemini
+// (#181614) açık temada kapkara bir kutu çiziyordu. v7 odağı: beyaz zemin + %8 amber ışıma.
+// theme.js'e import yok (döngü riski): tema modu çağrı anında okunur.
+const ODAK_ISIK_V7 = {
+  shadowColor: "#E28743", shadowOpacity: 0.08, shadowRadius: 18,
+  shadowOffset: { width: 0, height: 0 },
+  backgroundColor: "#FFFFFF",
+  outlineWidth: 0,   // web: tarayicinin siyah odak cercevesi (cihazda anlamsiz, zararsiz)
+};
+function odakIsik() {
+  try { return require("./theme").temaModu() === "v7" ? ODAK_ISIK_V7 : ODAK_ISIK; } catch (e) { return ODAK_ISIK; }
+}

@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -24,7 +15,7 @@
   "UÇUŞ",
   "TK1979",
   "SALON",
-  "14:00–18:00",
+  "04:03–08:03",
   "KİŞİ",
   "1 + 1",
   "Keşfet'te 11 uyumlu ilan →",

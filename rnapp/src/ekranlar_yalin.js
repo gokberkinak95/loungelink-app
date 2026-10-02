@@ -32,7 +32,7 @@ import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
-import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve } from "./ui";
+import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
@@ -95,6 +95,34 @@ export function Picker({ label, value, options, onPick, t }) {
 // başlattı / sürüyor / onayın bekleniyor) taşır.
 // ══════════════════════════════════════════════════════════════════════
 export function SekmeSeridi({ secenekler, secili, onSec }) {
+  if (temaModu() === "v7") {
+    // ══════════════════════════════════════════════════════════════════
+    // v7.2 (Gökberk 3 Ekim: "sekmeler ... prompta göre") — alt çizgili düz sekme yerine
+    // CAM SEGMENT: buzlu ray (%55 beyaz, lacivert %6 gölge, üst 1px ışık); seçili dilim
+    // kabarık beyaz hap (gölge %8 + üst ışık). Sayı mono; seçilide bronz.
+    // ══════════════════════════════════════════════════════════════════
+    return (
+      <View style={{ flexDirection: "row", marginBottom: ARA[18], padding: 4, borderRadius: R.full,
+                     backgroundColor: "rgba(255,255,255,0.55)", borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)",
+                     shadowColor: "#0D1B2A", shadowOpacity: 0.06, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } }}>
+        {secenekler.map(([k, lb, n]) => {
+          const on = secili === k;
+          return (
+            <TouchableOpacity key={k} hitSlop={TAP.slop} onPress={() => onSec(k)} accessibilityRole="tab"
+              accessibilityState={{ selected: on }} accessibilityLabel={`${lb}${n != null ? " · " + n : ""}`}
+              style={[{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 40, borderRadius: R.full },
+                      on ? { backgroundColor: "#FFFFFF", borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
+                             shadowColor: "#0D1B2A", shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
+                             elevation: 2 } : null]}>
+              <Text style={{ fontSize: FS.sm + 0.5, fontWeight: on ? "700" : "500", color: on ? C.ink : C.mut }}>
+                {lb}{n != null ? <Text style={{ fontFamily: MONO[500], color: on ? C.goldText : C.dim }}>{"  " + n}</Text> : null}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  }
   return (
     <View style={{ flexDirection: "row", marginBottom: ARA[14], borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.kenarIsik || C.line }}>
       {secenekler.map(([k, lb, n]) => {
@@ -387,7 +415,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
              YÜZEY: altın/gri sıra şeridi, iç halka ve rozet hapları kalktı;
              sıra bir editoryal satır, uyum fildişi mühür, güven sinyalleri
              harf aralıklı metin. Bilgi aynı; yüzey sayısı beşten bire indi. */
-          <View key={r.id} style={[{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line },
+          <View key={r.id} style={[akisKarti(),
                                    yeniSatir(yeniGelen)]}>
             {yeniGelen ? <YeniEtiket t={t} stil={{ marginBottom: ARA[10] }} /> : null}
             {r.status === "pending" && (isBest || pendCount > 1) && (
@@ -413,7 +441,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.display, fontFamily: F.serifGosterim,
                                                  lineHeight: SATIR(FS.display, "serif"), letterSpacing: -0.6 }}>{abbrevName(r.guest_name)}</Text>
-                {!!r.guest_profession && <Text numberOfLines={1} style={{ color: C.mut, fontSize: FS.micro + 0.5, letterSpacing: 1.3 }}>{BUYUK(r.guest_profession)}</Text>}
+                {!!r.guest_profession && <Text numberOfLines={2} style={{ color: C.mut, fontSize: FS.micro + 0.5, letterSpacing: 1.3 }}>{BUYUK(r.guest_profession)}</Text>}
               </View>
               </TouchableOpacity>
               {/* v2.02: eşleşme ile güven puanı ayrı — mühür "UYUM" der, güven aşağıda yazıyla. */}
@@ -456,7 +484,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                                               fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.intro_message}”</Text> : null}
             {r.status === "pending" ? (
             <View style={{ flexDirection: "row", marginTop: ARA[10] }}>
-              <Btn v="gold" sm label={t.acceptGuest} onPress={() => act(r.id, "accept")} style={{ marginRight: SP[2], flex: 1.6 }} />
+              <Btn v="gold" sm label={t.acceptGuest} onPress={() => act(r.id, "accept")} style={{ marginRight: SP[2], flex: 1.35 }} />
               <Btn v="ghost" sm label={t.decline} onPress={() => act(r.id, "decline")} style={{ flex: 1 }} />
             </View>
             ) : (
@@ -524,7 +552,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                kutusu > rozet hapları = beş iç içe yüzey, ikisi aynı dolguda.
                Şimdi: kart tek yüzey; durum kutusuz editoryal satır, bağlam
                1 px ışık çizgisiyle ayrılır, rozetler harf aralıklı metin. */
-            <View key={r.id} style={[{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line },
+            <View key={r.id} style={[akisKarti(),
                                      yeniSatir(yeniGiden)]}>
               {yeniGiden ? <YeniEtiket t={t} stil={{ marginBottom: ARA[10] }} /> : null}
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -2745,8 +2773,9 @@ export function Notifications({ t, session, onRefreshBadge, onGit, onBack }) {
         <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.notifMarkAll}
           onPress={markAll}
           style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", minHeight: TAP.minHeight, marginTop: ARA[4] }}>
-          <Ikon ad="tamam" boy={14} renk={C.goldText} stil={{ marginRight: ARA[6] }} />
-          <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>
+          {/* v7 (Gökberk 3 Ekim): bant gece mavisi — bronz yazı okunmuyordu → şampanya. */}
+          <Ikon ad="tamam" boy={14} renk={temaModu() === "v7" ? C.foto.dugum : C.goldText} stil={{ marginRight: ARA[6] }} />
+          <Text style={{ color: temaModu() === "v7" ? C.foto.dugum : C.goldText, fontSize: FS.sm, fontWeight: "700" }}>
             {String(t.notifMarkAll || "")}{` · ${okunmamisSay}`}
           </Text>
         </TouchableOpacity>
@@ -2946,6 +2975,36 @@ export function Marketplace({ t, session, onBack }) {
         DURUM ÇUBUĞUNUN ALTINA giriyordu. Bu ekran ortak Hdr'ı kullanmıyor
         (kendi başlığını çiziyor) ve güvenli alan payını kimse eklememişti.
         Ortak başlıkla aynı payı burada da uyguluyoruz. */}
+    {/* v7.2 — Market de uçak penceresi bandını taşır (tek başına beyaz çubuk kalmıştı).
+        Bakiye bandın sağında cam hap; kategoriler bandın içinde cam çipler (BantBaglami). */}
+    {temaModu() === "v7" ? (
+      <>
+        <FotoBant marka="LOUNGELINK" ustBilgi="LoungePuan" baslik={t.marketTitle} geri={onBack}
+          sag={
+            <View style={{ backgroundColor: "rgba(255,255,255,0.14)", borderRadius: R.full, borderWidth: 1,
+                           borderColor: "rgba(212,195,163,0.55)", paddingVertical: ARA[6], paddingHorizontal: ARA[12] }}>
+              <Text style={{ fontFamily: MONO[600], fontSize: FS.sm, color: C.foto.dugum }}>{bal.toLocaleString()} {t.points}</Text>
+            </View>
+          }
+          altIcerik={
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginTop: ARA[12] }}>
+              {[["all", t.catAll], ["lounge", "Lounge"], ["hotel", t.catHotel], ["miles", t.catMiles], ["esim", "eSIM"], ["insurance", t.catInsurance]].map(([k, lb]) => (
+                <Cip key={k} etiket={lb} secili={cat === k} onPress={() => setCat(k)} />
+              ))}
+            </View>
+          } />
+        {!!(err || yukErr) && (
+          <View style={{ backgroundColor: C.hataBg, borderRadius: R.md, padding: SP[3], marginHorizontal: ARA[14], marginTop: ARA[10] }}>
+            <Text style={{ color: C.redInk, fontSize: FS.sm }}>{err || yukErr}</Text>
+            {!!yukErr && (
+              <TouchableOpacity onPress={load} hitSlop={TAP.slop} style={{ minHeight: 44, justifyContent: "center" }}>
+                <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>{t.retry || "Yeniden dene"}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      </>
+    ) : (
     <View style={{ backgroundColor: C.card, borderBottomWidth: 1, borderBottomColor: C.line,
                    paddingTop: TOPPAD }}>
       <View style={{ height: 52, flexDirection: "row", alignItems: "center", paddingHorizontal: ARA[14] }}>
@@ -2981,6 +3040,7 @@ export function Marketplace({ t, session, onBack }) {
         ))}
       </ScrollView>
     </View>
+    )}
     <ScrollView contentContainerStyle={{ padding: ARA[10], paddingBottom: ARA[40] }}>
       {/* MVP: 2 sütunlu ürün gridi */}
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>

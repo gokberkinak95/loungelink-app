@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -13,7 +22,7 @@
   "LOUNGEPUAN",
   "16",
   "GÜVEN",
-  "",
+  "",
   "Güvenilir bir topluluk için telefon doğrulaması gerekir. Bu; istek göndermeyi ve daha yüksek güven puanını açar.",
   "Telefonu doğrula →",
   "0",
@@ -31,7 +40,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "13:50–17:20",
+  "04:03–07:33",
   "Host bul",
   "",
   "Ana Sayfa",

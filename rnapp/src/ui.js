@@ -9,9 +9,9 @@
 //
 // MVP kaynagi: LoungeLink_MVP_v15.jsx satir 307-465
 // ============================================================
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BUYUK, gorunur } from "./i18n";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal, StyleSheet } from "react-native";
 // 🔴 `BTN` adı bu dosyada ZATEN VAR (varyant haritası). Tema tarafındaki
 // ölçüler ayrı adla giriyor; aynı adı ikinci kez bağlamak sessiz bir
 // gölgeleme değil, doğrudan çalışma anı hatası verdi.
@@ -731,6 +731,38 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
   // #1F1C19; yazı da iki hâlde altın. Seçim VARDI, GÖRÜNMÜYORDU. Seçili çip
   // artık ana düğmenin dili: şampanya zemin + sayfa zemini renginde yazı
   // (iki temada da yüksek kontrast).
+  const bantta = useContext(BantBaglami) && temaModu() === "v7";
+  if (bantta) {
+    // v7.2 (Gökberk 3 Ekim: "seyahatlerim / ilanlarım sekmelerini prompta göre iyileştir")
+    // Bant içinde: seçili = şampanya sikke (gradyan + üst 1px ışık + alt bronz kenar),
+    // seçili değil = buzlu cam hap (%12 beyaz, %22 ışık kenarı), fildişi yazı.
+    const icB = (
+      <View style={[{ height: 32, borderRadius: R.full, paddingHorizontal: ARA[14], overflow: "hidden",
+                      flexDirection: "row", alignItems: "center", alignSelf: "flex-start",
+                      backgroundColor: secili ? C.goldBtn : "rgba(255,255,255,0.12)",
+                      borderWidth: 1,
+                      borderTopColor: secili ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.26)",
+                      borderLeftColor: secili ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.16)",
+                      borderRightColor: secili ? "rgba(110,90,57,0.18)" : "rgba(255,255,255,0.12)",
+                      borderBottomColor: secili ? "rgba(110,90,57,0.32)" : "rgba(255,255,255,0.10)" },
+                    Platform.OS === "web" && !secili ? { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" } : null,
+                    stil]}>
+        {secili ? <Image source={ALTIN_GRADYAN()} resizeMode="stretch"
+                    style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, width: "100%", height: "100%" }} /> : null}
+        {ikon ? <View style={{ marginRight: ARA[4] }}>{ikon}</View> : null}
+        <Text numberOfLines={1} style={{ fontSize: FS.xs, fontWeight: secili ? "700" : "600", letterSpacing: 0.4,
+                                         color: secili ? C.onGold : C.foto.baslik }}>{etiket}</Text>
+      </View>
+    );
+    if (!onPress) return icB;
+    return (
+      <TouchableOpacity onPress={() => { if (!secili) dokunHafif(); onPress(); }} onLongPress={onLongPress}
+        hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }} activeOpacity={0.7}
+        accessibilityRole="button" accessibilityLabel={a11yLabel || etiket} accessibilityState={{ selected: !!secili }}>
+        {icB}
+      </TouchableOpacity>
+    );
+  }
   const zemin = secili ? C.goldBtn
     : dolgu ? ((C.badge && C.badge[dolgu === true ? (ton === "ok" ? "ok" : ton === "engel" ? "block" : "cost") : dolgu] || {}).bg || C.bgAlt)
     : C.bgAlt;
@@ -763,7 +795,9 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
                     backgroundColor: zemin,
                     borderWidth: 0 },
                   kabartma ? {
-                    shadowColor: "#000000", shadowOpacity: 0.38, shadowRadius: 6,
+                    // v7: siyah %38 gölge fildişi zeminde "kirli" duruyordu → lacivert %10.
+                    shadowColor: temaModu() === "v7" ? "#0D1B2A" : "#000000",
+                    shadowOpacity: temaModu() === "v7" ? 0.10 : 0.38, shadowRadius: 6,
                     shadowOffset: { width: 0, height: 2 }, elevation: 3,
                     overflow: "hidden",
                   } : null, stil]}>
@@ -881,7 +915,7 @@ export function Bar({ title, sub, onBack, right, t, ustBilgi, scene, kahraman, u
               onPress={onBack} sol={<Ikon ad="sol" boy={20} renk={temaModu() === "v7" ? C.ink : C.foto.baslik} />} />
           ) : null}
           {temaModu() === "v7" ? (
-            <Image source={MARKA_KANAT} resizeMode="contain" tintColor={C.gold}
+            <Image source={KANAT_BRONZ} resizeMode="contain"
               style={{ width: 26, height: 13, marginLeft: onBack ? ARA[12] : 0 }} />
           ) : null}
           <Text style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 4.6,
@@ -1491,7 +1525,7 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
 // Metin bloğunun alt payı da aynı sabitten → hiçbir metin sise düşmez.
 // v7.2 (prompt md.1 "boşluk tamiri"): 84 → 48. Bant ile ilk kart arası 36pt kısaldı;
 // ilk katman pencere kenarının sisine yaslanır.
-const V7_SIS = 48;
+const V7_SIS = 36;   // 3 Ekim ikinci tur: Gökberk "header görselinin altında hâlâ çok boşluk" → 48 → 36
 // #RRGGBB → göreli parlaklık > 0.45 mi? (rgba/isimli renkler: hayır)
 function acikZemin(renk) {
   const m = /^#([0-9a-f]{6})$/i.exec(String(renk || ""));
@@ -1500,6 +1534,9 @@ function acikZemin(renk) {
     v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
   return 0.2126 * k[0] + 0.7152 * k[1] + 0.0722 * k[2] > 0.45;
 }
+// v7.2 · BANT BAĞLAMI — bandın İÇİNDEKİ bileşenler (çip satırı) gece mavisi üstünde
+// durduğunu bilir: fildişi dolu çip orada ağır bir etiket gibi duruyordu.
+export const BantBaglami = React.createContext(false);
 export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                           sag, eylem, geri, yukseklik, serifBaslik, serifYani, altIcerik }) {
   // 🔴 3 EYLÜL — `serifBaslik` ve `altIcerik` EKLENDİ.
@@ -1532,7 +1569,14 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
   // (Cormorant ortalama glif ≈ 0.5em); kısa başlıklar değişmez.
   const enUzun = typeof baslik === "string" ? Math.max(0, ...baslik.split(/\s+/).map(w => w.length)) : 0;
   // Referans genişlik SABİT 276pt (SE 320 − 2×22): başlık her cihazda aynı boyda kalır.
-  const baslikBoy = Math.min(FS.bant + 4, enUzun ? Math.floor(276 / (enUzun * 0.45)) : FS.bant + 4);
+  const kelimeBoy = Math.min(FS.bant + 4, enUzun ? Math.floor(276 / (enUzun * 0.45)) : FS.bant + 4);
+  // v7.2 (Gökberk 3 Ekim: "başlıkların ikinci satıra inmesi güzel değil, font büyüklüğünü ona
+  // göre ayarla"): başlık TEK SATIRA sığacak boya iner (Cormorant ≈ 0.44em/harf, ölçüldü:
+  // "Değerlendirmeler" 0.424). Bilinçli satır kırığı ("\n") olan başlıkta her satır ayrı ölçülür.
+  // Taban 26pt: daha uzunsa iki satıra izin verilir (okunurluk > tek satır).
+  const enUzunSatir = typeof baslik === "string" ? Math.max(1, ...baslik.split("\n").map(x => x.trim().length)) : 0;
+  const satirBoy = enUzunSatir ? Math.floor((G - ARA[22] * 2) / (enUzunSatir * 0.44)) : FS.bant + 4;
+  const baslikBoy = temaModu() === "v7" ? Math.max(26, Math.min(kelimeBoy, satirBoy)) : kelimeBoy;
   const fotoUst = -Math.max(0, fotoY - olculenY) * 0.42;
   return (
     // ══════════════════════════════════════════════════════════════
@@ -1630,16 +1674,15 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
               ══════════════════════════════════════════════════════════════ */}
           <Katman source={require("../assets/bant.jpg")} resizeMode="stretch"
             style={{ position: "absolute", left: fotoSol, top: fotoUst, width: fotoG, height: fotoY }} />
-          <Katman source={require("../assets/dikey.png")} resizeMode="stretch" tintColor={C.meshUst}
-            style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, opacity: 0.88 }} />
+          {/* ⚠️ v7.2: renk gömülü gradyanlar — web'de tintColor filtre kimliği kayıyordu. */}
+          <Katman source={require("../assets/v7_gece_ust.png")} resizeMode="stretch"
+            style={{ position: "absolute", width: "100%", left: 0, top: 0, right: 0, bottom: 0, opacity: 0.88 }} />
           <View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0,
                                               backgroundColor: C.meshUst, opacity: 0.22 }} />
-          <Katman source={require("../assets/dikey.png")} resizeMode="stretch" tintColor={C.doku.ufuk}
-            style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: V7_SIS, opacity: 0.96,
-                     transform: [{ scaleY: -1 }] }} />
-          <Katman source={require("../assets/dikey.png")} resizeMode="stretch" tintColor={C.bg}
-            style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: Math.round(V7_SIS * 0.4),
-                     transform: [{ scaleY: -1 }] }} />
+          <Katman source={require("../assets/v7_sis_alt.png")} resizeMode="stretch"
+            style={{ position: "absolute", width: "100%", left: 0, right: 0, bottom: 0, height: V7_SIS, opacity: 0.96 }} />
+          <Katman source={require("../assets/v7_fildisi_alt.png")} resizeMode="stretch"
+            style={{ position: "absolute", width: "100%", left: 0, right: 0, bottom: 0, height: Math.round(V7_SIS * 0.4) }} />
           {/* Son piksel satırı: ölçek yuvarlaması fotoğrafı 1px sızdırıyordu (ölçüldü: y=947
               gri 155 çizgi). Düz zemin şeridi bandı kesintisiz bitirir. */}
           <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, bottom: -1, height: 4,
@@ -1694,7 +1737,7 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
             {/* v7 (Gökberk 2 Ekim: "iç sayfadaki küçük logo kullanımını geri getir") —
                 kanat işareti markanın önünde, şampanya. 26×13: kelimenin x-yüksekliğiyle hizalı. */}
             {temaModu() === "v7" ? (
-              <Image source={MARKA_KANAT} resizeMode="contain" tintColor={C.foto.dugum}
+              <Image source={KANAT_SAMPANYA} resizeMode="contain"
                 style={{ width: 26, height: 13, marginRight: ARA[8] }} />
             ) : null}
             {/* Tasarımda `.marka`: 11/700, harf aralığı .42em (≈4.6px).
@@ -1803,7 +1846,7 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
               </GolgeliMetin>
             </View>
           ) : null}
-          {altIcerik ? <View testID="bant-slot">{altIcerik}</View> : null}
+          {altIcerik ? <View testID="bant-slot"><BantBaglami.Provider value={true}>{altIcerik}</BantBaglami.Provider></View> : null}
         </View>
       </View>
     </View>
@@ -2764,6 +2807,19 @@ export function Sayfa({ children, tur = "is", ufuk = 56, kaynak, yogunluk, style
 // ════════════════════════════════════════════════════════════════════════
 // 2 Ekim — "YENİ" işareti (kural: ortak.js · useAkisGoruldu). Kartın kendi kenarı
 // yerine İNCE altın çerçeve + köşede küçük etiket: dikkat çeker ama kartı boyamaz.
+// v7.2 · AKIŞ KARTI (Gökberk 3 Ekim: "istek, oturum, sohbet sayfalarında kartlar çizgiyle
+// ayrılmış; diğer yerler gibi bir alanda değiller, temaya uygun değil"). v7'de her satır
+// beyaz kart: köşe 20, lacivert %5 gölge, üst kenarda 1px ışık, kartlar arası 14pt.
+// Eski temalarda v6.3 "tek yüzey" satırı (üst saç çizgisi) aynen kalır.
+export function akisKarti() {
+  if (temaModu() !== "v7") {
+    return { paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line };
+  }
+  return { backgroundColor: "#FFFFFF", borderRadius: R.lg, padding: ARA[18], marginBottom: ARA[14],
+           borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
+           shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 },
+           elevation: 1 };
+}
 export function yeniCerceve(yeni) {
   return yeni ? { borderWidth: 1, borderColor: C.goldLine || C.goldText } : null;
 }
@@ -2869,6 +2925,9 @@ export { Katman };
 // yalnız KANAT (splash'in merkezindeki işaret), 96pt, dönmüyor — ufka
 // doğru süzülüp nefes alıyor. Hareket yavaş: telaş değil, süreklilik.
 const MARKA_KANAT = require("../assets/mark-kanat.png");
+// v7.2 — rengi gömülü kanatlar (brand/build_v7_perde.py); web'de tintColor güvenilmez.
+const KANAT_SAMPANYA = require("../assets/mark-kanat-sampanya.png");
+const KANAT_BRONZ = require("../assets/mark-kanat-bronz.png");
 export function MarkaYukleyici({ boy = 96, koyuZemin = false }) {
   const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -2909,9 +2968,9 @@ export function MarkaYukleyici({ boy = 96, koyuZemin = false }) {
           </Animated.View>
         </View>
         <Animated.Image
-          source={MARKA_KANAT}
+          source={temaModu() === "v7" ? KANAT_BRONZ : MARKA_KANAT}
           resizeMode="contain"
-          tintColor={C.goldText}
+          tintColor={temaModu() === "v7" ? undefined : C.goldText}
           style={{ width: boy, height: yuk,
                    opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.5, 1] }) }}
         />
@@ -3043,9 +3102,22 @@ export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala =
       // K6: pano kendi çerçevesi — kesikli çerçeveyle çift çerçeve olmasın.
       borderWidth: pano ? 0 : 1, borderColor: C.line, borderStyle: "dashed", borderRadius: R.sm,
       backgroundColor: "transparent",
+      // v7.2: kesikli çizgi kutusu yerine cam pano (çerçevesiz, ışıkla ayrılır).
+      ...(temaModu() === "v7" && !pano ? {
+        borderWidth: 0, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)", borderStyle: "solid",
+        borderRadius: R.lg, backgroundColor: "rgba(255,255,255,0.55)",
+        shadowColor: "#0D1B2A", shadowOpacity: 0.06, shadowRadius: 18, shadowOffset: { width: 0, height: 6 },
+      } : null),
     }}>
       {!!pano && <SessizPano baslik={pano.baslik} durum={pano.durum} />}
-      {!!ikon && !pano && (
+      {/* v7.2 (Gökberk 3 Ekim: "boş durumdaki uçak ikonu bizim app'in uçak ikonu olsun") —
+          "ucus" boş durumunda markanın kanadı: şampanya diskte bronz kanat. */}
+      {ikon === "ucus" && !pano && temaModu() === "v7" ? (
+        <View style={{ width: 64, height: 64, borderRadius: R.full, alignItems: "center", justifyContent: "center",
+                       backgroundColor: "rgba(212,195,163,0.22)", marginBottom: SP[3] }}>
+          <Image source={KANAT_BRONZ} resizeMode="contain" style={{ width: 40, height: 20 }} />
+        </View>
+      ) : !!ikon && !pano && (
         <View style={{
           // 🔴 `borderRadius: 22` YAZMIYORUM. 44/2 elle hesaplanmış bir
           // daire, boyut değiştiği gün sessizce yumurtaya döner — ve
@@ -3093,11 +3165,28 @@ function bulanikBilesen() {
 // ══════════════════════════════════════════════════════════════════════
 export function CamSerit({ children, stil }) {
   const B = Platform.OS === "ios" ? bulanikBilesen() : null;
-  const zemin = { backgroundColor: "rgba(255,255,255,0.45)", borderRadius: R.lg, overflow: "hidden",
-                  shadowColor: "#0D1B2A", shadowOpacity: 0.04, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } };
-  if (B) return <B intensity={22} tint="light" style={[zemin, stil]}>{children}</B>;
+  // Gökberk 3 Ekim: "arka planla neredeyse aynı ton — çevresine gölge mi eklesek?" Evet:
+  // lacivert ortam gölgesi (%7, 20pt) + üst kenarda 1px ışık. Çerçeve yok; şerit zeminden
+  // ışıkla ayrılır. Android'de gölge elevation ile (overflow hidden gölgeyi kesmesin diye kapta).
+  const golge = { shadowColor: "#0D1B2A", shadowOpacity: 0.07, shadowRadius: 20, shadowOffset: { width: 0, height: 8 } };
+  const kenar = { borderRadius: R.lg, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)" };
+  if (B) {
+    // iOS: gölge dış kapta, bulanıklık iç kapta (köşe kırpması gölgeyi kesmesin).
+    const { padding, paddingVertical, paddingHorizontal, flexDirection, alignItems, ...dis } = StyleSheet.flatten(stil) || {};
+    const ic = { padding, paddingVertical, paddingHorizontal, flexDirection, alignItems };
+    return (
+      <View style={[golge, { borderRadius: R.lg }, dis]}>
+        <B intensity={22} tint="light" style={[kenar, { overflow: "hidden", backgroundColor: "rgba(255,255,255,0.55)" }, ic]}>{children}</B>
+      </View>
+    );
+  }
+  // Android: yarı saydam yüzeye elevation gölgeyi kartın İÇİNDEN çiziyor (v6.3 ölçümü) →
+  // elevation yok, zemin %82 beyaz (bulanıklık da yok; şerit yine zeminden ayrılır).
+  if (Platform.OS === "android") {
+    return <View style={[kenar, { backgroundColor: "rgba(255,255,255,0.82)" }, stil]}>{children}</View>;
+  }
   const web = Platform.OS === "web" ? { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" } : null;
-  return <View style={[zemin, web, stil]}>{children}</View>;
+  return <View style={[kenar, golge, { backgroundColor: "rgba(255,255,255,0.55)" }, web, stil]}>{children}</View>;
 }
 export function DumanliCam({ children, stil }) {
   const B = Platform.OS === "ios" ? bulanikBilesen() : null;
@@ -3168,8 +3257,10 @@ export function SikkeYuzey({ boy }) {
   return (
     <View pointerEvents="none" style={tam}>
       <Image source={ALTIN_GRADYAN()} resizeMode="stretch" style={tam} />
-      <View style={{ position: "absolute", width: boy * 0.62, height: boy * 0.46, borderRadius: boy,
-                     left: boy * 0.08, top: boy * 0.05, backgroundColor: "rgba(255,255,255,0.22)" }} />
+      {/* Parlama: sol üstte keskin kenarlı bir leke "ikinci bir daire" gibi okunuyordu (Gökberk
+          3 Ekim). Artık üst yarıda yumuşak dikey ışık — kenarsız, metal yüzeyin yansıması. */}
+      <Katman source={require("../assets/v7_isik_ust.png")} resizeMode="stretch"
+        style={{ position: "absolute", left: 0, top: 0, width: boy, height: boy * 0.58, opacity: 0.26 }} />
       <View style={{ position: "absolute", left: kay, top: kay, width: ic, height: ic, borderRadius: ic / 2,
                      borderWidth: 1, borderTopColor: "rgba(110,90,57,0.16)", borderLeftColor: "rgba(110,90,57,0.08)",
                      borderRightColor: "rgba(255,255,255,0.14)", borderBottomColor: "rgba(255,255,255,0.30)" }} />

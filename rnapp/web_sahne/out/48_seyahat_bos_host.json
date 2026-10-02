@@ -7,6 +7,14 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -18,7 +26,6 @@
   "Seyahatlerim",
   "İlanlarım",
   "Seyahatlerim",
-  "",
   "Sıradaki uçuşunu yaz. Kapıyı kimin açabileceğini o an göreceksin.",
   "Seyahat Ekle",
   "",

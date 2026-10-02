@@ -19,7 +19,10 @@
 import React, { useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity, Animated, Easing, Image, Dimensions } from "react-native";
 import { BUYUK } from "./i18n";
-import { ARA, C, F, FS, R, SP, T, TAP } from "./theme";
+import { ARA, C, F, FS, R, SP, T, TAP, temaModu } from "./theme";
+// v7 (3 Ekim): an ekranı HER ZAMAN gece fotoğrafının üstünde. Açık temanın bronz metin altını
+// (#8A7247) burada 2:1'e düşüyordu ("EŞLEŞTİNİZ" görünmüyordu) → gece zemininde şampanya.
+const ALTIN = () => (temaModu() === "v7" ? C.goldBtn : C.gold);
 import { MONO } from "./typography";
 import { Ikon } from "./ikon";
 import { TOPPAD, Btn, Hale, MESH_BANT } from "./ui";
@@ -42,7 +45,7 @@ function AnAvatar({ harf, ton, zemin }) {
                    backgroundColor: zemin || "rgba(255,255,255,0.05)",
                    alignItems: "center", justifyContent: "center" }}>
       <Text style={{ fontFamily: F.serif, fontSize: FS.display, fontWeight: "600",
-                     color: ton || C.gold }}>
+                     color: ton || ALTIN() }}>
         {String(harf || "?").charAt(0).toUpperCase()}
       </Text>
     </View>
@@ -82,14 +85,14 @@ function KapiAralanir({ ikiz }) {
       {/* kemer — markanın kendi biçimi */}
       <View style={{ position: "absolute", top: 0, width: KEN, height: KBOY,
                      borderTopLeftRadius: KEN / 2, borderTopRightRadius: KEN / 2,
-                     borderWidth: 2, borderBottomWidth: 0, borderColor: C.gold, overflow: "hidden" }}>
-        <Animated.Image source={ISIK} resizeMode="stretch" tintColor={C.gold}
+                     borderWidth: 2, borderBottomWidth: 0, borderColor: ALTIN(), overflow: "hidden" }}>
+        <Animated.Image source={ISIK} resizeMode="stretch" tintColor={ALTIN()}
           style={{ position: "absolute", left: -40, bottom: -90, width: KEN + 80, height: KBOY + 60,
                    opacity: isik.interpolate({ inputRange: [0, 1], outputRange: [0.05, 0.6] }),
                    transform: [{ translateY: isik.interpolate({ inputRange: [0, 1], outputRange: [120, 0] }) }] }} />
       </View>
       {/* eşik */}
-      <View style={{ position: "absolute", top: KBOY, width: 190, height: 2, backgroundColor: C.gold }} />
+      <View style={{ position: "absolute", top: KBOY, width: 190, height: 2, backgroundColor: ALTIN() }} />
       {/* iki yolcu + bağ */}
       <View style={{ position: "absolute", top: KBOY - 33, flexDirection: "row", alignItems: "center" }}>
         <Animated.View style={{ opacity: gel,
@@ -97,7 +100,7 @@ function KapiAralanir({ ikiz }) {
           <AnAvatar harf={ikiz[0]} zemin={C.gece} />
         </Animated.View>
         <Animated.View style={{ flexDirection: "row", opacity: bag.interpolate({ inputRange: [0, 1], outputRange: [0, 0.8] }) }}>
-          <View style={{ width: 13, height: 1, backgroundColor: C.gold }} />
+          <View style={{ width: 13, height: 1, backgroundColor: ALTIN() }} />
           <View style={{ width: 13, height: 1, backgroundColor: C.teal }} />
         </Animated.View>
         <Animated.View style={{ opacity: gel,
@@ -219,7 +222,7 @@ export default function MomentScreen({
         position: "absolute", left: 0, right: 0, top: 0, bottom: 0,
         opacity: glow.interpolate({ inputRange: [0.5, 1], outputRange: [0.82, 1] }),
       }}>
-        <Hale renk={C.gold} cap={EN * 1.92} x={EN * 0.50} y={BOY * 0.08} guc={0.42} />
+        <Hale renk={ALTIN()} cap={EN * 1.92} x={EN * 0.50} y={BOY * 0.08} guc={0.42} />
         <Hale renk={C.purple} cap={EN * 1.76} x={EN * 0.22} y={BOY * 0.44} guc={0.26} />
       </Animated.View>
 
@@ -256,12 +259,12 @@ export default function MomentScreen({
         {ikiz ? (
           <KapiAralanir ikiz={ikiz} />
         ) : (kind === "completed" || kind === "reciprocity")
-          ? <Ikon ad={mark} boy={38} renk={C.gold} />
+          ? <Ikon ad={mark} boy={38} renk={ALTIN()} />
           : <Image source={require("../assets/mark-kemer.png")}
               style={{ width: 76, height: 76 }} resizeMode="contain" />}
         {!!dugum && (
           <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4,
-                         color: C.gold, marginTop: ARA[34] }}>
+                         color: ALTIN(), marginTop: ARA[34] }}>
             {BUYUK(dugum)}
           </Text>
         )}
@@ -288,13 +291,13 @@ export default function MomentScreen({
                            marginLeft: SP[2] }}>{sayac.deger}</Text>
             {!!sayac.etiket && (
               <Text style={{ fontSize: FS.micro, fontWeight: "600", letterSpacing: 1.4,
-                             color: C.dim, marginLeft: SP[2] }}>
+                             color: temaModu() === "v7" ? "rgba(249,248,246,0.62)" : C.dim, marginLeft: SP[2] }}>
                 {BUYUK(sayac.etiket)}
               </Text>
             )}
           </View>
         ) : !!meta && (
-          <Text style={{ fontSize: FS.sm, color: C.gold, marginTop: ARA[14],
+          <Text style={{ fontSize: FS.sm, color: ALTIN(), marginTop: ARA[14],
                          letterSpacing: 0.4, textAlign: "center" }}>{meta}</Text>
         )}
 
@@ -321,7 +324,7 @@ export default function MomentScreen({
           <Btn v="gold" sm full label={primary.label} onPress={primary.onPress} />
         )}
         {!!secondary && (
-          <Btn v="ghost" sm full label={secondary.label} onPress={secondary.onPress}
+          <Btn v={temaModu() === "v7" ? "ust" : "ghost"} sm full label={secondary.label} onPress={secondary.onPress}
             style={{ marginTop: ARA[12], backgroundColor: C.camKart }} />
         )}
       </View>

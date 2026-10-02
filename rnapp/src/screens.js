@@ -10,7 +10,7 @@ import { temaTercihi, temaTercihYaz } from "./tema_tercih";
 import { logError, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { MONO } from "./typography";
-import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP } from "./theme";
+import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP, temaModu } from "./theme";
 import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -787,7 +787,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           {!!moment.q && (
             <View style={{ marginTop: ARA[22], alignSelf: "stretch", borderRadius: R.lg + 2, padding: SP[4],
                            backgroundColor: "rgba(20,18,17,0.55)", borderTopWidth: 1, borderTopColor: "rgba(247,243,236,0.10)" }}>
-              <Text style={{ color: C.gold, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.momentGuestSlip)}</Text>
+              <Text style={{ color: temaModu() === "v7" ? C.goldBtn : C.gold, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>{BUYUK(t.momentGuestSlip)}</Text>
               <Text numberOfLines={1} style={{ color: C.paper, fontFamily: F.serifGosterim, fontSize: FS.title + 2, marginTop: ARA[6] }}>{moment.name}</Text>
               <Text style={{ color: C.paper, opacity: 0.72, fontFamily: MONO[500], fontSize: FS.xs + 0.5, letterSpacing: 0.4, marginTop: ARA[6] }}>
                 {BUYUK([moment.q.lounge_name, moment.q.avail_date ? fmtLongDate(moment.q.avail_date, etkinDil()) : null,

@@ -9,12 +9,13 @@
 // zorunda — aksi hâlde web sahnesi sistem fontuyla çizer ve cihazı
 // yansıtmaz.
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import * as Font from "expo-font";
 import App from "../App";
 import { sahneKur } from "./sahneler";
 import MomentScreen from "../src/MomentScreen";
-import { TerminalRadari, TakimyildizPuan } from "../src/hareket";
+import { TerminalRadari, TakimyildizPuan, OnayDamgasi, SessizPano, KalkisHalkasi } from "../src/hareket";
+import { C, FS } from "../src/theme";
 import { Sayfa, MarkaYukleyici, Tanecik } from "../src/ui";
 import { D as TR } from "../src/i18n";
 
@@ -56,7 +57,7 @@ export default function Galeri() {
     }, 1800);
     return () => clearTimeout(t);
   }, [hazir]);
-  if (!hazir) return <View style={{ flex: 1, backgroundColor: "#0B0A0F" }} />;
+  if (!hazir) return <View style={{ flex: 1, backgroundColor: "#F9F8F6" }} />;
   // v6.2 — HAREKET VİTRİNİ: onaylı hareket bileşenlerini gerçek fontlarla,
   // tek başına çizer (K3 · K5 · K8 · K2). Yalnız web sahnesinde; uygulamaya girmez.
   if (SAHNE.endsWith("vitrin_kapi")) {
@@ -73,6 +74,35 @@ export default function Galeri() {
     return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 48 }}>
       <TakimyildizPuan deger={4} onDegis={() => {}} />
       <MarkaYukleyici />
+    </View><Tanecik /></Sayfa>);
+  }
+  // v7.2 — hareket vitrininin geri kalanı (K2 · K4 · K6 · K7 · K9). Gökberk 3 Ekim:
+  // "sadece 3 hareket dili vermişsin; diğerleri nerede?" Her biri tek başına, temanın renkleriyle.
+  if (SAHNE.endsWith("vitrin_yukleyici")) {
+    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <MarkaYukleyici boy={150} />
+    </View></Sayfa>);
+  }
+  if (SAHNE.endsWith("vitrin_damga")) {
+    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <OnayDamgasi t={TR.tr || {}} />
+    </View></Sayfa>);
+  }
+  if (SAHNE.endsWith("vitrin_pano")) {
+    return (<Sayfa><View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 40 }}>
+      <SessizPano baslik="GELEN İSTEKLER" durum="BEKLEYEN İSTEK YOK" />
+    </View></Sayfa>);
+  }
+  if (SAHNE.endsWith("vitrin_kalkis")) {
+    const simdi = Date.now();
+    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 44 }}>
+      <KalkisHalkasi t={TR.tr || {}} baslangic={simdi + 42 * 60000} bitis={simdi + 162 * 60000} />
+      <KalkisHalkasi t={TR.tr || {}} baslangic={simdi - 110 * 60000} bitis={simdi + 9 * 60000} />
+    </View></Sayfa>);
+  }
+  if (SAHNE.endsWith("vitrin_zemin")) {
+    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text style={{ fontSize: FS.xs, letterSpacing: 4, color: C.mut }}>LOUNGELINK</Text>
     </View><Tanecik /></Sayfa>);
   }
   return <App />;

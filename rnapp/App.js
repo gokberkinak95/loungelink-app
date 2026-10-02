@@ -13,7 +13,8 @@ import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
-import { SikkeDugme } from "./src/ui";
+import { SikkeDugme, CamSerit } from "./src/ui";
+import { Katman } from "./src/katman";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
 import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi, SekmeSeridi, SoruEkrani, SoruOzeti } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
@@ -33,6 +34,9 @@ import { AcilisIsigi, dokun } from "./src/hareket";
 import { sansUygula } from "./src/typography";
 import { runtimeYukle, runtimeDinle, runtimeTazele, sozluk, bayrak } from "./src/runtime";
 sansUygula();
+// v7.2 — bilgi/uyarı kutularına kabukta ışık (src/kutu_isik.js).
+import { bilgiKutusuUygula } from "./src/kutu_isik";
+bilgiKutusuUygula();
 
 // TEMA: tek kaynak src/theme.js — MVP v15 paletinin birebir kopyasi.
 // Daha once C uc ayri yerde (App.js, screens.js, theme.js) FARKLI degerlerle
@@ -1900,8 +1904,14 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           ══════════════════════════════════════════════════════════════ */}
       {/* v7 (Gökberk · prompt md.4): YÜZEN ASİMETRİK ÇUBUK. Ortadaki "Planım" kapsülden YUKARI
           taşar; kabın üst boşluğu taşma kadar (ARA[26]) → hiçbir içeriğin üstüne binmez. */}
+      {/* v7.2 (Gökberk 3 Ekim: "bottom tabbarın arkasındaki backgrounda biraz şeffaflık?") —
+          sekme içeriği çubuğun 40pt ARKASINA uzanır (ekranların alt payı zaten 40: son öge
+          dururken örtülmez), kapsül buzlu cam. Üst taşma payı dokunuşu geçirir (box-none);
+          katmanlar `cubukH`a göre durduğu için çubuğun arkasına girmez. */}
       <View onLayout={(e) => { const h = Math.round(e.nativeEvent.layout.height); if (h > 0 && h !== cubukH) setCubukH(h); }}
-            style={{ backgroundColor: C.bg, paddingHorizontal: ARA[14],
+            pointerEvents={temaModu() === "v7" ? "box-none" : "auto"}
+            style={{ backgroundColor: temaModu() === "v7" ? "transparent" : C.bg, paddingHorizontal: ARA[14],
+                     marginTop: temaModu() === "v7" ? -40 : 0, zIndex: 10,
                      paddingTop: temaModu() === "v7" ? ARA[26] : ARA[6], paddingBottom: ARA[18] }}>
       {/* 🔴 28 EYLÜL (Gökberk: "tüm iç sayfalarda tabbar görünüyor, arkadaki
           butonları örtüyor; tabbara basınca arkadaki butona basılıyor").
@@ -1915,7 +1925,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           KURALLARLA BELİRLENİR — YÜKSELTME VERDİĞİN HER ŞEY, ÜSTÜNE
           ÇIKACAK KATMANDAN DAHA ALÇAK OLMALI." */}
       <View style={temaModu() === "v7"
-        ? { flexDirection: "row", alignItems: "flex-end", backgroundColor: "rgba(255,255,255,0.86)", borderRadius: 24,
+        ? { flexDirection: "row", alignItems: "flex-end", borderRadius: 24,
+            backgroundColor: Platform.OS === "web" ? "rgba(255,255,255,0.74)" : Platform.OS === "ios" ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.94)",
+            borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)",
+            ...(Platform.OS === "web" ? { backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" } : null),
             paddingTop: ARA[10], paddingBottom: ARA[10], paddingHorizontal: ARA[6],
             shadowColor: "#0D1B2A", shadowOpacity: 0.10, shadowRadius: 24, shadowOffset: { width: 0, height: 10 },
             elevation: topOverlay && !katmanCubuguGoster ? 0 : 10 }
@@ -2074,6 +2087,9 @@ const CUBUK_YUKSEKLIK = 76;   // ilk kare için; gerçek değer onLayout'tan (cu
 // Android yükseltmesi — yalnız Android'de anlamlı; iOS'ta zIndex yeter.
 const KATMAN_Z = Platform.OS === "android" ? { elevation: 16, shadowOpacity: 0 } : null;
 
+// v7 (3 Ekim · Gökberk: "tanıtım kartında 'hangi kart senin' rengi temaya uymuyor") —
+// tanıtım ve açılış HER ZAMAN gece fotoğrafında; bronz metin altını orada okunmuyor → şampanya.
+const GECE_ALTIN = () => (temaModu() === "v7" ? C.goldBtn : C.gold);
 function Onboarding({ t, onDone }) {
   const [i, setI] = useState(0);
   const slides = t.onbSlides || [];
@@ -2231,7 +2247,7 @@ function Onboarding({ t, onDone }) {
         <>
           <Animated.View style={suzul(gir1)}>
             <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4,
-                           color: C.gold }}>{BUYUK(t.onbKartSoru)}</Text>
+                           color: temaModu() === "v7" ? "rgba(249,248,246,0.92)" : C.gold }}>{BUYUK(t.onbKartSoru)}</Text>
             <Text style={{ fontSize: FS.hero, fontWeight: "700", color: C.foto.baslik,
                            letterSpacing: -1.2, lineHeight: 38, marginTop: ARA[8] }}>{t.onbKartBaslik}</Text>
           </Animated.View>
@@ -2291,7 +2307,8 @@ function Onboarding({ t, onDone }) {
       <View style={{ flexDirection: "row", alignItems: "center", gap: ARA[4], marginBottom: ARA[22] }}>
         {slides.map((_, idx) => (
           <View key={idx} style={{ width: idx === i ? 22 : 8, height: 6, borderRadius: R.full,
-                                   backgroundColor: idx === i ? C.gold : C.warmLine || C.line }} />
+                                   backgroundColor: idx === i ? GECE_ALTIN()
+                                     : temaModu() === "v7" ? "rgba(249,248,246,0.35)" : (C.warmLine || C.line) }} />
         ))}
       </View>
       <Btn v="gold" label={!last ? t.onbNext : t.onbStart} onPress={() => last ? onDone() : setI(i + 1)} a11yLabel={!last ? t.onbNext : t.onbStart} />
@@ -2313,8 +2330,8 @@ function IconField({ icon, children }) {
 
 function LangBtn({ lang, toggleLang }) {
   return (
-    <TouchableOpacity hitSlop={TAP.slop} onPress={toggleLang} style={{ borderColor: C.gold, borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
-      <Text style={{ color: C.goldInk, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "EN" : "TR"}</Text>
+    <TouchableOpacity hitSlop={TAP.slop} onPress={toggleLang} style={{ borderColor: GECE_ALTIN(), borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
+      <Text style={{ color: temaModu() === "v7" ? C.goldBtn : C.goldInk, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "EN" : "TR"}</Text>
     </TouchableOpacity>
   );
 }
@@ -2389,47 +2406,67 @@ function OfflineBanner({ t, onRetry, busy, kuyruk = 0 }) {
 // Uydurma sayı yok: giriş öncesi canlı veri yok → "Önce dene" gerçek bir işlev olarak cam satırda.
 // ══════════════════════════════════════════════════════════════════════
 function SplashV7({ t, go, lang, toggleLang }) {
+  // ══════════════════════════════════════════════════════════════════════
+  // v7.2 · AÇILIŞ (3 Ekim · Gökberk: "daha önce attığın örnek splash'e dön, ortaya uçak
+  // logomuzu ekle"). Onaylı A tuvalindeki karşılama birebir:
+  //   fotoğraf → gece mavisi %82 (üst) → %50 (%40) → şafak sisi %92 (%74) → fildişi (%90)
+  // Metin üstte gece mavisinde, kanat ortada şafağın başladığı yerde (açılış ışığıyla),
+  // düğmeler altta FİLDİŞİ zeminde: mürekkep yazılı şampanya + sakin hayalet.
+  // ⚠️ Katmanlar `Katman` ile: düz `Image`te web'de tintColor/scaleY uygulanmıyordu
+  // (ölçüldü: alt %34 fildişi hiç çizilmemiş, fotoğraf koyu kalmıştı).
+  // ══════════════════════════════════════════════════════════════════════
   const G = Dimensions.get("window").width;
-  const kanatG = Math.round(G * 0.24), kanatH = Math.round(kanatG * 0.4925);
+  const kanatG = Math.round(G * 0.40), kanatH = Math.round(kanatG * 0.4925);
   const basla = async () => {
     let seen = false;
     try { seen = (await AsyncStorage.getItem("ll_onb")) === "1"; } catch {}
     go(seen ? "register" : "onboarding");
   };
+  const tam = { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 };
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
-      {/* Fotoğraf kabı ekranı TAŞAR (−16pt): web'de cover kırpması sol kenarda 12pt
-          fotoğrafsız şerit bırakıyordu (ölçüldü: x<12 düz lacivert). */}
       <View pointerEvents="none" style={{ position: "absolute", left: -16, top: 0, right: -16, bottom: 0 }}>
         <Image source={require("./assets/bant.jpg")} resizeMode="cover" style={{ width: "100%", height: "100%" }} />
       </View>
-      <Image source={require("./assets/dikey.png")} resizeMode="stretch" tintColor={C.meshUst}
-        style={{ position: "absolute", left: 0, top: 0, right: 0, height: "62%", opacity: 0.9 }} />
-      <View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0,
-                                          backgroundColor: C.meshUst, opacity: 0.18 }} />
-      <Image source={require("./assets/dikey.png")} resizeMode="stretch" tintColor={C.doku.ufuk}
-        style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "52%", opacity: 0.96,
-                 transform: [{ scaleY: -1 }] }} />
-      <Image source={require("./assets/dikey.png")} resizeMode="stretch" tintColor={C.bg}
-        style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "34%",
-                 transform: [{ scaleY: -1 }] }} />
+      <View pointerEvents="none" style={[tam, { backgroundColor: C.meshUst, opacity: 0.5 }]} />
+      {/* ⚠️ Renk GÖMÜLÜ gradyanlar (brand/build_v7_perde.py): web'de tintColor SVG filtresi
+          kimliği kayıyor ve katman hiç çizilmiyordu (ölçüldü: #tint-5 sayfada yok). */}
+      <Katman source={require("./assets/v7_gece_ust.png")} resizeMode="stretch"
+        style={{ position: "absolute", width: "100%", left: 0, top: 0, right: 0, height: "44%", opacity: 0.64 }} />
+      {/* A tuvalinin DURAKLARI birebir (ölçüldü: doğrusal tek rampa düğmelerin hizasında
+          184 gri veriyordu, tasarım ≈235): sis %40→%74 rampa, %74'ten aşağı düz %92 sis;
+          fildişi %74→%90 rampa, %90'dan aşağı düz fildişi. */}
+      <Katman source={require("./assets/v7_sis_alt.png")} resizeMode="stretch"
+        style={{ position: "absolute", width: "100%", left: 0, right: 0, top: "50%", height: "24%", opacity: 0.92 }} />
+      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "74%", bottom: 0,
+                                          backgroundColor: C.doku.ufuk, opacity: 0.92 }} />
+      <Katman source={require("./assets/v7_fildisi_alt.png")} resizeMode="stretch"
+        style={{ position: "absolute", width: "100%", left: 0, right: 0, top: "74%", height: "16%" }} />
+      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "90%", bottom: 0,
+                                          backgroundColor: C.bg }} />
       <View style={{ position: "absolute", right: ARA[22], top: TOPPAD + ARA[20], zIndex: 2 }}>
         <LangBtn lang={lang} toggleLang={toggleLang} />
       </View>
       <View style={{ paddingTop: TOPPAD + ARA[26], paddingHorizontal: ARA[28] }}>
         <Text style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 4.6, color: C.foto.marka }}>LOUNGELINK</Text>
-        <View style={{ width: kanatG, height: kanatH, marginTop: ARA[40] }}>
-          <AcilisIsigi g={kanatG} y={kanatH} />
-          <Image source={require("./assets/mark-kanat.png")} resizeMode="contain" style={{ width: kanatG, height: kanatH }} />
-        </View>
-        <Text style={{ fontSize: FS.hero + 14, fontFamily: F.serif, lineHeight: Math.round((FS.hero + 14) * 1.04),
-                       letterSpacing: -1, color: C.foto.baslik, marginTop: ARA[26] }}>
+        <Text style={{ fontSize: FS.hero + 18, fontFamily: F.serif, lineHeight: Math.round((FS.hero + 18) * 1.02),
+                       letterSpacing: -1.2, color: C.foto.baslik, marginTop: ARA[64] }}>
           {t.v7Slogan1}{"\n"}{t.v7Slogan2}
         </Text>
         <Text style={{ fontSize: FS.base, lineHeight: Math.round(FS.base * 1.5), color: C.foto.alt,
-                       marginTop: ARA[14], maxWidth: 320 }}>{t.v7SplashAlt}</Text>
+                       marginTop: ARA[14], maxWidth: 300 }}>{t.v7SplashAlt}</Text>
       </View>
-      <View style={{ flex: 1, justifyContent: "flex-end", paddingHorizontal: ARA[22], paddingBottom: ARA[34] }}>
+      {/* Ortada kanat: açılış ışığı (iz · cam parıltısı · zerre) şafağın başladığı kuşakta. */}
+      {/* Kanat gece mavisinin şafağa döndüğü kuşakta (üst %40–50): fildişi kanat açık sisin
+          üstünde kayboluyordu (ölçüldü: 3 Ekim karesinde kanat görünmüyor). */}
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: ARA[44] }}>
+        <View style={{ width: kanatG, height: kanatH }}>
+          <AcilisIsigi g={kanatG} y={kanatH} />
+          <Katman source={require("./assets/mark-kanat.png")} resizeMode="contain"
+            style={{ width: kanatG, height: kanatH }} />
+        </View>
+      </View>
+      <View style={{ paddingHorizontal: ARA[22], paddingBottom: ARA[40], gap: ARA[10] }}>
         <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.splashGuide}
           onPress={() => go("guide")}
           style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
@@ -2438,8 +2475,8 @@ function SplashV7({ t, go, lang, toggleLang }) {
           <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "600", flex: 1 }}>{t.splashGuide}</Text>
           <Ikon ad="sag" boy={16} renk={C.goldText} />
         </TouchableOpacity>
-        <Btn v="gold" full label={t.start} onPress={basla} style={{ marginTop: ARA[14] }} />
-        <Btn v="ghost" full label={t.haveAcc} onPress={() => go("login")} style={{ marginTop: ARA[10] }} />
+        <Btn v="gold" full label={t.start} onPress={basla} />
+        <Btn v="ghost" full label={t.haveAcc} onPress={() => go("login")} />
       </View>
     </View>
   );
@@ -3622,7 +3659,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
           ]} />
         } />
 
-      <View style={{ paddingHorizontal: ARA[22], paddingTop: ARA[20] }}>
+      <View style={{ paddingHorizontal: ARA[22], paddingTop: temaModu() === "v7" ? ARA[6] : ARA[20] }}>
       {!data.phoneVerified && (
         // ══════════════════════════════════════════════════════════════
         // 🔴 12 EYLÜL (Gökberk md.4) — "39. görselde ekranda taşma var".
@@ -3638,15 +3675,31 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         // 🆕 SINIF: "`flex: 1` BİR İSTEK DEĞİL, EBEVEYNDEN GELEN BİR
         // İZİNDİR — ZİNCİRDEKİ İLK DARALMAYAN KUTU ONU İPTAL EDER."
         // ══════════════════════════════════════════════════════════════
+        temaModu() === "v7" ? (
+          // v7.2 (Gökberk 3 Ekim): uyarı kutusu → cam şerit. "telefon" ikonu 15pt'de boş bir
+          // dikdörtgen gibi okunuyordu ("ikon gelmemiş") → güven kalkanı, amber mürekkep.
+          <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} accessibilityRole="button" accessibilityLabel={t.goVerify}>
+            <CamSerit stil={{ paddingVertical: ARA[14], paddingHorizontal: ARA[18], flexDirection: "row", alignItems: "center" }}>
+              <View style={{ width: 34, height: 34, borderRadius: R.full, alignItems: "center", justifyContent: "center",
+                             backgroundColor: "rgba(226,135,67,0.10)", marginRight: ARA[12] }}>
+                <Ikon ad="guvenlik" boy={17} renk={C.amberInk} />
+              </View>
+              <Text style={{ color: C.body, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: Math.round(FS.sm * 1.45) }}>{t.phoneWhy}</Text>
+              <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: ARA[10] }}>{t.goVerify}</Text>
+            </CamSerit>
+          </TouchableOpacity>
+        ) : (
         <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start", flex: 1, minWidth: 0 }}><Ikon ad="telefon" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1], marginTop: ARA[2] }} /><Text style={{ color: C.amberInk, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: 18 }}>{t.phoneWhy}</Text></View>
           <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: SP[2] }}>{t.goVerify}</Text>
         </TouchableOpacity>
+        )
       )}
 
       </View>
 
-      <View style={{ padding: SP[4] }}>
+      {/* v7.2 (Gökberk 3 Ekim: "sıradaki seyahatim ile bağlantılarım kutucukları bitişik — genelde de böyle olmamalı"): bölümler arası SABİT 18pt nefes. Boş dönen bölüm (null) boşluk üretmez. */}
+      <View style={{ padding: SP[4], gap: temaModu() === "v7" ? ARA[18] : 0 }}>
 
       {/* ══════════════════════════════════════════════════════════════
           🔴 v2.96 (eleştiri E1) — ANA SAYFA ARTIK YALNIZCA "ŞİMDİ".

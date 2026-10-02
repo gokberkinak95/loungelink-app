@@ -7,10 +7,6 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -88,8 +84,9 @@
   "",
   "Profil",
   "",
-  "LoungePuan",
+  "LOUNGELINK",
   "360 Puan",
+  "LoungePuan",
   "Tümü",
   "Lounge",
   "Otel",
@@ -104,8 +101,7 @@
   "",
   "+2 Misafir İsteği Kredisi",
   "Hemen hesabına",
-  "500 Puan",
-  "Yetersiz"
+  "500 Puan"
  ],
  "tasan": [],
  "bitisik": []

@@ -84,3 +84,52 @@ Web sahnedeki 3 hatalı sahne v7 kaynaklı değil:
 - Web sahne: 80 sahnenin 77'si temiz. Kalan 3 (06/35/45) aynı eski senaryo sorunu.
 - Onay sayfası v2 (aynı link). Sürüm hâlâ 6.2.7. Prompttaki "v7.2.0" tasarım turunun adı.
 - Gökberk'in "notlarım" dediği notlar bu mesajda gelmedi, yalnız prompt geldi.
+
+## EK 2 · 3 Ekim ikinci tur (Gökberk 11 not + 2 ara not)
+- KOK BULGU: react-native-web `tintColor` icin SVG filtresi kullaniyor. Filtre kimlikleri kayiyor:
+  - katman #tint-5'e bakiyor, ama sayfada yok, Chrome katmani hic cizmiyor
+  - #tint-6 yanlis renkte
+  - Splash'in alt sis/fildisi gecisi bu yuzden hic gorunmuyordu.
+  - Cozum: `brand/build_v7_perde.py` ile rengi gomulu PNG'ler (asagida). v7 katmanlarinda tintColor kalmadi.
+    - v7_gece_ust, v7_sis_alt, v7_fildisi_alt, v7_isik_ust
+    - mark-kanat-sampanya, mark-kanat-bronz
+- Splash: A tuvali duraklari birebir (sis %50-74 rampa + duz %92, fildisi %74-90 + duz). Kanat ortada mavi kusakta.
+- Sikke parlamasi: keskin elips yerine dikey yumusak isik.
+- CamSerit: golge %7 + ust 1px isik; iOS ic/dis kap, Android elevation yok.
+- `src/kutu_isik.js` (YENI): v7'de tint zeminli bilgi/uyari kutularina (107 yer) kabukta golge + ust isik.
+  - Kapsam: radius ve pay >= 10.
+  - Haric: sabit genislik, kendi golgesi olan.
+- Ana sayfa:
+  - telefon uyarisi CamSerit + kalkan
+  - bolumler arasi gap 18
+  - ust pay 6
+  - V7_SIS 48 -> 36
+- Sekme cubugu: icerik 40pt arkasindan gecer, kapsul buzlu cam, box-none.
+- SekmeSeridi v7 cam segment; Cip bant icinde (BantBaglami) cam + secili sikke.
+- akisKarti(): istek/oturum satirlari beyaz kart.
+- Baslik tek satira sigacak boy (taban 26).
+- Kucuk duzeltmeler:
+  - Tanis arama odak zemini (koyu #181614 -> beyaz + amber %8, web outline 0)
+  - Tumunu okundu sampanya
+  - Market FotoBant'a gecti
+  - MomentScreen gece altini sampanya, ghost -> ust
+  - Tanitim eyebrow fildisi, noktalar
+  - LangBtn sampanya
+  - BosDurum "ucus" -> kanat logosu, kesikli kutu -> cam
+- Hareket vitrini:
+  - 5 yeni sahne (59, 66-69)
+  - `web_sahne/hareket_kayit.py` 9 hareketi webm olarak kaydeder (onay sayfasinda video).
+  - K4 kodda uygulu; Gokberk hatirladigi karara gore cikarilsin mi diye soruldu.
+- cek.py: dokunus once dogrudan, olmazsa ortala.
+- Testler:
+  - check temiz
+  - tasma 0 (SE'de profession 2 satir, Kabul/Reddet 1.35)
+  - screens 77/77
+  - mount 54/54
+  - giris 37/37
+  - deeplink 13/13
+  - errmap 12/12
+  - app_boot gecti
+  - ps1 0
+- Web sahne 85 / 82 temiz. Kalan 3 bilinen eski senaryo: 06, 35, 45.
+- Onay sayfasi v3 (ayni link).

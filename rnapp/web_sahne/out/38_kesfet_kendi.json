@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -25,7 +38,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "2 g 13 sa içinde",
+  "2 g 12 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -40,7 +53,7 @@
   "Misafir ücretsiz",
   "TK712",
   "",
-  "4 g 11 sa içinde",
+  "4 g 10 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -55,7 +68,7 @@
   "Misafir ücretsiz",
   "TK2104",
   "",
-  "5 g 8 sa içinde",
+  "5 g 7 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -70,7 +83,7 @@
   "Misafir ücretsiz",
   "TK1953",
   "",
-  "6 g 9 sa içinde",
+  "6 g 8 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -85,7 +98,7 @@
   "Misafir ücretsiz",
   "TK2106",
   "",
-  "9 g 7 sa içinde",
+  "9 g 6 sa içinde",
   "Seyahat ekle",
   "",
   "S",

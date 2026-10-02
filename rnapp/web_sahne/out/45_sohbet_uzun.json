@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [
   "adım ('dokun_a11y', 'Sohbeti Aç'): Locator.click: Timeout 4000ms exceeded."
  ],
@@ -30,7 +39,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "14:00–18:00",
+  "04:13–08:13",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",

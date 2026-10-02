@@ -51,7 +51,12 @@ SAHNELER = {
     # v6.2 — hareket vitrini (onaylı bileşenler, tek başına)
     "60_vitrin_kapi":  ("",        [("bekle", 1600)]),   # ekran: MomentScreen · K5
     "61_vitrin_radar": ("",        [("bekle", 2400)]),   # ekran: TerminalRadari · K3
-    "62_vitrin_puan":  ("",        [("bekle", 1400)]),   # ekran: TakimyildizPuan · K8 + K2
+    "62_vitrin_puan":  ("",        [("bekle", 1400)]),
+    "66_vitrin_yukleyici": ("",    [("bekle", 1200)]),   # ekran: MarkaYukleyici · K2
+    "67_vitrin_damga": ("",        [("bekle", 1800)]),   # ekran: OnayDamgasi · K4
+    "68_vitrin_pano":  ("",        [("bekle", 1200)]),   # ekran: SessizPano · K6
+    "69_vitrin_kalkis": ("",       [("bekle", 1200)]),   # ekran: KalkisHalkasi · K7
+    "59_vitrin_zemin": ("",        [("bekle", 2400)]),   # ekran: Sayfa atmosferi · K9   # ekran: TakimyildizPuan · K8 + K2
     "50_istek_gonder": ("kaan",    [("dokun", "Keşfet"), ("dokun", "İstek gönder"), ("bekle", 900)]),   # ekran: Discovery · istek modalı
     # v6.1 — md.e: kural ekranının altı ("Salon kurallarını oku" resmî kaynağa)
     "51_kural_alt":    ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("kaydir",), ("bekle", 700)]),   # ekran: KuralKarari
@@ -252,15 +257,32 @@ def kopru_baslat():
     time.sleep(0.8)
     return p
 
+# v7.2 — yüzen cam sekme çubuğunun ARKASINA içerik uzanıyor (40pt). Ekranın dibindeki bir
+# düğme görünür ama çubuğun altında kalabilir; kullanıcı kaydırır, sahne de ortalar.
+def ortala(loc):
+    try:
+        loc.evaluate("e => e.scrollIntoView({ block: 'center', inline: 'nearest' })", timeout=3000)
+    except Exception:
+        pass
+
 def adim_uygula(pg, adim, kayit):
     tur = adim[0]
     try:
         if tur == "dokun":
             # DOM metni CSS `text-transform`tan ÖNCEKİ hâl; büyük/küçük harf duyarsız ara.
             loc = pg.get_by_text(re.compile("^\\s*" + re.escape(adim[1]) + "\\s*(→|›)?\\s*$", re.I))
-            loc.last.click(timeout=4000)
+            try:
+                loc.last.click(timeout=1500)
+            except Exception:
+                ortala(loc.last)
+                loc.last.click(timeout=4000)
         elif tur == "dokun_a11y":
-            pg.get_by_label(re.compile(re.escape(adim[1]), re.I)).first.click(timeout=4000)
+            hedef = pg.get_by_label(re.compile(re.escape(adim[1]), re.I)).first
+            try:
+                hedef.click(timeout=1500)
+            except Exception:
+                ortala(hedef)
+                hedef.click(timeout=4000)
         elif tur == "yaz":
             pg.get_by_placeholder(adim[1]).first.fill(adim[2], timeout=4000)
         elif tur == "bekle":
