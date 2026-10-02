@@ -32,12 +32,12 @@ import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
 import { logError, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
-import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP } from "./theme";
+import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP, temaModu } from "./theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
-import { BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
+import { BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
@@ -1049,7 +1049,22 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                                paddingBottom: ARA[40] }}>
 
       {/* 033: host da basvurabilir — rol bir kimlik degil, o gunku baglam */}
-      {myRole === "host" && misafirIpucuKapali === false && (
+      {/* v7.2 (prompt md.3): kurumsal uyarı kutusu → cam şerit; çerçeve yok, editoryal yazı. */}
+      {myRole === "host" && misafirIpucuKapali === false && temaModu() === "v7" && (
+        <CamSerit stil={{ paddingVertical: ARA[18], paddingHorizontal: ARA[20], marginBottom: ARA[18] }}>
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Text style={{ flex: 1, fontFamily: F.serifGosterim, fontSize: FS.title, lineHeight: SATIR(FS.title, "serif"),
+                           color: C.ink }}>{t.hostCanApplyTitle}</Text>
+            <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.close}
+              onPress={() => { setMisafirIpucuKapali(true); try { AsyncStorage.setItem("ll_misafir_ipucu_kapali", "1").catch(() => {}); } catch (e) { /* yalnız bu oturum */ } }}
+              style={{ marginLeft: SP[2], marginTop: ARA[4] }}>
+              <Ikon ad="kapat" boy={16} renk={C.mut} />
+            </TouchableOpacity>
+          </View>
+          <Text style={{ color: C.body, fontSize: FS.sm, marginTop: ARA[6], lineHeight: Math.round(FS.sm * 1.5) }}>{t.hostCanApplyBody}</Text>
+        </CamSerit>
+      )}
+      {myRole === "host" && misafirIpucuKapali === false && temaModu() !== "v7" && (
         <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: C.goldLine, borderRadius: R.sm, padding: SP[3], marginBottom: SP[3] }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
             <Text style={{ flex: 1, fontWeight: "700", color: C.goldInk, fontSize: FS.base }}>{t.hostCanApplyTitle}</Text>
@@ -1752,11 +1767,20 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       // HÜKMÜNDEDİR."
                       onPress={() => { if (!phoneOk && onVerify) onVerify(); else if (!r.has_trip && onAddTrip) onAddTrip(r); }}
                       style={{ alignItems: "flex-end", alignSelf: "flex-end" }}>
+                      {/* v7.2 (prompt md.2): soluk kahverengi çıkartma yerine "İstek gönder" ile
+                          AYNI şampanya hap — kabartma kenar, gradyan, ok. Kapı eylemi de bir eylemdir. */}
+                      {temaModu() === "v7" ? (
+                        <View pointerEvents="none">
+                          <Btn v="gold" cip sagAd="sag" label={!phoneOk ? t.gateVerifyNow : t.gateAddTripNow} onPress={() => {}}
+                            disabled={!phoneOk && !onVerify} />
+                        </View>
+                      ) : (
                       <View style={{ backgroundColor: C.goldSoft, borderWidth: 1, borderColor: "transparent", borderRadius: R.xs, paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
                         <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600" }}>
                           {!phoneOk ? t.gateVerifyNow : t.gateAddTripNow}
                         </Text>
                       </View>
+                      )}
                     </TouchableOpacity>
                   )
                 ) : null

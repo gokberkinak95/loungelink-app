@@ -13,6 +13,7 @@ import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
+import { SikkeDugme } from "./src/ui";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
 import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi, SekmeSeridi, SoruEkrani, SoruOzeti } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
@@ -1948,12 +1949,11 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
               style={{ flex: 1, alignItems: "center", marginTop: -ARA[30] }}>
               <View style={{ width: 70, height: 70, borderRadius: R.full, alignItems: "center", justifyContent: "center",
                              backgroundColor: "rgba(212,195,163,0.15)" }}>
-                <View style={{ width: 60, height: 60, borderRadius: R.full, alignItems: "center", justifyContent: "center",
-                               backgroundColor: C.goldBtn, borderTopWidth: 1, borderTopColor: C.goldBtnUst,
-                               shadowColor: "#0D1B2A", shadowOpacity: 0.16, shadowRadius: 14, shadowOffset: { width: 0, height: 8 },
-                               elevation: 6 }}>
+                {/* v7.2 · sikke (prompt md.2): gradyan + üst yayda 1px speküler ışık + alt bronz
+                    kenar + darp halkası; basınca 0.96 ve hafif titreşim (SikkeDugme içinde). */}
+                <SikkeDugme boy={60} onPress={sekmeyeBas}>
                   <Ikon ad={on ? ic + "Dolu" : ic} boy={23} renk={C.onGold} />
-                </View>
+                </SikkeDugme>
               </View>
               <Text numberOfLines={1} style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: sekmeAralik,
                                                color: C.ink, marginTop: ARA[2] }}>{lab}</Text>

@@ -63,3 +63,24 @@ Web sahnedeki 3 hatalı sahne v7 kaynaklı değil:
 2. Ayarlarda tema seçimi isteniyor mu? (şimdilik yalnız v7)
 3. Onay sonrası: web sitesi ve uygulama içi görseller v7'ye taşınacak.
 4. Sahne tanımları 06/35/45 güncellenecek (test borcu).
+
+## EK · 3 Ekim (v7.2 revizyonu, prompt: boşluk / sikke / cam şerit)
+- `rnapp/src/ui.js`
+  - `V7_SIS` 84 → 48: bant ile ilk kart arası 36pt kısaldı.
+  - `SikkeYuzey`, `SikkeDugme`, `useSikkeBasma`, `SIKKE_GOLGE`: şampanya gradyan, üst 1px rgba(255,255,255,0.40), alt bronz kenar, darp halkası, gölge 0.04, basınca 0.96 ve titreşim.
+  - `UyumMuhru` v7'de sikke.
+  - `CamSerit`: %45 beyaz, blur 16 (iOS expo-blur, web backdropFilter, Android yalnız zemin).
+- `rnapp/App.js` — Planım merkezi `SikkeDugme`.
+- `rnapp/src/ekranlar_ana.js`
+  - "Sen de misafir olabilirsin" → CamSerit, serif başlık.
+  - "Seyahat ekle / Telefonu doğrula" → Btn gold cip (disabled korunuyor).
+- Testler:
+  - check temiz
+  - tasma 0
+  - screens 77/77
+  - mount 54/54
+  - giris_kapisi 37/37
+  - app_boot geçti
+- Web sahne: 80 sahnenin 77'si temiz. Kalan 3 (06/35/45) aynı eski senaryo sorunu.
+- Onay sayfası v2 (aynı link). Sürüm hâlâ 6.2.7. Prompttaki "v7.2.0" tasarım turunun adı.
+- Gökberk'in "notlarım" dediği notlar bu mesajda gelmedi, yalnız prompt geldi.

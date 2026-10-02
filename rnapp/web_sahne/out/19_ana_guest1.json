@@ -1,20 +1,11 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ AKŞAMLAR",
+  "GÜNAYDIN",
   "Gökberk",
   "11",
   "KREDİ",
@@ -30,7 +21,7 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · 3 GÜN SONRA",
+  "SIRADAKİ SEYAHATİN · 2 GÜN SONRA",
   "TK1979",
   "IST",
   "",

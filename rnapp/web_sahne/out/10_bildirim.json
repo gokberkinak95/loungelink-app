@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -9,8 +22,8 @@
   "G",
   "Gökberk İnak",
   "Ürün Yönetimi · İstanbul",
-  "• Yeni Kullanıcı · 44",
-  "1",
+  "• Temel Doğrulama · 44",
+  "0",
   "OTURUM",
   "—",
   "YILDIZ",
@@ -81,18 +94,18 @@
   "",
   "Tümünü okundu işaretle · 18",
   "Bildirimler",
-  "DÜN",
+  "BUGÜN",
   "",
   "İstek kabul edildi",
-  "1 g",
+  "5 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "1 g",
+  "21 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
+  "DÜN",
   "",
-  "Havalimanı güncellemesi #1",
-  "1 g"
+  "Havalimanı güncellemesi #1"
  ],
  "tasan": [],
  "bitisik": []

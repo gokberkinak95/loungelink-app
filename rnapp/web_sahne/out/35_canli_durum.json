@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [
   "adım ('dokun_a11y', 'Sohbeti Aç'): Locator.click: Timeout 4000ms exceeded.",
   "adım ('dokun', 'Durumumu paylaş'): Locator.click: Timeout 4000ms exceeded."
@@ -8,7 +17,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ AKŞAMLAR",
+  "GÜNAYDIN",
   "Gökberk",
   "14",
   "KREDİ",
@@ -24,7 +33,7 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · YARIN",
+  "BUGÜN · BİNİŞ",
   "TK1979",
   "IST",
   "",
@@ -36,16 +45,16 @@
   "DAVETLER",
   "2 bağlantı isteği",
   "",
-  "D",
-  "Deniz K.",
-  "bağlantı kurmak istiyor",
-  "“Uçuşun aynı, güzel.”",
-  "Kabul et",
-  "Reddet",
   "A",
   "Ayşegül D.",
   "bağlantı kurmak istiyor",
   "“Seninle tanışmak istiyor.”",
+  "Kabul et",
+  "Reddet",
+  "D",
+  "Deniz K.",
+  "bağlantı kurmak istiyor",
+  "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
   "Bağlantılarım  ·  1",

@@ -18,7 +18,8 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platfor
 import { ARA, ELEV, BTN as BOY, C, F, FS, R, SATIR, SP, T, TAP, temaYenidenKur, temaModu } from "./theme";
 import { MONO } from "./typography";
 import { Atmosfer } from "./atmosfer";
-import { SessizPano } from "./hareket";   // K6 · boş durum panosu
+import { SessizPano, dokun } from "./hareket";   // K6 · boş durum panosu · v7.2 sikke titreşimi
+const dokunHafif = () => { try { dokun("hafif"); } catch (e) { /* titreşim yoksa sessiz */ } };
 import { Ikon } from "./ikon";
 import { Katman } from "./katman";
 
@@ -1488,7 +1489,9 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
 // v7: sis (şafak → fildişi) SABİT yükseklikte. Yüzdeyken uzun bantta (ana sayfa: isim +
 // cüzdan) sis 200pt'ye çıkıp cüzdan şeridini yutuyordu (ölçüldü: 70_akis_nehir_ana).
 // Metin bloğunun alt payı da aynı sabitten → hiçbir metin sise düşmez.
-const V7_SIS = 84;
+// v7.2 (prompt md.1 "boşluk tamiri"): 84 → 48. Bant ile ilk kart arası 36pt kısaldı;
+// ilk katman pencere kenarının sisine yaslanır.
+const V7_SIS = 48;
 // #RRGGBB → göreli parlaklık > 0.45 mi? (rgba/isimli renkler: hayır)
 function acikZemin(renk) {
   const m = /^#([0-9a-f]{6})$/i.exec(String(renk || ""));
@@ -3083,6 +3086,19 @@ function bulanikBilesen() {
   try { _Bulanik = require("expo-blur").BlurView; } catch (e) { _Bulanik = null; }
   return _Bulanik;
 }
+// ══════════════════════════════════════════════════════════════════════
+// v7.2 · CAM ŞERİT (prompt md.3) — bilgi kutusu yerine sisli gökyüzü tabakası.
+// %45 beyaz + 16px arka bulanıklık, kenar çizgisi YOK. iOS: expo-blur (light);
+// web: backdropFilter; Android: yalnız %45 beyaz (DumanliCam ile aynı karar).
+// ══════════════════════════════════════════════════════════════════════
+export function CamSerit({ children, stil }) {
+  const B = Platform.OS === "ios" ? bulanikBilesen() : null;
+  const zemin = { backgroundColor: "rgba(255,255,255,0.45)", borderRadius: R.lg, overflow: "hidden",
+                  shadowColor: "#0D1B2A", shadowOpacity: 0.04, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } };
+  if (B) return <B intensity={22} tint="light" style={[zemin, stil]}>{children}</B>;
+  const web = Platform.OS === "web" ? { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" } : null;
+  return <View style={[zemin, web, stil]}>{children}</View>;
+}
 export function DumanliCam({ children, stil }) {
   const B = Platform.OS === "ios" ? bulanikBilesen() : null;
   const zemin = { backgroundColor: C.camKart || "rgba(20,18,17,0.55)", overflow: "hidden" };
@@ -3133,8 +3149,87 @@ export const POPUP_YUZEY = () => ({
 // Başvurulamıyorsa mühür SUSAR (koyu taş, sessiz metin) — v3.4 kuralı:
 // sıralama ipucu, kural motorunun cevabının önüne geçemez.
 // ══════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
+// v7.2 · SİKKE YÜZEYİ (Gökberk 3 Ekim, prompt md.2: "düz, ucuz kahverengi
+// çıkartma gibi duruyor"). Şampanya dairelerin (Planım, uyum mührü) ortak
+// malzemesi: fırçalanmış metal para.
+//   · dolgu   : şampanya gradyanı (altin_v7.png — Btn ile AYNI malzeme)
+//   · parlama : sol üstte yumuşak ışık lekesi
+//   · kenar   : üst yayda 1px speküler ışık rgba(255,255,255,0.40),
+//               alt yayda bronz gölge — kabartma hissi
+//   · iç halka: %84 çapta ince darp halkası (para kenarı)
+// Kabın kendisi daire + overflow hidden olmalı; gölge (0.04) kapta.
+// ══════════════════════════════════════════════════════════════════════
+export const SIKKE_GOLGE = { shadowColor: "#0D1B2A", shadowOpacity: 0.04, shadowRadius: 10,
+                             shadowOffset: { width: 0, height: 5 }, elevation: 2 };
+export function SikkeYuzey({ boy }) {
+  const tam = { position: "absolute", left: 0, top: 0, width: boy, height: boy, borderRadius: boy / 2 };
+  const ic = boy * 0.84, kay = (boy - ic) / 2;
+  return (
+    <View pointerEvents="none" style={tam}>
+      <Image source={ALTIN_GRADYAN()} resizeMode="stretch" style={tam} />
+      <View style={{ position: "absolute", width: boy * 0.62, height: boy * 0.46, borderRadius: boy,
+                     left: boy * 0.08, top: boy * 0.05, backgroundColor: "rgba(255,255,255,0.22)" }} />
+      <View style={{ position: "absolute", left: kay, top: kay, width: ic, height: ic, borderRadius: ic / 2,
+                     borderWidth: 1, borderTopColor: "rgba(110,90,57,0.16)", borderLeftColor: "rgba(110,90,57,0.08)",
+                     borderRightColor: "rgba(255,255,255,0.14)", borderBottomColor: "rgba(255,255,255,0.30)" }} />
+      <View style={[tam, { borderWidth: 1, borderTopColor: "rgba(255,255,255,0.40)",
+                            borderLeftColor: "rgba(255,255,255,0.18)", borderRightColor: "rgba(110,90,57,0.14)",
+                            borderBottomColor: "rgba(110,90,57,0.30)" }]} />
+    </View>
+  );
+}
+// Dokunuşta sikke 0.96'ya basılır (yay ile geri gelir) — fiziksel bir düğme gibi.
+export function useSikkeBasma() {
+  const olcek = useRef(new Animated.Value(1)).current;
+  const git = (v) => Animated.spring(olcek, { toValue: v, speed: 40, bounciness: v === 1 ? 8 : 0,
+                                              useNativeDriver: true }).start();
+  return { olcek, basla: () => git(0.96), birak: () => git(1) };
+}
+
+// Sikke düğme: Planım merkezi gibi yalnız ikon taşıyan sikke. Basınca 0.96 + hafif titreşim.
+export function SikkeDugme({ boy = 60, onPress, children, stil }) {
+  const bas = useSikkeBasma();
+  return (
+    <TouchableOpacity activeOpacity={1} hitSlop={TAP.slop} onPressIn={bas.basla} onPressOut={bas.birak}
+      onPress={() => { dokunHafif(); onPress && onPress(); }} accessible={false}>
+      <Animated.View style={[{ width: boy, height: boy, borderRadius: boy / 2, ...SIKKE_GOLGE,
+                               transform: [{ scale: bas.olcek }] }, stil]}>
+        <View style={{ width: boy, height: boy, borderRadius: boy / 2, overflow: "hidden",
+                       alignItems: "center", justifyContent: "center" }}>
+          <SikkeYuzey boy={boy} />
+          {children}
+        </View>
+      </Animated.View>
+    </TouchableOpacity>
+  );
+}
+
 export function UyumMuhru({ deger, boy = 60, kapali, onPress, a11y, stil, etiket = "UYUM" }) {
   const d = Math.max(0, Math.min(99, Math.round(Number(deger) || 0)));
+  const sikke = temaModu() === "v7" && !kapali;
+  const bas = useSikkeBasma();
+  if (sikke) {
+    const yuz = (
+      <Animated.View style={[{ width: boy, height: boy, borderRadius: boy / 2, ...SIKKE_GOLGE,
+                               transform: [{ scale: bas.olcek }] }, stil]}>
+        <View style={{ width: boy, height: boy, borderRadius: boy / 2, overflow: "hidden",
+                       alignItems: "center", justifyContent: "center" }}>
+          <SikkeYuzey boy={boy} />
+          <Text style={{ fontFamily: F.serifGosterim, fontSize: Math.round(boy * 0.32), lineHeight: Math.round(boy * 0.36),
+                         color: C.muhurMurekkep, letterSpacing: -0.3 }}>%{d}</Text>
+          <Text style={{ fontSize: Math.max(7, Math.round(boy * 0.115)), fontWeight: "600", letterSpacing: 1.4,
+                         color: C.muhurEtiket }}>{BUYUK(etiket)}</Text>
+        </View>
+      </Animated.View>
+    );
+    if (!onPress) return yuz;
+    return (
+      <TouchableOpacity hitSlop={TAP.slop} activeOpacity={1} onPressIn={bas.basla} onPressOut={bas.birak}
+        onPress={() => { dokunHafif(); onPress(); }} accessibilityRole="button"
+        accessibilityLabel={a11y || `%${d}`} style={{ flexShrink: 0 }}>{yuz}</TouchableOpacity>
+    );
+  }
   const ic = (
     <View style={[{ width: boy, height: boy, borderRadius: boy / 2, overflow: "hidden",
                     alignItems: "center", justifyContent: "center",

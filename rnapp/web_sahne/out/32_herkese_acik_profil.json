@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -38,7 +25,7 @@
   "G",
   "Gökberk İnak",
   "Ürün Yönetimi",
-  "TK1979 · IST · 3 Ekim",
+  "TK1979 · IST",
   "Aynı uçuş",
   "Aktarma",
   "• Temel Doğrulama · 44",
@@ -46,7 +33,7 @@
   "A",
   "Arda K.",
   "Yazılım Mühendisi",
-  "TK1979 · IST · 3 Ekim",
+  "TK1979 · IST",
   "Aynı uçuş",
   "İş",
   "• Temel Doğrulama · 38",
@@ -75,7 +62,7 @@
   "Y",
   "Yeni Üye",
   "Mühendis",
-  "TK1979 · IST · 3 Ekim",
+  "TK1979 · IST",
   "Aynı uçuş",
   "• Temel Doğrulama · 16",
   "",

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -18,9 +27,9 @@
   "LOUNGELINK",
   "KURAL MOTORU · IST",
   "Bu eşleşme",
-  "neden %72?",
+  "neden %99?",
   "TAV Primeclass",
-  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Havayolu şartı bilinmiyor · uçuşunu gir",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Birlikte varış gerekir · kapıda beraber olun",
   "KART · MİLES&SMİLES ELİTE PLUS",
   "SALON UYUMLULUĞU",
   "",
@@ -29,8 +38,8 @@
   "",
   "2 koşul",
   "UÇUŞ EŞLEŞMESİ",
-  "",
-  "Uçuş numarası doğrulanmadı",
+  "Birlikte varış gerekir",
+  "KAPIDA BERABER OLUN",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",
@@ -40,7 +49,7 @@
   "3 koşul",
   "Gri satırlar, kaynağından doğrulayamadığımız şartlar. Onları bilmiyoruz — bildiğimizi söylemiyoruz.",
   "Son karar her zaman salona aittir. Kapıda alınmazsan kredin iade edilir.",
-  "Seyahat ekle",
+  "Lounge isteği gönder",
   "",
   "Salon kurallarını oku",
   ""
