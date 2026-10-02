@@ -121,7 +121,15 @@ SAHNELER = {
     "75_akis_arda_ana":      ("arda",  [("bekle", 1500)]),   # ekran: Home
     "76_akis_arda_kesfet":   ("arda",  [("dokun", "Keşfet"), ("bekle", 1800)]),   # ekran: Discovery
     "77_akis_arda_oturum":   ("arda",  [("dokun", "SOHBET"), ("bekle", 1500)]),   # ekran: RequestsPanel · Oturumlar
-    "78_akis_arda_soru":     ("arda",  [("dokun", "SORU"), ("bekle", 1500)]),   # ekran: MyQuestions
+    "78_akis_arda_soru":     ("arda",  [("dokun", "SORU"), ("bekle", 1500)]),   # ekran: SoruEkrani · Gönderdiğim
+    # 2 Ekim · 6.2.7 — soru alanı, davet (sorusuz), ana sayfa gövdesi, arama, rozet, bildirim
+    "79_akis_nehir_soru":    ("nehir", [("dokun", "SORU"), ("bekle", 1500)]),   # ekran: SoruEkrani · Gelen
+    "80_akis_nehir_davet":   ("nehir", [("dokun", "DAVET"), ("bekle", 1500)]),   # ekran: ActionNeeded
+    "81_akis_nehir_govde":   ("nehir", [("bekle", 1500), ("gor", "DAVETLER"), ("bekle", 600)]),   # ekran: Home
+    "82_akis_nehir_ara":     ("nehir", [("dokun", "Tanış"), ("bekle", 1200), ("yaz", "İsimle ara — tanıştığın kişiyi bul", "Ar"), ("bekle", 1500)]),   # ekran: Meet
+    "83_akis_nehir_profil":  ("nehir", [("dokun", "Profil"), ("bekle", 1200)]),   # ekran: Profile
+    "84_akis_nehir_bildirim":("nehir", [("dokun", "Profil"), ("dokun", "Bildirimler"), ("bekle", 1200)]),   # ekran: Notifications
+    "85_akis_arda_neden":    ("arda",  [("dokun", "Keşfet"), ("bekle", 1800), ("dokun", "Neden?"), ("bekle", 900)]),   # ekran: Discovery
     "06_sohbet":       ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · KAPSAM TURU — 15 SAHNE DAHA.
@@ -256,6 +264,10 @@ def adim_uygula(pg, adim, kayit):
             pg.get_by_placeholder(adim[1]).first.fill(adim[2], timeout=4000)
         elif tur == "bekle":
             pg.wait_for_timeout(adim[1])
+        elif tur == "gor":
+            # 2 Ekim — sayfanın ORTASINDAKİ bir bölümü kadraja getir (kaydir yalnız sona gider).
+            loc = pg.get_by_text(re.compile(r"^\s*" + re.escape(adim[1]) + r"\s*$", re.I))
+            loc.first.scroll_into_view_if_needed(timeout=4000)
         elif tur == "kaydir":
             # ══════════════════════════════════════════════════════════
             # 🔴 20 EYLÜL — "UZUN İÇERİK" SAHNELERİ UZUNU HİÇ GÖSTERMİYORDU.

@@ -105,7 +105,9 @@ IDDIALAR = [
      # BÜYÜKLÜĞÜNE GÖRE SEÇ, BUGÜNKÜ SATIR SAYISINA GÖRE DEĞİL."
      # Ölçtüm: aradaki gerçek kod 2063 karakter. Pencere 2400 —
      # araya BAŞKA bir bölüm girerse (örn. bir banner) yine yakalar.
-     "ekranlar_yalin.js", r"cipler\.map[\s\S]{0,2400}?placeholder=\{t\.typeMsg\}",
+     # 2 Ekim — araya salt okunur sohbet şeridi dalı (iptal/engel) girdi; ölçülen
+     # gerçek kod ~2.7k (yorumlarla). Pencere 3600: yapı aynı, kardeşlik korunuyor.
+     "ekranlar_yalin.js", r"cipler\.map[\s\S]{0,3600}?placeholder=\{t\.typeMsg\}",
      "`.cipler` ile `.yazma` kardeş ve ikisi de alta yapışık"),
 
     ("sabit şerit başlıkta",
@@ -207,10 +209,13 @@ IDDIALAR = [
      "ui.js", r"MESH_BANT|C\.meshUst",
      "zemin koyu; fotoğraf yalnız doku"),
 
-    ("kural başlığında marka ortada",
+    ("kural başlığında marka görünür",
      r'class="marka">LOUNGELINK</div><div style="width:20px"',
-     "ekranlar_ana.js", r'textAlign: "center"[\s\S]{0,140}?LOUNGELINK',
-     "tam ekran katmanda marka görünür ve ortada"),
+     # 2 Ekim — ÖLÇÜLDÜ (sahne 03_kural): 6.2.4'te (Tur-3, Gökberk onaylı) kural ekranı ortak
+     # `FotoBant`a geçti; marka artık geri okunun YANINDA, ortada değil. Eski iddia ("ortada")
+     # onaylı tasarımla çelişiyordu — iddia güncel tasarıma göre yazıldı.
+     "ekranlar_ana.js", r'<FotoBant marka="LOUNGELINK"',
+     "tam ekran katmanda marka görünür (ortak fotoğraflı bant · geri okunun yanında)"),
 
     ("kendi balonum altın TİNT",
      r"\.bal\.ben\{[^}]*linear-gradient\(180deg,rgba\(224,190,122,\.17\)",

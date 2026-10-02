@@ -26,7 +26,7 @@ import FlightField from "./FlightField";
 import { HostPanel, useReciprocityMoment } from "./HostWallet";
 import MomentScreen from "./MomentScreen";
 import { TerminalRadari, OnayDamgasi } from "./hareket";
-import { CarrierPicker, Katlanir } from "./Pickers";
+import { CarrierPicker, Katlanir, norm } from "./Pickers";
 import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK, gorunur, etkinDil } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
@@ -37,11 +37,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
-import { BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri } from "./ui";
+import { BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -877,6 +877,20 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       // "ne zaman acilacak" olmadan kullanici tekrar tekrar deniyor.
       const key = "e_" + String(error.message || "").split(" ")[0].replace(/[^a-z_]/g, "");
       const taban = t[key] || mapErr(t, error.message);
+      // 2 Ekim (Gökberk md.2) — sunucu soruyu SEBEBİYLE reddettiyse (rule_ask_*) ekrandaki
+      // rozet bayattır: kartın rozetini yeniden çek, panel ve düğme güncel karara dönsün.
+      if (key.startsWith("e_rule_ask_")) {
+        try {
+          const { data: tz, error: tzHata } = await supabase.rpc("discovery_rule_badges", { p_ids: [availId] });
+          if (tzHata) logError("discovery_rule_badges_tazele", tzHata);
+          const yeni = !tzHata && Array.isArray(tz) && tz[0];
+          if (yeni) {
+            setBadges(m => ({ ...m, [availId]: yeni }));
+            setBadgeInfo(b => (b && b.id === availId)
+              ? { ...b, label: yeni.label, info: yeni.info, canAsk: !!yeni.can_ask_host } : b);
+          }
+        } catch (e) { /* tazelenemezse en azından sebep metni görünür */ }
+      }
       const zenginlestirilmis = sinirMetni(t, error, lang);
       setAskState(m => ({ ...m, [availId]:
         zenginlestirilmis && zenginlestirilmis !== mapErr(t, error.message)
@@ -1332,10 +1346,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     kuralı resmî kaynaktan DOĞRULADIĞIMIZ ilanlarda çıkmıyor.
                     Doğruladığımız bir kuralı host'a sormak hem onu boşuna
                     rahatsız eder hem bizi güvenilmez yapar. */}
-                {badgeInfo.canAsk && (
+                {(badgeInfo.canAsk || !!askState[badgeInfo.id]) && (
                   <View style={{ marginTop: ARA[10], borderTopWidth: 1, borderTopColor: C.line, paddingTop: ARA[10] }}>
                     {askState[badgeInfo.id] ? (
-                      <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.teal }}>
+                      <Text style={{ fontSize: FS.sm, lineHeight: 18, color: C.body }}>
                         {askState[badgeInfo.id]}
                       </Text>
                     ) : (
@@ -1719,7 +1733,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       </View>
                     </TouchableOpacity>
                   ) : (r.has_trip && phoneOk) ? (
-                    <Btn v="gold" cip sagAd="sag" label={t.reqSoon}
+                    /* 2 Ekim (md.1) — `Btn cip` kendi alignSelf'ini taşıyor ve kabın
+                       flex-end'ini eziyordu: düğme sayacın hemen yanına yapışıyordu.
+                       Diğer iki dal (Seyahat ekle · Başvuru kapalı) zaten sağda. */
+                    <Btn v="gold" cip sagAd="sag" label={t.reqSoon} style={{ alignSelf: "flex-end" }}
                       onPress={() => { setTarget(r); setErr(""); setMoreOpen(false); setAdvice(null); }} />
                   ) : (
                     // 🔴 v2.24 — PASIF GORUNEN BUTON TIKLANABILIYORDU.
@@ -2377,6 +2394,27 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   const [intro, setIntro] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  // 2 Ekim (Gökberk) — TANIŞ ARAMASI. "100 kişi var ya da havalimanında biriyle şans eseri
+  // tanıştım; listede kaydırarak bulamam." Yazdıkça liste isimle süzülür; 2 harften sonra
+  // sunucuda da aranır (kisi_ara · Tanış'ın gizlilik kurallarının aynısı) ve listede olmayan
+  // kişiler "Diğer yolcular" altında çıkar.
+  const [ara, setAra] = useState("");
+  const [araSonuc, setAraSonuc] = useState([]);
+  const [araBusy, setAraBusy] = useState(false);
+  useEffect(() => {
+    const q = ara.trim();
+    if (q.length < 2) { setAraSonuc([]); setAraBusy(false); return undefined; }
+    let iptal = false;
+    setAraBusy(true);
+    const z = setTimeout(async () => {
+      const { data, error } = await supabase.rpc("kisi_ara", { p_q: q });
+      if (iptal) return;
+      setAraBusy(false);
+      if (error) { logError("kisi_ara", error); setAraSonuc([]); return; }
+      setAraSonuc(Array.isArray(data) ? data : []);
+    }, 350);
+    return () => { iptal = true; clearTimeout(z); };
+  }, [ara]);
 
   const load = useCallback(async () => {
     // radarFilter aktifse: yalnizca su an ayni lounge/saat araliginda olanlar
@@ -2581,6 +2619,8 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   };
 
   const shownPeople = (people || []).filter(p => {
+    // Kelime BAŞI eşleşir ("Ar" → Arda; Jale St·ar· değil): insan ismi baştan yazar.
+    if (ara.trim() && !String(p.name || "").split(/\s+/).some(w => norm(w).startsWith(norm(ara.trim())))) return false;
     if (flightF && String(p.flight_number || "").toUpperCase() !== flightF.trim().toUpperCase()) return false;
     if (roleF === "host" && !p.is_hosting) return false;
     if (roleF === "guest" && p.is_hosting) return false;
@@ -2663,6 +2703,58 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
       {sub === "discover" ? (
         people === null ? <Load icerik /> : (
           <>
+            <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: C.camYuzey || C.card,
+                           borderRadius: R.lg, paddingHorizontal: ARA[14], marginBottom: ARA[14],
+                           ...ustIsik(C.parlama || C.line) }}>
+              <Ikon ad="ara" boy={16} renk={C.mut} stil={{ marginRight: ARA[10] }} />
+              <TextInput value={ara} onChangeText={setAra} placeholder={t.meetSearchPh}
+                placeholderTextColor={C.dim} autoCorrect={false} returnKeyType="search"
+                accessibilityLabel={t.meetSearchPh}
+                style={{ flex: 1, color: C.ink, fontSize: FS.base, paddingVertical: ARA[12] }} />
+              {ara ? (
+                <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.close}
+                  onPress={() => setAra("")} style={{ minHeight: TAP.minHeight, justifyContent: "center", paddingLeft: ARA[8] }}>
+                  <Ikon ad="kapat" boy={14} renk={C.mut} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+            {(() => {
+              const q = ara.trim();
+              if (q.length < 2) return null;
+              const listede = new Set((people || []).map(x => x.user_id));
+              const diger = araSonuc.filter(x => !listede.has(x.user_id));
+              if (araBusy && !diger.length) return <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: ARA[10] }}>{t.meetSearching}</Text>;
+              if (!diger.length && shownPeople.length === 0) return (
+                <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 19, marginBottom: ARA[14] }}>{t.meetSearchNone}</Text>
+              );
+              if (!diger.length) return null;
+              return (
+                <View style={{ marginBottom: ARA[14] }}>
+                  <Text style={{ color: C.mut, fontWeight: "600", fontSize: FS.micro + 0.5, letterSpacing: 1.4, marginBottom: ARA[8] }}>
+                    {BUYUK(t.meetSearchOthers)}
+                  </Text>
+                  {diger.map(x => (
+                    <TouchableOpacity key={x.user_id} activeOpacity={0.85} hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={x.ad}
+                      onPress={() => onOpenProfile && onOpenProfile(x.user_id)}
+                      style={{ flexDirection: "row", alignItems: "center", paddingVertical: ARA[10],
+                               borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+                      <View style={{ width: 40, height: 40, borderRadius: R.full, backgroundColor: C.surfaceAlt || C.card, overflow: "hidden",
+                                     alignItems: "center", justifyContent: "center", marginRight: ARA[12] }}>
+                        {x.foto ? <Image source={{ uri: x.foto }} style={{ width: 40, height: 40 }} />
+                          : <Text style={{ fontFamily: F.serifGosterim, color: C.ink, fontSize: FS.lg }}>{String(x.ad || "?").charAt(0)}</Text>}
+                      </View>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text numberOfLines={1} style={{ color: C.ink, fontFamily: F.serifGosterim, fontSize: FS.title }}>{x.ad}</Text>
+                        <Text numberOfLines={1} style={{ color: C.mut, fontSize: FS.xs, marginTop: 2 }}>
+                          {x.iliski === "accepted" ? t.meetSearchConnected : x.iliski === "pending" ? t.meetSearchPending : (x.meslek || t.meetSearchTap)}
+                        </Text>
+                      </View>
+                      <Ikon ad="sag" boy={14} renk={C.mut} />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              );
+            })()}
             {/* 3 Eylül — mor "Havalimanı Yol Arkadaşı Ağı" kutusu kalktı
                 (tasarım 05'te yok); metin boş durumda söyleniyor. */}
             {/* 3 Eylül — gelen istekler keşif listesinden çıktı: tasarım 13'te
@@ -4978,8 +5070,11 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
 
 // ============ LiveStatus (§25) ============
 // MVP "Session · Live Status" — oturum sırasında durum paylaşımı (konum DEĞİL)
-export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat, tamEkran, tazele }) {   // v2.65: ölü `session` kaldırıldı
+// 2 Ekim (Gökberk öneri 1-2) — ANA SAYFADA en fazla `enFazla` kayıt + "tümü" yönlendirmesi
+// (100 davet birikse de ana sayfa uzamaz); tam ekranda son bakıştan sonra gelenler YENİ.
+export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat, tamEkran, tazele, enFazla = 3, onTumu }) {   // v2.65: ölü `session` kaldırıldı
   const [items, setItems] = useState([]);
+  const yeniOnce = useAkisGoruldu("davet", !!tamEkran);
   const [busy, setBusy] = useState(null);
   // 🔴 v6.1 (Gökberk md.15 · md.c) — "kabul ettiğim davete bir daha
   // ulaşamıyorum". Kabul, daveti bekleyenler listesinden düşürüyordu ve
@@ -5074,18 +5169,14 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
     if (!yuklendi) return <View style={{ marginTop: ARA[22], height: 120 }}><Load icerik /></View>;
     return kabulBolumu || <BosDurum ikon="eposta" metin={t.flowInvitesEmpty} ortala pano={{ baslik: t.panoDavetBas, durum: t.panoDavetDurum }} />;
   }
-  return (
-    /* 5 Eylül — ÖLÇÜLDÜ (web sahne 11): başlık "BUGÜN" kartının alt
-       kenarına yapışıyordu (kartın alt boşluğu yok). Üst boşluk burada. */
-    <View style={{ marginTop: tamEkran ? 0 : ARA[18], marginBottom: ARA[14] }}>
-      {/* Tam ekranda başlık `Hdr`de; ikinci kez yazmak tekrar olurdu. */}
-      {!tamEkran && (
-        <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", color: C.mut, letterSpacing: 1.4, marginBottom: ARA[10] }}>
-          {t.actionNeeded}
-        </Text>
-      )}
+  const davetSay = items.filter(x => x.kind === "invite").length;
+  const baglantiSay = items.length - davetSay;
+  const gorunen = tamEkran ? items : items.slice(0, enFazla);
+  const kalan = items.length - gorunen.length;
+  const govde = (
+    <>
       {!!hata && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{hata}</Text></View>}
-      {items.map(it => {
+      {gorunen.map(it => {
         // MVP: davet ALTIN, bağlantı MOR çerçeve/buton. Alt satır MVP metni.
         const isInv = it.kind === "invite";
         // gece sisteminde mor yok: davet ALTIN, bağlantı TEAL (tasarım 13'ün
@@ -5108,8 +5199,10 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
           ? [t.anInvite, it.title, altBilgi].filter(Boolean).join(" · ")
           : soru ? t.anRuleQuestion
           : t.anWantsConnect + (niyet ? " · " + niyet : "");
+        const yeni = tamEkran && yeniMi(yeniOnce, it.created_at);
         return (
-        <View key={it.id} style={[S.card, ustIsik(C.parlamaGuc)]}>
+        <View key={it.id} style={[S.card, ustIsik(C.parlamaGuc), yeniCerceve(yeni)]}>
+          {yeni ? <YeniEtiket t={t} stil={{ marginBottom: ARA[10] }} /> : null}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {/* v6.3 (pano A) — satır: taş avatar + serif ad + sessiz alt satır.
                 Renkli disk ve not kutusu kalktı (katman kuralı). */}
@@ -5139,7 +5232,26 @@ export function ActionNeeded({ t, lang, onRefresh, onOpenChat, onOpenLoungeChat,
           </View>
         </View>
       ); })}
+      {kalan > 0 && onTumu ? (
+        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" onPress={onTumu}
+          style={{ minHeight: TAP.minHeight, justifyContent: "center", alignSelf: "flex-start" }}>
+          <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}
+            metin={String(t.homeMoreInvites || "{n}").replace("{n}", String(kalan))} />
+        </TouchableOpacity>
+      ) : null}
       {kabulBolumu}
+    </>
+  );
+  // Tam ekranda başlık `Hdr`de; ana sayfada Davet kutusuyla AYNI adı taşıyan akordeon.
+  if (tamEkran) return <View style={{ marginBottom: ARA[14] }}>{govde}</View>;
+  const ozet = [davetSay ? String(t.homeInvCount || "{n}").replace("{n}", String(davetSay)) : null,
+                baglantiSay ? String(t.homeConnReqCount || "{n}").replace("{n}", String(baglantiSay)) : null]
+    .filter(Boolean).join(" · ");
+  return (
+    <View style={{ marginTop: ARA[18], marginBottom: ARA[6] }}>
+      <Katlanir baslik={t.homeInvPanelTitle} ozet={ozet} acikBasla tint={C.goldBg} cizgi={C.goldLine}>
+        <View style={{ marginTop: ARA[10] }}>{govde}</View>
+      </Katlanir>
     </View>
   );
 }
@@ -7524,7 +7636,7 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, is
         <View style={{ marginTop: "auto", paddingTop: ARA[26] }}>
           {istekDurumu ? (
             <View style={[S.card, { flexDirection: "row", alignItems: "center", paddingVertical: SP[3] }]}>
-              <Ikon ad={istekDurumu === "accepted" ? "tamam" : istekDurumu === "pending" ? "saat" : "bilgi"} boy={16}
+              <Ikon ad={({ accepted: "tamam", pending: "saat" })[istekDurumu] || "bilgi"} boy={16}
                 renk={istekDurumu === "accepted" ? C.teal : C.goldText} stil={{ marginRight: ARA[10] }} />
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ color: C.ink, fontSize: FS.sm + 0.5, fontWeight: "600" }}>
@@ -7677,6 +7789,8 @@ export function AkisSeridi({ t, tazele, rol, onSohbetler, onIstekler, onDavetler
         {satir.map(([k, lb, ik, git, renk, ozelSayi], i) => {
           const n = ozelSayi === undefined ? Number(d[k] || 0) : ozelSayi;
           const dolu = n > 0;
+          // 2 Ekim — YENİ noktası: son bakıştan sonra gelen/değişen var (SQL 313 · ana_sayfa_akisi.yeni).
+          const yeni = !!(d.yeni && d.yeni[k]);
           // Koşul JSX'in DIŞINDA: `dugme_check` bir etiketin içindeki
           // koşullu `backgroundColor`ı "elle yazılmış SEÇİM denetimi"
           // sayıyor (haklı bir sezgi — ama bu kutu bir seçim değil, bir
@@ -7686,7 +7800,7 @@ export function AkisSeridi({ t, tazele, rol, onSohbetler, onIstekler, onDavetler
           return (
             <TouchableOpacity key={k} onPress={git} hitSlop={TAP.slop}
               accessibilityRole="button"
-              accessibilityLabel={`${lb}: ${n}`}
+              accessibilityLabel={`${lb}: ${n}${yeni ? " · " + (t.yeniEtiket || "") : ""}`}
               style={{
                 flex: 1,
                 minHeight: TAP.minHeight,
@@ -7715,6 +7829,10 @@ export function AkisSeridi({ t, tazele, rol, onSohbetler, onIstekler, onDavetler
               {/* 🔴 3 Eylül — `lineHeight: FS.title` (= punto) JetBrains
                   Mono'nun üst çıkıntısını Android'de kırpıyordu; Gökberk'in
                   ekran görüntüsünde rakamların tepesi kesikti. 1.3×. */}
+              {yeni ? (
+                <View pointerEvents="none" style={{ position: "absolute", top: ARA[8], right: ARA[10], width: 7, height: 7,
+                                                    borderRadius: R.full, backgroundColor: C.goldText }} />
+              ) : null}
               <Text style={{ fontFamily: MONO[500], fontSize: FS.title, lineHeight: MONO_YUK, color: dolu ? C.ink : C.dim }}>{n}</Text>
               {/* 🔴 30 Ağu · 5. tur — `adjustsFontSizeToFit` KALDIRILDI.
                   Gökberk'in cihaz ekran görüntüsünde bu dört etiketin

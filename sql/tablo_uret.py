@@ -54,6 +54,7 @@ SEEDLER = [
     # 🔴 23 EYLUL — SEED8 (akis tezgahi). Izi: akis.host hesabi. Olctum:
     # SEED..SEED7'de `akis.` onekli tek bir e-posta yok.
     ('SEED8_AKIS_TEZGAHI.sql',      'satir', 'users.email=akis.host@seed.loungelink.test'),
+    ('SEED9_AKIS_GENIS.sql',        'satir', 'users.email=akis.host3@seed.loungelink.test'),
 ]
 
 satirlar = []

@@ -1718,5 +1718,25 @@
   "309_kural_tablosu_denetimi_ve_ilan_erisimi.sql",
   "rpc_yuzeyi",
   "set_availability_program"
+ ],
+ [
+  "310_309_duzeltme_tasiyici_kapisi_guvenlik.sql",
+  "govde",
+  "create_request_impl_preflag|310: taşıyıcı uyuşmazlığı KESİN engel"
+ ],
+ [
+  "311_kesfet_ozeti_tek_kaynak.sql",
+  "fonksiyon",
+  "kesfet_ozeti"
+ ],
+ [
+  "312_soru_ilan_bagi_gercekten.sql",
+  "govde",
+  "ilan_kurali_sor|'pending', p_avail_id)"
+ ],
+ [
+  "313_akis_durum_makinesi_bildirim_soru.sql",
+  "fonksiyon",
+  "soruyu_yanitla"
  ]
 ]

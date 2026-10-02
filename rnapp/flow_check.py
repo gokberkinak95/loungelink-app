@@ -137,7 +137,8 @@ CHECKS = [
     ("confirm_session", "karşılıklı çift-onay + tamamlanınca settle+bildirim",
      [r'host_confirmed', r'guest_confirmed',
       r'host_confirmed\s+and\s+guest_confirmed|guest_confirmed\s+and\s+host_confirmed',
-      r"status\s*=\s*'completed'", r'insert into notifications']),
+      # 313: bildirim artık public.bildir() ile (alıcının dilinde) — o da notifications'a yazar.
+      r"status\s*=\s*'completed'", r'insert into notifications|public\.bildir\(']),
 
     # 5) rate_session: KARŞILIKLI — rater karşısını puanlar, tek puan, ödül
     ("rate_session", "reciprocal puanlama + tek-puan + host/guest ödül",

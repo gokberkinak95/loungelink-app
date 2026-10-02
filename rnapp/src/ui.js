@@ -2656,7 +2656,26 @@ export function Sayfa({ children, tur = "is", ufuk = 56, kaynak, yogunluk, style
 // ONAY KUTUSU — YIKICI EYLEMİN TEK KAPISI  (19 Eylül'de `ekranlar_ana.js`ten
 // taşındı; gerekçe orada yazılı)
 // ════════════════════════════════════════════════════════════════════════
-export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, danger, onConfirm, onCancel, busy }) {
+// 2 Ekim — "YENİ" işareti (kural: ortak.js · useAkisGoruldu). Kartın kendi kenarı
+// yerine İNCE altın çerçeve + köşede küçük etiket: dikkat çeker ama kartı boyamaz.
+export function yeniCerceve(yeni) {
+  return yeni ? { borderWidth: 1, borderColor: C.goldLine || C.goldText } : null;
+}
+export function YeniEtiket({ t, stil }) {
+  return (
+    <View accessibilityLabel={t.yeniEtiket}
+      style={[{ alignSelf: "flex-start", backgroundColor: C.goldSoft || C.card, borderRadius: R.full,
+                paddingHorizontal: ARA[8], paddingVertical: 2 }, stil]}>
+      <Text style={{ color: C.goldText, fontSize: FS.micro, fontWeight: "700", letterSpacing: 1.2 }}>
+        {BUYUK(t.yeniEtiket || "Yeni")}
+      </Text>
+    </View>
+  );
+}
+
+// 2 Ekim — `hata`: eylem reddedilirse sebep PENCERENİN İÇİNDE yazılır (eskiden ekranın
+// en altına düşüyordu; kullanıcı pencereyi kapatınca bile nedenini göremiyordu).
+export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, danger, onConfirm, onCancel, busy, hata }) {
   // Onay düğmesinin mürekkebi zeminine göre (bkz. aşağıdaki 23 Eylül notu).
   const onayMurekkep = danger ? "#fff" : C.onAccent;
   return (
@@ -2666,6 +2685,12 @@ export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, 
         <View style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[22] }}>
           <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[2] }}>{title}</Text>
           {!!body && <Text style={{ fontSize: FS.sm, color: C.mut, lineHeight: 19, marginBottom: ARA[18] }}>{body}</Text>}
+          {!!hata && (
+            <View accessibilityLiveRegion="assertive"
+              style={{ backgroundColor: C.hataBg || C.redBg, borderRadius: R.xs, padding: ARA[10], marginTop: -ARA[8], marginBottom: ARA[14] }}>
+              <Text style={{ color: C.redInk || C.red, fontSize: FS.sm, lineHeight: 18 }}>{hata}</Text>
+            </View>
+          )}
           {/* 🔴 v2.67 — ETİKETSİZ BUTON ÇİZİLMEZ.
               `confirmLabel={null}` geçilen dal (kural ENGELİ) bugüne kadar
               BOŞ bir teal buton çiziyordu: yazısı yok, dokunulabilir ve

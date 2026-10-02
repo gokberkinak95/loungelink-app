@@ -150,7 +150,7 @@ begin
   select id into p_pp from lounge_programs where code = 'PRIORITY_PASS';
   select id into p_bt from lounge_programs where code = 'BUSINESS_TICKET';
   insert into host_entitlements (user_id, program_id, tier, verified)
-  select x.u, x.p, null, true from (values (tuna, p_pp), (tuna, p_bt), (nehir, p_bt), (selen, p_bt)) x(u, p)
+  select x.u, x.p, null, true from (values (tuna, p_pp), (tuna, p_bt), (nehir, p_bt), (selen, p_bt), (nehir, p_pp), (selen, p_pp)) x(u, p)
    where not exists (select 1 from host_entitlements e where e.user_id = x.u and e.program_id = x.p);
 
   -- ── Salonlar (ad + havalimanıyla; uuid yok)
@@ -175,21 +175,26 @@ begin
   -- Tuna · ESB THY · g2 14–16 · TK_MS  → Nehir'e DOĞRUDAN DAVET
   insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, carrier, visibility, active, program_id, program_source)
   values (tuna, l_esb, 'ESB', ad_esb, g2, '14:00', '16:00', 2, 0, 'TK', 'Public', true, p_tk, 'beyan') returning id into te2;
-  -- Tuna · ESB THY · g3 10–12 · Business bileti → KURAL DOĞRULANMAMIŞ ("Host'a sor") · Arda soruyor
+  -- Tuna · ADB THY · g4 08–10 · Priority Pass → KURAL DOĞRULANMAMIŞ ("Host'a sor") · Arda soruyor
+  -- (313: ESB THY + Business bileti resmî kaynaktan DOĞRULANMIŞ "misafir yok" → orada soru sorulamaz;
+  --  bu senaryo artık "Bu kuralı doğruladık" rozetini gösteren ilan olarak ESB'de de duruyor: te3)
   insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, carrier, visibility, active, program_id, program_source)
-  values (tuna, l_esb, 'ESB', ad_esb, g3, '10:00', '12:00', 1, 0, 'TK', 'Public', true, p_bt, 'beyan') returning id into tu1;
+  values (tuna, l_adb_thy, 'ADB', ad_adb_thy, g4, '08:00', '10:00', 1, 0, 'TK', 'Public', true, p_pp, 'beyan') returning id into tu1;
+  -- Tuna · ESB THY · g3 10–12 · Business bileti → DOĞRULANMIŞ "misafir alınmıyor" (soru düğmesi YOK)
+  insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, carrier, visibility, active, program_id, program_source)
+  values (tuna, l_esb, 'ESB', ad_esb, g3, '10:00', '12:00', 1, 0, 'TK', 'Public', true, p_bt, 'beyan');
   -- Tuna · ADB Primeclass iç · g4 10–12 · Priority Pass → ÜCRETLİ misafir girişi
   insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, visibility, active, program_id, program_source)
   values (tuna, l_adb_ic, 'ADB', ad_adb_ic, g4, '10:00', '12:00', 2, 0, 'Public', true, p_pp, 'beyan') returning id into tp;
-  -- Nehir · ADB THY · g4 14–16 · Business bileti → doğrulanmamış; Bora soruyor, Arda'da "Host'a sor" açık
+  -- Nehir · ADB THY · g4 14–16 · Priority Pass → doğrulanmamış; Bora soruyor, Arda'da "Host'a sor" açık
   insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, carrier, visibility, active, program_id, program_source)
-  values (nehir, l_adb_thy, 'ADB', ad_adb_thy, g4, '14:00', '16:00', 1, 0, 'TK', 'Public', true, p_bt, 'beyan') returning id into nu;
+  values (nehir, l_adb_thy, 'ADB', ad_adb_thy, g4, '14:00', '16:00', 1, 0, 'TK', 'Public', true, p_pp, 'beyan') returning id into nu;
   -- Nehir · IST · yarın 15:35–15:55 → Duru ile oturum: Duru TAMAMLADI, Nehir'in onayı bekleniyor
   insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, carrier, visibility, active, program_id, program_source)
   values (nehir, l_ist, 'IST', ad_ist, yarin, '15:35', '15:55', 1, 0, 'TK', 'Public', true, p_tk, 'beyan') returning id into ns;
-  -- Selen · AYT THY · g5 10–12 · Business bileti → Arda soruyor, Selen CEVAPLIYOR
+  -- Selen · ADB THY · g4 16–18 · Priority Pass → Arda soruyor, Selen "EVET + not" ile yanıtlıyor
   insert into availabilities (host_id, lounge_id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, carrier, visibility, active, program_id, program_source)
-  values (selen, l_ayt_thy, 'AYT', ad_ayt_thy, g5, '10:00', '12:00', 1, 0, 'TK', 'Public', true, p_bt, 'beyan') returning id into su;
+  values (selen, l_adb_thy, 'ADB', ad_adb_thy, g4, '16:00', '18:00', 1, 0, 'TK', 'Public', true, p_pp, 'beyan') returning id into su;
 
   -- ── Seyahatler
   insert into visits (user_id, airport_code, destination, visit_date, time_from, time_to, flight_number, carrier_code, purpose, party_size) values
@@ -256,13 +261,9 @@ begin
   j := public.ilan_kurali_sor(su);                                                        -- Arda → Selen …
   if j->>'durum' <> 'soruldu' then raise exception 'SEED9: Arda→Selen sorusu: %', j; end if;
   perform tezgah.olarak(selen);
-  perform public.respond_connection((j->>'baglanti_id')::uuid, true);                     -- … CEVAPLANDI
-  j := public.baglanti_sohbeti_ac((j->>'baglanti_id')::uuid);
-  ch := coalesce((j->>'channel_id')::uuid, (j->>'id')::uuid);
-  if ch is not null then
-    insert into messages (channel_id, from_id, body, created_at)
-    values (ch, selen, 'Merhaba! Business biletle misafir hakkı yok ama First''te 1 misafir alabiliyorum — o gün First uçuyorum, gel.', now() - interval '30 minutes');
-  end if;
+  -- 313: soru bir bağlantı DEĞİL — host Evet/Hayır + notla yanıtlar, sohbet açılmaz.
+  perform public.soruyu_yanitla((j->>'baglanti_id')::uuid, 'evet',
+    'O gün First uçuyorum; First''te 1 misafir hakkım var, ilanıma ekliyorum.');           -- … EVET dedi
   perform tezgah.olarak(bora);
   j := public.ilan_kurali_sor(nu);                                                        -- Bora → Nehir (Nehir'e GELEN soru)
   if j->>'durum' <> 'soruldu' then raise exception 'SEED9: Bora→Nehir sorusu: %', j; end if;
@@ -292,13 +293,16 @@ begin
     select count(*) into v_bag from connection_requests cr
      where cr.status = 'accepted' and (cr.from_id = r.id or cr.to_id = r.id)
        and not public.is_blocked_pair(r.id, case when cr.from_id = r.id then cr.to_id else cr.from_id end);
-    select count(*) into v_davet from public.pending_actions() where kind = 'invite';
-    select count(*) into v_soru from public.sorularim() where coalesce(cevap_durumu,'') not in ('yanitlandi','acildi');
+    -- Davet kutusu (app) = lounge daveti + bana gelen bağlantı isteği = Davet ekranı (pending_actions)
+    select count(*) into v_davet from public.pending_actions();
+    -- Soru kutusu (313) = bana gelen yanıt bekleyen + benim yanıt beklediğim = Soru ekranı (iki sekme)
+    select (select count(*) from public.bana_gelen_sorular() where durum = 'pending')
+         + (select count(*) from public.sorularim() where cevap_durumu = 'bekliyor') into v_soru;
     insert into tezgah.seed9_sayim values
       (r.email, 'İstek (bekleyen)', (a->>'istek')::int, v_istek),
       (r.email, 'Sohbet (oturum + bağlantı)', (a->>'sohbet')::int, v_otr + v_bag),
-      (r.email, 'Davet (lounge daveti)', (a->>'davet')::int, v_davet),
-      (r.email, 'Soru (cevapsız)', (a->>'soru')::int, v_soru);
+      (r.email, 'Davet (davet + bağlantı isteği)', (a->>'davet')::int + (a->>'baglanti')::int, v_davet),
+      (r.email, 'Soru (gelen + gönderdiğim, yanıt bekleyen)', (a->>'soru')::int, v_soru);
   end loop;
   perform tezgah.olarak(null);
   if exists (select 1 from tezgah.seed9_sayim where kutu <> liste) then

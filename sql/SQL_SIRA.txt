@@ -1,3 +1,23 @@
+SQL SIRASI - 2 Ekim 2026 - YENI: 313 + test verisi (app 6.2.7) - 311 ve 312den SONRA
+
+  (311 ve 312yi henuz kosmadiysan once onlar - asagidaki 1 Ekim turu.)
+
+  1) 313_akis_durum_makinesi_bildirim_soru.sql
+       -> Oturum yalniz IKI TARAF da Baslata basinca baslamis sayilir: tek taraf bastiysa
+          kabulu geri al / iptal / ilani kaldir CALISIR (kredi iade, slot acilir, isimli bildirim)
+       -> Bildirimler isimli ve dogru ("X kabulu geri aldi", "X oturumu baslatti - sen de bas");
+          hatirlatmalar zamanlanir (1 saat kala, yarin, puanlama); bildirime dokununca dogru ekran
+       -> Soru artik BAGLANTI DEGIL: host Evet/Hayir + not ile yanitlar, sohbet acilmaz;
+          sorular Davet ekranindan cikar (Soru: Gelen / Gonderdigim)
+       -> Rozet metni, Hosta sor dugmesi ve sunucu kapisi AYNI karardan (celiski biter)
+       -> Ana sayfa YENI isareti (akis_goruldu) + Tanis aramasi (kisi_ara)
+       Beklenen NOTICE: "313: tamam - oturum kapisi tek tanim ...". Tekrar kosulabilir.
+       pg_cron yoksa: "hatirlatma isleri zamanlanamadi" (canlida pg_cron var, kurulur).
+  2) SEED8_AKIS_TEZGAHI.sql   (test hesaplari; ikisi birlikte, bu sirayla)
+  3) SEED9_AKIS_GENIS.sql     -> soru senaryolari kurali dogrulanmamis salonlara tasindi;
+       son NOTICE: "ana sayfa kutulari acilan listelerle BIREBIR".
+
+---------------------------------------------------------------------------
 SQL SIRASI - 1 Ekim 2026 (2. tur) - YENI: 311 + 312 + test verisi (app 6.2.6) - 310dan SONRA
 
   1) 311_kesfet_ozeti_tek_kaynak.sql

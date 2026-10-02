@@ -32,12 +32,12 @@ import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR} from "./theme";
-import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit } from "./ui";
+import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan } from "./hareket";
 import { yerelGun } from "./zaman";
@@ -107,7 +107,7 @@ export function SekmeSeridi({ secenekler, secili, onSec }) {
               {lb}{n != null ? <Text style={{ fontFamily: MONO[500], color: on ? C.goldText : C.mut }}>{"  " + n}</Text> : null}
             </Text>
             <View style={{ position: "absolute", left: "20%", right: "20%", bottom: -StyleSheet.hairlineWidth, height: 2,
-                           borderRadius: 1, backgroundColor: on ? C.goldText : "transparent" }} />
+                           borderRadius: R.full, backgroundColor: on ? C.goldText : "transparent" }} />
           </TouchableOpacity>
         );
       })}
@@ -115,7 +115,7 @@ export function SekmeSeridi({ secenekler, secili, onSec }) {
   );
 }
 
-export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, acikBasla, tamEkran, tazele, gorunum }) {
+export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, acikBasla, tamEkran, tazele, gorunum, onTumu }) {
   const uid = session?.user?.id;
   // 🔴 v2.65 — useState([]) "hiç isteğin yok" demekti; oysa henüz
   // okunmamıştı. null = yükleniyor. Ayrıca Promise.allSettled iki dalı da
@@ -212,6 +212,11 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   const [actErr, setActErr] = useState({});
   const [sessMap, setSessMap] = useState({});   // request_id -> oturum durumu (v1.81)
   const [sekme, setSekme] = useState(null);     // İstek: gelen | giden
+  // 2 Ekim — "yeni" işareti: tam ekran İstek → 'istek', Oturumlar → 'sohbet'.
+  const yeniOnce = useAkisGoruldu(gorunum === "istek" ? "istek" : gorunum === "oturum" ? "sohbet" : null,
+                                  !!tamEkran && (gorunum === "istek" || gorunum === "oturum"));
+  const yeniSatir = (yeni) => (yeni ? { ...yeniCerceve(true), borderRadius: R.md, paddingHorizontal: ARA[12],
+                                        marginVertical: ARA[6] } : null);
   async function act(id, action) {
     setActErr(e => ({ ...e, [id]: null }));
     const { error } = await supabase.rpc("respond_request", { p_request_id: id, p_action: action });
@@ -286,6 +291,15 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   const istekMod = gorunum === "istek";
   if (istekMod) { inc = inc.filter(r => !["accepted", "completed"].includes(r.status)); sent = sent.filter(r => !["accepted", "completed"].includes(r.status)); }
   if (oturumMod) { inc = inc.filter(r => r.status === "accepted"); sent = sent.filter(r => r.status === "accepted"); }
+  // 2 Ekim (Gökberk md.9 · öneri 2) — ANA SAYFA: yalnız YANIT BEKLEYENLER (başlıktaki İstek
+  // kutusuyla aynı küme), en fazla 3 satır; fazlası için İstek alanına yönlendirme.
+  // Eskiden özet "Sana gelen 3 · 4 kabul edildi · Gönderdiğin 2" diyordu (kabul edilmiş ve
+  // her durumdaki gönderilmişler dahil) — kutu 4 derken panel 9 şey sayıyordu.
+  const anaMod = !tamEkran;
+  if (anaMod) { inc = inc.filter(r => r.status === "pending"); sent = sent.filter(r => r.status === "pending"); }
+  const anaGelen = inc.length, anaGiden = sent.length;
+  if (anaMod) { inc = inc.slice(0, 3); sent = sent.slice(0, Math.max(0, 3 - inc.length)); }
+  const anaKalan = anaMod ? anaGelen + anaGiden - inc.length - sent.length : 0;
   const aktifSekme = sekme || (inc.some(r => r.status === "pending") || !sent.length ? "gelen" : "giden");
   if (istekMod) { if (aktifSekme === "gelen") sent = []; else inc = []; }
   const sekmeSeridi = istekMod ? (
@@ -316,7 +330,10 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   // gelen 2 istek" diyordu (kabul edilmiş 24 saatlik kartı da sayıyordu).
   // Aynı sayı: bekleyen; kalan varsa "· 1 kabul edildi" ile ayrı söylenir.
   const kabul = inc.length - bekleyen;
-  const ozetMetni = [
+  const ozetMetni = anaMod ? [
+    anaGelen ? String(t.homeReqIncoming || "Sana gelen {n} istek").replace("{n}", String(anaGelen)) : null,
+    anaGiden ? String(t.homeReqSentWaiting || "Yanıt beklediğin {n} istek").replace("{n}", String(anaGiden)) : null,
+  ].filter(Boolean).join(" · ") : [
     bekleyen ? String(t.homeReqIncoming || "Sana gelen {n} istek").replace("{n}", String(bekleyen)) : null,
     kabul ? String(t.homeReqAccepted || "{n} kabul edildi").replace("{n}", String(kabul)) : null,
     sent.length ? String(t.homeReqSent || "Gönderdiğin {n} istek").replace("{n}", String(sent.length)) : null,
@@ -345,6 +362,9 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
           // dusuyor ve JSX icindeki `return (` onu sasirtiyor. Ayrica bu hali
           // daha okunakli.
           const fit = r.guest_fit || 0;
+          const sxG = sessMap[r.id];
+          const yeniGelen = yeniMi(yeniOnce, r.status === "pending" ? r.created_at : null,
+            oturumMod ? r.responded_at : null, oturumMod && sxG ? sxG.guest_started_at : null);
           // 🔴 v2.86 (Gökberk, ekran görüntüsüyle): "hangi ilana ait olduğu
           // anlaşılmıyor". AYNI misafir host'un İKİ AYRI ilanına başvurunca
           // iki kart BİREBİR aynı çıkıyordu (aynı isim, aynı puan, aynı
@@ -367,7 +387,9 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
              YÜZEY: altın/gri sıra şeridi, iç halka ve rozet hapları kalktı;
              sıra bir editoryal satır, uyum fildişi mühür, güven sinyalleri
              harf aralıklı metin. Bilgi aynı; yüzey sayısı beşten bire indi. */
-          <View key={r.id} style={{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+          <View key={r.id} style={[{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line },
+                                   yeniSatir(yeniGelen)]}>
+            {yeniGelen ? <YeniEtiket t={t} stil={{ marginBottom: ARA[10] }} /> : null}
             {r.status === "pending" && (isBest || pendCount > 1) && (
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: ARA[14] }}>
                 <Text style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4,
@@ -454,6 +476,9 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
         {sent.map(r => {
           // Oturum durumu, istek durumundan DAHA GÜNCEL bilgidir — varsa o kazanır.
           const [lab, col] = oturumEtiketi(r, r.host_id === uid);
+          const sxS = sessMap[r.id];
+          const yeniGiden = yeniMi(yeniOnce, r.status !== "pending" ? r.responded_at : null,
+            oturumMod && sxS ? sxS.host_started_at : null);
           // 🔴 v2.66 (madde 13) — KART ARTIK BAĞLAM TAŞIYOR.
           // Eski kart: host adı + tek kelime durum. Misafir hangi salona,
           // hangi güne, hangi uçuşa başvurduğunu HATIRLAMAK zorundaydı.
@@ -499,7 +524,9 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
                kutusu > rozet hapları = beş iç içe yüzey, ikisi aynı dolguda.
                Şimdi: kart tek yüzey; durum kutusuz editoryal satır, bağlam
                1 px ışık çizgisiyle ayrılır, rozetler harf aralıklı metin. */
-            <View key={r.id} style={{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
+            <View key={r.id} style={[{ paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line },
+                                     yeniSatir(yeniGiden)]}>
+              {yeniGiden ? <YeniEtiket t={t} stil={{ marginBottom: ARA[10] }} /> : null}
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0, marginRight: SP[2] }}>
                   <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: col, marginRight: ARA[8] }} />
@@ -572,6 +599,13 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
           );
         })}
       </>}
+      {anaKalan > 0 && onTumu ? (
+        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" onPress={onTumu}
+          style={{ minHeight: TAP.minHeight, justifyContent: "center", alignSelf: "flex-start", marginTop: ARA[6] }}>
+          <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}
+            metin={String(t.homeMoreRequests || "{n}").replace("{n}", String(anaKalan))} />
+        </TouchableOpacity>
+      ) : null}
     </Kap>
   );
 }
@@ -698,6 +732,11 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   const [msgs, setMsgs] = useState([]);
   const [txt, setTxt] = useState("");
   const [sess, setSess] = useState(undefined); // undefined=yükleniyor, null=yok
+  // 2 Ekim (Gökberk md.7) — sohbet, isteğin GÜNCEL durumunu ve engeli bilir:
+  // iptal edilmiş / geri alınmış buluşmada ya da engellenmiş çiftte YAZMA KUTUSU YOK
+  // (sunucu zaten reddediyordu; kullanıcı yazıp hata alıyordu).
+  const [reqDurum, setReqDurum] = useState(request?.status || null);
+  const [engelli, setEngelli] = useState(false);
   // v1.82: "Şimdi puanla" gibi dışarıdan gelen girişlerde panel DOĞRUDAN açılır
   const [panelOpen, setPanelOpenState] = useState(!!openPanel);   // v1.75: tam ekran oturum paneli
   const setPanelOpen = (v) => { panelOpenRef.v = !!v; setPanelOpenState(!!v); };
@@ -769,11 +808,21 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     // ⚠️ `ratings` okuması dalgaya GİRMİYOR: o, `s.status === "completed"`
     // koşuluna bağlı. Koşullu bir çağrıyı dalgaya almak, tamamlanmamış
     // her oturumda gereksiz bir sorgu açmak olurdu.
-    const [{ data: s }, { data: oturumDetay, error: de }] = await Promise.all([
+    const [{ data: s }, { data: oturumDetay, error: de }, { data: rq }] = await Promise.all([
       supabase.from("sessions").select("*").eq("request_id", request?.id).maybeSingle(),
       supabase.rpc("aktif_oturum_detay", { p_request_id: request?.id }),
+      supabase.from("requests").select("status, host_id, guest_id").eq("id", request?.id).maybeSingle(),
     ]);
     setSess(s || null);
+    if (rq && rq.status) setReqDurum(rq.status);
+    if (rq && uid && rq.host_id && rq.guest_id) {
+      const karsi = rq.host_id === uid ? rq.guest_id : rq.host_id;
+      try {
+        const { data: eb, error: ebHata } = await supabase.rpc("is_blocked_pair", { p_a: uid, p_b: karsi });
+        if (ebHata) logError("is_blocked_pair", ebHata);
+        else setEngelli(eb === true);
+      } catch (e) { /* engel bilinmiyorsa sunucu yine reddeder */ }
+    }
     // Ad + salon + uçuş: sunucudan. Hata olursa `det` null kalır ve
     // ekran eski davranışına düşer — sessizce YANLIŞ değil, sessizce ESKİ.
     // ⚠️ Değişken adı `oturumDetay` — kısa `d` DEĞİL. RPC alan denetimi
@@ -1146,6 +1195,11 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   );
 
   const myConfirmed = sess && (isHost ? sess.host_confirmed : sess.guest_confirmed);
+  // Salt okunur sohbet: buluşma iptal / geri alındı / süresi doldu ya da çift engelli.
+  // Tamamlanmış buluşmada yazışma AÇIK kalır (tanışma ürünün asıl değeri).
+  const sohbetKapali = engelli
+    || !!(sess && (sess.status === "cancelled" || sess.status === "expired"))
+    || ["cancelled", "declined", "expired"].includes(reqDurum);
   // Bu kullanıcı "başlat" dedi mi (çift onaylı başlatmanın kendi tarafı)
   const iStarted = !!(sess && (isHost ? sess.host_started_at : sess.guest_started_at));
   // v6.3 · PANO E — KARŞI TARAFIN BİNİŞ KARTI. SQL 294 atlamayı/başarısızlığı
@@ -1652,6 +1706,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         // 4 Eylül — tasarım 06: İKİ çip (ekran_uret: lsGuest3 + lsGuest5).
         // v6.1 (md.19) — buluşma bitti/iptal: "güvenlikten geçtim" kısayolları anlamsız.
         if (sess && (sess.status === "completed" || sess.status === "cancelled")) return null;
+        if (sohbetKapali) return null;
         if (klavye) return null;
         const anahtarlar = isHost ? ["lsHost2", "lsHost3"]
                                   : ["lsGuest3", "lsGuest5"];
@@ -1661,7 +1716,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           <ScrollView horizontal showsHorizontalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ paddingHorizontal: ARA[22], paddingTop: ARA[14], paddingBottom: ARA[4], gap: ARA[8] }}
-            style={{ flexGrow: 0, backgroundColor: C.bg }}>
+            /* 2 Ekim (md.11) — zemin `C.bg` (siyah) idi; hemen altındaki yazma alanı
+               `C.card`. Aynı alt çubuğun iki parçası iki farklı renkte duruyordu. */
+            style={{ flexGrow: 0, backgroundColor: C.card }}>
             {/* 4 Eylül — tasarım 06 çipleri tasarımın `.cip`i (26 yüksek,
                 10.5/600, hap); `Btn cip` 36'lık dokunma hapıydı. `Cip`in
                 hitSlop'u 44'e tamamlıyor. */}
@@ -1695,6 +1752,16 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           🆕 SINIF: "BİR ÖĞENİN 'STİLİ' ÇOĞU ZAMAN RENGİ DEĞİL, HANGİ
           KUTUNUN İÇİNDE DURDUĞUDUR."
           ══════════════════════════════════════════════════════════════ */}
+      {sohbetKapali ? (
+        <View accessibilityLiveRegion="polite"
+          style={{ paddingHorizontal: ARA[22], paddingVertical: ARA[14], backgroundColor: C.card,
+                   flexDirection: "row", alignItems: "center", borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.line }}>
+          <Ikon ad="kilit" boy={15} renk={C.mut} stil={{ marginRight: ARA[10] }} />
+          <Text style={{ flex: 1, color: C.mut, fontSize: FS.sm, lineHeight: 18 }}>
+            {engelli ? t.chatClosedBlocked : t.chatClosedCancelled}
+          </Text>
+        </View>
+      ) : (
       <View style={{ paddingHorizontal: ARA[22], paddingTop: ARA[12], paddingBottom: ARA[12],
                      backgroundColor: C.card }}>
         <View style={{ flexDirection: "row", alignItems: "center",
@@ -1726,6 +1793,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           style={{ width: 36, height: 36, paddingHorizontal: 0 }} />
         </View>
       </View>
+      )}
       {/* TASARIM 06: yazma kutusunun ALTINDA tam genişlik altın "Oturumu
           Başlat". İptal küçük bir metin bağlantısı (tasarımda yok; işlev). */}
       {/* 🔴 BİNİŞ KARTI PANELİ — "Oturumu Başlat"ın önündeki kapı.
@@ -1741,7 +1809,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           onKapat={() => setBpPanel(false)}
           onDogrulandi={async () => { setBpPanel(false); setBpBitti(true); await doStart(); }} />
       )}
-      {!klavye && sess !== undefined && (!sess || sess.status === "pending" || sess.status === "active") && (
+      {!klavye && !sohbetKapali && sess !== undefined && (!sess || sess.status === "pending" || sess.status === "active") && (
         <View style={{ paddingHorizontal: ARA[22], paddingBottom: ARA[22], backgroundColor: C.card }}>
           {(!sess || sess.status === "pending") ? (
             iStarted ? (
@@ -2658,16 +2726,31 @@ export function Notifications({ t, session, onRefreshBadge, onGit, onBack }) {
   // sayaç yok. Güvenlik bildirimleri "Tümü"nde görünür.
   const cats = [["all", t.catAll], ["connections", t.catConnections], ["requests", t.catRequests], ["sessions", t.catSessions]];
   // Çip satırı artık bandın İÇİNDE çiziliyor (bkz. aşağıdaki `Hdr`).
+  // 2 Ekim (Gökberk) — "tümünü okundu işaretle" yalnız "Tümü" çipine UZUN basınca
+  // çalışıyordu: kimsenin bulamayacağı bir eylem. Okunmamış varken görünür düğme.
+  const okunmamisSay = (rows || []).filter(x => !x.read).length;
   const cipSatiri = (
-    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginTop: ARA[12] }}>
-      {cats.map(([k, lb]) => {
-        const n = (rows || []).filter(x => !x.read && (k === "all" || x.category === k)).length;
-        return (
-          <Cip key={k} etiket={lb} secili={cat === k}
-               a11yLabel={lb + (n > 0 ? ` · ${n}` : "")} onPress={() => setCat(k)}
-               onLongPress={k === "all" ? markAll : undefined} />
-        );
-      })}
+    <View>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginTop: ARA[12] }}>
+        {cats.map(([k, lb]) => {
+          const n = (rows || []).filter(x => !x.read && (k === "all" || x.category === k)).length;
+          return (
+            <Cip key={k} etiket={lb} secili={cat === k}
+                 a11yLabel={lb + (n > 0 ? ` · ${n}` : "")} onPress={() => setCat(k)}
+                 onLongPress={k === "all" ? markAll : undefined} />
+          );
+        })}
+      </View>
+      {okunmamisSay > 0 ? (
+        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.notifMarkAll}
+          onPress={markAll}
+          style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", minHeight: TAP.minHeight, marginTop: ARA[4] }}>
+          <Ikon ad="tamam" boy={14} renk={C.goldText} stil={{ marginRight: ARA[6] }} />
+          <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>
+            {String(t.notifMarkAll || "")}{` · ${okunmamisSay}`}
+          </Text>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
   const shown = rows === null ? null : cat === "all" ? rows : rows.filter(n => n.category === cat);
@@ -3868,6 +3951,246 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
     </Sayfa>
   );
 }
+// ══════════════════════════════════════════════════════════════════════
+// 2 Ekim (Gökberk md.3, md.10) — SORU EKRANI: GELEN · GÖNDERDİĞİM
+// Sorular Davet ekranındaydı ("Yanıtla" = bağlantıyı kabul et → sohbet açılıyordu
+// ve soran kişi host'un BAĞLANTISI oluyordu: "yalnız bağlantılarım" ilanları ve
+// profil ona açılıyordu). Artık soru kendi alanında ve bir bağlantı DEĞİL:
+//   GELEN       host Evet/Hayır + kısa notla yanıtlar (SQL 313 soruyu_yanitla);
+//               "Evet" diyene hakkını ilana ekleme yolu hemen gösterilir.
+//   GÖNDERDİĞİM sorduğum sorular ve yanıtları (+ host'un notu).
+// ══════════════════════════════════════════════════════════════════════
+export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, onIlanaGit, onHakEkle, tazele }) {
+  const [gelen, setGelen] = useState(null);
+  const [giden, setGiden] = useState(null);
+  const [sekme, setSekme] = useState(null);
+  const [notlar, setNotlar] = useState({});
+  const [busy, setBusy] = useState(null);
+  const [hata, setHata] = useState({});
+  const [loadErr, setLoadErr] = useState(false);
+  const once = useAkisGoruldu("soru");
+
+  const yukle = useCallback(async () => {
+    const [g, d] = await Promise.all([
+      supabase.rpc("bana_gelen_sorular"),
+      supabase.rpc("sorularim"),
+    ]);
+    if (g.error) logError("bana_gelen_sorular", g.error);
+    if (d.error) logError("sorularim", d.error);
+    if (g.error && d.error) { setLoadErr(true); return; }
+    setLoadErr(false);
+    setGelen(Array.isArray(g.data) ? g.data : []);
+    setGiden(Array.isArray(d.data) ? d.data : []);
+  }, []);
+  useEffect(() => { yukle(); }, [yukle, tazele]);
+
+  async function yanitla(r, cevap) {
+    if (busy) return;
+    setBusy(r.id); setHata(h => ({ ...h, [r.id]: "" }));
+    const { error } = await supabase.rpc("soruyu_yanitla",
+      { p_id: r.id, p_cevap: cevap, p_not: (notlar[r.id] || "").trim() || null });
+    setBusy(null);
+    if (error) { setHata(h => ({ ...h, [r.id]: mapErr(t, error.message) })); return; }
+    yukle();
+  }
+
+  if (loadErr) return (
+    <Sayfa>
+      <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowQuestions} onBack={onBack} marka={false} />
+      <LoadFail t={t} onRetry={yukle} />
+    </Sayfa>
+  );
+  if (gelen === null || giden === null) return <Load t={t} title={t.flowQuestions} onBack={onBack} />;
+
+  const gelenBekleyen = gelen.filter(r => r.durum === "pending").length;
+  const gidenBekleyen = giden.filter(r => r.cevap_durumu === "bekliyor").length;
+  const aktif = sekme || (gelenBekleyen > 0 || !giden.length ? "gelen" : "giden");
+  const ctxOf = (r) => [r.airport_code, r.avail_date ? fmtLongDate(r.avail_date, lang) : null,
+    (r.time_from && r.time_to) ? `${String(r.time_from).slice(0, 5)}–${String(r.time_to).slice(0, 5)}` : null]
+    .filter(Boolean).join(" · ");
+
+  const kartStil = (yeni) => [{ backgroundColor: C.camYuzey || C.surface, ...ustIsik(C.parlama || C.line),
+    borderRadius: R.lg, padding: SP[4], marginBottom: ARA[12] }, yeniCerceve(yeni)];
+
+  const durumSatiri = (metin, renk, yeni) => (
+    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <View style={{ flexDirection: "row", alignItems: "center", flexShrink: 1 }}>
+        <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: renk, marginRight: ARA[8] }} />
+        <Text numberOfLines={1} style={{ fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4, color: renk }}>{BUYUK(metin)}</Text>
+      </View>
+      {yeni ? <YeniEtiket t={t} /> : null}
+    </View>
+  );
+
+  const gelenKart = (r) => {
+    const yeni = yeniMi(once, r.soruldu_at);
+    const bekliyor = r.durum === "pending";
+    const [durumMetni, durumRengi] = bekliyor ? [t.qInWaiting, C.goldText]
+      : r.cevap === "evet" ? [t.qInSaidYes, C.green]
+      : r.cevap === "hayir" ? [t.qInSaidNo, C.mut]
+      : [t.qInClosed, C.mut];
+    return (
+      <View key={r.id} style={kartStil(yeni)}>
+        {durumSatiri(durumMetni, durumRengi, yeni)}
+        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={r.soran_adi}
+          onPress={() => onOpenProfile && r.soran_id && onOpenProfile(r.soran_id)}
+          style={{ marginTop: ARA[10] }}>
+          <Text style={{ color: C.ink, fontFamily: F.serifGosterim, fontSize: FS.title + 2, letterSpacing: -0.4 }}>{r.soran_adi}</Text>
+          {!!r.soran_meslek && <Text style={{ color: C.mut, fontSize: FS.xs, letterSpacing: 1.2, marginTop: 2 }}>{BUYUK(r.soran_meslek)}</Text>}
+        </TouchableOpacity>
+        <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "600", marginTop: ARA[10] }}>{r.salon || t.lounge}</Text>
+        {!!ctxOf(r) && <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, marginTop: 2 }}>{BUYUK(ctxOf(r))}</Text>}
+        {!!r.soru && (
+          <Text style={{ color: C.body, fontSize: FS.base, marginTop: ARA[10], lineHeight: SATIR(FS.base, "serif"),
+                         fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.soru}”</Text>
+        )}
+        {bekliyor ? (
+          <>
+            <TextInput value={notlar[r.id] || ""} onChangeText={v => setNotlar(n => ({ ...n, [r.id]: v }))}
+              maxLength={200} placeholder={t.qInNotePh} placeholderTextColor={C.dim}
+              style={{ marginTop: ARA[12], borderWidth: 1, borderColor: C.line, borderRadius: R.sm,
+                       paddingHorizontal: ARA[12], paddingVertical: ARA[10], color: C.ink, fontSize: FS.sm }} />
+            <View style={{ flexDirection: "row", marginTop: ARA[10] }}>
+              <Btn v="gold" sm label={t.qInYes} disabled={busy === r.id} onPress={() => yanitla(r, "evet")}
+                style={{ flex: 1.6, marginRight: SP[2] }} />
+              <Btn v="ghost" sm label={t.qInNo} disabled={busy === r.id} onPress={() => yanitla(r, "hayir")}
+                style={{ flex: 1 }} />
+            </View>
+            <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16, marginTop: ARA[8] }}>{t.qInHint}</Text>
+          </>
+        ) : (
+          <>
+            {!!r.cevap_notu && <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[8] }}>{t.qYourNote}: “{r.cevap_notu}”</Text>}
+            {r.cevap === "evet" && !r.ilan_acik && onHakEkle ? (
+              <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" onPress={() => onHakEkle(r.avail_id)}
+                style={{ marginTop: ARA[10], minHeight: TAP.minHeight, justifyContent: "center" }}>
+                <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm }} metin={t.qInAddRight} />
+              </TouchableOpacity>
+            ) : r.cevap === "evet" && r.ilan_acik ? (
+              <Text style={{ color: C.greenInk || C.green, fontSize: FS.sm, marginTop: ARA[8] }}>{t.qInListingOpen}</Text>
+            ) : null}
+          </>
+        )}
+        {!!hata[r.id] && <Text style={{ color: C.red, fontSize: FS.sm, marginTop: ARA[8] }}>{hata[r.id]}</Text>}
+      </View>
+    );
+  };
+
+  const gidenKart = (r) => {
+    const yeni = yeniMi(once, r.yanit_at);
+    const [durumMetni, durumRengi] = r.ilan_acildi ? [t.mqOpened, C.green]
+      : r.cevap_durumu === "evet" ? [t.qOutYes, C.green]
+      : r.cevap_durumu === "hayir" ? [t.qOutNo, C.mut]
+      : r.cevap_durumu === "yanitlandi" ? [t.mqAnswered, C.green]
+      : r.cevap_durumu === "reddedildi" ? [t.mqDeclined, C.mut]
+      : [t.mqPending, C.goldText];
+    const hedef = r.ilan_acildi && r.avail_id ? "ilan" : (r.cevap_durumu === "yanitlandi" && r.channel_id) ? "sohbet" : "profil";
+    const ipucu = r.ilan_acildi ? t.qOutOpenHint
+      : r.cevap_durumu === "evet" ? t.qOutYesHint
+      : r.cevap_durumu === "hayir" ? t.qOutNoHint
+      : r.cevap_durumu === "bekliyor" ? t.myQuestionsSub : "";
+    return (
+      <TouchableOpacity key={r.id} activeOpacity={0.85} accessibilityRole="button" hitSlop={TAP.slop}
+        accessibilityLabel={`${r.host_name} — ${durumMetni}`}
+        onPress={() => {
+          if (hedef === "ilan" && onIlanaGit) { onIlanaGit(r.avail_id, r.airport_code); return; }
+          if (hedef === "sohbet" && onOpenCompanion) { onOpenCompanion(r.channel_id, r.host_name); return; }
+          if (onOpenProfile && r.host_id) onOpenProfile(r.host_id);
+        }}
+        style={kartStil(yeni)}>
+        {durumSatiri(durumMetni, durumRengi, yeni)}
+        <Text style={{ color: C.ink, fontFamily: F.serifGosterim, fontSize: FS.title + 2, letterSpacing: -0.4, marginTop: ARA[10] }}>{r.host_name}</Text>
+        <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "600", marginTop: ARA[6] }}>{r.salon || t.lounge}</Text>
+        {!!ctxOf(r) && <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, marginTop: 2 }}>{BUYUK(ctxOf(r))}</Text>}
+        {!!r.cevap_notu && (
+          <Text style={{ color: C.body, fontSize: FS.base, marginTop: ARA[10], lineHeight: SATIR(FS.base, "serif"),
+                         fontFamily: F.serifLight || F.serifGosterim, fontStyle: "italic" }}>“{r.cevap_notu}”</Text>
+        )}
+        {!!ipucu && <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16, marginTop: ARA[8] }}>{ipucu}</Text>}
+        {hedef !== "profil" && (
+          <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ fontSize: FS.xs, color: C.goldText, fontWeight: "700", marginTop: ARA[6] }}
+            metin={hedef === "ilan" ? t.mqGoListing : t.openChat} />
+        )}
+      </TouchableOpacity>
+    );
+  };
+
+  const liste = aktif === "gelen" ? gelen : giden;
+  return (
+    <Sayfa>
+      <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowQuestions} onBack={onBack} marka={false} />
+      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
+        <SekmeSeridi secili={aktif} onSec={setSekme} secenekler={[
+          ["gelen", t.qTabIn, gelenBekleyen],
+          ["giden", t.qTabOut, gidenBekleyen],
+        ]} />
+        {liste.length === 0 ? (
+          <BosDurum ikon="bilgi" ortala metin={aktif === "gelen" ? t.qInEmpty : t.questionsEmpty}
+            pano={{ baslik: aktif === "gelen" ? t.panoSoruGelenBas : t.panoSoruBas, durum: t.panoSoruDurum }} />
+        ) : liste.map(aktif === "gelen" ? gelenKart : gidenKart)}
+      </ScrollView>
+    </Sayfa>
+  );
+}
+
+// 2 Ekim (öneri 2) — ANA SAYFA "SORULAR" akordeonu: başlıktaki Soru kutusuyla AYNI küme
+// (bana gelen yanıt bekleyenler + benim yanıt beklediğim sorular), en fazla 3 satır,
+// fazlası için Soru alanına yönlendirme. Boşsa hiç çizilmez.
+export function SoruOzeti({ t, lang, tazele, onAc }) {
+  const [satirlar, setSatirlar] = useState(null);
+  useEffect(() => {
+    let iptal = false;
+    (async () => {
+      const [g, d] = await Promise.all([supabase.rpc("bana_gelen_sorular"), supabase.rpc("sorularim")]);
+      if (g.error) logError("bana_gelen_sorular", g.error);
+      if (d.error) logError("sorularim", d.error);
+      const gelen = (Array.isArray(g.data) ? g.data : []).filter(r => r.durum === "pending")
+        .map(r => ({ id: r.id, yon: "gelen", ad: r.soran_adi, salon: r.salon, gun: r.avail_date }));
+      const giden = (Array.isArray(d.data) ? d.data : []).filter(r => r.cevap_durumu === "bekliyor")
+        .map(r => ({ id: r.id, yon: "giden", ad: r.host_name, salon: r.salon, gun: r.avail_date }));
+      if (!iptal) setSatirlar([...gelen, ...giden]);
+    })();
+    return () => { iptal = true; };
+  }, [tazele]);
+  if (!satirlar || !satirlar.length) return null;
+  const gelenSay = satirlar.filter(x => x.yon === "gelen").length;
+  const gidenSay = satirlar.length - gelenSay;
+  const ozet = [gelenSay ? String(t.homeQIn || "{n}").replace("{n}", String(gelenSay)) : null,
+                gidenSay ? String(t.homeQOut || "{n}").replace("{n}", String(gidenSay)) : null].filter(Boolean).join(" · ");
+  const kalan = satirlar.length - 3;
+  return (
+    <View style={{ marginTop: ARA[14], marginBottom: ARA[6] }}>
+      <Katlanir baslik={t.homeQPanelTitle} ozet={ozet} acikBasla={gelenSay > 0}
+        tint={gelenSay > 0 ? C.goldBg : undefined} cizgi={gelenSay > 0 ? C.goldLine : undefined}>
+        <View style={{ marginTop: ARA[6] }}>
+          {satirlar.slice(0, 3).map(x => (
+            <TouchableOpacity key={x.id} hitSlop={TAP.slop} accessibilityRole="button" onPress={onAc}
+              style={{ paddingVertical: ARA[12], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line,
+                       flexDirection: "row", alignItems: "center" }}>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.base, fontWeight: "600" }}>
+                  {x.yon === "gelen" ? String(t.homeQInRow || "{ad}").replace("{ad}", x.ad || "") : String(t.homeQOutRow || "{ad}").replace("{ad}", x.ad || "")}
+                </Text>
+                <Text numberOfLines={1} style={{ color: C.mut, fontSize: FS.xs, marginTop: 2 }}>
+                  {[x.salon, x.gun ? fmtLongDate(x.gun, lang) : null].filter(Boolean).join(" · ")}
+                </Text>
+              </View>
+              <Ikon ad="sag" boy={14} renk={x.yon === "gelen" ? C.goldText : C.mut} />
+            </TouchableOpacity>
+          ))}
+          {kalan > 0 ? (
+            <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" onPress={onAc}
+              style={{ minHeight: TAP.minHeight, justifyContent: "center", alignSelf: "flex-start" }}>
+              <IkonMetin sag ad="sag" renk={C.goldText} stilMetin={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}
+                metin={String(t.homeMoreQuestions || "{n}").replace("{n}", String(kalan))} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      </Katlanir>
+    </View>
+  );
+}
+
 const HIKAYE_KAPANAN = new Set();   // md.12 — bu oturumda kapatılan davetler
 export function HikayeDaveti({ t, lang, onDone, hepAcik = false }) {
   const [davet, setDavet] = useState(null);
@@ -4153,7 +4476,12 @@ export function HediyeBolumu({ t, onDone }) {
     if (eh) logError("hediye_edilebilir_hakkim", eh);
     if (ec) logError("my_connections", ec);
     setHak(h || { adet: 0 });
-    setKisiler(Array.isArray(c) ? c : []);
+    // 2 Ekim — `my_connections` HER durumdaki satırı döndürür (bekleyen, reddedilmiş, kural
+    // soruları). Hediye yalnız KABUL EDİLMİŞ bağlantıya gidebilir (sunucu `baglanti_yok` der);
+    // listede seçilemeyecek kişi gösterilmez. Aynı kişi bir kez.
+    const gorulen = new Set();
+    setKisiler((Array.isArray(c) ? c : []).filter(x => x && x.status === "accepted" && x.intent !== "kural_sorusu"
+      && x.other_id && !gorulen.has(x.other_id) && gorulen.add(x.other_id)));
   }, []);
   useEffect(() => { yukle(); }, [yukle]);
 
@@ -5036,7 +5364,10 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
   // ona ULAŞAMAMASI. İki eylem ayrı kalıyor (bildirim ≠ engel; biri
   // yalnız engellemek isteyebilir, biri yalnız bildirmek) ama aynı
   // ekranda, tek dokunuşla. Engel sessizdir: karşı tarafa bildirim gitmez.
-  const [engelleDe, setEngelleDe] = useState(false);
+  // 2 Ekim (Gökberk md.7) — "şikayet ettiğim kişi bana artık yazamamalı": seçenek
+  // VARSAYILAN AÇIK (kullanıcı kapatabilir). Engel mesajı sunucuda iki yönde durdurur
+  // (trg_mesaj_engel) ve sohbet salt okunur olur.
+  const [engelleDe, setEngelleDe] = useState(true);
   const [engellendi, setEngellendi] = useState(false);
   // Guvenlik Merkezi'nden gelindiginde hedef BELLI DEGIL — kisi secilmeli.
   // create_report bir hedef ister; "kimseyi" bildiremezsin. Bu yuzden

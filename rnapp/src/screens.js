@@ -1179,6 +1179,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
             cancelLabel={t.confirmNo}
             danger
             busy={reqBusy === redKart?.id}
+            hata={redKart?.hata}
             onCancel={() => setRedKart(null)}
             onConfirm={async () => {
               const id = redKart?.id;
@@ -1186,7 +1187,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               setReqBusy(id);
               try {
                 const { error } = await supabase.rpc("respond_request", { p_request_id: id, p_action: "decline" });
-                if (error) { setErr(mapErr(t, error.message)); return; }
+                if (error) { setRedKart(k => (k ? { ...k, hata: mapErr(t, error.message) } : k)); load(); return; }
                 setErr(""); setRedKart(null); load();
               } finally { setReqBusy(null); }
             }}
@@ -1368,7 +1369,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
     </>
   );
 }
-export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, onHistory, onReferral, onRatings, onLogout, onWallet, onShop, onSettings, onEditProfile, onCampaigns, onBell, onBroadcast }) {
+export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, onHistory, onReferral, onRatings, onLogout, onWallet, onShop, onSettings, onEditProfile, onCampaigns, onBell, onBroadcast, unread = 0 }) {
   // 🔴 12 EYLÜL — DARALAN BANT. Gökberk bu ekranda fark etmişti:
   // "profil tabında… scroll yapınca aşağıda görmem gereken asıl alanları
   // daha zor görüyorum." Ölçüm bantta: sabit 198.7pt → 84pt.
@@ -1702,7 +1703,9 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
             // 🆕 SINIF: "BİR ŞEYİ ERTELEYEN DÜĞMEYE, O ŞEYİ GERİ BULMANIN
             // YOLUNU EKLEMEZSEN 'ERTELE' DEĞİL 'SİL' YAZMIŞ OLURSUN."
             ["degerlendirme", t.ratingsTitle, onRatings, C.gold],
-            ["bildirim", t.notifTitle, onBell, null],
+            // 2 Ekim (Gökberk) — alt çubukta "9+" yazarken Profil'deki satır sessizdi:
+            // kullanıcı bildirimin nerede olduğunu anlamıyordu. Aynı sayı burada da.
+            ["bildirim", t.notifTitle, onBell, null, unread],
             // v1.86 — MENÜ ÜÇ GRUBA AYRILDI. 12 maddelik düz liste
             // "burada ne yapabilirim?" sorusunu görünmez kılıyordu; ayrıca
             // AYARLAR tek büyük harfle yazılıp diğerlerinden ayrışıyordu.
@@ -1755,8 +1758,9 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               )}
               <View style={{ backgroundColor: C.camYuzey || C.card, borderRadius: R.lg + 2, paddingHorizontal: SP[4],
                              ...ustIsik(C.parlama || C.line) }}>
-                {g.satir.map(([ic, lb, fn, accent], si) => (
-                  <TouchableOpacity hitSlop={TAP.slop} key={lb} onPress={fn} accessibilityRole="button" accessibilityLabel={lb}
+                {g.satir.map(([ic, lb, fn, accent, rozet], si) => (
+                  <TouchableOpacity hitSlop={TAP.slop} key={lb} onPress={fn} accessibilityRole="button"
+                    accessibilityLabel={rozet > 0 ? `${lb} · ${rozet}` : lb}
                     style={{ minHeight: 52, flexDirection: "row", justifyContent: "space-between", alignItems: "center",
                              borderTopWidth: si === 0 ? 0 : StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line }}>
                     <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
@@ -1764,6 +1768,14 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
                       <Ikon ad={ic} boy={19} renk={accent || C.goldText} stil={{ marginRight: ARA[14] }} kutu={22} />
                       <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "500" }}>{lb}</Text>
                     </View>
+                    {rozet > 0 ? (
+                      <View style={{ minWidth: 22, height: 22, paddingHorizontal: ARA[6], borderRadius: R.full,
+                                     backgroundColor: C.dangerBtn || C.red, alignItems: "center", justifyContent: "center", marginRight: ARA[8] }}>
+                        <Text style={{ color: "#fff", fontSize: FS.xs, fontWeight: "700", fontFamily: MONO[600] }}>
+                          {rozet > 9 ? "9+" : String(rozet)}
+                        </Text>
+                      </View>
+                    ) : null}
                     <Ikon ad="sag" boy={16} renk={C.dim} />
                   </TouchableOpacity>
                 ))}
@@ -1826,20 +1838,23 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               birlikte yaşıyor. Profil vitrindir; başvuru bir form işidir. */}
 
           {/* Cikis — MVP'de menunun EN ALTINDA, kirmizi, tek yerde */}
+          <View style={{ paddingHorizontal: SP[4], marginTop: ARA[20], marginBottom: SP[2],
+                         backgroundColor: C.camYuzey || C.card, borderRadius: R.lg + 2, ...ustIsik(C.parlama || C.line) }}>
           <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.logout2}
             /* 30 Eylül (Gökberk md.5) — çıkış satırı kutusuzdu; üstündeki gruplar cam kutuda
                olunca "yarım kalmış" görünüyordu. Aynı cam kutu, kiremit ton korunur: yıkıcı
                eylem ayrı kutuda, grupların altında, rengiyle ayrışır. */
-            style={{ paddingHorizontal: SP[4], marginTop: ARA[20], marginBottom: SP[2],
-                     minHeight: 52, flexDirection: "row", justifyContent: "space-between", alignItems: "center",
-                     backgroundColor: C.camYuzey || C.card, borderRadius: R.lg + 2, ...ustIsik(C.parlama || C.line) }}
-            onPress={() => { setLogoutMsg(""); setConfirmOut(true); }}>
+            /* 2 Ekim — kutu dış `View`da, dokunma satırda: menüdeki diğer satırlarla aynı yapı
+               (bu bir düğme değil, menü satırı). Görünüm değişmedi. */
+            onPress={() => { setLogoutMsg(""); setConfirmOut(true); }}
+            style={{ minHeight: 52, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Ikon ad="cikis" boy={19} renk={C.redInk} stil={{ marginRight: SP[3] }} kutu={22} />
               <Text style={{ color: C.redInk, fontWeight: "600", fontSize: FS.base }}>{t.logout2}</Text>
             </View>
             <Ikon ad="sag" boy={16} renk={C.redInk} />
           </TouchableOpacity>
+          </View>
           {!!logoutMsg && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{logoutMsg}</Text></View>}
 
           {/* Issue 6: çıkış onay popup'ı — evet/iptal */}

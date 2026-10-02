@@ -407,10 +407,15 @@ r = rpc(G, "start_session_request", p_request_id=R1)
 chk("7. misafir 'Oturumu başlat' → bekliyor", r[0] and (r[1] or {}).get("status") == "pending", r[1])
 SID = (r[1] or {}).get("id") if r[0] else None
 chk("7. host bekleyen oturumu görüyor (RLS)", q("select status::text from sessions where id=%s", (SID,), uid=H, tek=True) == "pending")
-r = rpc(G, "respond_request", p_request_id=R1, p_action="cancel")
-chk("7. biri başlattıktan sonra iptal → session_started", kod(r) == "session_started", kod(r))
+# 🔴 2 Ekim (SQL 313 · Gökberk md.5) — KURAL DEĞİŞTİ: oturum ancak İKİ TARAF da "Başlat"a
+# basınca başlar. Eskiden burada "biri başlattıktan sonra iptal → session_started" bekleniyordu;
+# yani tek taraflı basış iptali/geri almayı kilitliyordu (canlıda host "kabulü geri al" diyemedi).
+# Tek taraflı başlatılmış buluşmanın iptal/geri alınabildiğini iptal_akisi_e2e (S1 · S3 · S4)
+# ölçüyor; burada İKİ taraf başlattıktan SONRA istek üzerinden iptalin kilitli olduğu ölçülür.
 r = rpc(H, "start_session_request", p_request_id=R1)
 chk("7. host da başlattı → SÜRÜYOR", r[0] and (r[1] or {}).get("status") == "active", r[1])
+r = rpc(G, "respond_request", p_request_id=R1, p_action="cancel")
+chk("7. iki taraf başlattıktan sonra istekten iptal → session_started", kod(r) == "session_started", kod(r))
 r = rpc(H, "share_session_status", p_session_id=SID, p_status="Pencere kenarı")
 chk("7. canlı durum paylaşıldı", r[0], kod(r))
 chk("7. misafir host'un durumunu görüyor",

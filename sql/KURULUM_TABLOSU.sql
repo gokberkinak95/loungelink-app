@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-09-30 uretildi · 352 dosya · son: 309)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-02 uretildi · 357 dosya · son: 313)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,7 +21,7 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 344 dosyanın 293 tanesi için ayırt edici imza
+-- ÖLÇÜM: 348 dosyanın 297 tanesi için ayırt edici imza
 -- bulundu (%85). Kalan 51 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
@@ -564,6 +564,10 @@ select z.dosya, 'tespit'
   (342, '307_zarafet_atlama_siniri.sql', 'fonksiyon', 'binis_atlama_sayisi'),
   (343, '308_bo_atlama_uyarisi.sql', '', ''),
   (344, '309_kural_tablosu_denetimi_ve_ilan_erisimi.sql', 'rpc_yuzeyi', 'set_availability_program'),
+  (345, '310_309_duzeltme_tasiyici_kapisi_guvenlik.sql', 'govde', 'create_request_impl_preflag|310: taşıyıcı uyuşmazlığı KESİN engel'),
+  (346, '311_kesfet_ozeti_tek_kaynak.sql', 'fonksiyon', 'kesfet_ozeti'),
+  (347, '312_soru_ilan_bagi_gercekten.sql', 'govde', 'ilan_kurali_sor|''pending'', p_avail_id)'),
+  (348, '313_akis_durum_makinesi_bildirim_soru.sql', 'fonksiyon', 'soruyu_yanitla'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -571,7 +575,8 @@ select z.dosya, 'tespit'
   (905, 'SEED5_BASVURU_AKISLARI.sql', 'satir', 'users.email=guest3@seed.loungelink.test'),
   (906, 'SEED6_TEST_DUNYASI.sql', 'satir', 'users.email=deniz@sahne.loungelink.test'),
   (907, 'SEED7_TEZGAH.sql', 'sayi', 'invites|status = ''accepted''|1'),
-  (908, 'SEED8_AKIS_TEZGAHI.sql', 'satir', 'users.email=akis.host@seed.loungelink.test')
+  (908, 'SEED8_AKIS_TEZGAHI.sql', 'satir', 'users.email=akis.host@seed.loungelink.test'),
+  (909, 'SEED9_AKIS_GENIS.sql', 'satir', 'users.email=akis.host3@seed.loungelink.test')
   ) as z(sira, dosya, tip, ad)
  where public.kurulum_imzasi_var(z.tip, z.ad) is true
 on conflict (dosya) do nothing;
@@ -925,6 +930,10 @@ with imza(sira, dosya, tip, ad) as (
   (342, '307_zarafet_atlama_siniri.sql', 'fonksiyon', 'binis_atlama_sayisi'),
   (343, '308_bo_atlama_uyarisi.sql', '', ''),
   (344, '309_kural_tablosu_denetimi_ve_ilan_erisimi.sql', 'rpc_yuzeyi', 'set_availability_program'),
+  (345, '310_309_duzeltme_tasiyici_kapisi_guvenlik.sql', 'govde', 'create_request_impl_preflag|310: taşıyıcı uyuşmazlığı KESİN engel'),
+  (346, '311_kesfet_ozeti_tek_kaynak.sql', 'fonksiyon', 'kesfet_ozeti'),
+  (347, '312_soru_ilan_bagi_gercekten.sql', 'govde', 'ilan_kurali_sor|''pending'', p_avail_id)'),
+  (348, '313_akis_durum_makinesi_bildirim_soru.sql', 'fonksiyon', 'soruyu_yanitla'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -932,7 +941,8 @@ with imza(sira, dosya, tip, ad) as (
   (905, 'SEED5_BASVURU_AKISLARI.sql', 'satir', 'users.email=guest3@seed.loungelink.test'),
   (906, 'SEED6_TEST_DUNYASI.sql', 'satir', 'users.email=deniz@sahne.loungelink.test'),
   (907, 'SEED7_TEZGAH.sql', 'sayi', 'invites|status = ''accepted''|1'),
-  (908, 'SEED8_AKIS_TEZGAHI.sql', 'satir', 'users.email=akis.host@seed.loungelink.test')
+  (908, 'SEED8_AKIS_TEZGAHI.sql', 'satir', 'users.email=akis.host@seed.loungelink.test'),
+  (909, 'SEED9_AKIS_GENIS.sql', 'satir', 'users.email=akis.host3@seed.loungelink.test')
 ),
 ham as (
   select i.sira, i.dosya, i.tip, i.ad,

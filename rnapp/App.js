@@ -14,7 +14,7 @@ import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
-import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi, SekmeSeridi } from "./src/screens";
+import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi, SekmeSeridi, SoruEkrani, SoruOzeti } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
 // katlanır bileşen yazmak yerine Pickers.js'teki tek Katlanir kullanılıyor.
 import { Katlanir } from "./src/Pickers";
@@ -1139,7 +1139,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     editTrip: [!!editTrip, () => setEditTrip(null)],
     disc: [!!showDisc, () => setShowDisc(null)],
     guide: [showGuide, () => setShowGuide(false)],
-    chat: [!!chat, () => setChat(null)],
+    chat: [!!chat, () => { setChat(null); setReload(x => x + 1); }],
   };
   const [openSeq, setOpenSeq] = useState([]);
   useEffect(() => {
@@ -1247,6 +1247,15 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
       if (h.ref) setOdakAvail(h.ref);
       setTab("trips");
     } else if (h.ekran === "tanis") setTab("meet");
+    // 2 Ekim (SQL 313 · G) — yeni bilgi mimarisinin hedefleri
+    else if (h.ekran === "akis") {
+      if (h.alt === "istek") setShowIstekler(true);
+      else if (h.alt === "davet") setShowDavetler(true);
+      else if (h.alt === "soru") setShowQuestions(true);
+      else if (h.alt === "baglanti") { setSohbetSekme("baglanti"); setShowSohbetler(true); }
+      else { setSohbetSekme("oturum"); setShowSohbetler(true); }
+    }
+    else if (h.ekran === "istek_sohbet" && h.ref) setChat({ req: { id: h.ref }, name: "" });
     else if (h.ekran === "cuzdan") setShowWallet(true);
     else if (h.ekran === "degerlendirmeler") setShowRatings(true);
     else if (h.ekran === "guvenlik") setShowSafety(true);
@@ -1403,8 +1412,11 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           )}
         </ScrollView>
       </Sayfa>),
-    questions: () => (<MyQuestions t={t} lang={lang}
+    /* 2 Ekim (md.3, md.10) — Soru ekranı: Gelen (host yanıtlar, bağlantı açılmaz) · Gönderdiğim.
+       "Evet" diyen host'a hakkını ilana ekleme yolu: erişim hakkı ekranı. */
+    questions: () => (<SoruEkrani t={t} lang={lang} tazele={reload}
       onBack={() => setShowQuestions(false)}
+      onHakEkle={() => { setShowQuestions(false); setShowAccess(true); }}
       onOpenProfile={(id) => setPubProfile(id)}
       /* 🔴 19 EYLÜL (md.16) — ilan açıldıysa İLANA. `setShowDisc` zaten
          `focusAvail` ile ilanın başvuru modalını açıyor (v2.25'te
@@ -1489,7 +1501,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     guide: () => (<LoungeGuide t={t} onBack={() => setShowGuide(false)}
       onDiscover={(sc) => { setShowGuide(false); setShowDisc(sc || {}); }} />),
     disc: () => (<Discovery t={t} lang={lang} session={session} scope={showDisc} onOpenProfile={setPubProfile} onBack={() => setShowDisc(null)} onMeet={() => { setShowDisc(null); setTab("meet"); }} onAddTrip={(av) => { setShowDisc(null); setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} onVerify={() => { setShowDisc(null); setShowVerify(true); }} />),
-    chat: () => (<Chat t={t} session={session} request={chat.req} otherName={chat.name} openPanel={chat.openPanel} onBack={() => setChat(null)} onReferral={() => { setChat(null); setShowRef(true); }} onOpenProfile={(id) => setPubProfile(id)} onReport={(id, nm, sid) => setReport({ targetId: id, targetName: nm, sessionId: sid || null })}
+    /* 2 Ekim (Gökberk md.6) — sohbette oturum iptal/başlat/tamamla yapılabiliyor; dönünce
+       İlanlarım "DOLU · Kabul edildi" gösteriyordu (sunucu doğru, ekran bayattı: veri yalnız
+       montajda okunuyordu). Sohbetten her dönüş `reload` sinyali verir. */
+    chat: () => (<Chat t={t} session={session} request={chat.req} otherName={chat.name} openPanel={chat.openPanel} onBack={() => { setChat(null); setReload(x => x + 1); }} onReferral={() => { setChat(null); setShowRef(true); }} onOpenProfile={(id) => setPubProfile(id)} onReport={(id, nm, sid) => setReport({ targetId: id, targetName: nm, sessionId: sid || null })}
       /* 🔴 v1.75: onLiveStatus HİÇ GEÇİLMEMİŞTİ — "Canlı Durum" düğmesi bu
          yüzden hiçbir şey yapmıyordu. */
       onLiveStatus={(sid) => { setShowLive(sid || true); }}
@@ -1850,7 +1865,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         {tab === "meet" && <Meet t={t} lang={lang} session={session} rol={role} onOpenProfile={setPubProfile} onOpenChat={(channelId, name) => setCompChat({ channelId, name })} radarFilter={radar} onClearRadar={() => setRadar(null)} onRequestListing={(av) => setShowDisc({ airport: av.airport_code, focusHost: av.host_id, focusAvail: av.id })} onVerify={() => setShowVerify(true)} onAddTrip={(av) => { setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} filtersOpen={meetFilterOpen} setFiltersOpen={setMeetFilterOpen} altSekme={meetSub} setAltSekme={setMeetSub} bnt={bntMeet} />}
         {/* 5 Eylül — profil bandı artık Profile'ın kendisinde (kimlik + şerit
             bandın içinde; veri orada). */}
-        {tab === "prof" && <Profile t={t} refresh={profRefresh} session={session} onManagePlan={() => setShowPlans(true)} onSafety={() => setShowSafety(true)} onTrust={() => setShowTrust(true)} onHistory={() => setShowHist(true)} onReferral={() => setShowRef(true)} onRatings={() => setShowRatings(true)} onWallet={() => setShowWallet(true)} onLogout={handleLogout} onShop={() => setShowShop(true)} onSettings={() => setShowSettings(true)} onCampaigns={() => setShowCamps(true)} onBroadcast={() => setShowBc(true)} onBell={() => setShowNotif(true)} onEditProfile={() => setShowEditProf(true)} />}
+        {tab === "prof" && <Profile t={t} refresh={profRefresh} session={session} onManagePlan={() => setShowPlans(true)} onSafety={() => setShowSafety(true)} onTrust={() => setShowTrust(true)} onHistory={() => setShowHist(true)} onReferral={() => setShowRef(true)} onRatings={() => setShowRatings(true)} onWallet={() => setShowWallet(true)} onLogout={handleLogout} onShop={() => setShowShop(true)} onSettings={() => setShowSettings(true)} onCampaigns={() => setShowCamps(true)} onBroadcast={() => setShowBc(true)} onBell={() => setShowNotif(true)} unread={unread} onEditProfile={() => setShowEditProf(true)} />}
       </View>
       {/* ============================================================
           MVP v15 Nav() satir 344: cubuk BEYAZ (cBM) + ustte ince cizgi,
@@ -3626,15 +3641,32 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
             Altındaki ilan kartları gezinti değil İÇERİK. */}
         {/* v6.3 · PANO H1 — İLAN KARTI CAM: durum satırı · serif salon · mono saat ·
             karar çipi · "N istek bekliyor" (istekler ekranı) ya da "Keşfet'te gör". */}
+        {/* 2 Ekim (md.8) — kartların ne olduğu başlıksız anlaşılmıyordu ("seyahat mi ilan mı?").
+            Bölüm başlığı + sayı + İlanlarım'a geçiş. */}
+        {data.myAvs.length > 0 && (
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: ARA[18] }}>
+            <Text style={{ color: C.mut, fontWeight: "600", fontSize: FS.micro + 0.5, letterSpacing: 1.4 }}>
+              {BUYUK(t.homeMyListings)}  ·  {data.myAvs.length}
+            </Text>
+            <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.homeMyListingsAll}
+              onPress={() => { setHostTripsSub("ilan"); setTab("trips"); }}
+              style={{ flexDirection: "row", alignItems: "center", minHeight: TAP.minHeight }}>
+              <Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.sm }}>{t.homeMyListingsAll}</Text>
+              <Ikon ad="sag" boy={14} renk={C.goldText} stil={{ marginLeft: ARA[4] }} />
+            </TouchableOpacity>
+          </View>
+        )}
         {data.myAvs.map((a) => {
           const bekleyen = (data.hostStats.bekleyenIlan || {})[a.id] || 0;
+          const bosYer = Math.max(0, (Number(a.slots) || 0) - (Number(a.filled) || 0));
           const gun = String(a.avail_date || "").slice(0, 10) === yerelGun() ? t.calmEyebrow : fmtLongDate(a.avail_date, lang);
           return (
           <View key={a.id} style={{ backgroundColor: C.camYuzey || C.surface, ...ustIsik(C.parlama || C.line),
                                     borderRadius: R.lg + 6, padding: SP[4] + 2, marginTop: ARA[12] }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
               <Text style={{ color: C.ink, fontSize: FS.micro + 0.5, fontWeight: "600", letterSpacing: 1.4 }}>
-                {BUYUK(String(t.hostCardLive || "").replace("{f}", String(a.filled || 0)).replace("{s}", String(a.slots || 0)))}
+                {/* 2 Ekim — "YAYINDA · 0/1 DOLU" İlanlarım'ın diliyle ayrışıyordu ("1 YER AÇIK"). */}
+                {BUYUK(bosYer > 0 ? String(t.hostCardOpen || "{n}").replace("{n}", String(bosYer)) : t.hostCardFull)}
               </Text>
               <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6 }}>{a.airport_code}</Text>
             </View>
@@ -3649,10 +3681,10 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
               {/* 11 Eylül — karar rozeti tek kaynaktan (`KararCipi`, ui.js). */}
               <KararCipi t={t} politika={a.guest_policy} />
               <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button"
-                onPress={bekleyen > 0 ? () => setShowIstekler && setShowIstekler(true) : onDiscover}
+                onPress={bekleyen > 0 ? () => setShowIstekler && setShowIstekler(true) : () => { setHostTripsSub("ilan"); setTab("trips"); }}
                 style={{ flexDirection: "row", alignItems: "center", minHeight: TAP.minHeight }}>
                 <Text style={{ color: C.goldText, fontWeight: "600", fontSize: FS.sm }}>
-                  {bekleyen > 0 ? String(t.hostCardPending || "").replace("{n}", String(bekleyen)) : t.hostCardSeeDisc}
+                  {bekleyen > 0 ? String(t.hostCardPending || "").replace("{n}", String(bekleyen)) : t.hostCardManage}
                 </Text>
                 <Ikon ad="sag" boy={14} renk={C.goldText} stil={{ marginLeft: ARA[4] }} />
               </TouchableOpacity>
@@ -3676,10 +3708,14 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         onMeet={() => setTab("meet")} />
       <YasOnayi t={t} />
       <UlasilabilirlikKarti t={t} tazele={tazele} goster={["kritik", "uyari"]} />
-      <ActionNeeded t={t} lang={lang} onRefresh={() => setTazele(x => x + 1)} />
-      {data.role === "host" && data.hostStats && data.hostStats.pending > 0 && (
-        <RequestsPanel t={t} lang={lang} session={session} onOpenChat={onOpenChat} onOpenProfile={onOpenProfile} />
-      )}
+      {/* 2 Ekim (Gökberk öneri 2) — Akış'ın üç alanı ana sayfada AYNI kalıpta: başlığı kutuyla aynı
+          akordeon, yalnız yanıt bekleyenler, en fazla 3 satır, fazlası için alana yönlendirme.
+          İstekler artık her rol için (misafirin gönderdiği bekleyen istekler de burada). */}
+      <ActionNeeded t={t} lang={lang} tazele={tazele + akisTazele} onRefresh={() => setTazele(x => x + 1)}
+        onTumu={() => setShowDavetler(true)} />
+      <RequestsPanel t={t} lang={lang} session={session} tazele={tazele + akisTazele}
+        onOpenChat={onOpenChat} onOpenProfile={onOpenProfile} onTumu={() => setShowIstekler(true)} />
+      <SoruOzeti t={t} lang={lang} tazele={tazele + akisTazele} onAc={() => setShowQuestions(true)} />
       <LoungeRadarCard t={t} session={session} onOpen={(r) => { setRadar(r); setTab("meet"); }} />
       <RateReminder t={t} lang={lang} tazele={akisTazele}
         onRate={(it) => it?.request_id && onOpenChat && onOpenChat({ req: { id: it.request_id }, name: it.other_name, openPanel: true })} />

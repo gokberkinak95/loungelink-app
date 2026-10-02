@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-09-30
+-- Uretim tarihi: 2026-10-02
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,25 +9,26 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 497
--- Birden cok dosyada tanimli (dikkat!): 145
+-- Toplam fonksiyon: 508
+-- Birden cok dosyada tanimli (dikkat!): 150
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
 --   admin_anonymize_user         -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 094_admin_erasure.sql)
---   ana_sayfa_akisi              -> etkin: 295_ilanin_ikinci_hayati_ve_sayaclar.sql  (ayrica: 263_ana_sayfa_akisi.sql)
+--   ana_sayfa_akisi              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 263_ana_sayfa_akisi.sql, 295_ilanin_ikinci_hayati_ve_sayaclar.sql, 311_kesfet_ozeti_tek_kaynak.sql)
 --   apply_rule_engine            -> etkin: 250_yaptirim_huni_dil_ve_kapilar.sql  (ayrica: 029_bo_requirements.sql, 212_yonetilen_ayarlar_gercekten_okunuyor.sql)
 --   apply_rule_snapshot          -> etkin: 086_lounge_rules_v3.sql  (ayrica: 085_lounge_rules_v2.sql)
 --   availability_rule_snapshot   -> etkin: 086_lounge_rules_v3.sql  (ayrica: 085_lounge_rules_v2.sql)
 --   bayat_istekleri_iade_et      -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 249_is_modeli_ve_soguk_ag.sql, 274_istek_tavani_kilidi.sql)
 --   bekleyen_hikaye_daveti       -> etkin: 296_hikaye_daveti_erteleme.sql  (ayrica: 230_host_hikayeleri.sql)
---   bildirim_hedefi              -> etkin: 266_eksik_bildirimler.sql  (ayrica: 254_urun_bosluklari.sql)
+--   bildirim_hedefi              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 254_urun_bosluklari.sql, 266_eksik_bildirimler.sql)
 --   binis_karti_durumu           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   binis_karti_kaydet           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   blok_gecmisi_kapat           -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 204_blok_eylem_sinirinda.sql)
 --   bo_plan_ata                  -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 253_guvenlik_kapanisi.sql)
---   cancel_availability          -> etkin: 293_davet_cift_onay_ve_ilan_geri_cekme.sql  (ayrica: 040_visibility_and_discovery_fix.sql, 291_ilan_kaldirma_zorlu.sql)
---   cancel_request               -> etkin: 280_kredi_ve_durum_kilidi.sql  (ayrica: 032_p2_flows.sql, 166_slot_integrity_and_flow_tests.sql)
+--   cancel_availability          -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 040_visibility_and_discovery_fix.sql, 291_ilan_kaldirma_zorlu.sql, 293_davet_cift_onay_ve_ilan_geri_cekme.sql)
+--   cancel_request               -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 032_p2_flows.sql, 166_slot_integrity_and_flow_tests.sql, 280_kredi_ve_durum_kilidi.sql)
+--   cancel_session               -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
 --   card_product_options         -> etkin: 145_null_sort_guard.sql  (ayrica: 095_close_the_loop.sql, 114_card_confidence_visible.sql)
 --   card_tier_label              -> etkin: 184_ms_status_language.sql  (ayrica: 120_human_text.sql)
 --   card_tier_options            -> etkin: 233_statu_listesi_tekillesiyor.sql  (ayrica: 100_tier_fee_and_time.sql)
@@ -36,11 +37,11 @@
 --   cns_adaylar                  -> etkin: 214_misafir_hakki_kaynaktan.sql  (ayrica: 211_kart_aglari_kaynaktan.sql)
 --   cns_kapsam_haritasi          -> etkin: 214_misafir_hakki_kaynaktan.sql  (ayrica: 211_kart_aglari_kaynaktan.sql)
 --   compute_trust_badge          -> etkin: 212_yonetilen_ayarlar_gercekten_okunuyor.sql  (ayrica: 001_initial_schema.sql, 078_trust_single_writer.sql)
---   confirm_session              -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 008_chat_sessions.sql, 067_fix_confirm_session_enum.sql, 078_trust_single_writer.sql)
+--   confirm_session              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 008_chat_sessions.sql, 067_fix_confirm_session_enum.sql, 078_trust_single_writer.sql, 300_uctan_uca_denetim.sql)
 --   create_availability          -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 040_visibility_and_discovery_fix.sql, 055_listing_makes_host.sql, 056_supply_demand_match_notify.sql, 071_fix_create_availability_enum.sql, 074_host_always_visible.sql, 079_email_otp_contact_verification.sql, 158_device_findings.sql, 215_saglayici_veri_yollari.sql, 261_rol_kapisi.sql)
 --   create_request               -> etkin: 140_rls_and_ratelimit.sql  (ayrica: 007_request_engine.sql, 009_phone_otp.sql, 026_doc_parity_core.sql, 033_beta_credits_dualrole_radar.sql, 065_fix_create_request.sql, 079_email_otp_contact_verification.sql)
 --   create_request_impl          -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 140_rls_and_ratelimit.sql, 159_grants_home_flows_request_gate.sql, 204_blok_eylem_sinirinda.sql, 207_kopruler_ve_verilen_sozler.sql, 212_yonetilen_ayarlar_gercekten_okunuyor.sql)
---   create_request_impl_preflag  -> etkin: 283_kural_motoru_on_iki_boyut.sql  (ayrica: 258_olmayan_kolonlar.sql)
+--   create_request_impl_preflag  -> etkin: 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql  (ayrica: 258_olmayan_kolonlar.sql, 283_kural_motoru_on_iki_boyut.sql)
 --   declare_phone                -> etkin: 268_telefon_tekilligi.sql  (ayrica: 138_email_otp.sql)
 --   delete_my_account            -> etkin: 282_ban_ve_kvkk_silme.sql  (ayrica: 049_discovery_safety_phone_delete.sql)
 --   discover_availabilities      -> etkin: 243_one_cikarma_gercekten_calissin.sql  (ayrica: 012_women_safety.sql, 016_match_score.sql, 024_avatars_storage.sql, 030_match_and_broadcast.sql, 040_visibility_and_discovery_fix.sql, 041_staff_accounts_excluded.sql, 049_discovery_safety_phone_delete.sql, 064_fix_overloads_and_discovery.sql, 072_discover_availabilities_gender_langs.sql, 112_blocks_in_discovery.sql, 158_device_findings.sql, 182_discover_carries_decision.sql, 187_kanitlanmis_kusurlar.sql, 195_ucus_alanlari_ve_kod_paylasimi.sql)
@@ -66,10 +67,12 @@
 --   ilan_kurali_sor              -> etkin: 223_sinirlar_dogruyu_soylesin.sql  (ayrica: 221_hosta_sor.sql)
 --   invitable_guests             -> etkin: 075_invitable_guests_detail.sql  (ayrica: 030_match_and_broadcast.sql)
 --   is_visible                   -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 029_bo_requirements.sql, 041_staff_accounts_excluded.sql)
+--   istegin_acik_oturumu_var_mi  -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 280_kredi_ve_durum_kilidi.sql)
 --   istek_kredisi_iade           -> etkin: 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql  (ayrica: 280_kredi_ve_durum_kilidi.sql, 284_kural_geri_bildirim_dongusu.sql)
 --   join_campaign                -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
 --   kural_kosullari              -> etkin: 284_kural_geri_bildirim_dongusu.sql  (ayrica: 275_kural_kosullari.sql)
 --   kural_sorusu_hakkim          -> etkin: 251_cron_nobeti_ve_kahya_ayricaligi.sql  (ayrica: 223_sinirlar_dogruyu_soylesin.sql)
+--   kural_sorusu_uygun_mu        -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 221_hosta_sor.sql)
 --   lounge_access_decision       -> etkin: 191_kaynak_celiskileri_ve_bosluklar.sql  (ayrica: 086_lounge_rules_v3.sql, 103_consolidate_and_charter.sql, 157_decision_uses_resolver.sql, 174_venue_beats_program_rule.sql)
 --   lounge_access_decision_v3    -> etkin: 292_zaman_dilimi_yerel_an.sql  (ayrica: 100_tier_fee_and_time.sql, 104_tier_rules_program_level.sql, 105_fee_wording_and_business.sql, 134_tier_label_everywhere.sql)
 --   lounge_access_decision_v4    -> etkin: 224_borclar_ve_ilan_neden_yok.sql  (ayrica: 101_sections_charter_expiry.sql)
@@ -103,12 +106,13 @@
 --   request_account_deletion     -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 141_deletion_flow_check.sql)
 --   request_credit_cost          -> etkin: 252_ulasilabilirlik_ve_push_izni.sql  (ayrica: 206_host_motoru.sql, 249_is_modeli_ve_soguk_ag.sql)
 --   request_precheck             -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 090_rules_to_app.sql, 100_tier_fee_and_time.sql, 101_sections_charter_expiry.sql, 108_paid_guest_settlement.sql, 115_quota_who_says.sql, 119_precheck_v5_and_charter.sql, 120_human_text.sql, 142_short_detail_hard.sql, 187_kanitlanmis_kusurlar.sql, 192_on_kontrol_kapi_hizalama.sql)
+--   request_precheck_pregate     -> etkin: 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql  (ayrica: 283_kural_motoru_on_iki_boyut.sql)
 --   resolve_dispute              -> etkin: 284_kural_geri_bildirim_dongusu.sql  (ayrica: 029_bo_requirements.sql)
 --   resolve_guest_rule           -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 147_tier_resolver.sql, 156_official_alignment_and_scope.sql, 157_decision_uses_resolver.sql, 163_unknown_carrier_and_coverage_audit.sql, 168_carrier_gap_and_paid_entry.sql, 172_resolver_full_definition.sql)
 --   resolve_venue_for_availability -> etkin: 161_venue_merge_and_catalog_truth.sql  (ayrica: 086_lounge_rules_v3.sql)
---   respond_connection           -> etkin: 159_grants_home_flows_request_gate.sql  (ayrica: 015_connections.sql, 027_companion_chat.sql, 069_fix_respond_connection_cast.sql, 077_session_autostart_intro_slots.sql)
+--   respond_connection           -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 015_connections.sql, 027_companion_chat.sql, 069_fix_respond_connection_cast.sql, 077_session_autostart_intro_slots.sql, 159_grants_home_flows_request_gate.sql)
 --   respond_invite               -> etkin: 293_davet_cift_onay_ve_ilan_geri_cekme.sql  (ayrica: 030_match_and_broadcast.sql, 077_session_autostart_intro_slots.sql, 258_olmayan_kolonlar.sql, 289_davet_kabulu_mevcut_istek.sql)
---   respond_request              -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 007_request_engine.sql, 061_fix_respond_request_and_slots.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql)
+--   respond_request              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 007_request_engine.sql, 061_fix_respond_request_and_slots.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql, 300_uctan_uca_denetim.sql)
 --   rl_guard                     -> etkin: 223_sinirlar_dogruyu_soylesin.sql  (ayrica: 082_rate_limiting.sql, 166_slot_integrity_and_flow_tests.sql, 176_flow_test_rate_limit.sql)
 --   rpc_smoke_test               -> etkin: 193_kart_etiketi_ve_kabin_yazma.sql  (ayrica: 187_kanitlanmis_kusurlar.sql)
 --   rule_contamination_check     -> etkin: 199_ucus_saati_terminal_ve_katalog.sql  (ayrica: 150_network_rules_and_guard.sql)
@@ -130,6 +134,7 @@
 --   seyahat_sil                  -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 250_yaptirim_huni_dil_ve_kapilar.sql)
 --   sorularim                    -> etkin: 248_duzenleme_baglanti_degerlendirme.sql  (ayrica: 235_sordugunu_gorebilmeli.sql, 239_soru_hangi_ilana_ait.sql)
 --   start_session                -> etkin: 080_session_lifecycle.sql  (ayrica: 008_chat_sessions.sql, 026_doc_parity_core.sql, 077_session_autostart_intro_slots.sql)
+--   start_session_request        -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
 --   submit_field_report          -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 095_close_the_loop.sql, 152_field_reports_loop.sql)
 --   subscription_plans           -> etkin: 220_plan_katalogu_ve_dil.sql  (ayrica: 210_abonelik_push_ve_kapsam.sql)
 --   test_hesabi_gizli_mi         -> etkin: 302_test_hesaplarini_gorenler.sql  (ayrica: 301_guven_ve_akis_tamamlama.sql)
@@ -235,27 +240,28 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- respond_request   [etkin kaynak: 300_uctan_uca_denetim.sql]
--- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- respond_request   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 6 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.respond_request(p_request_id uuid, p_action text)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
+create or replace function public.respond_request(p_request_id uuid, p_action text)
+returns jsonb language plpgsql security definer set search_path = public as $function$
 declare
   v_uid  uuid := auth.uid();
   v_req  requests%rowtype;
   v_av   availabilities%rowtype;
-  v_bal  integer;
   v_chan uuid;
+  v_onceki text;
+  v_salon text; v_gun text; v_host text; v_guest text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
-  perform public.hesap_kapisi(v_uid);   -- 282/B1: yasakli/silinmis hesap yazamaz
+  perform public.hesap_kapisi(v_uid);
 
   select * into v_req from requests where id = p_request_id for update;
   if not found then raise exception 'request_not_found'; end if;
+  v_salon := public.salon_etiketi(v_req.avail_id);
+  select to_char(avail_date, 'DD.MM') into v_gun from availabilities where id = v_req.avail_id;
+  v_host  := public.kisa_ad(v_req.host_id);
+  v_guest := public.kisa_ad(v_req.guest_id);
 
   if p_action = 'accept' then
     if v_req.host_id <> v_uid then raise exception 'not_host'; end if;
@@ -263,9 +269,6 @@ begin
 
     select * into v_av from availabilities where id = v_req.avail_id for update;
     if not found then raise exception 'availability_not_found'; end if;
-    -- 🔴 300/B1: süresi geçmiş ya da kaldırılmış ilana KABUL yok.
-    -- Eskiden host buluşma saati geçtikten sonra da kabul edebiliyordu:
-    -- misafirin kredisi tutuluyor, sohbet açılıyor, ama buluşma imkânsız.
     if not coalesce(v_av.active, true)
        or public.yerel_an(v_av.avail_date, v_av.time_to, v_av.airport_code) < now() then
       raise exception 'availability_expired';
@@ -278,20 +281,18 @@ begin
       on conflict (request_id) do nothing;
     select id into v_chan from chat_channels where request_id = v_req.id;
 
-    -- 077-3: misafirin tanıtım metni sohbetin ilk mesajı
     if v_chan is not null and coalesce(nullif(trim(v_req.intro_message),''),'') <> '' then
       insert into messages (channel_id, from_id, body, created_at)
       select v_chan, v_req.guest_id, trim(v_req.intro_message), now()
        where not exists (select 1 from messages m where m.channel_id = v_chan);
     end if;
 
-    -- 080: OTURUM BURADA AÇILMAZ. Kabul, buluşma günlerce sonra olabileceği
-    -- için "aktif oturum" değildir; iki taraf buluşunca start_session_request
-    -- ile başlatılır.
-    insert into notifications (user_id, category, title, body, ref_id, ref_type)
-    values (v_req.guest_id, 'requests', 'İstek kabul edildi! 🎉',
-            'Sohbet açıldı. Buluştuğunuzda iki taraf da "Oturumu Başlat"a basacak.',
-            v_req.id, 'request');
+    perform public.bildir(v_req.guest_id, 'requests',
+      v_host || ' isteğini kabul etti 🎉',
+      v_salon || ' · ' || coalesce(v_gun,'') || ' — sohbet açıldı. Buluşunca ikiniz de "Oturumu Başlat"a basın.',
+      v_host || ' accepted your request 🎉',
+      v_salon || ' · ' || coalesce(v_gun,'') || ' — the chat is open. When you meet, both tap "Start session".',
+      'request', v_req.id);
 
     return jsonb_build_object('ok', true, 'channel_id', v_chan, 'session_id', null);
 
@@ -299,515 +300,52 @@ begin
     if p_action = 'decline' and v_req.host_id  <> v_uid then raise exception 'not_host'; end if;
     if p_action = 'cancel'  and v_req.guest_id <> v_uid then raise exception 'not_guest'; end if;
     if v_req.status not in ('pending','accepted') then raise exception 'not_open'; end if;
-    -- 080: oturum başladıysa istek üzerinden iptal edilemez (cancel_session yolu)
-    if exists (select 1 from sessions s where s.request_id = v_req.id and s.status in ('pending','active')
-                 -- 🔴 300/B2: HİÇ BAŞLATILMAMIŞ boş 'pending' oturum engel değil.
-                 -- 293'ten beri davet kabulü böyle bir satır açıyor; misafir
-                 -- iptal edemiyor, süpürge de görmüyordu → kredi + slot kilitli.
-                 and not (s.status = 'pending' and s.host_started_at is null
-                          and s.guest_started_at is null)) then
+    -- 313: yalnız GERÇEKTEN başlamış (iki taraf da bastı) oturum engeldir.
+    if public.istegin_acik_oturumu_var_mi(v_req.id) then
       raise exception 'session_started';
     end if;
+    v_onceki := v_req.status::text;
 
     update requests set status = case when p_action='decline' then 'declined' else 'cancelled' end::request_status,
            responded_at = now()
      where id = v_req.id;
 
-    -- 300/B2: geride kalan boş oturumu da kapat (yetim kalmasın).
+    -- Bekleyen oturum satırı (tek taraf başlatmış olsa bile) kapanır.
     update sessions set status = 'cancelled', completed_at = now(),
-           cancelled_by = v_uid, cancel_reason = 'not_started'
-     where request_id = v_req.id and status = 'pending'
-       and host_started_at is null and guest_started_at is null;
+           cancelled_by = v_uid,
+           cancel_reason = case when host_started_at is null and guest_started_at is null
+                                then 'not_started' else 'cancelled_before_both_started' end
+     where request_id = v_req.id and status = 'pending';
 
     perform public.istek_kredisi_iade(v_req.id, 'request_refund');
 
-    insert into notifications (user_id, category, title, body, ref_id, ref_type)
-    values (case when p_action='decline' then v_req.guest_id else v_req.host_id end,
-            'requests',
-            case when p_action='decline' then 'İstek reddedildi' else 'İstek iptal edildi' end,
-            'Kredi anında iade edildi.', v_req.id, 'request');
+    if p_action = 'decline' and v_onceki = 'accepted' then
+      perform public.bildir(v_req.guest_id, 'requests',
+        v_host || ' kabulü geri aldı',
+        v_salon || ' · ' || coalesce(v_gun,'') || ' buluşması iptal oldu. Kredin iade edildi; başka bir ilana başvurabilirsin.',
+        v_host || ' withdrew the acceptance',
+        v_salon || ' · ' || coalesce(v_gun,'') || ' is cancelled. Your credit was refunded; you can apply to another listing.',
+        'request', v_req.id);
+    elsif p_action = 'decline' then
+      perform public.bildir(v_req.guest_id, 'requests',
+        v_host || ' bu kez misafir alamıyor',
+        v_salon || ' · ' || coalesce(v_gun,'') || ' — kredin iade edildi. Keşfet''te başka ilanlar var.',
+        v_host || ' can''t host this time',
+        v_salon || ' · ' || coalesce(v_gun,'') || ' — your credit was refunded. There are other listings in Discover.',
+        'request', v_req.id);
+    else
+      perform public.bildir(v_req.host_id, 'requests',
+        v_guest || case when v_onceki = 'accepted' then ' buluşmayı iptal etti' else ' isteğini geri çekti' end,
+        v_salon || ' · ' || coalesce(v_gun,'') || ' — yerin yeniden açıldı.',
+        v_guest || case when v_onceki = 'accepted' then ' cancelled the meetup' else ' withdrew the request' end,
+        v_salon || ' · ' || coalesce(v_gun,'') || ' — your spot is open again.',
+        'request', v_req.id);
+    end if;
     return jsonb_build_object('ok', true);
   end if;
 
   raise exception 'unknown_action';
 end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B3 · confirm_session  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.confirm_session(p_session_id uuid)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare
-  v_uid uuid := auth.uid(); v_s sessions%rowtype; v_r requests%rowtype;
-  v_done boolean;
-begin
-  if v_uid is null then raise exception 'not_authenticated'; end if;
-  perform public.hesap_kapisi(v_uid);   -- 300/B3: yasaklı hesap oturum kapatamaz (diğer akış fonksiyonlarıyla aynı)
-  select * into v_s from sessions where id = p_session_id for update;
-  if not found then raise exception 'session_not_found'; end if;
-  select * into v_r from requests where id = v_s.request_id;
-  if v_uid not in (v_r.host_id, v_r.guest_id) then raise exception 'not_party'; end if;
-  if v_s.status <> 'active' then raise exception 'not_active'; end if;
-
-  if v_uid = v_r.host_id then
-    update sessions set host_confirmed = true where id = p_session_id;
-  else
-    update sessions set guest_confirmed = true where id = p_session_id;
-  end if;
-
-  select host_confirmed and guest_confirmed into v_done from sessions where id = p_session_id;
-
-  if v_done then
-    update sessions set status = 'completed', completed_at = now() where id = p_session_id;
-    update requests set status = 'completed' where id = v_s.request_id;
-
-    -- 078: ÖDÜL BURADA (oturum bitti = hak edildi). Host 500 / misafir 200.
-    -- Çift ödemeye karşı: aynı oturum için daha önce yazılmışsa atlanır.
-    -- NOT: points_ledger'da balance_after KOLONU YOK (SQL 050'de tespit
-    -- edilmişti; bakiye user_balances view'ından okunur). Buraya yazmaya
-    -- kalkmak fonksiyonu çalışma anında patlatır — yazılmıyor.
-    if not exists (select 1 from points_ledger
-                    where ref_id = p_session_id and reason = 'session_reward') then
-      insert into points_ledger (user_id, delta, reason, ref_id)
-      values (v_r.host_id, 500, 'session_reward', p_session_id),
-             (v_r.guest_id, 200, 'session_reward', p_session_id);
-    end if;
-
-    -- 067'deki ESCROW KAPANIŞ NOTU korunur (drift_check yakaladı):
-    -- kredi host'a aktarılmaz (kredi = hak, para değil); misafirin kredisi
-    -- harcanmış sayılır, deftere kapanış satırı düşülür.
-    insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
-    select v_r.guest_id, 0, 'session_settled', p_session_id, coalesce(sum(delta),0)
-      from credit_ledger where user_id = v_r.guest_id;
-
-    -- Güven: oturum sayısı değişti → İKİ TARAF için kanonik hesap
-    perform public.recompute_trust(v_r.host_id);
-    perform public.recompute_trust(v_r.guest_id);
-
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    select u, 'sessions', 'Oturum tamamlandı ✓',
-           'Puanların hesabına eklendi. Karşı tarafı puanlamayı unutma.',
-           'session', p_session_id
-      from unnest(array[v_r.host_id, v_r.guest_id]) u;
-  else
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (case when v_uid = v_r.host_id then v_r.guest_id else v_r.host_id end,
-            'sessions', 'Oturum onayı bekleniyor',
-            'Karşı taraf oturumu tamamladı olarak işaretledi.', 'session', p_session_id);
-  end if;
-
-  return jsonb_build_object('ok', true, 'completed', coalesce(v_done,false));
-end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B2 · expire_stale_sessions  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.expire_stale_sessions(p_kaynak text DEFAULT 'uygulama'::text)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare
-  v_req int := 0; v_sess int := 0;
-  v_son timestamptz;
-  v_sonuc jsonb;
-begin
-  -- ── FREN (298) ────────────────────────────────────────────────────
-  -- `for update` ile alıyoruz: iki istemci aynı anda çağırırsa ikincisi
-  -- birincinin damgasını bekler ve "atlandi" döner. pg_cron ile uygulama
-  -- tetiği AYNI FRENİ paylaşır — ikisi birden açık olsa bile gövde
-  -- 5 dakikada bir koşar.
-  select son_kosum into v_son from public.supurge_damgasi
-   where ad = 'expire_stale_sessions' for update;
-
-  if v_son is not null and v_son > now() - interval '5 minutes' then
-    return jsonb_build_object('ok', true, 'durum', 'atlandi',
-                              'kaynak', p_kaynak,
-                              'sonraki', v_son + interval '5 minutes');
-  end if;
-
-  insert into public.supurge_damgasi (ad, son_kosum, kaynak)
-  values ('expire_stale_sessions', now(), p_kaynak)
-  on conflict (ad) do update set son_kosum = now(), kaynak = excluded.kaynak;
-
-  -- ── GÖVDE ─────────────────────────────────────────────────────────
-  --
-  -- 🔴🔴 299/A2 — 298'DE KENDİ DÜŞÜRDÜĞÜM DÖRT ADIM GERİ KONULDU.
-  --
-  -- 298'de bu fonksiyonun başına freni takarken gövdeyi de yeniden
-  -- yazdım ve 292'nin gövdesindeki DÖRT ADIMI düşürdüm. `drift_check.py`
-  -- ikisini gösterdi (`perform public…`), kalan ikisini ben okuyarak
-  -- buldum. Düşenler:
-  --
-  --   1) (b) bloğundaki `r.status = 'accepted'` KAPISI.
-  --      280/K2'nin koyduğu kapı: iptal edilmiş isteğin yetim oturumu
-  --      no_show DEĞİLDİR. Düşünce, iptal edilmiş bir isteğin arkasında
-  --      kalan oturum yüzünden masum bir tarafa no_show yazılıyordu.
-  --
-  --   2) `perform public.recompute_trust(u) …`
-  --      no_show işaretlenen tarafın güven puanı tazelenmiyordu. Yani
-  --      ceza yazılıyor ama puana yansımıyordu.
-  --
-  --   3) (c) BLOĞUNUN TAMAMI — 187-noshow'un kapattığı hata.
-  --      (b) oturumu 'expired' yapıyor ama isteği 'accepted' BIRAKIYOR.
-  --      Bloksuz hali: misafirin kredisi sonsuza kilitli, host'un slotu
-  --      sonsuza dolu (`sync_availability_filled` filled'ı accepted
-  --      sayısından türetiyor). TEK BİR NO-SHOW İLANI KALICI OLARAK
-  --      ÖLDÜRÜYORDU. 298 bunu geri getirmişti.
-  --
-  --   4) `perform public.tek_tarafli_oturumlari_kapat();`
-  --
-  -- 🆕 SINIF: "BİR FONKSİYONUN BAŞINA KAPI TAKARKEN GÖVDESİNİ YENİDEN
-  -- YAZMA — ELDEKİ TANIMIN ÜSTÜNE EKLE. YENİDEN YAZMAK, GÖRMEDİĞİN HER
-  -- ESKİ DÜZELTMEYİ SESSİZCE GERİ ALIR."
-  --
-  -- (a) Hiç başlatılmamış kabuller: kimse gelmedi ya da unutuldu →
-  --     cezasız kapanış + kredi iadesi.
-  --     🔴 İade tutarı artık sabit 1 değil: GERÇEKTEN TUTULAN kadar.
-  with stale as (
-    select r.id, r.guest_id
-      from requests r
-      join availabilities a on a.id = r.avail_id
-      left join sessions s on s.request_id = r.id
-     where r.status = 'accepted'
-       -- 🔴 300/B2: `s.id is null` davet kabulünün açtığı BOŞ oturumu
-       -- görmüyordu (293). Hiç kimse başlatmadıysa, oturum yok sayılır.
-       and (s.id is null
-            or (s.status = 'pending' and s.host_started_at is null
-                and s.guest_started_at is null))
-       and public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now() - interval '2 hours'
-  ), upd as (
-    update requests set status = 'cancelled' where id in (select id from stale) returning id, guest_id
-  )
-  insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
-  select u.guest_id, public.tutulan_kredi(u.id), 'expired_refund', u.id,
-         coalesce((select sum(delta) from credit_ledger c where c.user_id = u.guest_id), 0)
-           + public.tutulan_kredi(u.id)
-    from upd u;
-  get diagnostics v_req = row_count;
-  -- 300/B2: iptal edilen isteğin arkasındaki boş oturum → 'expired' (no_show DEĞİL).
-  update sessions s set status = 'expired', completed_at = now(), cancel_reason = 'not_started'
-    from requests r
-   where r.id = s.request_id and r.status = 'cancelled'
-     and s.status = 'pending' and s.host_started_at is null and s.guest_started_at is null;
-
-  -- (b) Tek taraf başlatmış ama diğeri hiç gelmemiş → 'expired'.
-  --     `r.status = 'accepted'` KAPISI 280/K2'den; 299'da geri kondu.
-  update sessions s
-     set status = 'expired',
-         completed_at = now(),
-         cancel_reason = 'no_show',
-         no_show_user_id = case when s.host_started_at is null then r.host_id else r.guest_id end
-    from requests r, availabilities a
-   where r.id = s.request_id and a.id = r.avail_id
-     and s.status = 'pending'
-     and r.status = 'accepted'
-     and (s.host_started_at is null) <> (s.guest_started_at is null)
-     and public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now() - interval '2 hours';
-  get diagnostics v_sess = row_count;
-
-  -- Etkilenenlerin güvenini tazele (292'den; 298'de düşmüştü).
-  perform public.recompute_trust(u) from (
-    select distinct no_show_user_id as u from sessions
-     where cancel_reason = 'no_show' and no_show_user_id is not null
-       and completed_at > now() - interval '1 day'
-  ) x where u is not null;
-
-  -- (c) 187-noshow · 298'de TAMAMEN DÜŞMÜŞTÜ, geri konuldu.
-  --     (b) oturumu kapatır ama isteği 'accepted' bırakır; burada istek
-  --     de kapanır ve kredi iade edilir. Yoksa kredi de slot da sonsuza
-  --     kilitli kalır.
-  with kapanan as (
-    select r.id, r.guest_id
-      from requests r
-      join sessions s2 on s2.request_id = r.id
-     where r.status = 'accepted'
-       and s2.status = 'expired'
-       and s2.cancel_reason = 'no_show'
-  ), iade as (
-    update requests set status = 'cancelled'
-     where id in (select id from kapanan)
-    returning id, guest_id
-  )
-  insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
-  select i.guest_id, public.tutulan_kredi(i.id), 'no_show_refund', i.id,
-         coalesce((select sum(c.delta) from credit_ledger c
-                    where c.user_id = i.guest_id), 0) + public.tutulan_kredi(i.id)
-    from iade i
-   where not exists (select 1 from credit_ledger c2
-                      where c2.ref_id = i.id and c2.reason = 'no_show_refund');
-
-  perform public.tek_tarafli_oturumlari_kapat();
-
-  v_sonuc := jsonb_build_object('ok', true, 'durum', 'kosuldu',
-                                'kaynak', p_kaynak,
-                                'iptal_edilen', v_req, 'suresi_dolan', v_sess);
-
-  -- Sonucu damgaya yaz: panelde "en son koşum NE YAPTI" görünsün.
-  update public.supurge_damgasi
-     set son_sonuc = v_sonuc, ardisik_hata = 0
-   where ad = 'expire_stale_sessions';
-
-  return v_sonuc;
-exception
-  when others then
-    -- ⚠️ BURADA `update` DEĞİL `insert … on conflict` KULLANILIYOR VE
-    -- BUNUN SEBEBİ ÖNEMLİ: plpgsql'de bir istisna, bloğun BAŞINDAN
-    -- itibaren her şeyi geri alır — yukarıdaki damga `insert`i DAHİL.
-    -- Yani handler'a girildiğinde satır ARTIK YOKTUR; `update` 0 satır
-    -- günceller ve hata izi sessizce kaybolur. Tam da görünür kılmaya
-    -- çalıştığımız şeyi kaybederdik.
-    --
-    -- 🆕 SINIF: "BİR HATA KAYDINI, HATANIN GERİ ALDIĞI SATIRIN ÜSTÜNE
-    -- YAZAMAZSIN — HANDLER'DA HER ZAMAN YENİDEN OLUŞTURMAYA HAZIR OL."
-    --
-    -- Hatayı istisna olarak ATMIYORUZ, jsonb olarak DÖNÜYORUZ: çağıran
-    -- `ok=false` görür, damga kalıcı olur ve `bo_supurge_sagligi()`
-    -- onu gösterir. Yutmak değil — yerini değiştirmek.
-    insert into public.supurge_damgasi (ad, son_kosum, kaynak, ardisik_hata, son_hata, son_hata_an)
-    values ('expire_stale_sessions', coalesce(v_son, now() - interval '1 hour'),
-            p_kaynak, 1, left(SQLERRM, 400), now())
-    on conflict (ad) do update
-      set ardisik_hata = public.supurge_damgasi.ardisik_hata + 1,
-          kaynak       = excluded.kaynak,
-          son_hata     = excluded.son_hata,
-          son_hata_an  = excluded.son_hata_an;
-    return jsonb_build_object('ok', false, 'durum', 'hata',
-                              'kaynak', p_kaynak, 'hata', left(SQLERRM, 400));
-end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B4 · bayat_istekleri_iade_et  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.bayat_istekleri_iade_et()
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare
-  v_saat int := coalesce((select (value #>> '{}')::int from beta_settings
-                           where key = 'bayat_istek_saat'), 72);
-  r record; v_bal int; v_kapatilan int := 0; v_iade int := 0;
-begin
-  perform public.motor_yazimi_ac();
-
-  for r in
-    select req.id, req.guest_id
-      from requests req
-      join availabilities a on a.id = req.avail_id
-     where req.status = 'pending'
-       and req.responded_at is null
-       -- 🔴 300/B4: UTC tarihi değil, havalimanının yerel saati. Eskiden
-       -- saati geçmiş bir ilanın bekleyen isteği ertesi UTC gününe kadar
-       -- açık kalıyordu (kredi tutulu, host cevap veremez).
-       and (public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now()
-            or req.created_at < now() - make_interval(hours => v_saat))
-  loop
-    -- Satır satır: bir satır bir iş kuralına takılırsa toplu iş çökmesin.
-    begin
-      update requests
-         set status = 'cancelled',
-             responded_at = now(),
-             decision_note = coalesce(decision_note,
-               'Host süresinde yanıtlamadı — istek otomatik kapatıldı (274).')
-       where id = r.id and status = 'pending';
-      if not found then continue; end if;
-      v_kapatilan := v_kapatilan + 1;
-
-      -- İADE yalnız gerçekten kredi düşülmüşse ve daha önce iade
-      -- edilmemişse. `request_free_tier` satırları burada kasıtla dışarıda:
-      -- harcanmayan kredi iade edilmez.
-      if exists (select 1 from credit_ledger cl
-                  where cl.ref_id = r.id and cl.reason in ('request_hold','invite_hold') and cl.delta < 0)
-         and not exists (select 1 from credit_ledger cl
-                          where cl.ref_id = r.id and cl.reason = 'request_stale_refund')
-      then
-        select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = r.guest_id;
-        insert into credit_ledger (user_id, delta, reason, ref_id, balance_after, note)
-        values (r.guest_id, public.tutulan_kredi(r.id), 'request_stale_refund', r.id,
-                v_bal + public.tutulan_kredi(r.id),
-                format('%s saat içinde yanıt gelmedi', v_saat));
-        v_iade := v_iade + 1;
-      end if;
-
-      insert into notifications (user_id, category, title, body, ref_type, ref_id)
-      values (r.guest_id, 'requests', 'İsteğin kapandı',
-              format('Başvurun %s saat içinde yanıtlanmadı. Artık yeni istek gönderebilirsin.', v_saat),
-              'request', r.id);
-    exception when others then
-      raise notice '274: istek % kapatilamadi: %', r.id, sqlerrm;
-    end;
-  end loop;
-
-  return jsonb_build_object('ok', true, 'kapatilan', v_kapatilan,
-                            'iade_edilen', v_iade, 'esik_saat', v_saat);
-end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B5 · create_request_impl  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.create_request_impl(p_avail_id uuid, p_type text DEFAULT 'lounge'::text, p_intro text DEFAULT NULL::text, p_idem text DEFAULT NULL::text)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-      declare v_acik boolean; v_kalan int; v_tavan int;
-      begin
-        -- (a) ACİL DURDURMA
-        select f.enabled into v_acik from feature_flags f where f.key = 'marketplace';
-        if not coalesce(v_acik, true) then
-          raise exception 'marketplace_closed';
-        end if;
-
-        -- (b) AYNI ANDA AÇIK İSTEK TAVANI — 029'da tohumlanmış ama
-        -- yedi ay boyunca hiçbir yerde uygulanmamış bir eşik.
-        select value into v_tavan from rule_thresholds where key = 'max_active_requests';
-        select count(*) into v_kalan from requests
-         where guest_id = auth.uid() and status = 'pending';
-        if v_kalan >= coalesce(v_tavan, 5) then
-          raise exception 'too_many_active_requests';
-        end if;
-
-        -- 🔴 300/B5: iki kapı, ikisi de ÖLÇÜLDÜ (SEED8 §5):
-        --  · aynı ilana ikinci başvuru ham bir kısıt hatası döndürüyordu:
-        --    "duplicate key value violates unique constraint …" — uygulama
-        --    bunu "Bir şeyler ters gitti" diye gösteriyordu.
-        --  · tarih bugünse ama SAAT geçmişse başvuru kabul ediliyordu.
-        --  · 🔴 AYNI İLANA YENİDEN İSTEK SESSİZCE HİÇBİR ŞEY YAPMIYORDU.
-        --    Uygulama tekrar-deneme anahtarını `uid:ilan` olarak üretiyor; iptal
-        --    ettiğin (ya da reddedilen) isteğin anahtarı aynı kalıyordu. Yeni
-        --    istek bu anahtarla gelince `preflag` ESKİ, KAPALI isteği
-        --    `{"ok":true,"idempotent":true}` diye döndürüyordu — ekran "gönderildi"
-        --    diyor, host hiçbir şey görmüyor. (Ölçüldü: ilk → iptal → tekrar =
-        --    aynı id, durum `cancelled`.)
-        --    Kapalı bir isteğin anahtarı artık serbest bırakılıyor: çift dokunuş
-        --    korunur (açık istek), yeni deneme yeni istek olur.
-        -- 🆕 SINIF: "BİR TEKRAR-DENEME ANAHTARI, KORUDUĞU İŞLEMDEN UZUN
-        -- YAŞARSA, SONRAKİ HER GERÇEK İSTEĞİ BİR TEKRAR SANIR."
-        if p_idem is not null then
-          update requests set idempotency_key = null
-           where idempotency_key = p_idem and guest_id = auth.uid()
-             and status not in ('pending', 'accepted');
-        end if;
-        -- Tekrar deneme anahtarı (p_idem) ile gelen AÇIK istek dokunulmadan geçer.
-        if p_idem is null or not exists (select 1 from requests
-                                          where idempotency_key = p_idem and guest_id = auth.uid()) then
-          if exists (select 1 from requests where guest_id = auth.uid() and avail_id = p_avail_id
-                                              and status in ('pending','accepted')) then
-            raise exception 'already_requested';
-          end if;
-          if exists (select 1 from availabilities a where a.id = p_avail_id
-                      and public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now()) then
-            raise exception 'availability_expired';
-          end if;
-        end if;
-
-        return public.create_request_impl_preflag(p_avail_id, p_type, p_intro, p_idem);
-      end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B6 · trg_bakiye_negatife_dusemez  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.trg_bakiye_negatife_dusemez()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-declare v_bal int;
-begin
-  if new.delta >= 0 then return new; end if;
-  if new.reason like 'paid_guest_thanks_reversal:%' or new.reason like 'admin%' then
-    return new;
-  end if;
-
-  -- 🔴 300/B6: KİLİT TETİKLEYİCİNİN İÇİNDE. 299/B2 kilidi dört yola
-  -- koymuştu; `misafir_hakki_hediye_et` beşinciydi ve kilitsizdi. İki
-  -- eşzamanlı hediye aynı 3 krediyi iki kez harcayabiliyordu (ölçüldü:
-  -- ikinci oturum birincinin commit'ini beklemeden geçti).
-  -- Kilit burada olunca YOL SAYISI önemsizleşiyor: bakiyeyi eksilten her
-  -- satır, aynı kullanıcının diğer eksiltmesini commit'e kadar bekler ve
-  -- sonra GÜNCEL toplamı okur.
-  perform pg_advisory_xact_lock(hashtextextended('kredi:' || new.user_id::text, 0));
-  select coalesce(sum(delta), 0) into v_bal
-    from credit_ledger where user_id = new.user_id;
-
-  if v_bal + new.delta < 0 then
-    raise exception 'insufficient_credits'
-      using detail = format('kullanıcı %s: bakiye %s, denenen %s (%s)',
-                            new.user_id, v_bal, new.delta, new.reason),
-            hint   = 'Bu satır bakiyeyi negatife düşürürdü; 299/B1 reddetti.';
-  end if;
-  return new;
-end $function$;
-
--- ════════════════════════════════════════════════════════════════════════
--- §Z — KENDİNİ ÖLÇ. Açık kalan kapı varsa DUR.
--- ════════════════════════════════════════════════════════════════════════
-do $z300$
-declare v_n int; v_liste text;
-begin
-  -- A1: kilitli olanlar authenticated/anon tarafından çağrılamaz
-  select count(*), string_agg(p.proname, ', ') into v_n, v_liste
-    from pg_proc p
-   where p.pronamespace = 'public'::regnamespace
-     and p.proname in ('change_plan','kredi_akis_raporu','anonymized_users',
-                       'host_kota_durumu','doluluk_reddi_sayisi','oturum_kural_hedefi',
-                       'kural_guncelligi','access_options_for_user','bo_slot_asimlari')
-     and (has_function_privilege('authenticated', p.oid, 'execute')
-          or has_function_privilege('anon', p.oid, 'execute'));
-  if v_n > 0 then raise exception '300 §Z/A1: hâlâ açık: %', v_liste; end if;
-
-  -- A2: PUBLIC'e açık SECURITY DEFINER fonksiyon kalmadı
-  select count(distinct p.oid), string_agg(distinct p.proname, ', ') into v_n, v_liste
-    from pg_proc p, aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a
-   where p.pronamespace = 'public'::regnamespace and p.prosecdef
-     and a.grantee = 0 and a.privilege_type = 'EXECUTE';
-  if v_n > 0 then raise exception '300 §Z/A2: PUBLIC''e açık % fonksiyon: %', v_n, v_liste; end if;
-
-  -- A2: küresel varsayılan gerçekten yazıldı mı?
-  if not exists (select 1 from pg_default_acl d
-                  where d.defaclnamespace = 0 and d.defaclobjtype = 'f'
-                    and d.defaclrole = 'postgres'::regrole) then
-    raise exception '300 §Z/A2: küresel varsayılan yetki kaydı yok';
-  end if;
-
-  -- Uygulamanın çağırdığı beş fonksiyon authenticated'da KALDI mı?
-  select count(*), string_agg(p.proname, ', ') into v_n, v_liste
-    from pg_proc p
-   where p.pronamespace = 'public'::regnamespace
-     and p.proname in ('cancel_availability','binis_karti_kaydet','ilani_yeniden_yayinla',
-                       'hikaye_davetini_ertele','kesifte_gorun','profil_karti',
-                       'create_request','respond_request','confirm_session')
-     and not has_function_privilege('authenticated', p.oid, 'execute');
-  if v_n > 0 then raise exception '300 §Z: uygulama fonksiyonu KAPANDI: %', v_liste; end if;
-
-  -- A3 / B6 tetikleyicileri yerinde mi?
-  if not exists (select 1 from pg_trigger where tgname = 'trg_visit_0_beyan_temizle') then
-    raise exception '300 §Z/A3: tetikleyici yok';
-  end if;
-  if position('pg_advisory_xact_lock' in
-       (select prosrc from pg_proc where proname = 'trg_bakiye_negatife_dusemez')) = 0 then
-    raise exception '300 §Z/B6: kredi kilidi tetikleyicide yok';
-  end if;
-  if position('availability_expired' in
-       (select prosrc from pg_proc where proname = 'respond_request')) = 0 then
-    raise exception '300 §Z/B1: kabul kapısı yok';
-  end if;
-  if position('already_requested' in
-       (select prosrc from pg_proc where proname = 'create_request_impl')) = 0 then
-    raise exception '300 §Z/B5: mükerrer başvuru kapısı yok';
-  end if;
-
-  raise notice '300 §Z: bütün kapılar ölçüldü — kapalı';
-end $z300$;
-
-select '300 OK — uçtan uca denetim bulguları kapatıldı' as sonuc;
 
 -- ----------------------------------------------------------------------
 -- start_session   [etkin kaynak: 080_session_lifecycle.sql]
@@ -820,26 +358,24 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- confirm_session   [etkin kaynak: 300_uctan_uca_denetim.sql]
--- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- confirm_session   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.confirm_session(p_session_id uuid)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
+create or replace function public.confirm_session(p_session_id uuid)
+returns jsonb language plpgsql security definer set search_path = public as $function$
 declare
   v_uid uuid := auth.uid(); v_s sessions%rowtype; v_r requests%rowtype;
-  v_done boolean;
+  v_done boolean; v_ad text; v_salon text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
-  perform public.hesap_kapisi(v_uid);   -- 300/B3: yasaklı hesap oturum kapatamaz (diğer akış fonksiyonlarıyla aynı)
+  perform public.hesap_kapisi(v_uid);
   select * into v_s from sessions where id = p_session_id for update;
   if not found then raise exception 'session_not_found'; end if;
   select * into v_r from requests where id = v_s.request_id;
   if v_uid not in (v_r.host_id, v_r.guest_id) then raise exception 'not_party'; end if;
   if v_s.status <> 'active' then raise exception 'not_active'; end if;
+  v_ad := public.kisa_ad(v_uid);
+  v_salon := public.salon_etiketi(v_r.avail_id);
 
   if v_uid = v_r.host_id then
     update sessions set host_confirmed = true where id = p_session_id;
@@ -853,11 +389,6 @@ begin
     update sessions set status = 'completed', completed_at = now() where id = p_session_id;
     update requests set status = 'completed' where id = v_s.request_id;
 
-    -- 078: ÖDÜL BURADA (oturum bitti = hak edildi). Host 500 / misafir 200.
-    -- Çift ödemeye karşı: aynı oturum için daha önce yazılmışsa atlanır.
-    -- NOT: points_ledger'da balance_after KOLONU YOK (SQL 050'de tespit
-    -- edilmişti; bakiye user_balances view'ından okunur). Buraya yazmaya
-    -- kalkmak fonksiyonu çalışma anında patlatır — yazılmıyor.
     if not exists (select 1 from points_ledger
                     where ref_id = p_session_id and reason = 'session_reward') then
       insert into points_ledger (user_id, delta, reason, ref_id)
@@ -865,437 +396,34 @@ begin
              (v_r.guest_id, 200, 'session_reward', p_session_id);
     end if;
 
-    -- 067'deki ESCROW KAPANIŞ NOTU korunur (drift_check yakaladı):
-    -- kredi host'a aktarılmaz (kredi = hak, para değil); misafirin kredisi
-    -- harcanmış sayılır, deftere kapanış satırı düşülür.
     insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
     select v_r.guest_id, 0, 'session_settled', p_session_id, coalesce(sum(delta),0)
       from credit_ledger where user_id = v_r.guest_id;
 
-    -- Güven: oturum sayısı değişti → İKİ TARAF için kanonik hesap
     perform public.recompute_trust(v_r.host_id);
     perform public.recompute_trust(v_r.guest_id);
 
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    select u, 'sessions', 'Oturum tamamlandı ✓',
-           'Puanların hesabına eklendi. Karşı tarafı puanlamayı unutma.',
-           'session', p_session_id
-      from unnest(array[v_r.host_id, v_r.guest_id]) u;
+    perform public.bildir(v_r.host_id, 'sessions', 'Oturum tamamlandı ✓',
+      public.kisa_ad(v_r.guest_id) || ' ile oturumun bitti. Puanların eklendi — şimdi puanla, güven puanı buna dayanıyor.',
+      'Session completed ✓',
+      'Your session with ' || public.kisa_ad(v_r.guest_id) || ' is done. Points added — rate now; trust scores rely on it.',
+      'session', p_session_id);
+    perform public.bildir(v_r.guest_id, 'sessions', 'Oturum tamamlandı ✓',
+      public.kisa_ad(v_r.host_id) || ' ile oturumun bitti. Puanların eklendi — şimdi puanla, güven puanı buna dayanıyor.',
+      'Session completed ✓',
+      'Your session with ' || public.kisa_ad(v_r.host_id) || ' is done. Points added — rate now; trust scores rely on it.',
+      'session', p_session_id);
   else
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (case when v_uid = v_r.host_id then v_r.guest_id else v_r.host_id end,
-            'sessions', 'Oturum onayı bekleniyor',
-            'Karşı taraf oturumu tamamladı olarak işaretledi.', 'session', p_session_id);
+    perform public.bildir(case when v_uid = v_r.host_id then v_r.guest_id else v_r.host_id end, 'sessions',
+      v_ad || ' oturumu tamamladı',
+      v_salon || ' — sen de "Oturumu Tamamla"ya bas; ikiniz de onaylayınca oturum kapanır ve puanlar yazılır.',
+      v_ad || ' completed the session',
+      v_salon || ' — tap "Complete session" too; it closes and points are added when you both confirm.',
+      'session', p_session_id);
   end if;
 
   return jsonb_build_object('ok', true, 'completed', coalesce(v_done,false));
 end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B2 · expire_stale_sessions  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.expire_stale_sessions(p_kaynak text DEFAULT 'uygulama'::text)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare
-  v_req int := 0; v_sess int := 0;
-  v_son timestamptz;
-  v_sonuc jsonb;
-begin
-  -- ── FREN (298) ────────────────────────────────────────────────────
-  -- `for update` ile alıyoruz: iki istemci aynı anda çağırırsa ikincisi
-  -- birincinin damgasını bekler ve "atlandi" döner. pg_cron ile uygulama
-  -- tetiği AYNI FRENİ paylaşır — ikisi birden açık olsa bile gövde
-  -- 5 dakikada bir koşar.
-  select son_kosum into v_son from public.supurge_damgasi
-   where ad = 'expire_stale_sessions' for update;
-
-  if v_son is not null and v_son > now() - interval '5 minutes' then
-    return jsonb_build_object('ok', true, 'durum', 'atlandi',
-                              'kaynak', p_kaynak,
-                              'sonraki', v_son + interval '5 minutes');
-  end if;
-
-  insert into public.supurge_damgasi (ad, son_kosum, kaynak)
-  values ('expire_stale_sessions', now(), p_kaynak)
-  on conflict (ad) do update set son_kosum = now(), kaynak = excluded.kaynak;
-
-  -- ── GÖVDE ─────────────────────────────────────────────────────────
-  --
-  -- 🔴🔴 299/A2 — 298'DE KENDİ DÜŞÜRDÜĞÜM DÖRT ADIM GERİ KONULDU.
-  --
-  -- 298'de bu fonksiyonun başına freni takarken gövdeyi de yeniden
-  -- yazdım ve 292'nin gövdesindeki DÖRT ADIMI düşürdüm. `drift_check.py`
-  -- ikisini gösterdi (`perform public…`), kalan ikisini ben okuyarak
-  -- buldum. Düşenler:
-  --
-  --   1) (b) bloğundaki `r.status = 'accepted'` KAPISI.
-  --      280/K2'nin koyduğu kapı: iptal edilmiş isteğin yetim oturumu
-  --      no_show DEĞİLDİR. Düşünce, iptal edilmiş bir isteğin arkasında
-  --      kalan oturum yüzünden masum bir tarafa no_show yazılıyordu.
-  --
-  --   2) `perform public.recompute_trust(u) …`
-  --      no_show işaretlenen tarafın güven puanı tazelenmiyordu. Yani
-  --      ceza yazılıyor ama puana yansımıyordu.
-  --
-  --   3) (c) BLOĞUNUN TAMAMI — 187-noshow'un kapattığı hata.
-  --      (b) oturumu 'expired' yapıyor ama isteği 'accepted' BIRAKIYOR.
-  --      Bloksuz hali: misafirin kredisi sonsuza kilitli, host'un slotu
-  --      sonsuza dolu (`sync_availability_filled` filled'ı accepted
-  --      sayısından türetiyor). TEK BİR NO-SHOW İLANI KALICI OLARAK
-  --      ÖLDÜRÜYORDU. 298 bunu geri getirmişti.
-  --
-  --   4) `perform public.tek_tarafli_oturumlari_kapat();`
-  --
-  -- 🆕 SINIF: "BİR FONKSİYONUN BAŞINA KAPI TAKARKEN GÖVDESİNİ YENİDEN
-  -- YAZMA — ELDEKİ TANIMIN ÜSTÜNE EKLE. YENİDEN YAZMAK, GÖRMEDİĞİN HER
-  -- ESKİ DÜZELTMEYİ SESSİZCE GERİ ALIR."
-  --
-  -- (a) Hiç başlatılmamış kabuller: kimse gelmedi ya da unutuldu →
-  --     cezasız kapanış + kredi iadesi.
-  --     🔴 İade tutarı artık sabit 1 değil: GERÇEKTEN TUTULAN kadar.
-  with stale as (
-    select r.id, r.guest_id
-      from requests r
-      join availabilities a on a.id = r.avail_id
-      left join sessions s on s.request_id = r.id
-     where r.status = 'accepted'
-       -- 🔴 300/B2: `s.id is null` davet kabulünün açtığı BOŞ oturumu
-       -- görmüyordu (293). Hiç kimse başlatmadıysa, oturum yok sayılır.
-       and (s.id is null
-            or (s.status = 'pending' and s.host_started_at is null
-                and s.guest_started_at is null))
-       and public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now() - interval '2 hours'
-  ), upd as (
-    update requests set status = 'cancelled' where id in (select id from stale) returning id, guest_id
-  )
-  insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
-  select u.guest_id, public.tutulan_kredi(u.id), 'expired_refund', u.id,
-         coalesce((select sum(delta) from credit_ledger c where c.user_id = u.guest_id), 0)
-           + public.tutulan_kredi(u.id)
-    from upd u;
-  get diagnostics v_req = row_count;
-  -- 300/B2: iptal edilen isteğin arkasındaki boş oturum → 'expired' (no_show DEĞİL).
-  update sessions s set status = 'expired', completed_at = now(), cancel_reason = 'not_started'
-    from requests r
-   where r.id = s.request_id and r.status = 'cancelled'
-     and s.status = 'pending' and s.host_started_at is null and s.guest_started_at is null;
-
-  -- (b) Tek taraf başlatmış ama diğeri hiç gelmemiş → 'expired'.
-  --     `r.status = 'accepted'` KAPISI 280/K2'den; 299'da geri kondu.
-  update sessions s
-     set status = 'expired',
-         completed_at = now(),
-         cancel_reason = 'no_show',
-         no_show_user_id = case when s.host_started_at is null then r.host_id else r.guest_id end
-    from requests r, availabilities a
-   where r.id = s.request_id and a.id = r.avail_id
-     and s.status = 'pending'
-     and r.status = 'accepted'
-     and (s.host_started_at is null) <> (s.guest_started_at is null)
-     and public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now() - interval '2 hours';
-  get diagnostics v_sess = row_count;
-
-  -- Etkilenenlerin güvenini tazele (292'den; 298'de düşmüştü).
-  perform public.recompute_trust(u) from (
-    select distinct no_show_user_id as u from sessions
-     where cancel_reason = 'no_show' and no_show_user_id is not null
-       and completed_at > now() - interval '1 day'
-  ) x where u is not null;
-
-  -- (c) 187-noshow · 298'de TAMAMEN DÜŞMÜŞTÜ, geri konuldu.
-  --     (b) oturumu kapatır ama isteği 'accepted' bırakır; burada istek
-  --     de kapanır ve kredi iade edilir. Yoksa kredi de slot da sonsuza
-  --     kilitli kalır.
-  with kapanan as (
-    select r.id, r.guest_id
-      from requests r
-      join sessions s2 on s2.request_id = r.id
-     where r.status = 'accepted'
-       and s2.status = 'expired'
-       and s2.cancel_reason = 'no_show'
-  ), iade as (
-    update requests set status = 'cancelled'
-     where id in (select id from kapanan)
-    returning id, guest_id
-  )
-  insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
-  select i.guest_id, public.tutulan_kredi(i.id), 'no_show_refund', i.id,
-         coalesce((select sum(c.delta) from credit_ledger c
-                    where c.user_id = i.guest_id), 0) + public.tutulan_kredi(i.id)
-    from iade i
-   where not exists (select 1 from credit_ledger c2
-                      where c2.ref_id = i.id and c2.reason = 'no_show_refund');
-
-  perform public.tek_tarafli_oturumlari_kapat();
-
-  v_sonuc := jsonb_build_object('ok', true, 'durum', 'kosuldu',
-                                'kaynak', p_kaynak,
-                                'iptal_edilen', v_req, 'suresi_dolan', v_sess);
-
-  -- Sonucu damgaya yaz: panelde "en son koşum NE YAPTI" görünsün.
-  update public.supurge_damgasi
-     set son_sonuc = v_sonuc, ardisik_hata = 0
-   where ad = 'expire_stale_sessions';
-
-  return v_sonuc;
-exception
-  when others then
-    -- ⚠️ BURADA `update` DEĞİL `insert … on conflict` KULLANILIYOR VE
-    -- BUNUN SEBEBİ ÖNEMLİ: plpgsql'de bir istisna, bloğun BAŞINDAN
-    -- itibaren her şeyi geri alır — yukarıdaki damga `insert`i DAHİL.
-    -- Yani handler'a girildiğinde satır ARTIK YOKTUR; `update` 0 satır
-    -- günceller ve hata izi sessizce kaybolur. Tam da görünür kılmaya
-    -- çalıştığımız şeyi kaybederdik.
-    --
-    -- 🆕 SINIF: "BİR HATA KAYDINI, HATANIN GERİ ALDIĞI SATIRIN ÜSTÜNE
-    -- YAZAMAZSIN — HANDLER'DA HER ZAMAN YENİDEN OLUŞTURMAYA HAZIR OL."
-    --
-    -- Hatayı istisna olarak ATMIYORUZ, jsonb olarak DÖNÜYORUZ: çağıran
-    -- `ok=false` görür, damga kalıcı olur ve `bo_supurge_sagligi()`
-    -- onu gösterir. Yutmak değil — yerini değiştirmek.
-    insert into public.supurge_damgasi (ad, son_kosum, kaynak, ardisik_hata, son_hata, son_hata_an)
-    values ('expire_stale_sessions', coalesce(v_son, now() - interval '1 hour'),
-            p_kaynak, 1, left(SQLERRM, 400), now())
-    on conflict (ad) do update
-      set ardisik_hata = public.supurge_damgasi.ardisik_hata + 1,
-          kaynak       = excluded.kaynak,
-          son_hata     = excluded.son_hata,
-          son_hata_an  = excluded.son_hata_an;
-    return jsonb_build_object('ok', false, 'durum', 'hata',
-                              'kaynak', p_kaynak, 'hata', left(SQLERRM, 400));
-end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B4 · bayat_istekleri_iade_et  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.bayat_istekleri_iade_et()
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare
-  v_saat int := coalesce((select (value #>> '{}')::int from beta_settings
-                           where key = 'bayat_istek_saat'), 72);
-  r record; v_bal int; v_kapatilan int := 0; v_iade int := 0;
-begin
-  perform public.motor_yazimi_ac();
-
-  for r in
-    select req.id, req.guest_id
-      from requests req
-      join availabilities a on a.id = req.avail_id
-     where req.status = 'pending'
-       and req.responded_at is null
-       -- 🔴 300/B4: UTC tarihi değil, havalimanının yerel saati. Eskiden
-       -- saati geçmiş bir ilanın bekleyen isteği ertesi UTC gününe kadar
-       -- açık kalıyordu (kredi tutulu, host cevap veremez).
-       and (public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now()
-            or req.created_at < now() - make_interval(hours => v_saat))
-  loop
-    -- Satır satır: bir satır bir iş kuralına takılırsa toplu iş çökmesin.
-    begin
-      update requests
-         set status = 'cancelled',
-             responded_at = now(),
-             decision_note = coalesce(decision_note,
-               'Host süresinde yanıtlamadı — istek otomatik kapatıldı (274).')
-       where id = r.id and status = 'pending';
-      if not found then continue; end if;
-      v_kapatilan := v_kapatilan + 1;
-
-      -- İADE yalnız gerçekten kredi düşülmüşse ve daha önce iade
-      -- edilmemişse. `request_free_tier` satırları burada kasıtla dışarıda:
-      -- harcanmayan kredi iade edilmez.
-      if exists (select 1 from credit_ledger cl
-                  where cl.ref_id = r.id and cl.reason in ('request_hold','invite_hold') and cl.delta < 0)
-         and not exists (select 1 from credit_ledger cl
-                          where cl.ref_id = r.id and cl.reason = 'request_stale_refund')
-      then
-        select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = r.guest_id;
-        insert into credit_ledger (user_id, delta, reason, ref_id, balance_after, note)
-        values (r.guest_id, public.tutulan_kredi(r.id), 'request_stale_refund', r.id,
-                v_bal + public.tutulan_kredi(r.id),
-                format('%s saat içinde yanıt gelmedi', v_saat));
-        v_iade := v_iade + 1;
-      end if;
-
-      insert into notifications (user_id, category, title, body, ref_type, ref_id)
-      values (r.guest_id, 'requests', 'İsteğin kapandı',
-              format('Başvurun %s saat içinde yanıtlanmadı. Artık yeni istek gönderebilirsin.', v_saat),
-              'request', r.id);
-    exception when others then
-      raise notice '274: istek % kapatilamadi: %', r.id, sqlerrm;
-    end;
-  end loop;
-
-  return jsonb_build_object('ok', true, 'kapatilan', v_kapatilan,
-                            'iade_edilen', v_iade, 'esik_saat', v_saat);
-end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B5 · create_request_impl  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.create_request_impl(p_avail_id uuid, p_type text DEFAULT 'lounge'::text, p_intro text DEFAULT NULL::text, p_idem text DEFAULT NULL::text)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-      declare v_acik boolean; v_kalan int; v_tavan int;
-      begin
-        -- (a) ACİL DURDURMA
-        select f.enabled into v_acik from feature_flags f where f.key = 'marketplace';
-        if not coalesce(v_acik, true) then
-          raise exception 'marketplace_closed';
-        end if;
-
-        -- (b) AYNI ANDA AÇIK İSTEK TAVANI — 029'da tohumlanmış ama
-        -- yedi ay boyunca hiçbir yerde uygulanmamış bir eşik.
-        select value into v_tavan from rule_thresholds where key = 'max_active_requests';
-        select count(*) into v_kalan from requests
-         where guest_id = auth.uid() and status = 'pending';
-        if v_kalan >= coalesce(v_tavan, 5) then
-          raise exception 'too_many_active_requests';
-        end if;
-
-        -- 🔴 300/B5: iki kapı, ikisi de ÖLÇÜLDÜ (SEED8 §5):
-        --  · aynı ilana ikinci başvuru ham bir kısıt hatası döndürüyordu:
-        --    "duplicate key value violates unique constraint …" — uygulama
-        --    bunu "Bir şeyler ters gitti" diye gösteriyordu.
-        --  · tarih bugünse ama SAAT geçmişse başvuru kabul ediliyordu.
-        --  · 🔴 AYNI İLANA YENİDEN İSTEK SESSİZCE HİÇBİR ŞEY YAPMIYORDU.
-        --    Uygulama tekrar-deneme anahtarını `uid:ilan` olarak üretiyor; iptal
-        --    ettiğin (ya da reddedilen) isteğin anahtarı aynı kalıyordu. Yeni
-        --    istek bu anahtarla gelince `preflag` ESKİ, KAPALI isteği
-        --    `{"ok":true,"idempotent":true}` diye döndürüyordu — ekran "gönderildi"
-        --    diyor, host hiçbir şey görmüyor. (Ölçüldü: ilk → iptal → tekrar =
-        --    aynı id, durum `cancelled`.)
-        --    Kapalı bir isteğin anahtarı artık serbest bırakılıyor: çift dokunuş
-        --    korunur (açık istek), yeni deneme yeni istek olur.
-        -- 🆕 SINIF: "BİR TEKRAR-DENEME ANAHTARI, KORUDUĞU İŞLEMDEN UZUN
-        -- YAŞARSA, SONRAKİ HER GERÇEK İSTEĞİ BİR TEKRAR SANIR."
-        if p_idem is not null then
-          update requests set idempotency_key = null
-           where idempotency_key = p_idem and guest_id = auth.uid()
-             and status not in ('pending', 'accepted');
-        end if;
-        -- Tekrar deneme anahtarı (p_idem) ile gelen AÇIK istek dokunulmadan geçer.
-        if p_idem is null or not exists (select 1 from requests
-                                          where idempotency_key = p_idem and guest_id = auth.uid()) then
-          if exists (select 1 from requests where guest_id = auth.uid() and avail_id = p_avail_id
-                                              and status in ('pending','accepted')) then
-            raise exception 'already_requested';
-          end if;
-          if exists (select 1 from availabilities a where a.id = p_avail_id
-                      and public.yerel_an(a.avail_date, a.time_to, a.airport_code) < now()) then
-            raise exception 'availability_expired';
-          end if;
-        end if;
-
-        return public.create_request_impl_preflag(p_avail_id, p_type, p_intro, p_idem);
-      end $function$;
-
--- ──────────────────────────────────────────────────────────────────────
--- §B6 · trg_bakiye_negatife_dusemez  (canlı tanım + 300 yaması)
--- ──────────────────────────────────────────────────────────────────────
-CREATE OR REPLACE FUNCTION public.trg_bakiye_negatife_dusemez()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-declare v_bal int;
-begin
-  if new.delta >= 0 then return new; end if;
-  if new.reason like 'paid_guest_thanks_reversal:%' or new.reason like 'admin%' then
-    return new;
-  end if;
-
-  -- 🔴 300/B6: KİLİT TETİKLEYİCİNİN İÇİNDE. 299/B2 kilidi dört yola
-  -- koymuştu; `misafir_hakki_hediye_et` beşinciydi ve kilitsizdi. İki
-  -- eşzamanlı hediye aynı 3 krediyi iki kez harcayabiliyordu (ölçüldü:
-  -- ikinci oturum birincinin commit'ini beklemeden geçti).
-  -- Kilit burada olunca YOL SAYISI önemsizleşiyor: bakiyeyi eksilten her
-  -- satır, aynı kullanıcının diğer eksiltmesini commit'e kadar bekler ve
-  -- sonra GÜNCEL toplamı okur.
-  perform pg_advisory_xact_lock(hashtextextended('kredi:' || new.user_id::text, 0));
-  select coalesce(sum(delta), 0) into v_bal
-    from credit_ledger where user_id = new.user_id;
-
-  if v_bal + new.delta < 0 then
-    raise exception 'insufficient_credits'
-      using detail = format('kullanıcı %s: bakiye %s, denenen %s (%s)',
-                            new.user_id, v_bal, new.delta, new.reason),
-            hint   = 'Bu satır bakiyeyi negatife düşürürdü; 299/B1 reddetti.';
-  end if;
-  return new;
-end $function$;
-
--- ════════════════════════════════════════════════════════════════════════
--- §Z — KENDİNİ ÖLÇ. Açık kalan kapı varsa DUR.
--- ════════════════════════════════════════════════════════════════════════
-do $z300$
-declare v_n int; v_liste text;
-begin
-  -- A1: kilitli olanlar authenticated/anon tarafından çağrılamaz
-  select count(*), string_agg(p.proname, ', ') into v_n, v_liste
-    from pg_proc p
-   where p.pronamespace = 'public'::regnamespace
-     and p.proname in ('change_plan','kredi_akis_raporu','anonymized_users',
-                       'host_kota_durumu','doluluk_reddi_sayisi','oturum_kural_hedefi',
-                       'kural_guncelligi','access_options_for_user','bo_slot_asimlari')
-     and (has_function_privilege('authenticated', p.oid, 'execute')
-          or has_function_privilege('anon', p.oid, 'execute'));
-  if v_n > 0 then raise exception '300 §Z/A1: hâlâ açık: %', v_liste; end if;
-
-  -- A2: PUBLIC'e açık SECURITY DEFINER fonksiyon kalmadı
-  select count(distinct p.oid), string_agg(distinct p.proname, ', ') into v_n, v_liste
-    from pg_proc p, aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a
-   where p.pronamespace = 'public'::regnamespace and p.prosecdef
-     and a.grantee = 0 and a.privilege_type = 'EXECUTE';
-  if v_n > 0 then raise exception '300 §Z/A2: PUBLIC''e açık % fonksiyon: %', v_n, v_liste; end if;
-
-  -- A2: küresel varsayılan gerçekten yazıldı mı?
-  if not exists (select 1 from pg_default_acl d
-                  where d.defaclnamespace = 0 and d.defaclobjtype = 'f'
-                    and d.defaclrole = 'postgres'::regrole) then
-    raise exception '300 §Z/A2: küresel varsayılan yetki kaydı yok';
-  end if;
-
-  -- Uygulamanın çağırdığı beş fonksiyon authenticated'da KALDI mı?
-  select count(*), string_agg(p.proname, ', ') into v_n, v_liste
-    from pg_proc p
-   where p.pronamespace = 'public'::regnamespace
-     and p.proname in ('cancel_availability','binis_karti_kaydet','ilani_yeniden_yayinla',
-                       'hikaye_davetini_ertele','kesifte_gorun','profil_karti',
-                       'create_request','respond_request','confirm_session')
-     and not has_function_privilege('authenticated', p.oid, 'execute');
-  if v_n > 0 then raise exception '300 §Z: uygulama fonksiyonu KAPANDI: %', v_liste; end if;
-
-  -- A3 / B6 tetikleyicileri yerinde mi?
-  if not exists (select 1 from pg_trigger where tgname = 'trg_visit_0_beyan_temizle') then
-    raise exception '300 §Z/A3: tetikleyici yok';
-  end if;
-  if position('pg_advisory_xact_lock' in
-       (select prosrc from pg_proc where proname = 'trg_bakiye_negatife_dusemez')) = 0 then
-    raise exception '300 §Z/B6: kredi kilidi tetikleyicide yok';
-  end if;
-  if position('availability_expired' in
-       (select prosrc from pg_proc where proname = 'respond_request')) = 0 then
-    raise exception '300 §Z/B1: kabul kapısı yok';
-  end if;
-  if position('already_requested' in
-       (select prosrc from pg_proc where proname = 'create_request_impl')) = 0 then
-    raise exception '300 §Z/B5: mükerrer başvuru kapısı yok';
-  end if;
-
-  raise notice '300 §Z: bütün kapılar ölçüldü — kapalı';
-end $z300$;
-
-select '300 OK — uçtan uca denetim bulguları kapatıldı' as sonuc;
 
 -- ----------------------------------------------------------------------
 -- rate_session   [etkin kaynak: 078_trust_single_writer.sql]
@@ -2355,13 +1483,12 @@ grant execute on function public.send_connection(uuid, text, text) to authentica
 -- Bir sozlesmeyi genisletmek, tasimayan bir sozlesmeyi bozmaktan ucuzdur.
 
 -- ----------------------------------------------------------------------
--- respond_connection   [etkin kaynak: 159_grants_home_flows_request_gate.sql]
--- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- respond_connection   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 6 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.respond_connection(p_id uuid, p_accept boolean)
- RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path TO 'public'
-AS $function$
-declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_chan uuid;
+create or replace function public.respond_connection(p_id uuid, p_accept boolean)
+returns jsonb language plpgsql security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_chan uuid; v_ad text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   select * into v_cr from connection_requests where id = p_id for update;
@@ -2369,11 +1496,15 @@ begin
   if v_cr.to_id <> v_uid then raise exception 'not_recipient'; end if;
   if v_cr.status <> 'pending' then raise exception 'already_responded'; end if;
 
-  -- v159: yanıt ZAMANI artık kayıtlı — ana sayfadaki 24 saat kuralı buna dayanır.
+  if coalesce(v_cr.intent,'') = 'kural_sorusu' then
+    return public.soruyu_yanitla(p_id, case when p_accept then 'evet' else 'hayir' end, null);
+  end if;
+
   update connection_requests
      set status = (case when p_accept then 'accepted' else 'declined' end)::connection_status,
          responded_at = now()
    where id = p_id;
+  v_ad := public.kisa_ad(v_uid);
 
   if p_accept then
     insert into chat_channels (connection_id, kind, created_at)
@@ -2382,30 +1513,73 @@ begin
     returning id into v_chan;
     if v_chan is null then select id into v_chan from chat_channels where connection_id = p_id; end if;
 
-    -- YENİ (077-3): "Bağlan" ekranında yazılan tanıtım sohbetin ilk mesajı
     if v_chan is not null and coalesce(nullif(trim(v_cr.intro),''),'') <> '' then
       insert into messages (channel_id, from_id, body, created_at)
       select v_chan, v_cr.from_id, trim(v_cr.intro), now()
        where not exists (select 1 from messages m where m.channel_id = v_chan);
     end if;
 
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (v_cr.from_id, 'connections', 'Bağlantı kabul edildi ✓', 'Sohbet açıldı.', 'connection', p_id);
+    perform public.bildir(v_cr.from_id, 'connections',
+      v_ad || ' bağlantını kabul etti ✓', 'Sohbet açıldı — Oturumlar ve sohbetler › Bağlantılar.',
+      v_ad || ' accepted your connection ✓', 'The chat is open — Sessions and chats › Connections.',
+      'connection', p_id);
   else
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (v_cr.from_id, 'connections', 'Bağlantı yanıtlandı', 'İstek reddedildi.', 'connection', p_id);
+    perform public.bildir(v_cr.from_id, 'connections',
+      'Bağlantı isteğin yanıtlandı', v_ad || ' şu an bağlantı kurmuyor.',
+      'Your connection request was answered', v_ad || ' isn''t connecting right now.',
+      'connection', p_id);
   end if;
 
   return jsonb_build_object('ok', true, 'channel_id', v_chan);
 end $function$;
 
--- ---- 4) home_connections(): ana sayfa bağlantı kartının TEK kaynağı ----
--- 🔴 Kural (Gökberk, madde 2): kabulden sonra 24 SAAT ana sayfada;
--- aktif sohbet varsa (son 24 saatte mesaj) sohbet sürdükçe kalır;
--- ikisi de yoksa düşer — Tanış > Bağlantılar'da her zaman durur.
--- RPC olması bilinçli: grant/RLS bağımsız tek çağrı + kural sunucuda
--- (istemcide saat hesabı = her istemcide ayrı davranış).
-drop function if exists public.home_connections();
+-- Sorduklarım: yanıt alanları eklendi (dönüş tipi değişti → drop)
+drop function if exists public.sorularim();
+create function public.sorularim()
+returns table(id uuid, host_id uuid, host_name text, salon text, airport_code text, avail_id uuid,
+              durum text, cevap_durumu text, soruldu_at timestamptz, yanit_at timestamptz,
+              ilan_acildi boolean, channel_id uuid, soru text, avail_date date,
+              time_from time, time_to time, cevap text, cevap_notu text)
+language plpgsql stable security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid();
+begin
+  if v_uid is null then return; end if;
+  return query
+  select cr.id, cr.to_id,
+         public.kisa_ad(cr.to_id),
+         coalesce(nullif(btrim(a.lounge_name),''), l.name, a.airport_code::text),
+         a.airport_code::text,
+         cr.avail_id,
+         cr.status::text,
+         case
+           when cr.cevap = 'evet' then 'evet'
+           when cr.cevap = 'hayir' then 'hayir'
+           when cr.status::text = 'accepted' then 'yanitlandi'
+           when cr.status::text = 'declined' then 'reddedildi'
+           when cr.avail_id is not null
+                and public.kural_sorusu_durumu(cr.avail_id) = 'gerek_yok' then 'hak_beyan_edildi'
+           else 'bekliyor'
+         end,
+         cr.created_at, coalesce(cr.cevap_at, cr.responded_at),
+         case when cr.avail_id is null then false
+              else public.kural_sorusu_durumu(cr.avail_id) = 'gerek_yok' end,
+         ch.id,
+         nullif(btrim(coalesce(cr.intro,'')),''),
+         a.avail_date, a.time_from, a.time_to,
+         cr.cevap, cr.cevap_notu
+    from connection_requests cr
+    left join availabilities a on a.id = cr.avail_id
+    left join lounges l on l.id = a.lounge_id
+    left join chat_channels ch on ch.connection_id = cr.id
+   where cr.from_id = v_uid
+     and cr.intent = 'kural_sorusu'
+   order by cr.created_at desc
+   limit 30;
+end $function$;
+revoke all on function public.sorularim() from public, anon;
+grant execute on function public.sorularim() to authenticated, service_role;
+
+-- Bana gelen sorular (host). Soranın fotoğrafı yalnız "herkese açık" ise.
 
 -- ----------------------------------------------------------------------
 -- discover_people   [etkin kaynak: 070_discover_people_trip_data.sql]
@@ -4004,44 +3178,42 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- cancel_request   [etkin kaynak: 280_kredi_ve_durum_kilidi.sql]
--- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- cancel_request   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.cancel_request(p_request_id uuid, p_reason text default null)
-returns jsonb
-language plpgsql
-security definer
-set search_path = public
-as $$
+returns jsonb language plpgsql security definer set search_path = public as $function$
 declare v_uid uuid := auth.uid(); v_r requests%rowtype; v_other uuid; v_iade int;
+        v_salon text; v_ad text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
+  perform public.hesap_kapisi(v_uid);
   select * into v_r from requests where id = p_request_id for update;
   if not found then raise exception 'request_not_found'; end if;
   if v_r.guest_id <> v_uid and v_r.host_id <> v_uid then raise exception 'not_participant'; end if;
   if v_r.status not in ('pending','accepted') then raise exception 'cannot_cancel'; end if;
-
-  -- K2: pending VEYA active oturum varsa istek üzerinden iptal YOK —
-  -- `cancel_session` yolu kullanılır (orada geç-iptal kuralı işler).
   if public.istegin_acik_oturumu_var_mi(p_request_id) then
     raise exception 'session_active';
   end if;
 
   update requests set status = 'cancelled', responded_at = now() where id = p_request_id;
+  update sessions set status = 'cancelled', completed_at = now(), cancelled_by = v_uid,
+         cancel_reason = 'cancelled_before_both_started'
+   where request_id = p_request_id and status = 'pending';
 
   v_iade := public.istek_kredisi_iade(p_request_id, 'request_cancel_refund');
 
   v_other := case when v_uid = v_r.guest_id then v_r.host_id else v_r.guest_id end;
-  insert into notifications (user_id, category, title, body, ref_type, ref_id)
-  values (v_other, 'requests', 'İstek iptal edildi',
-          coalesce(left(p_reason,80), 'Karşı taraf isteği iptal etti.'), 'request', p_request_id);
-  if v_iade > 0 then
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (v_r.guest_id, 'system', 'Kredin iade edildi',
-            format('İptal nedeniyle %s kredi iade edildi.', v_iade), 'request', p_request_id);
-  end if;
+  v_salon := public.salon_etiketi(v_r.avail_id);
+  v_ad    := public.kisa_ad(v_uid);
+  perform public.bildir(v_other, 'requests',
+    v_ad || ' buluşmayı iptal etti',
+    v_salon || coalesce(' — ' || nullif(left(btrim(p_reason), 80), ''), '') || '. Kredi iade edildi.',
+    v_ad || ' cancelled the meetup',
+    v_salon || coalesce(' — ' || nullif(left(btrim(p_reason), 80), ''), '') || '. Credit refunded.',
+    'request', p_request_id);
   return jsonb_build_object('ok', true, 'refunded', v_iade > 0, 'amount', v_iade);
-end $$;
+end $function$;
 
 -- ----------------------------------------------------------------------
 -- recompute_badge   [etkin kaynak: 046_trust_and_host_visibility.sql]
@@ -4913,48 +4085,30 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- cancel_availability   [etkin kaynak: 293_davet_cift_onay_ve_ilan_geri_cekme.sql]
--- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- cancel_availability   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.cancel_availability(p_id uuid, p_force boolean DEFAULT false)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
+create or replace function public.cancel_availability(p_id uuid, p_force boolean default false)
+returns jsonb language plpgsql security definer set search_path = public as $function$
 declare
   v_uid uuid := auth.uid();
   v_accepted int; v_pending int; v_iptal int := 0;
-  r record;
+  r record; v_salon text; v_gun text; v_host text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   perform public.hesap_kapisi(v_uid);
   if not exists (select 1 from availabilities where id = p_id and host_id = v_uid) then
     raise exception 'not_your_availability';
   end if;
+  v_salon := public.salon_etiketi(p_id);
+  select to_char(avail_date, 'DD.MM') into v_gun from availabilities where id = p_id;
+  v_host := public.kisa_ad(v_uid);
 
-  -- Oturum başladıysa hiçbir yoldan geri çekilemez.
-  -- 🔴 13 EYLÜL — BU KAPI ÇOK GENİŞTİ VE 291'İN KENDİ AMACINI
-  -- ÇÜRÜTÜYORDU. `pending` bir oturum "başlamış" demek DEĞİL: SQL 080'de
-  -- oturum satırı kabulde oluşur, gerçekten `active` olması için İKİ
-  -- TARAFIN DA "Oturumu Başlat"a basması gerekir.
-  -- ÖLÇÜM: `respond_invite` her kabulde bir oturum satırı yaratıyor
-  -- (293 öncesi doğrudan 'active'). Sonuç: daveti kabul edilmiş bir
-  -- ilanı host ZORLA BİLE geri çekemiyordu — yani Gökberk'in 13 Eylül
-  -- madde 2'de istediği şeyin tam tersi oluyordu.
-  -- Doğru kapı: buluşma GERÇEKTEN başlamışsa geri çekilemez.
-  --   · status = 'active'                        → başladı
-  --   · 'pending' ama bir taraf "geldim" dediyse  → biri kapıda bekliyor
-  -- İkisi de yoksa zorlu kaldırma çalışır ve o boş oturum satırı da
-  -- kapatılır (yetim satır bırakmak, temizlik değil sızıntıdır — 291'in
-  -- kendi sınıfı).
-  if exists (
-    select 1 from sessions s join requests q on q.id = s.request_id
-     where q.avail_id = p_id
-       and (s.status = 'active'
-            or (s.status = 'pending'
-                and (s.host_started_at is not null or s.guest_started_at is not null)))
-  ) then raise exception 'session_started'; end if;
+  -- 313: tek tanım — yalnız İKİ TARAFIN DA başlattığı (active) oturum engeldir.
+  if exists (select 1 from sessions s join requests q on q.id = s.request_id
+              where q.avail_id = p_id and s.status = 'active') then
+    raise exception 'session_started';
+  end if;
 
   select count(*) filter (where status = 'accepted'),
          count(*) filter (where status = 'pending')
@@ -4965,157 +4119,45 @@ begin
     raise exception 'has_accepted_requests';
   end if;
 
-  if p_force then
-    -- Açık her isteği REDDET: kredi iadesi + bildirim, `respond_request`
-    -- ile AYNI yoldan (iade mantığı tek yerde kalsın).
-    for r in select id, guest_id from requests
-              where avail_id = p_id and status in ('pending','accepted')
-              for update
-    loop
-      update requests set status = 'declined', responded_at = now() where id = r.id;
-      perform public.istek_kredisi_iade(r.id, 'request_refund');
-      insert into notifications (user_id, category, title, body, ref_id, ref_type)
-      values (r.guest_id, 'requests', 'İlan geri çekildi',
-              'Host bu ilanı kaldırdı. Kredin anında iade edildi; başka bir ilana başvurabilirsin.',
-              r.id, 'request');
-      v_iptal := v_iptal + 1;
-    end loop;
-  else
-    -- Zorlamasız yolda BİLE bekleyen istekler serbest bırakılır:
-    -- ilan kapanınca o istek zaten cevaplanamaz hâle geliyordu.
-    for r in select id, guest_id from requests
-              where avail_id = p_id and status = 'pending' for update
-    loop
-      update requests set status = 'declined', responded_at = now() where id = r.id;
-      perform public.istek_kredisi_iade(r.id, 'request_refund');
-      insert into notifications (user_id, category, title, body, ref_id, ref_type)
-      values (r.guest_id, 'requests', 'İlan geri çekildi',
-              'Host bu ilanı kaldırdı. Kredin anında iade edildi; başka bir ilana başvurabilirsin.',
-              r.id, 'request');
-      v_iptal := v_iptal + 1;
-    end loop;
-  end if;
+  for r in select id, guest_id, status from requests
+            where avail_id = p_id
+              and status in ('pending','accepted')
+              and (p_force or status = 'pending')
+            for update
+  loop
+    update requests set status = 'declined', responded_at = now() where id = r.id;
+    perform public.istek_kredisi_iade(r.id, 'request_refund');
+    perform public.bildir(r.guest_id, 'requests',
+      v_host || ' ilanını kaldırdı',
+      v_salon || ' · ' || coalesce(v_gun,'') ||
+        case when r.status = 'accepted' then ' buluşması iptal oldu. ' else ' — ' end ||
+        'Kredin iade edildi; başka bir ilana başvurabilirsin.',
+      v_host || ' removed the listing',
+      v_salon || ' · ' || coalesce(v_gun,'') ||
+        case when r.status = 'accepted' then ' meetup is cancelled. ' else ' — ' end ||
+        'Your credit was refunded; you can apply elsewhere.',
+      'request', r.id);
+    v_iptal := v_iptal + 1;
+  end loop;
 
-  -- Bekleyen davetler de kapanır.
-  -- 'cancelled' bu enum'da YOK (pending|accepted|declined|blocked) — davet geri
-  -- çekilince 'declined' doğru karşılık: davet edilen kişi bir şey yapmadı.
   update invites set status = 'declined'::connection_status, responded_at = now()
    where avail_id = p_id and status = 'pending';
 
-  -- Hiç başlamamış ('pending' ve iki taraf da basmamış) oturum satırları
-  -- ilanla birlikte kapanır; yoksa `expire_stale_sessions` onları
-  -- no-show sanıp kullanıcının güvenini düşürürdü.
-  update sessions s set status = 'cancelled', completed_at = now(),
+  -- Başlamamış (iki taraf da basmamış YA DA yalnız biri basmış) oturumlar ilanla kapanır.
+  update sessions s set status = 'cancelled', completed_at = now(), cancelled_by = v_uid,
          cancel_reason = coalesce(s.cancel_reason, 'ilan_geri_cekildi')
     from requests q
-   where q.id = s.request_id and q.avail_id = p_id
-     and s.status = 'pending'
-     and s.host_started_at is null and s.guest_started_at is null;
-
-  -- Hiç başlamamış ('pending' ve iki taraf da basmamış) oturum satırları
-  -- ilanla birlikte kapanır; yoksa `expire_stale_sessions` onları
-  -- no-show sanıp kullanıcının güvenini düşürürdü.
-  update sessions s set status = 'cancelled', completed_at = now(),
-         cancel_reason = coalesce(s.cancel_reason, 'ilan_geri_cekildi')
-    from requests q
-   where q.id = s.request_id and q.avail_id = p_id
-     and s.status = 'pending'
-     and s.host_started_at is null and s.guest_started_at is null;
+   where q.id = s.request_id and q.avail_id = p_id and s.status = 'pending';
 
   update availabilities set active = false, updated_at = now() where id = p_id;
   return jsonb_build_object('ok', true, 'iptal_edilen', v_iptal,
                             'bekleyen', v_pending, 'kabul_edilen', v_accepted);
 end $function$;
 
--- ── 3 · AŞIRI YÜKLEME BELİRSİZLİĞİ — 291'İN SESSİZ REGRESYONU ─────────
--- 🔴 ÖLÇÜM: 291, `cancel_availability(p_id uuid, p_force boolean default
--- false)` ekledi ama ESKİ `cancel_availability(p_id uuid)` yerinde kaldı.
--- İkisi bir arada, tek argümanlı her çağrıyı BELİRSİZ yapıyor:
---     ERROR: function public.cancel_availability(uuid) is not unique
--- Yani "geriye dönük uyumluluk için eskisini bıraktım" diye yazdığım
--- satır, tam da korumak istediğim eski çağrıyı KIRIYORDU. (Uygulama bu
--- turda `p_force: true` gönderdiği için fark edilmiyordu; NOT3 kanıtı
--- zorlamasız yolu sınayınca çıktı.)
---
--- 🆕 SINIF: "VARSAYILAN DEĞERLİ BİR AŞIRI YÜKLEME, ESKİ İMZAYI KORUMAZ —
--- ONU BELİRSİZ YAPAR. GERİYE DÖNÜK UYUM AŞIRI YÜKLEMEYLE DEĞİL
--- VARSAYILANLA SAĞLANIR."
---
--- Tek fonksiyon kalıyor: `(p_id uuid, p_force boolean default false)`.
--- `cancel_availability(p_id => ...)` ve `cancel_availability(av)` yine
--- çalışır, davranış eskisiyle aynıdır (zorlamasız).
-drop function if exists public.cancel_availability(uuid);
-grant execute on function public.cancel_availability(uuid, boolean) to authenticated;
-
--- ── KENDİ SINAMASI ─────────────────────────────────────────────────────
-do $$
-declare
-  hd uuid; g uuid; lng uuid; av uuid; inv_id uuid; rq uuid;
-  v_st text; sonuc jsonb; v_ses uuid; v_n int;
-begin
-  select id into hd from users where role = 'host' and deleted_at is null limit 1;
-  select id into lng from lounges where airport_code = 'IST' limit 1;
-  if hd is null or lng is null then raise notice '293 sinama: veri yok, atlandi'; return; end if;
-  select id into g from users where id <> hd and deleted_at is null limit 1;
-  if g is null then raise notice '293 sinama: misafir yok, atlandi'; return; end if;
-
-  insert into availabilities (host_id, airport_code, lounge_id, avail_date, time_from, time_to, slots, active)
-    values (hd, 'IST', lng, public.yerel_gun('IST') + 5, time '10:00', time '13:00', 2, true)
-    returning id into av;
-  insert into credit_ledger (user_id, delta, reason, balance_after)
-    values (g, 3, 'sinama_293', coalesce((select sum(delta) from credit_ledger where user_id = g), 0) + 3);
-
-  -- 1) Davet kabulü oturumu 'pending' doğurmalı, 'active' DEĞİL
-  insert into invites (host_id, guest_id, avail_id, status, note)
-    values (hd, g, av, 'pending', '293 sinama') returning id into inv_id;
-  perform set_config('request.jwt.claims',
-    json_build_object('sub', g::text, 'role', 'authenticated')::text, true);
-  perform public.respond_invite(inv_id, true);
-  select s.id, s.status::text into v_ses, v_st
-    from sessions s join requests q on q.id = s.request_id
-   where q.avail_id = av limit 1;
-  if v_ses is null then raise exception '293: davet kabulunde oturum satiri olusmadi'; end if;
-  if v_st <> 'pending' then
-    raise exception '293: davet kabulu oturumu % yapti (pending bekleniyordu)', v_st;
-  end if;
-  raise notice '293 sinama 1 ✓ davet kabulu → oturum ''pending'' (cift onay korunuyor)';
-
-  -- 2) Host, daveti kabul edilmiş ilanı ZORLA geri çekebilmeli
-  perform set_config('request.jwt.claims',
-    json_build_object('sub', hd::text, 'role', 'authenticated')::text, true);
-  sonuc := public.cancel_availability(av, true);
-  if (sonuc ->> 'ok') is distinct from 'true' then
-    raise exception '293: zorlu kaldirma hala dusuyor';
-  end if;
-  if (select active from availabilities where id = av) then
-    raise exception '293: ilan pasife dusmedi';
-  end if;
-  select status::text into v_st from sessions where id = v_ses;
-  if v_st <> 'cancelled' then
-    raise exception '293: baslamamis oturum satiri yetim kaldi (%)', v_st;
-  end if;
-  raise notice '293 sinama 2 ✓ davet kabul edilmis ilan ZORLA geri cekildi · oturum %', v_st;
-
-  -- 3) GERÇEKTEN başlamış buluşma hâlâ korunmalı
-  insert into availabilities (host_id, airport_code, lounge_id, avail_date, time_from, time_to, slots, active)
-    values (hd, 'IST', lng, public.yerel_gun('IST') + 6, time '10:00', time '13:00', 2, true)
-    returning id into av;
-  insert into requests (guest_id, host_id, avail_id, status) values (g, hd, av, 'accepted') returning id into rq;
-  insert into sessions (request_id, status, started_at) values (rq, 'active', now());
-  begin
-    perform public.cancel_availability(av, true);
-    raise exception '293: BASLAMIS oturumda kaldirma engellenmedi';
-  exception when others then
-    if SQLERRM <> 'session_started' then raise; end if;
-    raise notice '293 sinama 3 ✓ gercekten baslamis bulusma korunuyor (session_started)';
-  end;
-
-  raise exception 'GERI_AL_SINAMA';
-exception
-  when others then
-    if SQLERRM <> 'GERI_AL_SINAMA' then raise; end if;
-    raise notice '293 sinama: tum veri geri alindi';
-end $$;
+-- ════════════════════════════════════════════════════════════════════════════
+-- C. BİLDİRİM METİNLERİ — canlı gövdeye EN KÜÇÜK yama (desen bulunmazsa HATA;
+--    zaten yamalıysa dokunmaz). Yardımcı dosya sonunda silinir.
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- ----------------------------------------------------------------------
 -- create_report   [etkin kaynak: 042_reports_and_sos.sql]
@@ -6186,35 +5228,38 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- start_session_request   [etkin kaynak: 080_session_lifecycle.sql]
+-- start_session_request   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.start_session_request(p_request_id uuid)
-returns jsonb language plpgsql security definer set search_path = public as $$
+returns jsonb language plpgsql security definer set search_path = public as $function$
 declare
   v_uid uuid := auth.uid(); v_req requests%rowtype; v_s sessions%rowtype;
-  v_is_host boolean; v_both boolean; v_id uuid;
+  v_is_host boolean; v_both boolean; v_ad text; v_diger text; v_salon text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
+  perform public.hesap_kapisi(v_uid);
   select * into v_req from requests where id = p_request_id;
   if not found then raise exception 'request_not_found'; end if;
   if v_uid not in (v_req.host_id, v_req.guest_id) then raise exception 'not_party'; end if;
   if v_req.status <> 'accepted' then raise exception 'request_not_accepted'; end if;
   v_is_host := (v_uid = v_req.host_id);
+  v_ad := public.kisa_ad(v_uid);
+  v_salon := public.salon_etiketi(v_req.avail_id);
 
   select * into v_s from sessions where request_id = p_request_id for update;
   if not found then
-    insert into sessions (request_id, status,
-                          host_started_at, guest_started_at)
+    insert into sessions (request_id, status, host_started_at, guest_started_at)
     values (p_request_id, 'pending',
             case when v_is_host then now() end,
             case when not v_is_host then now() end)
     returning * into v_s;
-    -- karşı tarafa "seni bekliyor" bildirimi
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (case when v_is_host then v_req.guest_id else v_req.host_id end,
-            'sessions', 'Oturum başlatılmayı bekliyor',
-            'Karşı taraf buluştuğunuzu işaretledi. Sen de onaylayınca oturum başlar.',
-            'session', v_s.id);
+    perform public.bildir(case when v_is_host then v_req.guest_id else v_req.host_id end, 'sessions',
+      v_ad || ' oturumu başlattı',
+      v_salon || ' — buluştuysanız sen de "Oturumu Başlat"a bas; ikiniz de basınca oturum başlar.',
+      v_ad || ' started the session',
+      v_salon || ' — if you have met, tap "Start session" too; it begins when you both tap.',
+      'session', v_s.id);
     return jsonb_build_object('ok', true, 'id', v_s.id, 'status', 'pending', 'both', false);
   end if;
 
@@ -6222,6 +5267,17 @@ begin
     return jsonb_build_object('ok', true, 'id', v_s.id, 'status', 'active', 'both', true);
   end if;
   if v_s.status <> 'pending' then raise exception 'session_closed'; end if;
+
+  -- Karşı taraf henüz basmadıysa ve ben ilk kez basıyorsam ona haber ver.
+  if (v_is_host and v_s.host_started_at is null and v_s.guest_started_at is null)
+     or (not v_is_host and v_s.guest_started_at is null and v_s.host_started_at is null) then
+    perform public.bildir(case when v_is_host then v_req.guest_id else v_req.host_id end, 'sessions',
+      v_ad || ' oturumu başlattı',
+      v_salon || ' — buluştuysanız sen de "Oturumu Başlat"a bas; ikiniz de basınca oturum başlar.',
+      v_ad || ' started the session',
+      v_salon || ' — if you have met, tap "Start session" too; it begins when you both tap.',
+      'session', v_s.id);
+  end if;
 
   update sessions
      set host_started_at  = case when v_is_host then coalesce(host_started_at, now()) else host_started_at end,
@@ -6235,72 +5291,82 @@ begin
        set status = 'active', started_at = now(),
            cancel_grace_until = now() + interval '5 minutes'
      where id = v_s.id;
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    select u, 'sessions', 'Oturum başladı ⏱',
-           'İlk 5 dakika içinde iptal edersen kredin iade edilir.', 'session', v_s.id
-      from unnest(array[v_req.host_id, v_req.guest_id]) u;
+    v_diger := public.kisa_ad(case when v_is_host then v_req.guest_id else v_req.host_id end);
+    perform public.bildir(v_req.host_id, 'sessions', 'Oturum başladı ⏱',
+      public.kisa_ad(v_req.guest_id) || ' ile · ' || v_salon || '. İlk 5 dakika içinde iptal edersen kredi iade edilir.',
+      'Session started ⏱',
+      'With ' || public.kisa_ad(v_req.guest_id) || ' · ' || v_salon || '. Cancel within 5 minutes for a refund.',
+      'session', v_s.id);
+    perform public.bildir(v_req.guest_id, 'sessions', 'Oturum başladı ⏱',
+      public.kisa_ad(v_req.host_id) || ' ile · ' || v_salon || '. İlk 5 dakika içinde iptal edersen kredin iade edilir.',
+      'Session started ⏱',
+      'With ' || public.kisa_ad(v_req.host_id) || ' · ' || v_salon || '. Cancel within 5 minutes for a refund.',
+      'session', v_s.id);
   end if;
 
   return jsonb_build_object('ok', true, 'id', v_s.id,
                             'status', case when v_both then 'active' else 'pending' end,
                             'both', v_both);
-end $$;
+end $function$;
 
 -- ----------------------------------------------------------------------
--- cancel_session   [etkin kaynak: 080_session_lifecycle.sql]
+-- cancel_session   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.cancel_session(p_session_id uuid, p_reason text default null)
-returns jsonb language plpgsql security definer set search_path = public as $$
+returns jsonb language plpgsql security definer set search_path = public as $function$
 declare
   v_uid uuid := auth.uid(); v_s sessions%rowtype; v_req requests%rowtype;
-  v_late boolean; v_bal int; v_other uuid;
+  v_late boolean; v_other uuid; v_ad text; v_salon text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   select * into v_s from sessions where id = p_session_id for update;
   if not found then raise exception 'session_not_found'; end if;
-  select * into v_req from requests where id = v_s.request_id;
+  select * into v_req from requests where id = v_s.request_id for update;
   if v_uid not in (v_req.host_id, v_req.guest_id) then raise exception 'not_party'; end if;
   if v_s.status not in ('pending','active') then raise exception 'session_closed'; end if;
   v_other := case when v_uid = v_req.host_id then v_req.guest_id else v_req.host_id end;
+  v_ad := public.kisa_ad(v_uid);
+  v_salon := public.salon_etiketi(v_req.avail_id);
 
-  -- GEÇ İPTAL: oturum aktif VE 5 dakikalık pencere kapandıysa
   v_late := (v_s.status = 'active'
              and v_s.cancel_grace_until is not null
              and now() > v_s.cancel_grace_until);
 
   update sessions
      set status = 'cancelled', cancelled_by = v_uid,
-         cancel_reason = coalesce(nullif(trim(p_reason),''), case when v_late then 'late_cancel' else 'cancelled' end),
+         cancel_reason = case when v_late then 'late_cancel' else 'cancelled' end,
+         cancel_note   = nullif(left(trim(coalesce(p_reason,'')), 200), ''),
          completed_at = now()
    where id = p_session_id;
-  update requests set status = 'cancelled' where id = v_s.request_id;
-  -- slot iadesi: trg_requests_sync_filled otomatik
+  -- slot iadesi: trg_requests_sync_filled (accepted → cancelled)
+  update requests set status = 'cancelled', responded_at = coalesce(responded_at, now())
+   where id = v_s.request_id and status in ('pending','accepted');
 
   if v_late then
-    -- Kredi YANAR (misafirin escrow'u kullanılmış sayılır) ve iptal EDENİN
-    -- güveni düşer. Karşı taraf hiçbir şey kaybetmez.
     insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
     select v_req.guest_id, 0, 'late_cancel_forfeit', p_session_id, coalesce(sum(delta),0)
       from credit_ledger where user_id = v_req.guest_id;
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (v_other, 'sessions', 'Oturum iptal edildi',
-            'Karşı taraf oturumu geç iptal etti. Bu durum güven puanına yansıdı; sen etkilenmedin.',
-            'session', p_session_id);
+    perform public.bildir(v_other, 'sessions',
+      v_ad || ' oturumu iptal etti',
+      v_salon || ' — geç iptal güven puanına yansıdı; sen etkilenmedin.',
+      v_ad || ' cancelled the session',
+      v_salon || ' — the late cancellation affected their trust score; you are not affected.',
+      'session', p_session_id);
   else
-    -- Serbest iptal: kredi iade, ceza yok.
-    select coalesce(sum(delta),0) into v_bal from credit_ledger where user_id = v_req.guest_id;
-    insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
-    values (v_req.guest_id, 1, 'session_cancel_refund', p_session_id, v_bal + 1);
-    insert into notifications (user_id, category, title, body, ref_type, ref_id)
-    values (v_other, 'sessions', 'Oturum iptal edildi',
-            'Plan değişmiş. Kredi iade edildi, kimsenin puanı etkilenmedi.',
-            'session', p_session_id);
+    perform public.istek_kredisi_iade(v_req.id, 'session_cancel_refund', p_session_id);
+    perform public.bildir(v_other, 'sessions',
+      v_ad || ' oturumu iptal etti',
+      v_salon || ' — kredi iade edildi, kimsenin puanı etkilenmedi.',
+      v_ad || ' cancelled the session',
+      v_salon || ' — credit refunded, nobody''s score was affected.',
+      'session', p_session_id);
   end if;
 
   perform public.recompute_trust(v_uid);
   perform public.recompute_trust(v_other);
   return jsonb_build_object('ok', true, 'late', v_late);
-end $$;
+end $function$;
 
 -- ----------------------------------------------------------------------
 -- expire_stale_sessions   [etkin kaynak: 300_uctan_uca_denetim.sql]
@@ -17065,36 +16131,13 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- kural_sorusu_uygun_mu   [etkin kaynak: 221_hosta_sor.sql]
+-- kural_sorusu_uygun_mu   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.kural_sorusu_uygun_mu(p_avail_id uuid)
-returns boolean language plpgsql stable security definer set search_path = public as $$
-declare d jsonb;
-begin
-  d := public.lounge_access_decision(p_avail_id, null);
-
-  -- Bilinmeyen ilan: soracak bir şey yok.
-  if not coalesce((d ->> 'known')::boolean, false) then return false; end if;
-
-  -- Yalnız "misafir hakkı yok" durumunda sorulur.
-  if coalesce(d ->> 'guest_policy','') <> 'not_allowed' then return false; end if;
-
-  -- 🔴 KESİNLİK KAPISI. `confidence` 'verified' ise resmî kaynaktan
-  -- doğrulamışız demektir; host'a sormak hem onu rahatsız eder hem
-  -- bizim doğruladığımız bilgiyi tartışmaya açar.
-  if coalesce(d ->> 'confidence','') = 'verified' then return false; end if;
-
-  -- Charter / taşıyıcı uyuşmazlığı host'un beyanıyla çözülmez —
-  -- bunlar misafirin KENDİ uçuşundan doğan engeller.
-  if coalesce((d ->> 'charter')::boolean, false) then return false; end if;
-  if coalesce(d ->> 'carrier_ok','') = 'false' then return false; end if;
-
-  return true;
-exception when others then
-  -- Emin olamadığımız yerde buton GÖSTERMEYİZ. Yanlışlıkla gösterip
-  -- host'a gereksiz bildirim yollamaktansa fırsatı kaçırmak yeğdir.
-  return false;
-end $$;
+returns boolean language sql stable security definer set search_path = public as $$
+  select public.kural_sorusu_durumu(p_avail_id) = 'uygun'
+$$;
 
 -- ----------------------------------------------------------------------
 -- ilan_kurali_sor   [etkin kaynak: 223_sinirlar_dogruyu_soylesin.sql]
@@ -24923,120 +23966,61 @@ on conflict (key) do nothing;
 -- ════════════════════════════════════════════════════════════════════════
 
 -- ----------------------------------------------------------------------
--- bildirim_hedefi   [etkin kaynak: 266_eksik_bildirimler.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- bildirim_hedefi   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.bildirim_hedefi(p_id uuid)
-returns jsonb language plpgsql stable security definer set search_path = public as $bh266$
-declare v_uid uuid := auth.uid(); n record;
+returns jsonb language plpgsql stable security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid(); n record; v_req requests%rowtype; v_cr connection_requests%rowtype; v_rid uuid;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   select * into n from notifications where id = p_id and user_id = v_uid;
   if n.id is null then return jsonb_build_object('ekran', null); end if;
 
-  -- ÖNCE ref_type: en özel eşleşme kazanır.
   if n.ref_type = 'message' then
     return jsonb_build_object('ekran', 'sohbet', 'ref', n.ref_id);
   elsif n.ref_type = 'rate_reminder' then
     return jsonb_build_object('ekran', 'degerlendirmeler', 'ref', n.ref_id);
-  elsif n.ref_type = 'trip_reminder' then
-    return jsonb_build_object('ekran', 'plan', 'alt', 'seyahat', 'ref', n.ref_id);
+  elsif n.ref_type = 'trip_reminder' or n.ref_type = 'meet_soon' then
+    return jsonb_build_object('ekran', 'istek_sohbet', 'ref', n.ref_id);
+  elsif n.ref_type = 'question' then
+    return jsonb_build_object('ekran', 'akis', 'alt', 'soru', 'ref', n.ref_id);
+  elsif n.ref_type = 'invite' then
+    return jsonb_build_object('ekran', 'akis', 'alt', 'davet', 'ref', n.ref_id);
+  elsif n.ref_type = 'session' then
+    select request_id into v_rid from sessions where id = n.ref_id;
+    if v_rid is not null then
+      return jsonb_build_object('ekran', 'istek_sohbet', 'ref', v_rid);
+    end if;
+    return jsonb_build_object('ekran', 'akis', 'alt', 'sohbet');
+  elsif n.ref_type = 'request' then
+    select * into v_req from requests where id = n.ref_id;
+    if v_req.id is not null and v_req.status in ('accepted','completed') then
+      return jsonb_build_object('ekran', 'istek_sohbet', 'ref', v_req.id);
+    end if;
+    return jsonb_build_object('ekran', 'akis', 'alt', 'istek', 'ref', n.ref_id);
+  elsif n.ref_type = 'connection' then
+    select * into v_cr from connection_requests where id = n.ref_id;
+    if v_cr.id is not null and coalesce(v_cr.intent,'') = 'kural_sorusu' then
+      return jsonb_build_object('ekran', 'akis', 'alt', 'soru', 'ref', n.ref_id);
+    elsif v_cr.id is not null and v_cr.status = 'accepted' then
+      return jsonb_build_object('ekran', 'akis', 'alt', 'baglanti', 'ref', n.ref_id);
+    elsif v_cr.id is not null and v_cr.status = 'pending' and v_cr.to_id = v_uid then
+      return jsonb_build_object('ekran', 'akis', 'alt', 'davet', 'ref', n.ref_id);
+    end if;
+    return jsonb_build_object('ekran', 'tanis', 'ref', n.ref_id);
   end if;
 
   return case n.category::text
-    when 'requests'    then jsonb_build_object('ekran','plan','alt','ilan','ref', n.ref_id)
-    when 'sessions'    then jsonb_build_object('ekran','plan','alt','ilan','ref', n.ref_id)
-    when 'invites'     then jsonb_build_object('ekran','plan','alt','seyahat','ref', n.ref_id)
+    when 'requests'    then jsonb_build_object('ekran','akis','alt','istek','ref', n.ref_id)
+    when 'sessions'    then jsonb_build_object('ekran','akis','alt','sohbet','ref', n.ref_id)
+    when 'invites'     then jsonb_build_object('ekran','akis','alt','davet','ref', n.ref_id)
     when 'connections' then jsonb_build_object('ekran','tanis','ref', n.ref_id)
     when 'credits'     then jsonb_build_object('ekran','cuzdan')
     when 'ratings'     then jsonb_build_object('ekran','degerlendirmeler','ref', n.ref_id)
     when 'safety'      then jsonb_build_object('ekran','guvenlik')
     else jsonb_build_object('ekran', null) end;
-end $bh266$;
-
-grant execute on function public.bildirim_hedefi(uuid) to authenticated;
-
--- ════════════════════════════════════════════════════════════════════════
--- §5 — NÖBETÇİ
---
--- 🔴 "Tetikleyici kuruldu" ile "bildirim üretiliyor" aynı şey değil.
--- Nöbetçi GERÇEK BİR MESAJ yazıp bildirimin doğduğunu görüyor, sonra
--- geri alıyor.
--- ════════════════════════════════════════════════════════════════════════
-do $nb266$
-declare
-  v_host uuid; v_guest uuid; v_av uuid; v_req uuid; v_ch uuid;
-  v_once int; v_sonra int; v_dil_ok boolean;
-begin
-  -- Çeviri katmanı yerinde mi
-  select exists (select 1 from push_ceviri where tr = 'Yeni istek ✦') into v_dil_ok;
-  if not v_dil_ok then
-    raise exception '266 NOBETCI: push_ceviri bos — dil katmani kurulmadi.';
-  end if;
-
-  if not exists (select 1 from pg_trigger tg join pg_class c on c.oid = tg.tgrelid
-                  where c.relname='messages' and tg.tgname='trg_mesaj_bildirimi') then
-    raise exception '266 NOBETCI: mesaj bildirim tetikleyicisi kurulmadi.';
-  end if;
-
-  -- ══════════════════════════════════════════════════════════════════
-  -- GERÇEK AKIŞ DENEMESİ — ALT İŞLEMDE, HER HÂLÜKÂRDA GERİ ALINIYOR.
-  --
-  -- 🔴 İLK YAZIMIM DENEME KAYITLARINI `delete` İLE TEMİZLİYORDU ve
-  -- sıfırdan kurulan bir veritabanında PATLADI:
-  --     ERROR: update or delete on table "requests" violates foreign key
-  --            constraint "sessions_request_id_fkey"
-  -- Çünkü `requests` satırını eklediğim anda bir tetikleyici `sessions`
-  -- satırı da üretiyor; benim temizliğim onu bilmiyordu. Yani nöbetçi,
-  -- ölçtüğü sistemin kendi yan etkilerini takip etmek zorunda kalıyordu.
-  --
-  -- 🆕 SINIF: "BİR TESTİN TEMİZLİĞİNİ ELLE YAZARSAN, TEST ETTİĞİN
-  -- SİSTEMİN HER YENİ YAN ETKİSİNİ DE ELLE TAKİP ETMEK ZORUNDA
-  -- KALIRSIN — GERİ ALMAYI VERİTABANINA BIRAK."
-  --
-  -- PL/pgSQL'de `begin ... exception` bir ALT İŞLEM açar. Sonunda
-  -- bilerek istisna fırlatıyoruz: alt işlem geri alınır, ne eklediysek
-  -- (tetikleyicilerin ürettikleri dahil) yok olur.
-  begin
-    select id into v_host  from users order by created_at limit 1;
-    select id into v_guest from users where id <> v_host order by created_at limit 1;
-    if v_host is null or v_guest is null then
-      raise notice '266 NOBETCI: iki kullanici yok, canli akis denemesi ATLANDI.';
-    else
-      insert into availabilities (host_id, airport_code, avail_date, time_from, time_to, slots, active)
-      values (v_host, (select code from airports limit 1), current_date + 3, '10:00', '12:00', 1, true)
-      returning id into v_av;
-      insert into requests (avail_id, guest_id, host_id, status)
-      values (v_av, v_guest, v_host, 'accepted') returning id into v_req;
-      insert into chat_channels (request_id, kind) values (v_req, 'lounge') returning id into v_ch;
-
-      select count(*) into v_once from notifications
-       where user_id = v_host and ref_type = 'message';
-      insert into messages (channel_id, from_id, body) values (v_ch, v_guest, 'A7 kapisindayim');
-      select count(*) into v_sonra from notifications
-       where user_id = v_host and ref_type = 'message';
-
-      if v_sonra <= v_once then
-        raise exception '266 NOBETCI KIRMIZI: mesaj yazildi ama BILDIRIM URETILMEDI (% → %).', v_once, v_sonra;
-      end if;
-      raise notice '266 NOBETCI: mesaj → bildirim zinciri CALISIYOR (% → %).', v_once, v_sonra;
-    end if;
-    -- Denemeyi geri al.
-    raise exception 'NOBETCI_GERI_AL';
-  exception
-    when others then
-      if sqlerrm <> 'NOBETCI_GERI_AL' then raise; end if;
-  end;
-
-  raise notice '266 NOBETCI OK: mesaj bildirimi · alici dili · iki hatirlatma · hedef cozucu.';
-end $nb266$;
-
--- (Nöbetçinin deneme kayıtları artık ALT İŞLEMDE geri alınıyor — yukarıya
---  bak. Elle `delete` yazan eski blok kaldırıldı: `requests` silmek
---  tetikleyicinin ürettiği `sessions` satırına takılıyordu ve nöbetçi,
---  ölçtüğü sistemin yan etkilerini takip etmek zorunda kalıyordu.)
-
-commit;
+end $function$;
 
 -- ----------------------------------------------------------------------
 -- sohbet_temizle   [etkin kaynak: 255_magaza_sartlari.sql]
@@ -25934,8 +24918,8 @@ select '257 KURULDU' as sonuc,
        (to_regnamespace('net') is not null)  as pg_net_var;
 
 -- ----------------------------------------------------------------------
--- create_request_impl_preflag   [etkin kaynak: 283_kural_motoru_on_iki_boyut.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- create_request_impl_preflag   [etkin kaynak: 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.create_request_impl_preflag(p_avail_id uuid, p_type text DEFAULT 'lounge'::text, p_intro text DEFAULT NULL::text, p_idem text DEFAULT NULL::text)
  RETURNS jsonb
@@ -25943,111 +24927,225 @@ CREATE OR REPLACE FUNCTION public.create_request_impl_preflag(p_avail_id uuid, p
  SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
+
 declare
+
   v_uid uuid := auth.uid(); v_av availabilities%rowtype;
+
   v_ok boolean; v_bal int; v_score int; v_req_id uuid; v_has_trip boolean;
+
   v_conflict boolean; v_cost int;
+
 begin
+
   if v_uid is null then raise exception 'not_authenticated'; end if;
+
   perform public.hesap_kapisi(v_uid);   -- 282/B1: yasakli/silinmis hesap yazamaz
 
+
+
   if p_idem is not null then
+
     select id into v_req_id from requests
+
      where idempotency_key = p_idem and guest_id = v_uid;
+
     if v_req_id is not null then return jsonb_build_object('ok', true, 'id', v_req_id, 'idempotent', true); end if;
+
   end if;
+
+
 
   v_ok := public.is_contact_verified(v_uid);
+
   if not v_ok then raise exception 'contact_not_verified'; end if;
 
+
+
   select * into v_av from availabilities where id = p_avail_id for update;
+
   if not found or not v_av.active then raise exception 'availability_not_found'; end if;
+
   if v_av.host_id = v_uid then raise exception 'self_request_blocked'; end if;
 
+
+
   if public.is_blocked_pair(v_uid, v_av.host_id) then
+
     raise exception 'blocked_pair';
+
   end if;
 
+
+
   if v_av.filled >= v_av.slots then raise exception 'fully_booked'; end if;
+
   if v_av.avail_date < current_date then raise exception 'availability_expired'; end if;
 
+
+
   select exists (
+
     select 1 from availabilities a
+
      where a.host_id = v_uid and a.active
+
        and a.avail_date = v_av.avail_date
+
        and a.time_from < v_av.time_to and v_av.time_from < a.time_to
+
   ) into v_conflict;
+
   if v_conflict then raise exception 'hosting_same_slot'; end if;
 
+
+
   select exists (
+
     select 1 from visits v
+
      where v.user_id = v_uid and v.airport_code = v_av.airport_code
+
        and v.visit_date = v_av.avail_date
+
        and v.time_from < v_av.time_to and v_av.time_from < v.time_to
+
   ) into v_has_trip;
+
   if not v_has_trip then raise exception 'no_matching_trip'; end if;
 
+
+
   declare v_dec jsonb;
+
   begin
+
     -- 281/R2: karar ARTIK v5 ve MİSAFİRİN KENDİ UÇUŞUYLA veriliyor.
+
     -- Uçuş, ilanla çakışan seyahat kaydından okunuyor (v_has_trip zaten
+
     -- birinin varlığını kanıtladı). Ekranın gördüğü kararla sunucunun
+
     -- uyguladığı karar aynı fonksiyondan çıkıyor — iki motor değil, bir.
+
     declare v_gf text; v_gc text; v_gvid uuid;
+
     begin
+
       select v.flight_number, v.carrier_code, v.id into v_gf, v_gc, v_gvid
+
         from visits v
+
        where v.user_id = v_uid
+
          and v.airport_code = v_av.airport_code
+
          and v.visit_date = v_av.avail_date
+
          and v.time_from < v_av.time_to and v_av.time_from < v.time_to
+
        order by (v.flight_number is not null) desc, v.created_at desc
+
        limit 1;
+
       v_dec := public.lounge_access_decision_v6(p_avail_id, v_gf, v_gc, v_gvid);   -- 283: on iki boyut
+
     end;
+
     if (v_dec ->> 'block_code') is not null then
+
       raise exception '%', (v_dec ->> 'block_code');   -- 283: party_too_big / scope_mismatch / quota_exhausted / cabin_required / children_not_allowed
+
     end if;
+
     if (v_dec ->> 'guest_policy') = 'not_allowed'
+
        or ((v_dec ->> 'severity') = 'block' and coalesce((v_dec ->> 'fits')::text,'') <> 'false') then
+
       raise exception 'guests_not_allowed';
+
     end if;
+
     -- Havayolu şartı KESİN (enforcement=block) ve misafirin uçuşu
+
     -- uymuyorsa istek SUNUCUDA durur — onay kutusuyla geçilemez.
-    if (v_dec ->> 'carrier_ok') = 'false' and (v_dec ->> 'enforcement') = 'block' then
+
+    -- 310: taşıyıcı uyuşmazlığı KESİN engel (Keşfet rozeti ile AYNI kural: program bilinir ve
+    -- banka kartı değilse). Eskiden yalnız enforcement=block satırlarda duruyordu; THY/AJet
+    -- satırlarının çoğu 'warn' olduğundan uygulamayı atlayan doğrudan çağrı geçebiliyordu.
+    if (v_dec ->> 'carrier_ok') = 'false' and (v_dec ->> 'program_id') is not null
+       and coalesce(v_dec ->> 'entitlement_model', '') <> 'bank_card' then
+
       raise exception 'guest_carrier_mismatch';
+
     end if;
+
   end;
 
+
+
   -- 🔴 207: BEDEL ARTIK MERTEBEDEN OKUNUYOR, sabit -1 değil.
+
   v_cost := public.request_credit_cost(v_uid, p_avail_id);
 
+
+
+  -- 299/B2: bakiye ARTIK KILITLI okunuyor (kullanici basina).
+
+  perform pg_advisory_xact_lock(hashtextextended('kredi:' || v_uid::text, 0));
+
   select coalesce(sum(delta),0) into v_bal from credit_ledger where user_id = v_uid;
+
   if v_bal < v_cost then raise exception 'insufficient_credits'; end if;
 
+
+
   select match_score into v_score from discover_availabilities(v_av.airport_code, null, null)
+
    where id = p_avail_id limit 1;
 
+
+
   insert into requests (guest_id, host_id, avail_id, status, type, purpose, intro_message, match_score, idempotency_key)
+
   values (v_uid, v_av.host_id, p_avail_id, 'pending', 'standard'::request_type, coalesce(p_type,'lounge'),
+
           left(coalesce(p_intro,''),120), coalesce(v_score,40), p_idem)
+
   returning id into v_req_id;
 
+
+
   -- Bedel 0 ise defter satırı YİNE DE yazılır: "bu istek Konsiyerj
+
   -- ayrıcalığıyla ücretsizdi" bilgisi kaybolmamalı.
+
   insert into credit_ledger (user_id, delta, reason, ref_id, balance_after, note)
+
   values (v_uid, -v_cost,
+
           case when v_cost = 0 then 'request_free_tier' else 'request_hold' end,
+
           v_req_id, v_bal - v_cost,
+
           case when v_cost = 0 then (case when public.request_credit_cost(v_uid) = 0
+
             then 'Konsiyerj ayricaligi: istek kredi harcamadi'
+
             else 'Soguk ag: bu havalimaninda yeterli host yok, istek kredi harcamadi' end) end);
 
+
+
   insert into notifications (user_id, category, title, body, ref_type, ref_id)
+
   values (v_av.host_id, 'requests', 'Yeni istek ✦',
+
           'Bir misafir lounge isteği gönderdi.', 'request', v_req_id);
 
+
+
   return jsonb_build_object('ok', true, 'id', v_req_id, 'kredi_bedeli', v_cost);
+
 end $function$;
 
 CREATE OR REPLACE FUNCTION public.request_precheck_pregate(p_avail_id uuid)
@@ -26056,154 +25154,357 @@ CREATE OR REPLACE FUNCTION public.request_precheck_pregate(p_avail_id uuid)
  STABLE SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
+
 declare
+
   v_uid uuid := auth.uid(); v_av availabilities%rowtype; v_flight text; v_carrier text;
+
   v_prog lounge_programs%rowtype; d jsonb; v_can boolean := true; v_ack boolean := false;
+
   v_credit int; v_tut int := 1; v_bal int; v_qnote text; v_cnote text;
+
   v_tier text; v_head text; v_key text; v_detail text; v_more text;
+
 begin
+
   -- 🔴 192-seyahat: SUNUCU KAPISININ AYNISI. create_request
+
   -- (007:41) ayni havalimani + AYNI TARIH icin seyahat arar.
+
   -- Precheck bunu hic sormuyordu; ekran "gonderebilirsin" deyip
+
   -- sunucu ham "no_matching_trip" firlatiyordu.
+
   if not exists (
+
        select 1 from visits v
+
         join availabilities a2 on a2.id = p_avail_id
+
        where v.user_id = auth.uid()
+
          and v.airport_code = a2.airport_code
+
          and v.visit_date  = a2.avail_date)
+
   then
+
     return jsonb_build_object(
+
       'can_request', false, 'kind', 'trip_gate', 'severity', 'block',
+
       'headline', 'Bu tarihte o havalimanında seyahatin yok',
+
       'detail', 'Bu ilan ' || (select to_char(a3.avail_date, 'DD.MM.YYYY')
+
                     || ' tarihinde ' || a3.airport_code
+
                     from availabilities a3 where a3.id = p_avail_id)
+
                  || '. O gün için bir seyahat ekle, ilan hemen başvurulabilir olsun.',
+
       'fix_action', 'add_trip',
+
       'credit_cost', 0, 'credit_hold', 0, 'credit_total', 0);
+
   end if;
+
+
 
   select * into v_av from availabilities where id = p_avail_id;
+
   if not found then return jsonb_build_object('can_request', false, 'headline','İlan bulunamadı.'); end if;
 
+
+
   select v.flight_number, coalesce(v.carrier_code, public.carrier_from_flight(v.flight_number))
+
     into v_flight, v_carrier
+
     from visits v
+
    where v.user_id = v_uid and v.airport_code = v_av.airport_code
+
      and v.visit_date = v_av.avail_date
+
    order by v.created_at desc limit 1;
 
+
+
   d := public.lounge_access_decision_v6(p_avail_id, v_flight, v_carrier,
+
          (select v.id from visits v where v.user_id = v_uid and v.airport_code = v_av.airport_code and v.visit_date = v_av.avail_date order by (coalesce(v.flight_number,'') <> '') desc, v.created_at desc limit 1));   -- 283
+
   select * into v_prog from lounge_programs where id = nullif(d ->> 'program_id','')::uuid;
+
   v_credit := public.paid_guest_credit(p_avail_id);
+
   v_tut := coalesce(public.request_credit_cost(auth.uid(), p_avail_id), 1);
+
   select coalesce(sum(delta),0) into v_bal from credit_ledger where user_id = v_uid;
+
   v_qnote := public.guest_quota_note(v_av.host_id);
+
   v_cnote := public.card_confidence_note(v_av.host_id);
+
   v_tier  := public.card_tier_label(d ->> 'host_tier');
 
+
+
   v_head := case
+
     when coalesce((d ->> 'charter'),'false') = 'true' then public.rule_notice('head_charter')
+
     when (d ->> 'carrier_ok') = 'false' then public.rule_notice('head_carrier_bad')
+
     when (d ->> 'guest_policy') = 'not_allowed' and v_tier is not null
+
       then replace(public.rule_notice('head_tier_no_guest'), '{tier}', v_tier)
+
     when (d ->> 'guest_policy') = 'paid' and v_tier is not null
+
       then replace(public.rule_notice('head_tier_paid'), '{tier}', v_tier)
+
     when (d ->> 'guest_policy') = 'paid' and (d ->> 'fee_payer') = 'member_card'
+
       then public.rule_notice('head_fee_member')
+
     when (d ->> 'guest_policy') = 'paid' then public.rule_notice('head_fee_door')
+
     when (d ->> 'confidence') in ('unknown','assumed') then public.rule_notice('head_unverified')
+
     else d ->> 'headline' end;
 
+
+
   -- 🔴 DETAY: KAPIDA ISE YARAYACAK TEK CUMLE.
+
   -- Onceligi kullanicinin GERI CEVRILME riskine gore veriyoruz:
+
   -- engel sebebi > ucret > kota > kart guveni. En kritik olan basa.
+
   v_key := case
+
     when coalesce((d ->> 'charter'),'false') = 'true' then 'charter'
+
     when (d ->> 'carrier_ok') = 'false' then 'carrier'
+
     when (d ->> 'guest_policy') = 'not_allowed' then 'noguest'
+
     when (d ->> 'guest_policy') = 'paid' then 'paid'
+
     else 'generic' end;
 
+
+
   v_detail := public.clip_text(case v_key
+
     when 'charter' then 'Charter seferde havayolu salonu hakkı yoktur.'
+
     when 'carrier' then 'Bu salon misafirin host ile aynı havayolunda uçmasını istiyor.'
+
     when 'noguest' then 'Host girebiliyor ama yanında misafir götüremiyor.'
+
     when 'paid'    then case (d ->> 'fee_payer')
+
                           when 'member_card' then 'Ücret host''un kartından çekilir.'
+
                           else 'Misafir girişi kapıda ücretlidir.' end
+
     else coalesce(d ->> 'detail', public.rule_notice('rule_notice_generic')) end, 140);
 
+
+
   -- 🔴 GERISI SILINMIYOR, ⓘ ARKASINA GIDIYOR. Kural eksiksiz aktarilir;
+
   -- yalniz HEPSI AYNI ANDA gosterilmez.
+
   v_more := public.clip_text(
+
     trim(both ' ' from concat_ws(' ',
+
       nullif(d ->> 'detail',''), nullif(v_qnote,''), nullif(v_cnote,''),
+
       nullif(d ->> 'source_conflict',''))), 400);
 
+
+
   if v_prog.id is null or v_prog.entitlement_model = 'bank_card' or v_prog.code = 'BANK_CARD' then
+
     return jsonb_build_object(/* 192-kapi: kredi karti dali da SUNUCU KAPISINA uyar.
+
         159'un create_request_impl'i guest_policy='not_allowed' ya da
+
         severity=block olan ilanda 'guests_not_allowed' firlatiyor;
+
         ekran bunu bilmeden 'gonderebilirsin' diyordu. */
+
       'can_request',
+
         not (coalesce(d ->> 'guest_policy','') = 'not_allowed'
+
              or (coalesce(d ->> 'severity','') = 'block'
+
                  and coalesce(d ->> 'fits','') <> 'false')),
+
       'needs_ack', true, 'kind','card_generic',
+
       /* 192-karar: erken donus de kararin politikasini TASIR.
+
          Eskiden bu dal guest_policy'yi hic dondurmuyordu ve
+
          kesif "misafir kabul etmiyor" derken istek ekrani susuyordu. */
+
       'guest_policy', d ->> 'guest_policy',
+
       'guest_allowance', coalesce((d ->> 'guest_included_count')::int, 0),
+
       'severity_src', d ->> 'severity',
+
       'severity','warn','source_label','Kredi kartı avantajı',
+
       'headline','Bu ilandaki hak kredi kartından geliyor',
+
       'credit_cost', 0,
+
       'host_carrier', d ->> 'host_carrier', 'guest_carrier', d ->> 'guest_carrier',
+
       'detail', public.clip_text(public.rule_notice('card_notice_guest'), 140),
+
       'more', v_more);
+
   end if;
+
+
 
   if (d ->> 'severity') = 'block' then
+
     if (d ->> 'block_code') is not null or (d ->> 'enforcement') = 'block' or (d ->> 'carrier_ok') = 'false'
+
        or coalesce((d ->> 'charter'),'false') = 'true' then
+
       v_can := false;
+
     else v_ack := true; end if;
+
+  -- 310: sunucu kapısıyla AYNI — taşıyıcı uyuşmazlığında ön kontrol de "başvuramazsın" der.
+  elsif (d ->> 'carrier_ok') = 'false' and (d ->> 'program_id') is not null
+        and coalesce(d ->> 'entitlement_model', '') <> 'bank_card' then v_can := false;
   elsif (d ->> 'severity') = 'warn' then v_ack := true;
+
   elsif (d ->> 'confidence') = 'unknown' then v_ack := true;
+
   end if;
+
   if v_qnote is not null or v_cnote is not null then v_ack := true; end if;
 
+
+
   return jsonb_build_object(
+
     'can_request', v_can, 'needs_ack', v_ack, 'kind','rule', 'block_code', d ->> 'block_code',
+
     'severity', d ->> 'severity', 'confidence', d ->> 'confidence',
+
     'guest_policy', d ->> 'guest_policy', 'fee_payer', d ->> 'fee_payer',
+
     'flight_coupling', d ->> 'flight_coupling',
+
     'host_carrier', d ->> 'host_carrier', 'guest_carrier', d ->> 'guest_carrier',
+
     'carrier_ok', d -> 'carrier_ok', 'host_tier_label', v_tier,
+
     'source_label', coalesce(v_prog.name,'Lounge hakkı'),
+
     'credit_cost', v_credit,
+
     /* 187-kredi: misafirin cebinden cikan TOPLAM. Ekranda tek
+
        kutuda gosterilmeli: escrow + aktarim. */
+
     'credit_hold', v_tut,
+
     'credit_total', v_tut + coalesce(v_credit, 0), 'credit_balance', v_bal,
+
     'credit_note', case when v_credit > 0
+
       then replace(public.rule_notice('paid_guest_notice'), '{n}', v_credit::text) end,
+
     'headline', public.clip_text(v_head, 70),
+
     'detail', v_detail,
+
     'more', v_more);
+
 end $function$;
 
+-- ── D) İç yardımcılar istemciye kapalı ─────────────────────────────────────
+revoke execute on function public.best_access_for_user(p_user_id uuid, p_venue_id uuid, p_carrier text, p_flight text) from public, anon, authenticated;
+grant execute on function public.best_access_for_user(p_user_id uuid, p_venue_id uuid, p_carrier text, p_flight text) to service_role;
+revoke execute on function public.card_confidence_note(p_user_id uuid) from public, anon, authenticated;
+grant execute on function public.card_confidence_note(p_user_id uuid) to service_role;
+revoke execute on function public.card_self_check(p_user_id uuid) from public, anon, authenticated;
+grant execute on function public.card_self_check(p_user_id uuid) to service_role;
+revoke execute on function public.entry_window_relevant(p_avail_id uuid, p_user_id uuid) from public, anon, authenticated;
+grant execute on function public.entry_window_relevant(p_avail_id uuid, p_user_id uuid) to service_role;
+revoke execute on function public.etkin_plan(p_user uuid) from public, anon, authenticated;
+grant execute on function public.etkin_plan(p_user uuid) to service_role;
+revoke execute on function public.guest_quota_note(p_host_id uuid) from public, anon, authenticated;
+grant execute on function public.guest_quota_note(p_host_id uuid) to service_role;
+revoke execute on function public.hesap_kapisi(p_uid uuid) from public, anon, authenticated;
+grant execute on function public.hesap_kapisi(p_uid uuid) to service_role;
+revoke execute on function public.host_declares_paid_guest(p_host uuid) from public, anon, authenticated;
+grant execute on function public.host_declares_paid_guest(p_host uuid) to service_role;
+revoke execute on function public.host_feature_hours(p_host uuid) from public, anon, authenticated;
+grant execute on function public.host_feature_hours(p_host uuid) to service_role;
+revoke execute on function public.host_rank_bonus(p_host uuid) from public, anon, authenticated;
+grant execute on function public.host_rank_bonus(p_host uuid) to service_role;
+revoke execute on function public.is_contact_verified(p_user uuid) from public, anon, authenticated;
+grant execute on function public.is_contact_verified(p_user uuid) to service_role;
+revoke execute on function public.kesin_ulasilamaz(p_user uuid) from public, anon, authenticated;
+grant execute on function public.kesin_ulasilamaz(p_user uuid) to service_role;
+revoke execute on function public.lounge_access_decision_v6(p_avail_id uuid, p_guest_flight text, p_guest_carrier text, p_guest_visit_id uuid) from public, anon, authenticated;
+grant execute on function public.lounge_access_decision_v6(p_avail_id uuid, p_guest_flight text, p_guest_carrier text, p_guest_visit_id uuid) to service_role;
+revoke execute on function public.partner_gate(p_user uuid, p_lounge uuid) from public, anon, authenticated;
+grant execute on function public.partner_gate(p_user uuid, p_lounge uuid) to service_role;
+revoke execute on function public.partner_gate_preflag(p_user uuid, p_lounge uuid) from public, anon, authenticated;
+grant execute on function public.partner_gate_preflag(p_user uuid, p_lounge uuid) to service_role;
+revoke execute on function public.partner_lounges(p_user uuid) from public, anon, authenticated;
+grant execute on function public.partner_lounges(p_user uuid) to service_role;
+revoke execute on function public.pick_host_program(p_host uuid, p_venue_id uuid) from public, anon, authenticated;
+grant execute on function public.pick_host_program(p_host uuid, p_venue_id uuid) to service_role;
+revoke execute on function public.request_credit_cost(p_user uuid, p_avail uuid) from public, anon, authenticated;
+grant execute on function public.request_credit_cost(p_user uuid, p_avail uuid) to service_role;
+revoke execute on function public.request_credit_cost_ham(p_user uuid, p_avail uuid) from public, anon, authenticated;
+grant execute on function public.request_credit_cost_ham(p_user uuid, p_avail uuid) to service_role;
+revoke execute on function public.ulasilabilir_mi(p_user uuid) from public, anon, authenticated;
+grant execute on function public.ulasilabilir_mi(p_user uuid) to service_role;
+revoke execute on function public.verification_state(p_user uuid) from public, anon, authenticated;
+grant execute on function public.verification_state(p_user uuid) to service_role;
+
+-- ── E) Profil fotoğrafı klasörü başkasına listelenmez ──────────────────────
+-- Kova herkese açık (fotoğraf URL'si yetkili görüntüleyene RPC'den gelir); ama "avatars_read"
+-- politikası HERKESİN her klasörü LİSTELEMESİNE izin veriyordu → 6.2.5'in rastgele dosya adı
+-- listeyle bulunabilirdi. Açık kovada /object/public/ adresi RLS'e bakmaz; mevcut fotoğraflar
+-- görünmeye devam eder. Listeleme/indirme artık yalnız sahibine.
+drop policy if exists "avatars_read" on storage.objects;
+drop policy if exists "avatars_own_read" on storage.objects;
+create policy "avatars_own_read" on storage.objects for select to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- ── Doğrulama ───────────────────────────────────────────────────────────────
 do $$
+declare v_acik int; v_saw int; v_mz int;
 begin
-  if pg_get_functiondef('public.create_request_impl_preflag'::regproc) not like '%lounge_access_decision_v6%' then
-    raise exception '283: create_request_impl_preflag v6 degil'; end if;
-  if pg_get_functiondef('public.request_precheck_pregate'::regproc) not like '%block_code%' then
-    raise exception '283: request_precheck_pregate block_code dondurmuyor'; end if;
-  raise notice '283: create_request_impl_preflag + request_precheck_pregate v6 (acik tanim)';
+  select count(*) into v_acik from pg_proc
+   where pronamespace = 'public'::regnamespace
+     and proname = any(array['best_access_for_user','card_confidence_note','card_self_check','entry_window_relevant','etkin_plan','guest_quota_note','hesap_kapisi','host_declares_paid_guest','host_feature_hours','host_rank_bonus','is_contact_verified','kesin_ulasilamaz','lounge_access_decision_v6','partner_gate','partner_gate_preflag','partner_lounges','pick_host_program','request_credit_cost','request_credit_cost_ham','ulasilabilir_mi','verification_state'])
+     and has_function_privilege('authenticated', oid, 'EXECUTE');
+  select count(*) into v_saw from lounges l join lounge_venues v on v.id = l.venue_id
+   where v.airport_code = 'SAW' and v.name = 'Turkish Airlines CIP Lounge — İç Hat' and l.active;
+  select count(*) into v_mz from lounge_venue_acceptance where conditions like 'Miles&Smiles statüsü bu salonda geçmez%';
+  raise notice '310: iç yardımcı istemciye açık=% (beklenen 0) · SAW THY CIP seçicide=% (beklenen 1) · "geçmez" satırı=% (beklenen 0)',
+    v_acik, v_saw, v_mz;
 end $$;
 
 -- ----------------------------------------------------------------------
@@ -26326,59 +25627,85 @@ begin
 end $nb261$;
 
 -- ----------------------------------------------------------------------
--- ana_sayfa_akisi   [etkin kaynak: 295_ilanin_ikinci_hayati_ve_sayaclar.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- ana_sayfa_akisi   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.ana_sayfa_akisi()
-returns jsonb
-language plpgsql
-stable
-security definer
-set search_path to 'public'
-as $function$
+returns jsonb language plpgsql stable security definer set search_path = public as $function$
 declare
   v_uid uuid := auth.uid();
-  v_sohbet int := 0;
-  v_istek  int := 0;
-  v_davet  int := 0;
-  v_soru   int := 0;
-  v_baglanti int := 0;
-  v_ilan   int := 0;
+  v_sohbet int := 0; v_istek int := 0; v_davet int := 0; v_soru int := 0;
+  v_baglanti int := 0; v_ilan int := 0;
+  g_sohbet timestamptz; g_istek timestamptz; g_davet timestamptz; g_soru timestamptz;
+  y_sohbet boolean; y_istek boolean; y_davet boolean; y_soru boolean;
 begin
   if v_uid is null then
-    return jsonb_build_object('sohbet',0,'istek',0,'davet',0,'soru',0,'baglanti',0,'ilan',0);
+    return jsonb_build_object('sohbet',0,'istek',0,'davet',0,'soru',0,'baglanti',0,'ilan',0,
+                              'yeni', jsonb_build_object('sohbet',false,'istek',false,'davet',false,'soru',false));
   end if;
 
-  -- SOHBETLER: kabul edilmis TUM baglantilarim (engellenenler haric).
   select count(*)::int into v_sohbet
     from connection_requests cr
    where cr.status = 'accepted'
      and (cr.from_id = v_uid or cr.to_id = v_uid)
      and not public.is_blocked_pair(v_uid,
            case when cr.from_id = v_uid then cr.to_id else cr.from_id end);
+  v_sohbet := coalesce(v_sohbet, 0) + (select count(*)::int from requests r
+                where r.status = 'accepted' and (r.host_id = v_uid or r.guest_id = v_uid));
 
-  -- ISTEKLER: bekleyen misafir istekleri — hem bana gelen hem gonderdigim.
   select count(*)::int into v_istek
     from requests r
-   where r.status = 'pending'
-     and (r.host_id = v_uid or r.guest_id = v_uid);
+   where r.status = 'pending' and (r.host_id = v_uid or r.guest_id = v_uid);
 
-  select count(*) filter (where pa.kind = 'invite')::int
-    into v_davet
-    from public.pending_actions() pa;
+  select count(*) filter (where pa.kind = 'invite')::int into v_davet from public.pending_actions() pa;
 
   select count(*)::int into v_soru
-    from public.sorularim() s
-   where coalesce(s.cevap_durumu, '') not in ('yanitlandi', 'acildi');
+    from connection_requests cr
+   where cr.to_id = v_uid and cr.intent = 'kural_sorusu' and cr.status = 'pending'
+     and not public.is_blocked_pair(v_uid, cr.from_id);
+  v_soru := v_soru + (select count(*)::int from public.sorularim() s where s.cevap_durumu = 'bekliyor');
 
   select count(*)::int into v_ilan
     from availabilities a
    where a.host_id = v_uid and a.active and a.avail_date >= current_date;
 
-  -- BAGLANTI: bana gelen bekleyen baglanti istekleri.
   select count(*)::int into v_baglanti
     from connection_requests cr
-   where cr.to_id = v_uid and cr.status = 'pending';
+   where cr.to_id = v_uid and cr.status = 'pending'
+     and coalesce(cr.intent,'') <> 'kural_sorusu';
+
+  -- YENİ bayrakları
+  select coalesce(max(goruldu_at) filter (where alan='sohbet'), now() - interval '24 hours'),
+         coalesce(max(goruldu_at) filter (where alan='istek'),  now() - interval '24 hours'),
+         coalesce(max(goruldu_at) filter (where alan='davet'),  now() - interval '24 hours'),
+         coalesce(max(goruldu_at) filter (where alan='soru'),   now() - interval '24 hours')
+    into g_sohbet, g_istek, g_davet, g_soru
+    from akis_goruldu where user_id = v_uid;
+
+  y_istek := exists (select 1 from requests r
+                      where (r.host_id = v_uid and r.status = 'pending' and r.created_at > g_istek)
+                         or (r.guest_id = v_uid and r.status = 'declined' and r.responded_at > g_istek));
+  y_davet := exists (select 1 from invites i where i.guest_id = v_uid and i.status = 'pending' and i.created_at > g_davet)
+          or exists (select 1 from connection_requests cr
+                      where cr.to_id = v_uid and cr.status = 'pending'
+                        and coalesce(cr.intent,'') <> 'kural_sorusu' and cr.created_at > g_davet);
+  y_soru := exists (select 1 from connection_requests cr
+                     where cr.intent = 'kural_sorusu'
+                       and ((cr.to_id = v_uid and cr.status = 'pending' and cr.created_at > g_soru)
+                         or (cr.from_id = v_uid and coalesce(cr.cevap_at, cr.responded_at) > g_soru)));
+  y_sohbet := exists (select 1 from requests r
+                       where r.guest_id = v_uid and r.status = 'accepted' and r.responded_at > g_sohbet)
+           or exists (select 1 from sessions s join requests r on r.id = s.request_id
+                       where s.status in ('pending','active')
+                         and ((r.host_id = v_uid and (s.guest_started_at > g_sohbet or s.started_at > g_sohbet))
+                           or (r.guest_id = v_uid and (s.host_started_at > g_sohbet or s.started_at > g_sohbet))))
+           or exists (select 1 from messages m
+                        join chat_channels c on c.id = m.channel_id
+                        left join requests r on r.id = c.request_id
+                        left join connection_requests cr on cr.id = c.connection_id
+                       where m.from_id <> v_uid and m.read_at is null and m.created_at > g_sohbet
+                         and ((r.id is not null and v_uid in (r.host_id, r.guest_id) and r.status in ('accepted','completed'))
+                           or (cr.id is not null and v_uid in (cr.from_id, cr.to_id) and cr.status = 'accepted')));
 
   return jsonb_build_object(
     'sohbet', coalesce(v_sohbet, 0),
@@ -26386,81 +25713,14 @@ begin
     'davet',  coalesce(v_davet, 0),
     'soru',   coalesce(v_soru, 0),
     'baglanti', coalesce(v_baglanti, 0),
-    'ilan', coalesce(v_ilan, 0)
+    'ilan', coalesce(v_ilan, 0),
+    'yeni', jsonb_build_object('sohbet', y_sohbet, 'istek', y_istek, 'davet', y_davet, 'soru', y_soru)
   );
 end $function$;
 
-grant execute on function public.ana_sayfa_akisi() to authenticated;
-grant execute on function public.home_connections_prebfilter() to authenticated;
-
-
--- ── Kendi sınaması ──────────────────────────────────────────────────────
-do $$
-declare
-  hd uuid; av uuid; sonuc jsonb; v_once boolean;
-begin
-  -- 1) Pasif ama gunu gelmemis ilan: once kaldir, sonra DUZENLE, sonra AC.
-  -- ⚠️ HOST'UN `guest_capacity`'si OLMALI: `ilani_yeniden_yayinla`
-  -- `create_availability_base`'in kapilarini aynen soruyor ve tohum verisi
-  -- ilanlari o kapidan gecmeden DOGRUDAN insert ediyor. Ilk yazimimda bunu
-  -- atlamistim ve sinama 'no_access_source' ile dustu — kapi dogru
-  -- calisiyordu, SINAMA temsili degildi.
-  select a.host_id, a.id into hd, av
-    from availabilities a
-    join profiles pr on pr.user_id = a.host_id
-   where a.active and a.avail_date > current_date
-     and pr.guest_capacity is not null
-     and a.slots <= pr.guest_capacity
-     and public.is_contact_verified(a.host_id)
-   limit 1;
-  if av is null then raise notice '295 sinama: kapilardan gecen ilan yok, atlandi'; return; end if;
-
-  perform set_config('request.jwt.claims',
-    json_build_object('sub', hd::text, 'role','authenticated')::text, true);
-
-  perform public.cancel_availability(av, true);
-  if (select active from availabilities where id = av) then
-    raise exception '295: ilan pasife dusmedi';
-  end if;
-
-  -- ESKIDEN BURASI 'availability_inactive' ATIYORDU (md.11).
-  sonuc := public.update_availability(av, p_flight => 'TK9999');
-  if (sonuc ->> 'ok') is distinct from 'true' then
-    raise exception '295: pasif ilan duzenlenemedi';
-  end if;
-  if (select flight_number from availabilities where id = av) <> 'TK9999' then
-    raise exception '295: duzenleme yazilmadi';
-  end if;
-
-  sonuc := public.ilani_yeniden_yayinla(av);
-  if (sonuc ->> 'ok') is distinct from 'true' then
-    raise exception '295: yeniden yayinlama dustu';
-  end if;
-  if not (select active from availabilities where id = av) then
-    raise exception '295: ilan yayina donmedi';
-  end if;
-
-  -- Ikinci basis NO-OP olmali, hata degil.
-  sonuc := public.ilani_yeniden_yayinla(av);
-  if (sonuc ->> 'zaten_yayinda') is distinct from 'true' then
-    raise exception '295: ikinci basis no-op degil';
-  end if;
-
-  -- 2) Gunu gecmis pasif ilan HALA reddedilmeli.
-  update availabilities set active = false, avail_date = current_date - 1 where id = av;
-  begin
-    perform public.update_availability(av, p_flight => 'TK0001');
-    raise exception '295: gunu gecmis pasif ilan duzenlenebildi (kapi acik kaldi)';
-  exception when others then
-    if SQLERRM <> 'availability_inactive' then raise; end if;
-  end;
-
-  raise notice '295 sinama: pasif duzenleme + yeniden yayin + gecmis kapisi OK';
-  raise exception 'GERI_AL_SINAMA';
-exception
-  when others then
-    if SQLERRM <> 'GERI_AL_SINAMA' then raise; end if;
-end $$;
+-- ════════════════════════════════════════════════════════════════════════════
+-- C2. HATIRLATMALAR — yazılmıştı ama hiçbir zamanlayıcı çağırmıyordu.
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- ----------------------------------------------------------------------
 -- trg_mesaj_bildirimi   [etkin kaynak: 266_eksik_bildirimler.sql]
@@ -27529,12 +26789,12 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- istegin_acik_oturumu_var_mi   [etkin kaynak: 280_kredi_ve_durum_kilidi.sql]
+-- istegin_acik_oturumu_var_mi   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.istegin_acik_oturumu_var_mi(p_req uuid)
-returns boolean language sql stable set search_path = public as $$
-  select exists (select 1 from sessions s
-                  where s.request_id = p_req and s.status in ('pending','active'))
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from sessions s where s.request_id = p_req and s.status = 'active')
 $$;
 
 -- ----------------------------------------------------------------------
@@ -28272,7 +27532,8 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- request_precheck_pregate   [etkin kaynak: 283_kural_motoru_on_iki_boyut.sql]
+-- request_precheck_pregate   [etkin kaynak: 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.request_precheck_pregate(p_avail_id uuid)
  RETURNS jsonb
@@ -28280,154 +27541,357 @@ CREATE OR REPLACE FUNCTION public.request_precheck_pregate(p_avail_id uuid)
  STABLE SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
+
 declare
+
   v_uid uuid := auth.uid(); v_av availabilities%rowtype; v_flight text; v_carrier text;
+
   v_prog lounge_programs%rowtype; d jsonb; v_can boolean := true; v_ack boolean := false;
+
   v_credit int; v_tut int := 1; v_bal int; v_qnote text; v_cnote text;
+
   v_tier text; v_head text; v_key text; v_detail text; v_more text;
+
 begin
+
   -- 🔴 192-seyahat: SUNUCU KAPISININ AYNISI. create_request
+
   -- (007:41) ayni havalimani + AYNI TARIH icin seyahat arar.
+
   -- Precheck bunu hic sormuyordu; ekran "gonderebilirsin" deyip
+
   -- sunucu ham "no_matching_trip" firlatiyordu.
+
   if not exists (
+
        select 1 from visits v
+
         join availabilities a2 on a2.id = p_avail_id
+
        where v.user_id = auth.uid()
+
          and v.airport_code = a2.airport_code
+
          and v.visit_date  = a2.avail_date)
+
   then
+
     return jsonb_build_object(
+
       'can_request', false, 'kind', 'trip_gate', 'severity', 'block',
+
       'headline', 'Bu tarihte o havalimanında seyahatin yok',
+
       'detail', 'Bu ilan ' || (select to_char(a3.avail_date, 'DD.MM.YYYY')
+
                     || ' tarihinde ' || a3.airport_code
+
                     from availabilities a3 where a3.id = p_avail_id)
+
                  || '. O gün için bir seyahat ekle, ilan hemen başvurulabilir olsun.',
+
       'fix_action', 'add_trip',
+
       'credit_cost', 0, 'credit_hold', 0, 'credit_total', 0);
+
   end if;
+
+
 
   select * into v_av from availabilities where id = p_avail_id;
+
   if not found then return jsonb_build_object('can_request', false, 'headline','İlan bulunamadı.'); end if;
 
+
+
   select v.flight_number, coalesce(v.carrier_code, public.carrier_from_flight(v.flight_number))
+
     into v_flight, v_carrier
+
     from visits v
+
    where v.user_id = v_uid and v.airport_code = v_av.airport_code
+
      and v.visit_date = v_av.avail_date
+
    order by v.created_at desc limit 1;
 
+
+
   d := public.lounge_access_decision_v6(p_avail_id, v_flight, v_carrier,
+
          (select v.id from visits v where v.user_id = v_uid and v.airport_code = v_av.airport_code and v.visit_date = v_av.avail_date order by (coalesce(v.flight_number,'') <> '') desc, v.created_at desc limit 1));   -- 283
+
   select * into v_prog from lounge_programs where id = nullif(d ->> 'program_id','')::uuid;
+
   v_credit := public.paid_guest_credit(p_avail_id);
+
   v_tut := coalesce(public.request_credit_cost(auth.uid(), p_avail_id), 1);
+
   select coalesce(sum(delta),0) into v_bal from credit_ledger where user_id = v_uid;
+
   v_qnote := public.guest_quota_note(v_av.host_id);
+
   v_cnote := public.card_confidence_note(v_av.host_id);
+
   v_tier  := public.card_tier_label(d ->> 'host_tier');
 
+
+
   v_head := case
+
     when coalesce((d ->> 'charter'),'false') = 'true' then public.rule_notice('head_charter')
+
     when (d ->> 'carrier_ok') = 'false' then public.rule_notice('head_carrier_bad')
+
     when (d ->> 'guest_policy') = 'not_allowed' and v_tier is not null
+
       then replace(public.rule_notice('head_tier_no_guest'), '{tier}', v_tier)
+
     when (d ->> 'guest_policy') = 'paid' and v_tier is not null
+
       then replace(public.rule_notice('head_tier_paid'), '{tier}', v_tier)
+
     when (d ->> 'guest_policy') = 'paid' and (d ->> 'fee_payer') = 'member_card'
+
       then public.rule_notice('head_fee_member')
+
     when (d ->> 'guest_policy') = 'paid' then public.rule_notice('head_fee_door')
+
     when (d ->> 'confidence') in ('unknown','assumed') then public.rule_notice('head_unverified')
+
     else d ->> 'headline' end;
 
+
+
   -- 🔴 DETAY: KAPIDA ISE YARAYACAK TEK CUMLE.
+
   -- Onceligi kullanicinin GERI CEVRILME riskine gore veriyoruz:
+
   -- engel sebebi > ucret > kota > kart guveni. En kritik olan basa.
+
   v_key := case
+
     when coalesce((d ->> 'charter'),'false') = 'true' then 'charter'
+
     when (d ->> 'carrier_ok') = 'false' then 'carrier'
+
     when (d ->> 'guest_policy') = 'not_allowed' then 'noguest'
+
     when (d ->> 'guest_policy') = 'paid' then 'paid'
+
     else 'generic' end;
 
+
+
   v_detail := public.clip_text(case v_key
+
     when 'charter' then 'Charter seferde havayolu salonu hakkı yoktur.'
+
     when 'carrier' then 'Bu salon misafirin host ile aynı havayolunda uçmasını istiyor.'
+
     when 'noguest' then 'Host girebiliyor ama yanında misafir götüremiyor.'
+
     when 'paid'    then case (d ->> 'fee_payer')
+
                           when 'member_card' then 'Ücret host''un kartından çekilir.'
+
                           else 'Misafir girişi kapıda ücretlidir.' end
+
     else coalesce(d ->> 'detail', public.rule_notice('rule_notice_generic')) end, 140);
 
+
+
   -- 🔴 GERISI SILINMIYOR, ⓘ ARKASINA GIDIYOR. Kural eksiksiz aktarilir;
+
   -- yalniz HEPSI AYNI ANDA gosterilmez.
+
   v_more := public.clip_text(
+
     trim(both ' ' from concat_ws(' ',
+
       nullif(d ->> 'detail',''), nullif(v_qnote,''), nullif(v_cnote,''),
+
       nullif(d ->> 'source_conflict',''))), 400);
 
+
+
   if v_prog.id is null or v_prog.entitlement_model = 'bank_card' or v_prog.code = 'BANK_CARD' then
+
     return jsonb_build_object(/* 192-kapi: kredi karti dali da SUNUCU KAPISINA uyar.
+
         159'un create_request_impl'i guest_policy='not_allowed' ya da
+
         severity=block olan ilanda 'guests_not_allowed' firlatiyor;
+
         ekran bunu bilmeden 'gonderebilirsin' diyordu. */
+
       'can_request',
+
         not (coalesce(d ->> 'guest_policy','') = 'not_allowed'
+
              or (coalesce(d ->> 'severity','') = 'block'
+
                  and coalesce(d ->> 'fits','') <> 'false')),
+
       'needs_ack', true, 'kind','card_generic',
+
       /* 192-karar: erken donus de kararin politikasini TASIR.
+
          Eskiden bu dal guest_policy'yi hic dondurmuyordu ve
+
          kesif "misafir kabul etmiyor" derken istek ekrani susuyordu. */
+
       'guest_policy', d ->> 'guest_policy',
+
       'guest_allowance', coalesce((d ->> 'guest_included_count')::int, 0),
+
       'severity_src', d ->> 'severity',
+
       'severity','warn','source_label','Kredi kartı avantajı',
+
       'headline','Bu ilandaki hak kredi kartından geliyor',
+
       'credit_cost', 0,
+
       'host_carrier', d ->> 'host_carrier', 'guest_carrier', d ->> 'guest_carrier',
+
       'detail', public.clip_text(public.rule_notice('card_notice_guest'), 140),
+
       'more', v_more);
+
   end if;
+
+
 
   if (d ->> 'severity') = 'block' then
+
     if (d ->> 'block_code') is not null or (d ->> 'enforcement') = 'block' or (d ->> 'carrier_ok') = 'false'
+
        or coalesce((d ->> 'charter'),'false') = 'true' then
+
       v_can := false;
+
     else v_ack := true; end if;
+
+  -- 310: sunucu kapısıyla AYNI — taşıyıcı uyuşmazlığında ön kontrol de "başvuramazsın" der.
+  elsif (d ->> 'carrier_ok') = 'false' and (d ->> 'program_id') is not null
+        and coalesce(d ->> 'entitlement_model', '') <> 'bank_card' then v_can := false;
   elsif (d ->> 'severity') = 'warn' then v_ack := true;
+
   elsif (d ->> 'confidence') = 'unknown' then v_ack := true;
+
   end if;
+
   if v_qnote is not null or v_cnote is not null then v_ack := true; end if;
 
+
+
   return jsonb_build_object(
+
     'can_request', v_can, 'needs_ack', v_ack, 'kind','rule', 'block_code', d ->> 'block_code',
+
     'severity', d ->> 'severity', 'confidence', d ->> 'confidence',
+
     'guest_policy', d ->> 'guest_policy', 'fee_payer', d ->> 'fee_payer',
+
     'flight_coupling', d ->> 'flight_coupling',
+
     'host_carrier', d ->> 'host_carrier', 'guest_carrier', d ->> 'guest_carrier',
+
     'carrier_ok', d -> 'carrier_ok', 'host_tier_label', v_tier,
+
     'source_label', coalesce(v_prog.name,'Lounge hakkı'),
+
     'credit_cost', v_credit,
+
     /* 187-kredi: misafirin cebinden cikan TOPLAM. Ekranda tek
+
        kutuda gosterilmeli: escrow + aktarim. */
+
     'credit_hold', v_tut,
+
     'credit_total', v_tut + coalesce(v_credit, 0), 'credit_balance', v_bal,
+
     'credit_note', case when v_credit > 0
+
       then replace(public.rule_notice('paid_guest_notice'), '{n}', v_credit::text) end,
+
     'headline', public.clip_text(v_head, 70),
+
     'detail', v_detail,
+
     'more', v_more);
+
 end $function$;
 
+-- ── D) İç yardımcılar istemciye kapalı ─────────────────────────────────────
+revoke execute on function public.best_access_for_user(p_user_id uuid, p_venue_id uuid, p_carrier text, p_flight text) from public, anon, authenticated;
+grant execute on function public.best_access_for_user(p_user_id uuid, p_venue_id uuid, p_carrier text, p_flight text) to service_role;
+revoke execute on function public.card_confidence_note(p_user_id uuid) from public, anon, authenticated;
+grant execute on function public.card_confidence_note(p_user_id uuid) to service_role;
+revoke execute on function public.card_self_check(p_user_id uuid) from public, anon, authenticated;
+grant execute on function public.card_self_check(p_user_id uuid) to service_role;
+revoke execute on function public.entry_window_relevant(p_avail_id uuid, p_user_id uuid) from public, anon, authenticated;
+grant execute on function public.entry_window_relevant(p_avail_id uuid, p_user_id uuid) to service_role;
+revoke execute on function public.etkin_plan(p_user uuid) from public, anon, authenticated;
+grant execute on function public.etkin_plan(p_user uuid) to service_role;
+revoke execute on function public.guest_quota_note(p_host_id uuid) from public, anon, authenticated;
+grant execute on function public.guest_quota_note(p_host_id uuid) to service_role;
+revoke execute on function public.hesap_kapisi(p_uid uuid) from public, anon, authenticated;
+grant execute on function public.hesap_kapisi(p_uid uuid) to service_role;
+revoke execute on function public.host_declares_paid_guest(p_host uuid) from public, anon, authenticated;
+grant execute on function public.host_declares_paid_guest(p_host uuid) to service_role;
+revoke execute on function public.host_feature_hours(p_host uuid) from public, anon, authenticated;
+grant execute on function public.host_feature_hours(p_host uuid) to service_role;
+revoke execute on function public.host_rank_bonus(p_host uuid) from public, anon, authenticated;
+grant execute on function public.host_rank_bonus(p_host uuid) to service_role;
+revoke execute on function public.is_contact_verified(p_user uuid) from public, anon, authenticated;
+grant execute on function public.is_contact_verified(p_user uuid) to service_role;
+revoke execute on function public.kesin_ulasilamaz(p_user uuid) from public, anon, authenticated;
+grant execute on function public.kesin_ulasilamaz(p_user uuid) to service_role;
+revoke execute on function public.lounge_access_decision_v6(p_avail_id uuid, p_guest_flight text, p_guest_carrier text, p_guest_visit_id uuid) from public, anon, authenticated;
+grant execute on function public.lounge_access_decision_v6(p_avail_id uuid, p_guest_flight text, p_guest_carrier text, p_guest_visit_id uuid) to service_role;
+revoke execute on function public.partner_gate(p_user uuid, p_lounge uuid) from public, anon, authenticated;
+grant execute on function public.partner_gate(p_user uuid, p_lounge uuid) to service_role;
+revoke execute on function public.partner_gate_preflag(p_user uuid, p_lounge uuid) from public, anon, authenticated;
+grant execute on function public.partner_gate_preflag(p_user uuid, p_lounge uuid) to service_role;
+revoke execute on function public.partner_lounges(p_user uuid) from public, anon, authenticated;
+grant execute on function public.partner_lounges(p_user uuid) to service_role;
+revoke execute on function public.pick_host_program(p_host uuid, p_venue_id uuid) from public, anon, authenticated;
+grant execute on function public.pick_host_program(p_host uuid, p_venue_id uuid) to service_role;
+revoke execute on function public.request_credit_cost(p_user uuid, p_avail uuid) from public, anon, authenticated;
+grant execute on function public.request_credit_cost(p_user uuid, p_avail uuid) to service_role;
+revoke execute on function public.request_credit_cost_ham(p_user uuid, p_avail uuid) from public, anon, authenticated;
+grant execute on function public.request_credit_cost_ham(p_user uuid, p_avail uuid) to service_role;
+revoke execute on function public.ulasilabilir_mi(p_user uuid) from public, anon, authenticated;
+grant execute on function public.ulasilabilir_mi(p_user uuid) to service_role;
+revoke execute on function public.verification_state(p_user uuid) from public, anon, authenticated;
+grant execute on function public.verification_state(p_user uuid) to service_role;
+
+-- ── E) Profil fotoğrafı klasörü başkasına listelenmez ──────────────────────
+-- Kova herkese açık (fotoğraf URL'si yetkili görüntüleyene RPC'den gelir); ama "avatars_read"
+-- politikası HERKESİN her klasörü LİSTELEMESİNE izin veriyordu → 6.2.5'in rastgele dosya adı
+-- listeyle bulunabilirdi. Açık kovada /object/public/ adresi RLS'e bakmaz; mevcut fotoğraflar
+-- görünmeye devam eder. Listeleme/indirme artık yalnız sahibine.
+drop policy if exists "avatars_read" on storage.objects;
+drop policy if exists "avatars_own_read" on storage.objects;
+create policy "avatars_own_read" on storage.objects for select to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- ── Doğrulama ───────────────────────────────────────────────────────────────
 do $$
+declare v_acik int; v_saw int; v_mz int;
 begin
-  if pg_get_functiondef('public.create_request_impl_preflag'::regproc) not like '%lounge_access_decision_v6%' then
-    raise exception '283: create_request_impl_preflag v6 degil'; end if;
-  if pg_get_functiondef('public.request_precheck_pregate'::regproc) not like '%block_code%' then
-    raise exception '283: request_precheck_pregate block_code dondurmuyor'; end if;
-  raise notice '283: create_request_impl_preflag + request_precheck_pregate v6 (acik tanim)';
+  select count(*) into v_acik from pg_proc
+   where pronamespace = 'public'::regnamespace
+     and proname = any(array['best_access_for_user','card_confidence_note','card_self_check','entry_window_relevant','etkin_plan','guest_quota_note','hesap_kapisi','host_declares_paid_guest','host_feature_hours','host_rank_bonus','is_contact_verified','kesin_ulasilamaz','lounge_access_decision_v6','partner_gate','partner_gate_preflag','partner_lounges','pick_host_program','request_credit_cost','request_credit_cost_ham','ulasilabilir_mi','verification_state'])
+     and has_function_privilege('authenticated', oid, 'EXECUTE');
+  select count(*) into v_saw from lounges l join lounge_venues v on v.id = l.venue_id
+   where v.airport_code = 'SAW' and v.name = 'Turkish Airlines CIP Lounge — İç Hat' and l.active;
+  select count(*) into v_mz from lounge_venue_acceptance where conditions like 'Miles&Smiles statüsü bu salonda geçmez%';
+  raise notice '310: iç yardımcı istemciye açık=% (beklenen 0) · SAW THY CIP seçicide=% (beklenen 1) · "geçmez" satırı=% (beklenen 0)',
+    v_acik, v_saw, v_mz;
 end $$;
 
 -- ----------------------------------------------------------------------
@@ -30372,4 +29836,510 @@ begin
   select count(*) into v_d from lounge_venue_acceptance where verified_by like 'lounge(2).zip%' or verified_by = 'kural tabloları.xlsx (Pegasus)';
   raise notice '309: TR M&S yer tutucu kalan=% · SAW THY CIP seçicide=% · IST iç hat kopya seçicide=% · eklenen kabul=%',
     v_ph, v_saw, v_ist, v_d;
+end $$;
+
+-- ----------------------------------------------------------------------
+-- kesfet_ozeti   [etkin kaynak: 311_kesfet_ozeti_tek_kaynak.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.kesfet_ozeti(p_gun integer default 14)
+returns table (airport_code text, canli_ilan integer, host_sayisi integer, acik_slot integer, durum text)
+language plpgsql stable security definer set search_path = public as $fn$
+declare v_uid uuid := auth.uid();
+begin
+  if v_uid is null then return; end if;
+  return query
+  with d as (
+    select k.id, k.host_id, k.airport_code::text as ap, k.slots, k.filled, k.fully_booked
+      from public.discover_availabilities(null, null, null, null) k
+  ), canli as (
+    select d.*
+      from d
+      join availabilities a on a.id = d.id
+      left join airports ap on ap.code = a.airport_code
+     where d.host_id <> v_uid
+       and not coalesce(d.fully_booked, false)
+       and greatest(0, coalesce(d.slots,0) - coalesce(d.filled,0)) > 0
+       and a.avail_date <= current_date + greatest(1, coalesce(p_gun, 14))
+       and (a.avail_date + a.time_to) > (now() at time zone coalesce(ap.timezone, 'Europe/Istanbul'))
+  )
+  select c.ap,
+         count(*)::int,
+         count(distinct c.host_id)::int,
+         coalesce(sum(greatest(0, coalesce(c.slots,0) - coalesce(c.filled,0))), 0)::int,
+         case when count(distinct c.host_id) >= 3 then 'canli'
+              when count(distinct c.host_id) >= 1 then 'isiniyor' else 'soguk' end
+    from canli c
+   group by c.ap
+   order by count(distinct c.host_id) desc, c.ap;
+end $fn$;
+
+revoke all on function public.kesfet_ozeti(integer) from public, anon;
+grant execute on function public.kesfet_ozeti(integer) to authenticated, service_role;
+
+insert into rpc_client_surface (fn_name, client, note)
+values ('kesfet_ozeti', 'app', 'Ana sayfa havalimanı çipleri: Keşfet''in kendi listesinden sayılır (311).')
+on conflict (fn_name) do update set client = excluded.client, note = excluded.note;
+
+do $$
+begin
+  if not exists (select 1 from pg_proc where proname = 'kesfet_ozeti') then
+    raise exception '311: kesfet_ozeti kurulmadı';
+  end if;
+  raise notice '311: kesfet_ozeti hazır (ana sayfa sayıları = Keşfet listesi)';
+end $$;
+
+-- ----------------------------------------------------------------------
+-- kisa_ad   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.kisa_ad(p_uid uuid)
+returns text language sql stable security definer set search_path = public as $$
+  select case
+           when n is null then 'Bir yolcu'
+           when array_length(w, 1) is null or array_length(w, 1) = 1 then n
+           when w[array_length(w, 1)] ~ '^.\.$' then n
+           else w[1] || ' ' || upper(left(w[array_length(w, 1)], 1)) || '.'
+         end
+    from (select nullif(btrim(p.name), '') as n,
+                 regexp_split_to_array(btrim(coalesce(p.name, '')), '\s+') as w
+            from (select 1) x left join profiles p on p.user_id = p_uid) s;
+$$;
+
+-- ----------------------------------------------------------------------
+-- salon_etiketi   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.salon_etiketi(p_avail uuid)
+returns text language sql stable security definer set search_path = public as $$
+  select coalesce(nullif(btrim(a.lounge_name), ''), l.name, a.airport_code::text, 'Lounge')
+    from availabilities a left join lounges l on l.id = a.lounge_id
+   where a.id = p_avail;
+$$;
+
+-- ----------------------------------------------------------------------
+-- bildir   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.bildir(p_user uuid, p_cat text, p_tr_baslik text, p_tr_govde text,
+                                         p_en_baslik text, p_en_govde text, p_ref_type text, p_ref_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+declare v_dil text;
+begin
+  if p_user is null then return; end if;
+  select lower(coalesce(dil, 'tr')) into v_dil from profiles where user_id = p_user;
+  insert into notifications (user_id, category, title, body, ref_type, ref_id)
+  values (p_user, p_cat::notif_category,
+          case when v_dil = 'en' then coalesce(p_en_baslik, p_tr_baslik) else p_tr_baslik end,
+          case when v_dil = 'en' then coalesce(p_en_govde, p_tr_govde) else p_tr_govde end,
+          p_ref_type, p_ref_id);
+end $$;
+
+-- ----------------------------------------------------------------------
+-- _313_yama   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public._313_yama(p_fn regprocedure, p_desen text, p_yeni text, p_isaret text)
+returns text language plpgsql security definer set search_path = public as $y$
+declare g text; y text;
+begin
+  g := pg_get_functiondef(p_fn);
+  if position(p_isaret in g) > 0 then return 'zaten'; end if;
+  y := regexp_replace(g, p_desen, p_yeni);
+  if y = g then raise exception '313: % icinde beklenen desen yok', p_fn; end if;
+  execute y;
+  return 'yamalandi';
+end $y$;
+revoke all on function public._313_yama(regprocedure, text, text, text) from public, anon, authenticated;
+
+do $c$
+declare s text;
+begin
+  -- Yeni istek → host'a: kim, hangi ilan, hangi gün
+  s := public._313_yama('public.create_request_impl_preflag(uuid,text,text,text)'::regprocedure,
+    'insert into notifications \(user_id, category, title, body, ref_type, ref_id\)\s*values \(v_av\.host_id, ''requests'', ''Yeni istek ✦'',\s*''Bir misafir lounge isteği gönderdi\.'', ''request'', v_req_id\);',
+    $r$perform public.bildir(v_av.host_id, 'requests',
+    public.kisa_ad(v_uid) || ' ilanına başvurdu ✦',
+    public.salon_etiketi(v_av.id) || ' · ' || to_char(v_av.avail_date, 'DD.MM') || ' — kabul ya da reddet; yanıt bekleyen istekler İstek ekranında.',
+    public.kisa_ad(v_uid) || ' applied to your listing ✦',
+    public.salon_etiketi(v_av.id) || ' · ' || to_char(v_av.avail_date, 'DD.MM') || ' — accept or decline in Requests.',
+    'request', v_req_id); -- 313_bildirim$r$,
+    '313_bildirim');
+  raise notice '313 create_request: %', s;
+
+  s := public._313_yama('public.send_invite(uuid,uuid,text)'::regprocedure,
+    'insert into notifications \(user_id, category, title, body, ref_type, ref_id\)\s*values \(p_guest, ''requests'', ''Lounge daveti ✦'',\s*coalesce\(v_av\.lounge_name, v_av\.airport_code\) \|\| '' · '' \|\| left\(coalesce\(p_note,''''\),80\), ''invite'', v_id\);',
+    $r$perform public.bildir(p_guest, 'requests',
+    public.kisa_ad(v_uid) || ' seni lounge''a davet etti ✦',
+    public.salon_etiketi(v_av.id) || ' · ' || to_char(v_av.avail_date, 'DD.MM') || coalesce(' — ' || nullif(left(btrim(p_note), 80), ''), ''),
+    public.kisa_ad(v_uid) || ' invited you to the lounge ✦',
+    public.salon_etiketi(v_av.id) || ' · ' || to_char(v_av.avail_date, 'DD.MM') || coalesce(' — ' || nullif(left(btrim(p_note), 80), ''), ''),
+    'invite', v_id); -- 313_bildirim$r$,
+    '313_bildirim');
+  raise notice '313 send_invite: %', s;
+
+  s := public._313_yama('public.respond_invite(uuid,boolean)'::regprocedure,
+    'insert into notifications \(user_id, category, title, body, ref_type, ref_id\)\s*values \(v_i\.host_id, ''requests'', ''Davetin kabul edildi ✓'', ''Sohbet açıldı, oturum başladı\.'', ''request'', v_req\);',
+    $r$perform public.bildir(v_i.host_id, 'requests',
+    public.kisa_ad(v_uid) || ' davetini kabul etti ✓',
+    public.salon_etiketi(v_i.avail_id) || ' — sohbet açıldı. Buluşunca ikiniz de "Oturumu Başlat"a basın.',
+    public.kisa_ad(v_uid) || ' accepted your invite ✓',
+    public.salon_etiketi(v_i.avail_id) || ' — the chat is open. When you meet, both tap "Start session".',
+    'request', v_req); -- 313_bildirim$r$,
+    '313_bildirim');
+  raise notice '313 respond_invite kabul: %', s;
+
+  s := public._313_yama('public.respond_invite(uuid,boolean)'::regprocedure,
+    'insert into notifications \(user_id, category, title, body, ref_type, ref_id\)\s*values \(v_i\.host_id, ''requests'', ''Davetin yanıtlandı'', ''Davet reddedildi\.'', ''invite'', p_id\);',
+    $r$perform public.bildir(v_i.host_id, 'requests',
+    public.kisa_ad(v_uid) || ' bu kez gelemiyor',
+    public.salon_etiketi(v_i.avail_id) || ' davetin için teşekkür etti; yerin açık kaldı.',
+    public.kisa_ad(v_uid) || ' can''t make it this time',
+    'Thanks for the invite to ' || public.salon_etiketi(v_i.avail_id) || '; your spot stays open.',
+    'invite', p_id); -- 313_bildirim_ret$r$,
+    '313_bildirim_ret');
+  raise notice '313 respond_invite ret: %', s;
+
+  s := public._313_yama('public.send_connection(uuid,text,text)'::regprocedure,
+    'insert into notifications \(user_id, category, title, body, ref_type, ref_id\)\s*values \(p_to, ''connections'', ''Yeni bağlantı isteği ◈'',\s*''Bir yolcu seninle bağlantı kurmak istiyor\.'', ''connection'', v_id\);',
+    $r$perform public.bildir(p_to, 'connections',
+    public.kisa_ad(v_uid) || ' seninle bağlantı kurmak istiyor ◈',
+    coalesce(nullif(left(btrim(p_intro), 90), ''), 'Kabul edersen sohbet açılır.'),
+    public.kisa_ad(v_uid) || ' wants to connect ◈',
+    coalesce(nullif(left(btrim(p_intro), 90), ''), 'Accept to open a chat.'),
+    'connection', v_id); -- 313_bildirim$r$,
+    '313_bildirim');
+  raise notice '313 send_connection: %', s;
+
+  -- Mesaj bildirimi: tam ad yerine kısa ad (kilit ekranı)
+  s := public._313_yama('public.trg_mesaj_bildirimi()'::regprocedure,
+    'select coalesce\(nullif\(btrim\(p\.name\), ''''\), ''Bir kullanıcı''\)\s*into v_gonderen_ad from profiles p where p\.user_id = NEW\.from_id;',
+    $r$v_gonderen_ad := public.kisa_ad(NEW.from_id); -- 313_kisa_ad$r$,
+    '313_kisa_ad');
+  raise notice '313 mesaj bildirimi: %', s;
+end $c$;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- D. SORU AKIŞI — soru bir bağlantı değildir
+-- ════════════════════════════════════════════════════════════════════════════
+alter table connection_requests add column if not exists cevap text;
+alter table connection_requests add column if not exists cevap_notu text;
+alter table connection_requests add column if not exists cevap_at timestamptz;
+do $$ begin
+  alter table connection_requests add constraint connection_requests_cevap_chk
+    check (cevap is null or cevap in ('evet','hayir'));
+exception when duplicate_object then null; end $$;
+comment on column connection_requests.cevap is
+  '313: kural sorusunun yanıtı (evet = misafir alabiliyorum, hayir). Yanıtlanan soru status=declined olur: soru bir bağlantı kurmaz (accepted bağlantı sayılırdı → görünürlük sızıntısı).';
+
+-- Rozet, düğme ve sunucu kapısı için TEK karar: rozetle AYNI hesap
+-- (misafirin o günkü uçuşu + taşıyıcısı ile lounge_access_decision_v5).
+
+-- ----------------------------------------------------------------------
+-- kural_sorusu_durumu   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.kural_sorusu_durumu(p_avail_id uuid)
+returns text language plpgsql stable security definer set search_path = public as $function$
+declare r availabilities%rowtype; v_flight text; d jsonb; v_prog lounge_programs%rowtype; v_bagli boolean;
+begin
+  select * into r from availabilities where id = p_avail_id;
+  if not found or not coalesce(r.active, true) then return 'bilinmiyor'; end if;
+
+  select v.flight_number into v_flight from visits v
+   where v.user_id = auth.uid() and v.airport_code = r.airport_code
+     and v.visit_date = r.avail_date and coalesce(v.flight_number,'') <> ''
+   order by v.created_at desc limit 1;
+
+  d := public.lounge_access_decision_v5(p_avail_id, v_flight, public.guest_carrier_for(p_avail_id));
+  if d is null then return 'bilinmiyor'; end if;
+  if d ? 'known' and not coalesce((d ->> 'known')::boolean, false) then return 'bilinmiyor'; end if;
+
+  select * into v_prog from lounge_programs where id = nullif(d ->> 'program_id','')::uuid;
+  v_bagli := v_prog.id is not null and coalesce(v_prog.entitlement_model, '') <> 'bank_card';
+  if v_bagli and coalesce(d ->> 'carrier_ok','') = 'false' then return 'tasiyici'; end if;
+  if v_bagli and coalesce((d ->> 'charter')::boolean, false) then return 'charter'; end if;
+
+  if coalesce(d ->> 'guest_policy','') <> 'not_allowed' then return 'gerek_yok'; end if;
+  if coalesce(d ->> 'confidence','') = 'verified' then return 'dogrulanmis'; end if;
+  return 'uygun';
+exception when others then
+  return 'bilinmiyor';
+end $function$;
+
+-- ----------------------------------------------------------------------
+-- soruyu_yanitla   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.soruyu_yanitla(p_id uuid, p_cevap text, p_not text default null)
+returns jsonb language plpgsql security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid(); v_cr connection_requests%rowtype; v_ad text; v_salon text; v_not text;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  perform public.hesap_kapisi(v_uid);
+  select * into v_cr from connection_requests where id = p_id for update;
+  if not found then raise exception 'connection_not_found'; end if;
+  if v_cr.to_id <> v_uid then raise exception 'not_recipient'; end if;
+  if coalesce(v_cr.intent,'') <> 'kural_sorusu' then raise exception 'not_a_question'; end if;
+  if v_cr.status <> 'pending' then raise exception 'already_responded'; end if;
+  if p_cevap is null or p_cevap not in ('evet','hayir') then raise exception 'invalid_answer'; end if;
+
+  v_not := nullif(left(btrim(coalesce(p_not,'')), 200), '');
+  update connection_requests
+     set status = 'declined', cevap = p_cevap, cevap_notu = v_not,
+         cevap_at = now(), responded_at = now()
+   where id = p_id;
+
+  v_ad := public.kisa_ad(v_uid);
+  v_salon := coalesce(public.salon_etiketi(v_cr.avail_id), 'İlan');
+  if p_cevap = 'evet' then
+    perform public.bildir(v_cr.from_id, 'requests',
+      v_ad || ' misafir alabildiğini söyledi',
+      v_salon || ' — hakkını ilanına eklediğinde başvuru açılır, sana haber veririz.' || coalesce(' Not: “' || v_not || '”', ''),
+      v_ad || ' says they can bring a guest',
+      v_salon || ' — once they add the right to the listing, applications open and we''ll tell you.' || coalesce(' Note: “' || v_not || '”', ''),
+      'question', p_id);
+  else
+    perform public.bildir(v_cr.from_id, 'requests',
+      v_ad || ' sorunu yanıtladı',
+      v_salon || ' — bu ilanda misafir alamıyor.' || coalesce(' Not: “' || v_not || '”', '') || ' Keşfet''te başka ilanlar var.',
+      v_ad || ' answered your question',
+      v_salon || ' — they can''t bring a guest on this listing.' || coalesce(' Note: “' || v_not || '”', '') || ' There are other listings in Discover.',
+      'question', p_id);
+  end if;
+  return jsonb_build_object('ok', true, 'avail_id', v_cr.avail_id, 'cevap', p_cevap);
+end $function$;
+revoke all on function public.soruyu_yanitla(uuid, text, text) from public, anon;
+grant execute on function public.soruyu_yanitla(uuid, text, text) to authenticated, service_role;
+
+-- Eski istemci (6.2.6) soruyu respond_connection ile yanıtlıyordu: aynı yola yönlendir.
+
+-- ----------------------------------------------------------------------
+-- bana_gelen_sorular   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.bana_gelen_sorular()
+returns table(id uuid, soran_id uuid, soran_adi text, soran_foto text, soran_meslek text,
+              avail_id uuid, salon text, airport_code text, avail_date date, time_from time, time_to time,
+              soru text, durum text, cevap text, cevap_notu text, soruldu_at timestamptz, cevap_at timestamptz,
+              ilan_acik boolean)
+language plpgsql stable security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid();
+begin
+  if v_uid is null then return; end if;
+  return query
+  select cr.id, cr.from_id, public.kisa_ad(cr.from_id),
+         case when p.photo_url is not null and not coalesce(p.photo_connections_only, false) then p.photo_url end,
+         nullif(btrim(coalesce(p.profession,'')), ''),
+         cr.avail_id,
+         coalesce(nullif(btrim(a.lounge_name),''), l.name, a.airport_code::text),
+         a.airport_code::text, a.avail_date, a.time_from, a.time_to,
+         nullif(btrim(coalesce(cr.intro,'')),''),
+         cr.status::text, cr.cevap, cr.cevap_notu, cr.created_at, coalesce(cr.cevap_at, cr.responded_at),
+         case when cr.avail_id is null then false
+              else coalesce((public.lounge_access_decision(cr.avail_id, null) ->> 'guest_policy'), '') <> 'not_allowed' end
+    from connection_requests cr
+    left join profiles p on p.user_id = cr.from_id
+    left join availabilities a on a.id = cr.avail_id
+    left join lounges l on l.id = a.lounge_id
+   where cr.to_id = v_uid
+     and cr.intent = 'kural_sorusu'
+     and not public.is_blocked_pair(v_uid, cr.from_id)
+     and (cr.status = 'pending' or cr.created_at > now() - interval '60 days')
+   order by coalesce(cr.status = 'pending', false) desc, cr.created_at desc
+   limit 50;
+end $function$;
+revoke all on function public.bana_gelen_sorular() from public, anon;
+grant execute on function public.bana_gelen_sorular() to authenticated, service_role;
+
+-- Davetler ve istekler: SORULAR ÇIKTI (Soru ekranına taşındı); created_at eklendi (dönüş tipi → drop)
+drop function if exists public.pending_actions();
+create function public.pending_actions()
+returns table(kind text, id uuid, title text, subtitle text, note text, from_name text, from_photo text,
+              created_at timestamptz)
+language plpgsql security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid();
+begin
+  return query
+  select 'invite'::text, i.id,
+         coalesce(a.lounge_name, a.airport_code),
+         a.airport_code || ' · ' || a.avail_date::text,
+         i.note, p.name,
+         case when p.photo_url is not null and coalesce(p.photo_connections_only,false)=false then p.photo_url else null end,
+         i.created_at
+    from invites i
+    join availabilities a on a.id = i.avail_id
+    join profiles p on p.user_id = i.host_id
+   where i.guest_id = v_uid and i.status = 'pending'
+  union all
+  select 'connection'::text, cr.id, p.name, coalesce(cr.intent,'connect'), cr.intro, p.name,
+         case when p.photo_url is not null and coalesce(p.photo_connections_only,false)=false then p.photo_url else null end,
+         cr.created_at
+    from connection_requests cr
+    join profiles p on p.user_id = cr.from_id
+   where cr.to_id = v_uid and cr.status = 'pending'
+     and coalesce(cr.intent,'') <> 'kural_sorusu';
+end $function$;
+revoke all on function public.pending_actions() from public, anon;
+grant execute on function public.pending_actions() to authenticated, service_role;
+
+-- Eski (bağlantı olarak kabul edilmiş) sorulara yanıt etiketi: Soru ekranında "Evet" görünsün.
+update connection_requests
+   set cevap = 'evet', cevap_at = coalesce(responded_at, now())
+ where intent = 'kural_sorusu' and status = 'accepted' and cevap is null;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- E. "YENİ" İŞARETİ — alan başına son bakış zamanı
+--    Kural: bir alanda SON BAKIŞINDAN SONRA gelen/değişen bir şey varsa ana sayfa
+--    kutusunda nokta yanar. Alana girince nokta söner (son bakış = şimdi); o
+--    ziyaret boyunca yeni gelenler ince altın çerçeve + YENİ etiketi taşır,
+--    bir sonraki ziyarette taşımaz. Sayı ("kaç bekliyor") ayrı bilgidir, değişmez.
+-- ════════════════════════════════════════════════════════════════════════════
+create table if not exists public.akis_goruldu (
+  user_id    uuid not null,
+  alan       text not null check (alan in ('sohbet','istek','davet','soru')),
+  goruldu_at timestamptz not null default now(),
+  primary key (user_id, alan)
+);
+alter table public.akis_goruldu enable row level security;
+drop policy if exists akis_goruldu_kendi on public.akis_goruldu;
+create policy akis_goruldu_kendi on public.akis_goruldu for select using (user_id = auth.uid());
+
+-- Döner: ÖNCEKİ bakış zamanı (ilk kez: son 24 saat "yeni" sayılır).
+
+-- ----------------------------------------------------------------------
+-- akis_goruldu_isaretle   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.akis_goruldu_isaretle(p_alan text)
+returns timestamptz language plpgsql security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid(); v_once timestamptz;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  if p_alan not in ('sohbet','istek','davet','soru') then raise exception 'invalid_area'; end if;
+  select goruldu_at into v_once from akis_goruldu where user_id = v_uid and alan = p_alan;
+  insert into akis_goruldu (user_id, alan, goruldu_at) values (v_uid, p_alan, now())
+  on conflict (user_id, alan) do update set goruldu_at = excluded.goruldu_at;
+  return coalesce(v_once, now() - interval '24 hours');
+end $function$;
+revoke all on function public.akis_goruldu_isaretle(text) from public, anon;
+grant execute on function public.akis_goruldu_isaretle(text) to authenticated, service_role;
+
+-- ana_sayfa_akisi: SORU = bana gelen yanıt bekleyen + benim yanıt bekleyen sorularım;
+-- BAĞLANTI soruları saymaz (sorular Davet'ten çıktı); YENİ bayrakları eklendi.
+
+-- ----------------------------------------------------------------------
+-- yaklasan_bulusma_hatirlat   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.yaklasan_bulusma_hatirlat()
+returns jsonb language plpgsql security definer set search_path = public as $function$
+declare v_n int := 0; r record;
+begin
+  for r in
+    select q.id as req_id, q.host_id, q.guest_id, a.id as avail_id, a.time_from
+      from requests q
+      join availabilities a on a.id = q.avail_id
+     where q.status = 'accepted'
+       and public.yerel_an(a.avail_date, a.time_from, a.airport_code)
+           between now() + interval '45 minutes' and now() + interval '75 minutes'
+       and not exists (select 1 from sessions s where s.request_id = q.id and s.status in ('active','completed','cancelled'))
+       and not exists (select 1 from notifications n where n.ref_type = 'meet_soon' and n.ref_id = q.id)
+  loop
+    perform public.bildir(r.host_id, 'sessions', 'Buluşmana 1 saat var ⏰',
+      public.salon_etiketi(r.avail_id) || ' · ' || to_char(r.time_from, 'HH24:MI') || ' — ' || public.kisa_ad(r.guest_id)
+        || ' ile. Buluşunca ikiniz de "Oturumu Başlat"a basın.',
+      'Your meetup is in 1 hour ⏰',
+      public.salon_etiketi(r.avail_id) || ' · ' || to_char(r.time_from, 'HH24:MI') || ' — with ' || public.kisa_ad(r.guest_id)
+        || '. When you meet, both tap "Start session".',
+      'meet_soon', r.req_id);
+    perform public.bildir(r.guest_id, 'sessions', 'Buluşmana 1 saat var ⏰',
+      public.salon_etiketi(r.avail_id) || ' · ' || to_char(r.time_from, 'HH24:MI') || ' — ' || public.kisa_ad(r.host_id)
+        || ' ile. Biniş kartın yanında olsun; buluşunca ikiniz de "Oturumu Başlat"a basın.',
+      'Your meetup is in 1 hour ⏰',
+      public.salon_etiketi(r.avail_id) || ' · ' || to_char(r.time_from, 'HH24:MI') || ' — with ' || public.kisa_ad(r.host_id)
+        || '. Keep your boarding pass handy; when you meet, both tap "Start session".',
+      'meet_soon', r.req_id);
+    v_n := v_n + 1;
+  end loop;
+  return jsonb_build_object('ok', true, 'hatirlatilan', v_n);
+end $function$;
+revoke all on function public.yaklasan_bulusma_hatirlat() from public, anon, authenticated;
+grant execute on function public.yaklasan_bulusma_hatirlat() to service_role;
+
+insert into zamanli_isler (is_adi, beklenen_saat, aciklama)
+values ('yaklasan_bulusma_hatirlat', 1, 'Kabul edilmiş buluşmaya 1 saat kala iki tarafa hatırlatma (313)')
+on conflict (is_adi) do nothing;
+
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('ll-yaklasan-bulusma', '*/10 * * * *', $c$select public.zamanli_is_kos('yaklasan_bulusma_hatirlat')$c$);
+    perform cron.schedule('ll-yarinki-lounge',   '0 16 * * *',   $c$select public.zamanli_is_kos('yarinki_lounge_hatirlat')$c$);
+    perform cron.schedule('ll-puanlama',         '20 * * * *',   $c$select public.zamanli_is_kos('puanlama_hatirlat')$c$);
+    raise notice '313: hatirlatma isleri zamanlandi (1 saat kala · yarin · puanlama)';
+  else
+    raise notice '313: pg_cron yok — hatirlatma isleri zamanlanamadi (yerel ortam)';
+  end if;
+exception when others then
+  raise notice '313: cron zamanlanamadi (%)', sqlerrm;
+end $$;
+
+-- ----------------------------------------------------------------------
+-- kisi_ara   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.kisi_ara(p_q text)
+returns table(user_id uuid, ad text, meslek text, foto text, iliski text)
+language plpgsql stable security definer set search_path = public as $function$
+declare v_uid uuid := auth.uid(); v_q text; v_female boolean; v_safe boolean; v_phone_ok boolean;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  v_q := btrim(coalesce(p_q, ''));
+  if char_length(v_q) < 2 then return; end if;
+  v_q := replace(replace(replace(v_q, '\', '\\'), '%', '\%'), '_', '\_');
+
+  select (u.gender = 'female'), coalesce(pr.women_safety_mode, false)
+    into v_female, v_safe
+    from users u left join profiles pr on pr.user_id = u.id where u.id = v_uid;
+  select coalesce(phone_verified, false) into v_phone_ok from verifications where verifications.user_id = v_uid;
+
+  return query
+  select p.user_id, public.kisa_ad(p.user_id),
+         nullif(btrim(coalesce(p.profession, '')), ''),
+         case when p.photo_url is not null and not coalesce(p.photo_connections_only, false) then p.photo_url end,
+         coalesce((select c.status::text from connection_requests c
+                    where ((c.from_id = v_uid and c.to_id = p.user_id) or (c.from_id = p.user_id and c.to_id = v_uid))
+                      and coalesce(c.intent, '') <> 'kural_sorusu'
+                    order by (c.status::text = 'accepted') desc, c.created_at desc limit 1), 'none')
+    from profiles p
+    join users hu on hu.id = p.user_id
+   where p.user_id <> v_uid
+     and hu.deleted_at is null and hu.banned_at is null
+     and (p.name ilike v_q || '%' or p.name ilike '% ' || v_q || '%')   -- kelime başı
+     and coalesce(p.show_on_discovery, true)
+     and public.is_visible(p.user_id)
+     and public.profil_gorunur_mu(p.user_id)
+     and not public.is_blocked_pair(v_uid, p.user_id)
+     and (not (coalesce(v_female, false) and coalesce(v_safe, false)) or hu.gender = 'female')
+     and (not coalesce(p.women_safety_mode, false)
+          or (coalesce(v_female, false) and coalesce(v_phone_ok, false))
+          or exists (select 1 from connection_requests c9 where c9.from_id = p.user_id and c9.to_id = v_uid))
+   order by (p.name ilike v_q || '%') desc, p.name
+   limit 20;
+end $function$;
+revoke all on function public.kisi_ara(text) from public, anon;
+grant execute on function public.kisi_ara(text) to authenticated, service_role;
+
+insert into rpc_client_surface (fn_name, client, note) values
+  ('soruyu_yanitla', 'app', 'Soru › Gelen: host Evet/Hayır + not (313; bağlantı açmaz)'),
+  ('bana_gelen_sorular', 'app', 'Soru › Gelen sekmesi (313)'),
+  ('akis_goruldu_isaretle', 'app', 'Akış alanına girince YENİ işaretini söndürür (313)'),
+  ('kisi_ara', 'app', 'Tanış araması (313)')
+on conflict (fn_name) do update set client = excluded.client, note = excluded.note;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- SONUÇ DENETİMİ — canlı gövdeler yeniden okunur
+-- ════════════════════════════════════════════════════════════════════════════
+do $$
+declare v_eksik text[] := '{}';
+begin
+  if position('313_bildirim' in pg_get_functiondef('public.create_request_impl_preflag(uuid,text,text,text)'::regprocedure)) = 0 then v_eksik := v_eksik || 'create_request'::text; end if;
+  if position('313_sebep' in pg_get_functiondef('public.ilan_kurali_sor(uuid)'::regprocedure)) = 0 then v_eksik := v_eksik || 'ilan_kurali_sor'::text; end if;
+  if position('313_soru_kapisi' in pg_get_functiondef('public.discovery_rule_badges(uuid[])'::regprocedure)) = 0 then v_eksik := v_eksik || 'rozet'::text; end if;
+  if position('313_kisa_ad' in pg_get_functiondef('public.trg_mesaj_bildirimi()'::regprocedure)) = 0 then v_eksik := v_eksik || 'mesaj'::text; end if;
+  if position('status = ''active''' in pg_get_functiondef('public.istegin_acik_oturumu_var_mi(uuid)'::regprocedure)) = 0 then v_eksik := v_eksik || 'oturum_kapisi'::text; end if;
+  if array_length(v_eksik, 1) is not null then
+    raise exception '313: yamalanmamis: %', v_eksik;
+  end if;
+  raise notice '313: tamam — oturum kapisi tek tanim · isimli bildirimler · soru baglanti degil · yeni isareti · kisi_ara';
 end $$;

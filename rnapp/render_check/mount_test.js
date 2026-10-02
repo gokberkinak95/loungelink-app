@@ -624,6 +624,7 @@ const CASES = [
   ["Referral",         S.Referral,         { t, session, onBack: () => {} }],
   ["Campaigns",        S.Campaigns,        { t, session, onBack: () => {} }],
   ["MyQuestions",      S.MyQuestions,      { t, lang: "tr", session, onBack: () => {} }],
+  ["SoruEkrani",       S.SoruEkrani,       { t, lang: "tr", session, onBack: () => {}, onHakEkle: () => {} }],   // 2 Ekim · Gelen/Gönderdiğim
   ["PublicProfile",    S.PublicProfile,    { t, lang: "tr", session, userId: "00000000-0000-0000-0000-000000000002", onBack: () => {} }],
   ["HostApply",        S.HostApply,        { t, session, onBack: () => {}, onDone: () => {} }],
   ["HostBroadcast",    S.HostBroadcast,    { t, session, onBack: () => {}, onVerify: () => {}, lang: "tr" }],

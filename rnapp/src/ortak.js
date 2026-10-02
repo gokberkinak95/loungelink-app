@@ -369,6 +369,37 @@ export function abbrevName(n) {
   return parts[0] + " " + parts[parts.length - 1].charAt(0).toUpperCase() + ".";
 }
 // lang: tarih biçimi için (fmtLongDate). Verilmezse fmtLongDate TR'ye düşer.
+// ══════════════════════════════════════════════════════════════════════
+// 2 Ekim (Gökberk) — "YENİ" İŞARETİNİN KURALI (SQL 313 · akis_goruldu)
+//   · Ana sayfa kutusunda nokta = o alanda SON BAKIŞINDAN SONRA gelen/değişen bir şey var.
+//   · Alana girince nokta söner (sunucu son bakışı ŞİMDİ yapar).
+//   · O ziyaret boyunca, önceki bakıştan sonra gelenler ince altın çerçeve + YENİ taşır;
+//     bir sonraki ziyarette taşımaz. Böylece işaret ne kalıcı olur ne de "baktım ama
+//     neydi?" sorusunu cevapsız bırakır.
+//   · Sayı ("kaç bekliyor") ayrı bilgidir; işaret onu değiştirmez.
+// Kanca ÖNCEKİ bakış zamanını döner (Date) — ilk kez açılışta son 24 saat.
+// ══════════════════════════════════════════════════════════════════════
+export function useAkisGoruldu(alan, aktif = true) {
+  const [once, setOnce] = useState(null);
+  useEffect(() => {
+    if (!aktif || !alan) return undefined;
+    let iptal = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.rpc("akis_goruldu_isaretle", { p_alan: alan });
+        if (error) { logError("akis_goruldu_isaretle", error); return; }
+        if (!iptal && data) setOnce(new Date(data));
+      } catch (e) { /* işaret yoksa ekran yine çalışır */ }
+    })();
+    return () => { iptal = true; };
+  }, [alan, aktif]);
+  return once;
+}
+export function yeniMi(once, ...zamanlar) {
+  if (!once) return false;
+  return zamanlar.some(z => z && new Date(z).getTime() > once.getTime());
+}
+
 export function useUnread(session) {
   const uid = session?.user?.id;
   const [n, setN] = useState(0);
@@ -546,17 +577,27 @@ export async function pickAndUploadPhoto(uid) {
   const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   const { error } = await supabase.storage.from("avatars").upload(path, bytes, { contentType: "image/jpeg", upsert: false });
   if (error) return null;
-  try {
-    const { data: eski, error: eListe } = await supabase.storage.from("avatars").list(uid, { limit: 50 });
-    if (eListe) logError("avatar_liste", eListe);
-    const sil = (eski || []).map(o => `${uid}/${o.name}`).filter(x => x !== path);
-    if (sil.length) await supabase.storage.from("avatars").remove(sil);
-  } catch (e) { logError("avatar_eski_sil", e); }
   const { data } = supabase.storage.from("avatars").getPublicUrl(path);
   const url = data.publicUrl + "?t=" + Date.now();
+  // Eski dosyaların temizliği ile profil güncellemesi birbirinden bağımsız → tek dalga.
+  // Temizlik bir konfor: düşerse loglanır, fotoğraf yine kaydedilir.
+  const temizlik = (async () => {
+    try {
+      const { data: eski, error: eListe } = await supabase.storage.from("avatars").list(uid, { limit: 50 });
+      if (eListe) { logError("avatar_liste", eListe); return; }
+      const sil = (eski || []).map(o => `${uid}/${o.name}`).filter(x => x !== path);
+      if (sil.length) {
+        const { error: eSil } = await supabase.storage.from("avatars").remove(sil);
+        if (eSil) logError("avatar_eski_sil", eSil);
+      }
+    } catch (e) { logError("avatar_eski_sil", e); }
+  })();
   // 23 Eylül: güncelleme hatası yutuluyordu — ekranda yeni foto görünür,
   // ama profile yazılmadığı için bir sonraki açılışta eskisi geri gelirdi.
-  const { error: eFoto } = await supabase.from("profiles").update({ photo_url: url }).eq("user_id", uid);
+  const [{ error: eFoto }] = await Promise.all([
+    supabase.from("profiles").update({ photo_url: url }).eq("user_id", uid),
+    temizlik,
+  ]);
   if (eFoto) { logError("avatar_photo_url", eFoto); return null; }
   return url;
 }
