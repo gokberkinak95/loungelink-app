@@ -7524,7 +7524,7 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, is
               return (
                 <View key={g.id} style={{ marginTop: gi === 0 ? ARA[18] : ARA[22] }}>
                   {gi > 0 ? (
-                    <View style={{ height: 1, backgroundColor: C.kartKenar,
+                    <View style={{ height: 1, backgroundColor: temaModu() === "v7" ? (C.line2 || C.line) : C.kartKenar,
                                    marginBottom: ARA[22] }} />
                   ) : null}
                   {/* 🔴 12 EYLÜL · HAREKET TURU — MÜHÜR 16pt İKONU DEĞİL
