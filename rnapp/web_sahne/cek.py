@@ -122,6 +122,12 @@ SAHNELER = {
     "71_akis_nehir_istek":   ("nehir", [("dokun", "İSTEK"), ("bekle", 1500)]),   # ekran: RequestsPanel · Gelen
     "72_akis_nehir_giden":   ("nehir", [("dokun", "İSTEK"), ("dokun_a11y", "Gönderdiğim"), ("bekle", 1200)]),   # ekran: RequestsPanel · Gönderdiğim
     "73_akis_nehir_oturum":  ("nehir", [("dokun", "SOHBET"), ("bekle", 1500)]),   # ekran: RequestsPanel · Oturumlar
+    # v7.2 (Gökberk 3 Ekim: "tasarımda olmayan ekranları ekle ki doğruluğu teyitleyelim")
+    "87_oturum_canli": ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1500),
+                                    ("dokun_a11y", "Oturumu tamamla"), ("bekle", 1800)]),   # ekran: Chat · oturum paneli (canlı)
+    "88_oturum_puanla": ("selin",  [("dokun", "Şimdi puanla"), ("bekle", 2200), ("dokun", "Şimdi puanla"), ("bekle", 1800)]),   # ekran: Chat · oturum paneli (puanlama · K8)
+    "89_seyahat_duzenle": ("gokberk", [("dokun", "Planım"), ("bekle", 900), ("dokun_a11y", "Seyahati düzenle"), ("bekle", 1200)]),   # ekran: EditTrip
+    "90_ilan_duzenle": ("selin",   [("dokun", "Planım"), ("bekle", 700), ("dokun_a11y", "İlanlarım"), ("bekle", 900), ("dokun", "İlanı düzenle"), ("bekle", 1200)]),   # ekran: EditAvailability
     "86_akis_nehir_sohbet":  ("nehir", [("dokun", "SOHBET"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1500)]),   # ekran: Chat (v7 · gokberk dünyasında oturum yok)
     "74_akis_nehir_baglanti":("nehir", [("dokun", "SOHBET"), ("dokun_a11y", "Bağlantılar"), ("bekle", 1200)]),   # ekran: HomeConnections
     "75_akis_arda_ana":      ("arda",  [("bekle", 1500)]),   # ekran: Home
@@ -136,7 +142,7 @@ SAHNELER = {
     "83_akis_nehir_profil":  ("nehir", [("dokun", "Profil"), ("bekle", 1200)]),   # ekran: Profile
     "84_akis_nehir_bildirim":("nehir", [("dokun", "Profil"), ("dokun", "Bildirimler"), ("bekle", 1200)]),   # ekran: Notifications
     "85_akis_arda_neden":    ("arda",  [("dokun", "Keşfet"), ("bekle", 1800), ("dokun", "Neden?"), ("bekle", 900)]),   # ekran: Discovery
-    "06_sohbet":       ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
+    "06_sohbet":       ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · KAPSAM TURU — 15 SAHNE DAHA.
     # `ekran_kapsam_check.py` saydı: ana akıştaki 26 ekranın 10'unun
@@ -180,7 +186,7 @@ SAHNELER = {
     # kullanıcının gerçek yolundan açılıyor: sohbetin altındaki yeşil
     # canlı-durum şeridi.
     # ══════════════════════════════════════════════════════════════
-    "35_canli_durum":  ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500),
+    "35_canli_durum":  ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500),
                                     ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200),
                                     ("dokun", "Durumumu paylaş")]),   # ekran: LiveStatus
     # ══════════════════════════════════════════════════════════════
@@ -213,7 +219,7 @@ SAHNELER = {
     # 🔴 UZUN İÇERİK — üç mesajlık sohbet ve beş satırlık liste, ürünü
     # yalnız kısa içerikte ölçüyordu. Tohumda artık 21 mesaj ve 29
     # bildirim var; bu iki sahne onların ALTINI gösteriyor.
-    "45_sohbet_uzun":    ("gokberk", [("dokun_a11y", "İstek:"), ("bekle", 1500),
+    "45_sohbet_uzun":    ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500),
                                       ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200),
                                       ("kaydir",), ("bekle", 700)]),   # ekran: Chat · 21 mesaj
     "46_bildirim_uzun":  ("gokberk", [("dokun", "Profil"), ("dokun", "Bildirimler"),
@@ -261,7 +267,10 @@ def kopru_baslat():
 # düğme görünür ama çubuğun altında kalabilir; kullanıcı kaydırır, sahne de ortalar.
 def ortala(loc):
     try:
-        loc.evaluate("e => e.scrollIntoView({ block: 'center', inline: 'nearest' })", timeout=3000)
+        # Yalnız iç kaydırma kabı kaysın: scrollIntoView pencereyi de kaydırıyor ve sonra açılan
+        # Modal o kadar yukarı kayık çiziliyordu (ölçüldü: 50_istek_gonder bandı kesik).
+        loc.evaluate("e => { e.scrollIntoView({ block: 'center', inline: 'nearest' }); window.scrollTo(0, 0);"
+                     " document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }", timeout=3000)
     except Exception:
         pass
 
@@ -478,7 +487,13 @@ def cek(sahneler, tam=False):
                 for adim in adimlar:
                     adim_uygula(pg, adim, kayit)
                 pg.wait_for_timeout(900)
-                pg.screenshot(path=os.path.join(OUT, f"{ad}.png"), full_page=tam)
+                # Windows'ta PNG yazımı arada kilitleniyor (Errno 22, iki kez ölçüldü): 4 deneme.
+                for _den in range(4):
+                    try:
+                        pg.screenshot(path=os.path.join(OUT, f"{ad}.png"), full_page=tam)
+                        break
+                    except OSError:
+                        time.sleep(0.8)
                 try:
                     kayit["calls"] = pg.evaluate("(globalThis.__CALLS||[]).filter(c=>c.kind==='logError'||c.error)")
                     kayit["metin"] = [s for s in pg.evaluate("document.body.innerText").split("\n") if s.strip()][:90]

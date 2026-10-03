@@ -39,7 +39,7 @@ import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
 import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
-import { KalkisHalkasi, TakimyildizPuan } from "./hareket";
+import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { yerelGun } from "./zaman";
 
 export const timeOk = s => /^\d{2}:\d{2}$/.test(s);
@@ -1976,6 +1976,109 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
               <Text style={{ color: C.red, fontSize: FS.sm, fontWeight: "600" }}>{t.cancelFreeNote}</Text>
             </TouchableOpacity>
           </View>
+        ) : sess.status === "active" && temaModu() === "v7" ? (
+          /* ══════════════════════════════════════════════════════════════
+             v7.2 · CANLI OTURUM (Gökberk 3 Ekim: "oturum tamamla sonrası çıkan ekran …
+             tasarımda yok, ekle"). Onaylı K7 panosunun v7 hâli: kim · halka · buluşma
+             kartı · çift onay mühürleri · birincil eylem · sakin araçlar. Mantık AYNI:
+             doConfirm · setConfirmCancel · onLiveStatus · onReport · setSosOpen.
+             ══════════════════════════════════════════════════════════════ */
+          <View>
+            <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.2, color: C.green, textAlign: "center" }}>
+              {"● " + BUYUK(t.v7SesCanli || t.sessActiveShort)}</Text>
+            <Text style={{ fontFamily: F.serifGosterim, fontSize: FS.bant, color: C.ink, textAlign: "center", marginTop: ARA[6] }}>
+              {String(t.v7SesIle || "{name}").replace("{name}", shortName(det?.other_name || otherName) || "")}</Text>
+            <View style={{ alignItems: "center", marginTop: ARA[18] }}>
+              {(() => {
+                const bas = sess.started_at ? new Date(sess.started_at).getTime() : null;
+                const gun = _a.avail_date || det?.avail_date, saat = _a.time_to || det?.time_to;
+                const son = gun && saat ? new Date(`${String(gun).slice(0, 10)}T${String(saat).slice(0, 5)}:00`).getTime() : null;
+                if (bas && son && son > bas) return <KalkisHalkasi t={t} baslangic={bas} bitis={son} boy={196} />;
+                const m = bas ? Math.max(0, Math.floor((Date.now() - bas) / 60000)) : 0;
+                return (
+                  <View style={{ alignItems: "center", paddingVertical: ARA[14] }}>
+                    <Text style={{ fontFamily: MONO[600], fontSize: FS.hero, color: C.ink }}>
+                      {String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0")}</Text>
+                    <Text style={{ fontSize: FS.micro, letterSpacing: 1.6, color: C.mut, marginTop: ARA[4] }}>{BUYUK(t.sessDurationLabel)}</Text>
+                  </View>
+                );
+              })()}
+            </View>
+            {/* Buluşma kartı: salon · uçuş · kredi (emanette) — ince çizgilerle */}
+            <View style={{ backgroundColor: "#FFFFFF", borderRadius: R.lg, paddingHorizontal: ARA[18], paddingVertical: ARA[6], marginTop: ARA[18],
+                           borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
+                           shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
+              {[[t.sessLounge || t.lounge, det?.lounge
+                  ? det.lounge + (det.airport_code && det.lounge !== det.airport_code ? " · " + det.airport_code : "")
+                  : (ctx && ctx !== t.loungeSession ? ctx : "—")],
+                ...(det?.flight_number || det?.time_from
+                  ? [[t.flightLabel || "UÇUŞ", [det.flight_number, det.time_from && det.time_to
+                      ? String(det.time_from).slice(0, 5) + "–" + String(det.time_to).slice(0, 5) : null].filter(Boolean).join(" · ") || "—"]]
+                  : []),
+                [t.sessCredit, t.heldEscrow]].map(([k, v], i) => (
+                <View key={k} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", paddingVertical: ARA[12],
+                                       borderTopWidth: i === 0 ? 0 : StyleSheet.hairlineWidth, borderTopColor: C.line2 || C.line }}>
+                  <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 1.4, color: C.mut, marginRight: ARA[12], marginTop: 2 }}>{BUYUK(k)}</Text>
+                  <Text numberOfLines={2} style={{ flex: 1, minWidth: 0, textAlign: "right", fontSize: FS.sm, fontWeight: "600", color: C.ink, lineHeight: 18 }}>{v}</Text>
+                </View>
+              ))}
+            </View>
+            {(isHost ? sess.guest_confirmed : sess.host_confirmed) && !myConfirmed && (
+              <View style={{ backgroundColor: C.goldBg, borderRadius: R.md, padding: ARA[14], marginTop: ARA[14] }}>
+                <IkonMetin ad="bekliyor" renk={C.goldText} stilMetin={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700", lineHeight: 18 }} metin={t.otherConfirmedBanner.replace("{name}", shortName(otherName) || "")} />
+              </View>
+            )}
+            {/* Çift onay: iki mühür — onaylayan dolu (yeşil tik), bekleyen kontur (amber kum saati) */}
+            <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 1.6, color: C.mut, marginTop: ARA[22], marginBottom: ARA[10] }}>{BUYUK(t.dualConfirmTitle)}</Text>
+            <View style={{ flexDirection: "row", gap: ARA[10] }}>
+              {[[t.you, myConfirmed], [shortName(det?.other_name || otherName) || "—", isHost ? sess.guest_confirmed : sess.host_confirmed]].map(([ad, ok], i) => (
+                <View key={i} style={{ flex: 1, flexDirection: "row", alignItems: "center", borderRadius: R.full, paddingVertical: ARA[10], paddingHorizontal: ARA[14],
+                                       backgroundColor: ok ? "rgba(46,106,79,0.08)" : "rgba(255,255,255,0.7)",
+                                       borderWidth: 1, borderColor: ok ? "rgba(46,106,79,0.22)" : "rgba(166,90,34,0.22)" }}>
+                  <Ikon ad={ok ? "tamamDaire" : "bekliyor"} boy={16} renk={ok ? C.green : C.amber} />
+                  <View style={{ marginLeft: ARA[8], flex: 1, minWidth: 0 }}>
+                    <Text numberOfLines={1} style={{ fontSize: FS.sm, fontWeight: "700", color: C.ink }}>{ad}</Text>
+                    <Text style={{ fontSize: FS.micro, color: ok ? C.green : C.amber, marginTop: 1 }}>{ok ? t.confirmedWord : t.waitingWord}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+            <View style={{ marginTop: ARA[18] }}>
+              {myConfirmed ? (
+                <Text style={{ color: C.teal, fontSize: FS.sm, textAlign: "center", fontWeight: "600" }}>{t.youConfirmed}</Text>
+              ) : (
+                <Btn v="gold" full label={`${t.confirmDone}`} onPress={doConfirm} />
+              )}
+            </View>
+            {/* Sakin araçlar: nerede olduğunu söyle · sorun bildir (cam haplar) */}
+            <View style={{ flexDirection: "row", gap: ARA[10], marginTop: ARA[14] }}>
+              <TouchableOpacity hitSlop={TAP.slop} onPress={() => onLiveStatus && onLiveStatus(sess.id)}
+                accessibilityRole="button" accessibilityLabel={t.liveStatusBtn}
+                style={{ flex: 1, minHeight: TAP.minHeight, flexDirection: "row", alignItems: "center", justifyContent: "center", borderRadius: R.full,
+                         backgroundColor: "rgba(255,255,255,0.7)", borderWidth: 1, borderColor: "rgba(47,107,95,0.22)" }}>
+                <Ikon ad="konum" boy={15} renk={C.tealInk} stil={{ marginRight: ARA[6] }} />
+                <Text numberOfLines={1} style={{ color: C.tealInk, fontWeight: "700", fontSize: FS.sm }}>{t.sessWhereShort}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity hitSlop={TAP.slop} onPress={() => (onReport ? onReport(otherId, otherName, sess && sess.id) : onSafety && onSafety())}
+                accessibilityRole="button" accessibilityLabel={t.reportIssue}
+                style={{ flex: 1, minHeight: TAP.minHeight, flexDirection: "row", alignItems: "center", justifyContent: "center", borderRadius: R.full,
+                         backgroundColor: "rgba(255,255,255,0.7)", borderWidth: 1, borderColor: "rgba(178,69,58,0.22)" }}>
+                <Ikon ad="uyari" boy={15} renk={C.redInk} stil={{ marginRight: ARA[6] }} />
+                <Text numberOfLines={1} style={{ color: C.redInk, fontWeight: "700", fontSize: FS.sm }}>{t.sessReportShort}</Text>
+              </TouchableOpacity>
+            </View>
+            <Btn v="redSoft" sm full label={t.sosBtn} solAd="acil" onPress={() => setSosOpen(true)}
+              a11yLabel={t.sosBtn} style={{ marginTop: ARA[10] }} />
+            <TouchableOpacity hitSlop={TAP.slop} onPress={() => setConfirmCancel(true)}
+              accessibilityRole="button" accessibilityLabel={t.cancelLateNote2}
+              style={{ marginTop: ARA[14], minHeight: TAP.minHeight, justifyContent: "center", alignItems: "center" }}>
+              <Text numberOfLines={1} style={{ color: C.red, fontSize: FS.sm, fontWeight: "700" }}>{t.cancelLateNote2}</Text>
+            </TouchableOpacity>
+            <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16, textAlign: "center" }}>
+              {sess.cancel_grace_until && new Date(sess.cancel_grace_until) > new Date()
+                ? t.cancelFreeWhy : t.cancelLateWhy}
+            </Text>
+          </View>
         ) : sess.status === "active" ? (
           <View>
             {/* #37: MVP oturum-aktif dili — durum + süre + çift onay kutusu */}
@@ -2121,6 +2224,66 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             </View>
             <Btn v="redSoft" sm full label={t.sosBtn} solAd="acil" onPress={() => setSosOpen(true)}
               a11yLabel={t.sosBtn} style={{ marginTop: SP[2] }} />
+          </View>
+        ) : temaModu() === "v7" ? (
+          /* ══════════════════════════════════════════════════════════════
+             v7.2 · OTURUM SONU + PUANLAMA (K8). Takımyıldız GECE KARTINDA: fildişi
+             zeminde bronz hat görünmüyordu. Seçime göre editoryal bir cümle.
+             Mantık AYNI: stars · setStars · comment · doRate · rated · connState.
+             ══════════════════════════════════════════════════════════════ */
+          <View>
+            {/* Kaş yok: bant başlığı zaten "Oturum tamamlandı" diyor (aynı cümle iki kez okunuyordu). */}
+            <Text style={{ fontFamily: F.serifGosterim, fontSize: FS.bant + 2, color: C.ink, textAlign: "center", marginTop: ARA[4] }}>
+              {rated ? t.rateThanks : (t.v7NasilGecti || t.rateTitle)}</Text>
+            <Text style={{ fontSize: FS.sm, color: C.mut, textAlign: "center", marginTop: ARA[4] }}>
+              {[shortName(otherName), det?.lounge].filter(Boolean).join(" · ")}</Text>
+            {!rated ? (
+              <>
+                <GeceKarti stil={{ marginTop: ARA[18] }}>
+                  <TakimyildizPuan deger={stars} onDegis={setStars} boy={36} gece />
+                  <Text style={{ fontFamily: F.serifGosterim, fontStyle: "italic", fontSize: FS.title, color: "#F9F8F6",
+                                 textAlign: "center", marginTop: ARA[10], opacity: stars ? 1 : 0.6 }}>
+                    {stars ? t["v7Puan" + stars] : t.v7PuanBos}</Text>
+                </GeceKarti>
+                <Text style={[S.label, { marginTop: ARA[18] }]}>{t.comment}</Text>
+                <TextInput style={S.input} value={comment} onChangeText={setComment} placeholder={t.commentPh} placeholderTextColor={C.dim} />
+                <Btn full label={t.submitRating} onPress={doRate} disabled={!stars} style={{ marginTop: ARA[14], opacity: stars ? 1 : 0.5 }} />
+                <View style={{ paddingVertical: SP[3], marginTop: SP[1], flexDirection: "row", alignItems: "center" }}>
+                  <Ikon ad="uyari" boy={FS.sm} renk={C.goldText} stil={{ marginRight: ARA[8] }} />
+                  <Text style={{ color: C.goldText, fontSize: FS.sm, lineHeight: 17, flex: 1, minWidth: 0 }}>{t.ratePrompt}</Text>
+                </View>
+              </>
+            ) : null}
+            {/* Kazanç: tek satır, iki mono sayı */}
+            <View style={{ flexDirection: "row", backgroundColor: "#FFFFFF", borderRadius: R.lg, marginTop: ARA[14], paddingVertical: ARA[14],
+                           shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
+              {[[isHost ? "+500" : "+200", t.loungePoints], ["+1", t.sessionWord]].map(([v, k], i) => (
+                <View key={k} style={{ flex: 1, alignItems: "center", borderLeftWidth: i ? StyleSheet.hairlineWidth : 0, borderLeftColor: C.line2 || C.line }}>
+                  <Text style={{ fontFamily: MONO[600], fontSize: FS.title, color: C.goldText }}>{v}</Text>
+                  <Text style={{ fontSize: FS.micro, letterSpacing: 1.2, color: C.mut, marginTop: 2 }}>{BUYUK(k)}</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={{ color: C.mut, fontSize: FS.xs, textAlign: "center", marginTop: ARA[8] }}>{t.disputeWindow}</Text>
+            {/* Bağlantıda kal */}
+            <View style={{ backgroundColor: "rgba(255,255,255,0.7)", borderRadius: R.lg, padding: ARA[18], marginTop: ARA[14] }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="elSikisma" boy={15} renk={C.goldText} stil={{ marginRight: SP[1] }} /><Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.base }}>{t.stayInTouchTitle}</Text></View>
+              <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginTop: SP[1], marginBottom: connState === "connected" ? 0 : 10 }}>
+                {t.stayInTouchBody.replace("{name}", otherName || "")}
+              </Text>
+              {connState === "connected" ? (
+                <IkonMetin ad="tamam" renk={C.green} stilMetin={{ color: C.green, fontWeight: "700", fontSize: FS.sm, marginTop: SP[2] }} metin={t.connActive} />
+              ) : connState === "sent" ? (
+                <IkonMetin ad="tamam" renk={C.green} stilMetin={{ color: C.green, fontWeight: "600", fontSize: FS.sm }} metin={t.connSentWaiting.replace("{name}", (otherName || "").split(" ")[0])} />
+              ) : connState === "incoming" ? (
+                <Btn v="purple" sm label={t.acceptConn} onPress={doAcceptConn} />
+              ) : (
+                <Btn v="purpleSoft" sm onPress={doConnect}
+                  label={t.connectWith.replace("{name}", (otherName || "").split(" ")[0])} sagAd="sag"
+                  a11yLabel={t.connectWith.replace("{name}", (otherName || "").split(" ")[0])} />
+              )}
+            </View>
+            <Btn v="ghost" sm full label={t.goHomeBtn} onPress={() => { setPanelOpen(false); onBack && onBack(); }} style={{ marginTop: ARA[14] }} />
           </View>
         ) : (
           <View>

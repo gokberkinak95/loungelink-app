@@ -35,3 +35,14 @@ for ad, renk in (("mark-kanat-sampanya.png", (212, 195, 163)), ("mark-kanat-bron
     yeni.putalpha(k.getchannel("A"))
     yeni.save(os.path.join(A, ad))
     print(ad)
+
+# Isik bulutlari (K9) - renk gomulu; web'de tintColor filtresi kayiyordu
+b = Image.open(os.path.join(A, "isik_bulutu.png")).convert("RGBA")
+for ad, renk in (("isik_bulutu_sampanya.png", (212, 195, 163)), ("isik_bulutu_gok.png", (159, 179, 203))):
+    yeni = Image.new("RGBA", b.size, renk + (0,))
+    yeni.putalpha(b.getchannel("A"))
+    yeni.save(os.path.join(A, ad))
+    print(ad)
+
+# Tanitim perdesi (v7): sicak siyah yerine gece mavisi, alt opak
+yap("v7_gece_alt.png", (13, 27, 42), True)

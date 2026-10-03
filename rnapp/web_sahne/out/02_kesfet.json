@@ -1,22 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -24,7 +7,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 11 sa 16 dk · 71 ilan · 29 host yayında",
+  "Havalimanı saatine 3 sa 6 dk · 70 ilan · 29 host yayında",
   "İstanbul",
   "",
   "Senin uçuşunda 6 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
@@ -40,7 +23,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "12 sa 36 dk içinde",
+  "4 sa 26 dk içinde",
   "İstek gönder",
   "",
   "D",
@@ -50,7 +33,7 @@
   "%96",
   "UYUM",
   "TAV Primeclass",
-  "IST · 3 EKİM · 04:23–06:43",
+  "IST · 3 EKİM · 12:33–14:53",
   "",
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
@@ -70,7 +53,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "8 sa 16 dk içinde",
+  "6 dk içinde",
   "İstek gönder",
   "",
   "M",
@@ -80,7 +63,7 @@
   "%78",
   "UYUM",
   "THY Dış Hat Business",
-  "IST · 3 EKİM · 04:23–06:23",
+  "IST · 3 EKİM · 12:33–14:33",
   "",
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
@@ -99,7 +82,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "14 sa 16 dk içinde",
+  "6 sa 6 dk içinde",
   "İstek gönder",
   "",
   "T",

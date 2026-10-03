@@ -1,14 +1,6 @@
 {
  "console": [
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] discover_availabilities Network request failed "
   },
@@ -81,7 +73,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 11 sa 6 dk",
+  "Havalimanı saatine 2 sa 56 dk",
   "İstanbul",
   "",
   "",

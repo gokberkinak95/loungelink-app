@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -93,11 +84,11 @@
   "BUGÜN",
   "",
   "İstek kabul edildi",
-  "5 dk",
+  "2 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "21 dk",
+  "18 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
   "",
   "Havalimanı güncellemesi #1",

@@ -17,7 +17,7 @@
 //   · Döngüler yalnız ekran açıkken döner; unmount'ta durur.
 // ============================================================================
 import React, { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Platform, Text, TouchableOpacity, View } from "react-native";
+import { AccessibilityInfo, Animated, Easing, Image, Platform, Text, TouchableOpacity, View } from "react-native";
 import { ARA, C, FS, R, SP, TAP } from "./theme";
 import { MONO } from "./typography";
 import { Ikon } from "./ikon";
@@ -253,7 +253,29 @@ export function KalkisHalkasi({ t, baslangic, bitis, boy = 176, metinRengi }) {
 // ======================================================================
 const YILDIZ_DY = [10, -6, 4, -10, 2];
 
-export function TakimyildizPuan({ deger = 0, onDegis, boy = 34 }) {
+// v7.2 (Gökberk 3 Ekim: "takımyıldız alanı arka plana yenik düşebiliyor, yıldızlar arasındaki
+// çizgi temaya göre görünüm sorunu yaratabilir") — fildişi zeminde %55 bronz bir hat görünmüyor;
+// takımyıldız GECEYE aittir. `gece`: yıldızlar şampanya (seçili hafif ışımalı), seçilmemiş
+// fildişi %45 kontur, hat şampanya %80 ve 1.5pt. Gece kartı: `GeceKarti`.
+export function GeceKarti({ children, stil }) {
+  const TOZ = [[0.08, 0.22, 2], [0.18, 0.70, 1.5], [0.30, 0.12, 1.5], [0.44, 0.84, 2], [0.62, 0.18, 1.5],
+               [0.74, 0.64, 2], [0.86, 0.30, 1.5], [0.93, 0.80, 1.5], [0.52, 0.48, 1], [0.24, 0.46, 1]];
+  return (
+    <View style={[{ borderRadius: R.lg + 4, overflow: "hidden", backgroundColor: "#0D1B2A",
+                    paddingVertical: ARA[22], paddingHorizontal: ARA[14] }, stil]}>
+      <Image source={require("../assets/v7_gece_ust.png")} resizeMode="stretch"
+        style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", opacity: 0.9,
+                 transform: [{ scaleY: -1 }] }} />
+      {TOZ.map(([x, y, b], i) => (
+        <View key={i} pointerEvents="none" style={{ position: "absolute", left: `${x * 100}%`, top: `${y * 100}%`,
+          width: b, height: b, borderRadius: R.full, backgroundColor: "rgba(249,248,246,0.55)" }} />
+      ))}
+      {children}
+    </View>
+  );
+}
+
+export function TakimyildizPuan({ deger = 0, onDegis, boy = 34, gece = false }) {
   const az = useAzHareket();
   const parla = useRef([0, 1, 2, 3, 4].map(() => new Animated.Value(0))).current;
   const hat = useRef([0, 1, 2, 3].map(() => new Animated.Value(0))).current;
@@ -292,8 +314,8 @@ export function TakimyildizPuan({ deger = 0, onDegis, boy = 34 }) {
         return (
           <Animated.View key={i} pointerEvents="none" style={{
             position: "absolute", left: (a.x + b.x) / 2 - uz / 2, top: (a.y + b.y) / 2 - 0.5,
-            width: uz, height: 1, backgroundColor: C.gold,
-            opacity: hat[i].interpolate({ inputRange: [0, 1], outputRange: [0, 0.55] }),
+            width: uz, height: gece ? 1.5 : 1, backgroundColor: gece ? C.goldBtn : C.gold,
+            opacity: hat[i].interpolate({ inputRange: [0, 1], outputRange: [0, gece ? 0.8 : 0.55] }),
             transform: [{ rotate: `${aci}rad` }],
           }} />
         );
@@ -308,11 +330,12 @@ export function TakimyildizPuan({ deger = 0, onDegis, boy = 34 }) {
             accessibilityLabel={String(n)}
             style={{ position: "absolute", left: i * hucre + SP[3] / 2, top: 22 + YILDIZ_DY[i],
                      width: boy, height: boy, alignItems: "center", justifyContent: "center" }}>
-            <Animated.View style={{
+            <Animated.View style={[{
               transform: [{ scale: secili ? s.interpolate({ inputRange: [0, 0.6, 1], outputRange: [0.8, 1.25, 1] }) : 1 }],
               opacity: secili ? s.interpolate({ inputRange: [0, 1], outputRange: [0.35, 1] }) : 1,
-            }}>
-              <Ikon ad={secili ? "degerlendirmeDolu" : "degerlendirme"} boy={boy} renk={secili ? C.gold : C.dimAA} />
+            }, gece && secili ? { shadowColor: C.goldBtn, shadowOpacity: 0.7, shadowRadius: 8, shadowOffset: { width: 0, height: 0 } } : null]}>
+              <Ikon ad={secili ? "degerlendirmeDolu" : "degerlendirme"} boy={boy}
+                renk={secili ? (gece ? C.goldBtn : C.gold) : (gece ? "rgba(249,248,246,0.45)" : C.dimAA)} />
             </Animated.View>
           </TouchableOpacity>
         );

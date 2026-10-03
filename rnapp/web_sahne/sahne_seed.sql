@@ -347,7 +347,9 @@ begin
   -- ══════════════════════════════════════════════════════════════════
   insert into sessions (request_id, status, started_at, host_confirmed, guest_confirmed,
                         host_status, host_status_ts, guest_status, guest_status_ts)
-    values (rq, 'active', now() - interval '9 minutes', true, true,
+    -- 3 Ekim: host_confirmed/guest_confirmed TAMAMLAMA onayıdır; ikisi de true iken oturum
+    -- 'active' kalamaz (panel "ikisi de onayladı · karşı taraf bekleniyor" diye çelişiyordu).
+    values (rq, 'active', now() - interval '9 minutes', false, false,
             'Kapı A12 önü', now() - interval '12 minutes',
             'Salondayım, pencere tarafı', now() - interval '6 minutes') returning id into ses;
 

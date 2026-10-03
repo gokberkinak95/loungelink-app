@@ -14,7 +14,7 @@ import * as Font from "expo-font";
 import App from "../App";
 import { sahneKur } from "./sahneler";
 import MomentScreen from "../src/MomentScreen";
-import { TerminalRadari, TakimyildizPuan, OnayDamgasi, SessizPano, KalkisHalkasi } from "../src/hareket";
+import { TerminalRadari, TakimyildizPuan, OnayDamgasi, SessizPano, KalkisHalkasi, GeceKarti } from "../src/hareket";
 import { C, FS } from "../src/theme";
 import { Sayfa, MarkaYukleyici, Tanecik } from "../src/ui";
 import { D as TR } from "../src/i18n";
@@ -71,10 +71,14 @@ export default function Galeri() {
     </View><Tanecik /></Sayfa>);
   }
   if (SAHNE.endsWith("vitrin_puan")) {
-    return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 48 }}>
-      <TakimyildizPuan deger={4} onDegis={() => {}} />
-      <MarkaYukleyici />
-    </View><Tanecik /></Sayfa>);
+    // v7.2 (Gökberk 3 Ekim): K8'in altında yükleyici kanadı yoktu — vitrinden çıktı (K2 kendi sahnesinde).
+    // Takımyıldız uygulamadaki gibi GECE KARTINDA.
+    return (<Sayfa><View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 22 }}>
+      <GeceKarti>
+        <TakimyildizPuan deger={5} onDegis={() => {}} boy={36} gece />
+        <Text style={{ fontFamily: "CormorantGaramond-SemiBold", fontStyle: "italic", fontSize: 22, color: "#F9F8F6", textAlign: "center", marginTop: 10 }}>Harika bir sohbetti.</Text>
+      </GeceKarti>
+    </View></Sayfa>);
   }
   // v7.2 — hareket vitrininin geri kalanı (K2 · K4 · K6 · K7 · K9). Gökberk 3 Ekim:
   // "sadece 3 hareket dili vermişsin; diğerleri nerede?" Her biri tek başına, temanın renkleriyle.

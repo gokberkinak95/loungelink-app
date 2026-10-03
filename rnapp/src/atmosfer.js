@@ -221,9 +221,9 @@ function TozZerresi({ x, gec, boy, ton, G, Y }) {
   }, [az]);
   return (
     <Animated.View style={{
-      position: "absolute", left: G * x, bottom: 0, width: boy, height: boy, borderRadius: boy,
-      // v7: zerreler şampanya (yapısal ton) — bronz metin rengi ışık gibi görünmüyordu.
-      backgroundColor: ton === "gold" ? (temaModu() === "v7" ? C.goldBtn : C.gold) : C.ink,
+      position: "absolute", left: G * x, bottom: 0, width: boy + (temaModu() === "v7" ? 1 : 0), height: boy + (temaModu() === "v7" ? 1 : 0), borderRadius: boy + 1,
+      // v7: zerreler koyu şampanya (#C4AF88) ve lacivert — açık şampanya fildişinde kayboluyordu.
+      backgroundColor: ton === "gold" ? (temaModu() === "v7" ? C.goldBtn2 : C.gold) : (temaModu() === "v7" ? C.gece : C.ink),
       opacity: az ? 0.35 : p.interpolate({ inputRange: [0, 0.2, 0.75, 1], outputRange: [0, 0.7, 0.45, 0] }),
       transform: [{ translateY: p.interpolate({ inputRange: [0, 1], outputRange: [0, -Y * 0.85] }) }],
     }} />
@@ -231,6 +231,11 @@ function TozZerresi({ x, gec, boy, ton, G, Y }) {
 }
 
 const ISIK_BULUTU = require("../assets/isik_bulutu.png");
+// v7.2 (Gökberk 3 Ekim: "K9 çalışmıyor gibi") — ÖLÇÜLDÜ: (1) web'de tintColor SVG filtresi
+// kimliği kayıyor, bulut BEYAZ çiziliyor → fildişinde görünmez; (2) şampanya bulut %7'de,
+// açık zeminde iz bırakmıyordu. Renk gömülü PNG + fildişine göre opaklık (%22 / %26).
+const BULUT_SAMPANYA = require("../assets/isik_bulutu_sampanya.png");
+const BULUT_GOK = require("../assets/isik_bulutu_gok.png");
 function IsikBulutlari() {
   const az = useAzHareket();
   const v = useRef(new Animated.Value(0)).current;
@@ -253,14 +258,20 @@ function IsikBulutlari() {
   return (
     <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "22%", bottom: 0, overflow: "hidden" }}>
       {/* v7: bulutlar ŞAFAK — şampanya + gökyüzü sisi; altın+mor fildişini beje boyuyordu. */}
-      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={temaModu() === "v7" ? C.goldBtn : C.gold}
-        style={{ position: "absolute", width: G * 1.3, height: G * 1.3, right: -G * 0.45, top: -G * 0.1,
-                 opacity: temaModu() === "v7" ? 0.07 : 0.16,
+      <Animated.Image source={temaModu() === "v7" ? BULUT_SAMPANYA : ISIK_BULUTU} resizeMode="stretch"
+        tintColor={temaModu() === "v7" ? undefined : C.gold}
+        // v7: daha KÜÇÜK ve daha belirgin bulut — 1.3G'lik yumuşak leke tüm sayfayı tek tip beje
+        // boyuyordu, hareket görünecek bir kenar kalmıyordu (ölçüldü: vitrin karesi düz 245,237,229).
+        style={{ position: "absolute", width: G * (temaModu() === "v7" ? 0.95 : 1.3), height: G * (temaModu() === "v7" ? 0.95 : 1.3),
+                 right: -G * (temaModu() === "v7" ? 0.25 : 0.45), top: -G * 0.1,
+                 opacity: temaModu() === "v7" ? 0.42 : 0.16,
                  transform: [{ translateX: v.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.18] }) },
                              { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.12] }) }] }} />
-      <Animated.Image source={ISIK_BULUTU} resizeMode="stretch" tintColor={temaModu() === "v7" ? C.gokMavi : C.purple}
-        style={{ position: "absolute", width: G * 1.4, height: G * 1.4, left: -G * 0.55, bottom: -G * 0.35,
-                 opacity: temaModu() === "v7" ? 0.16 : 0.2,
+      <Animated.Image source={temaModu() === "v7" ? BULUT_GOK : ISIK_BULUTU} resizeMode="stretch"
+        tintColor={temaModu() === "v7" ? undefined : C.purple}
+        style={{ position: "absolute", width: G * (temaModu() === "v7" ? 1.0 : 1.4), height: G * (temaModu() === "v7" ? 1.0 : 1.4),
+                 left: -G * (temaModu() === "v7" ? 0.3 : 0.55), bottom: -G * (temaModu() === "v7" ? 0.2 : 0.35),
+                 opacity: temaModu() === "v7" ? 0.45 : 0.2,
                  transform: [{ translateX: w.interpolate({ inputRange: [0, 1], outputRange: [0, G * 0.2] }) },
                              { translateY: w.interpolate({ inputRange: [0, 1], outputRange: [0, -G * 0.15] }) }] }} />
       {ZERRE.map((z, i) => <TozZerresi key={i} {...z} G={G} Y={Y} />)}
@@ -323,6 +334,14 @@ export function Atmosfer({ tur = "is", ufuk = 58, kaynak, yogunluk }) {
       </>
     );
   }
+  // ══════════════════════════════════════════════════════════════════
+  // v7.2 (Gökberk 3 Ekim: "K9 çalışmıyor gibi") — KÖK NEDEN: canlı zemin yalnız
+  // `koyuMu()` dalında çiziliyordu; v7 koyu olmadığı için eski AÇIK temanın durağan bej
+  // görseline (zemin-acik.png) düşüyordu → bulut yok, zerre yok, sayfalarda bej perde
+  // (ölçüldü: vitrin 1. sn ile 9. sn arasında fark 0; zemin 245,237,229 ≠ #F9F8F6).
+  // v7: fildişi tuvalin üstünde şampanya + gök bulutları ve yükselen zerreler.
+  // ══════════════════════════════════════════════════════════════════
+  if (temaModu() === "v7") return <IsikBulutlari />;
   return (
     <Katman
       source={ZEMIN_ACIK}

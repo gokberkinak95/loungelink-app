@@ -133,3 +133,43 @@ Web sahnedeki 3 hatalı sahne v7 kaynaklı değil:
   - ps1 0
 - Web sahne 85 / 82 temiz. Kalan 3 bilinen eski senaryo: 06, 35, 45.
 - Onay sayfasi v3 (ayni link).
+
+## EK 3 · 3 Ekim ucuncu tur
+- K9 KOK NEDEN: `Atmosfer` canli zemini (IsikBulutlari + zerreler) yalniz `koyuMu()` dalinda ciziyordu.
+  - v7, eski acik temanin duragan bej gorseline (zemin-acik.png) dusuyordu: hareket yok, sayfalarda bej perde.
+  - Olculdu: vitrin 1. ve 9. sn farki 0.
+  - Simdi v7 -> IsikBulutlari:
+    - bulutlar renk gomulu (isik_bulutu_sampanya/gok), 0.95-1.0G, %42/%45
+    - zerreler koyu sampanya + lacivert
+  - Fark artik olculebilir.
+- Oturum paneli v7 (Chat · panelOpen), mantik birebir:
+  - Canli: K7 halka, bulusma karti, iki onay muhru, cam araclar, SOS, iptal.
+  - Bitti: "Nasil gecti?", K8 takimyildiz GeceKarti'nda (`gece` prop), secime gore italik cumle, kazanc karti, baglantida kal.
+- `hareket.js`: `GeceKarti`, `TakimyildizPuan({gece})`.
+- i18n: v7SesCanli/v7SesIle/v7NasilGecti/v7Puan1-5/v7PuanBos (TR+EN).
+- Tanitim (FotoSahne) v7:
+  - perde.png koyu temanin sicak siyahini gomulu tasiyordu -> v7_gece_alt + ust lacivert tul.
+  - Fotograflar korundu (Gokberk'in eski karari).
+- Bos durum "ucus": disk kalkti; kanat + kesik iz.
+- Splash: kanat ortada, sis rampasi %56.
+- Baslik olcegi 0.44 -> 0.5. Panelde mukerrer "Oturum tamamlandi" kasi kalkti. "Tamamlandigini Onayla" cift tik.
+- Sahneler:
+  - 06/35/45: "Istek:" -> "Sohbet:" yolu.
+  - Yeni: 87_oturum_canli, 88_oturum_puanla, 89_seyahat_duzenle, 90_ilan_duzenle.
+  - K8 vitrini: yukleyici cikti, gece karti.
+  - sahne_seed: aktif oturumda host/guest_confirmed false (ikisi true iken active celiskiliydi).
+- cek.py:
+  - ortala() pencereyi de sifirlar. 50_istek_gonder "bozuk baslik" sahne artefaktiydi; ekran saglam.
+  - Screenshot yazimina 4 deneme (Windows Errno 22).
+- K4 kaliyor (Gokberk onayi).
+- Testler:
+  - check temiz
+  - tasma 0
+  - screens 77/77
+  - mount 54/54
+  - giris 37/37
+  - deeplink 13/13
+  - errmap 12/12
+  - app_boot gecti
+- Web sahne 89/89 temiz (ilk kez tamami). 9 hareket videosu.
+- Onay sayfasi v4.

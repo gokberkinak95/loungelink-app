@@ -2437,7 +2437,7 @@ function SplashV7({ t, go, lang, toggleLang }) {
           184 gri veriyordu, tasarım ≈235): sis %40→%74 rampa, %74'ten aşağı düz %92 sis;
           fildişi %74→%90 rampa, %90'dan aşağı düz fildişi. */}
       <Katman source={require("./assets/v7_sis_alt.png")} resizeMode="stretch"
-        style={{ position: "absolute", width: "100%", left: 0, right: 0, top: "50%", height: "24%", opacity: 0.92 }} />
+        style={{ position: "absolute", width: "100%", left: 0, right: 0, top: "56%", height: "18%", opacity: 0.92 }} />
       <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "74%", bottom: 0,
                                           backgroundColor: C.doku.ufuk, opacity: 0.92 }} />
       <Katman source={require("./assets/v7_fildisi_alt.png")} resizeMode="stretch"
@@ -2457,9 +2457,10 @@ function SplashV7({ t, go, lang, toggleLang }) {
                        marginTop: ARA[14], maxWidth: 300 }}>{t.v7SplashAlt}</Text>
       </View>
       {/* Ortada kanat: açılış ışığı (iz · cam parıltısı · zerre) şafağın başladığı kuşakta. */}
-      {/* Kanat gece mavisinin şafağa döndüğü kuşakta (üst %40–50): fildişi kanat açık sisin
-          üstünde kayboluyordu (ölçüldü: 3 Ekim karesinde kanat görünmüyor). */}
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: ARA[44] }}>
+      {/* Kanat metin ile düğmeler arasında ORTADA (Gökberk 3 Ekim). Sis rampası %56'dan başlar:
+          fildişi kanat açık sisin üstünde kayboluyordu (ölçüldü). Açılış ışığı kanat kutusunun
+          içinde çizildiği için kanatla birlikte konumlanır. */}
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <View style={{ width: kanatG, height: kanatH }}>
           <AcilisIsigi g={kanatG} y={kanatH} />
           <Katman source={require("./assets/mark-kanat.png")} resizeMode="contain"

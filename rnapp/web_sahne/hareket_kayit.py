@@ -15,7 +15,7 @@ HAREKETLER = [
     ("k6_pano", "68_vitrin_pano", 5200),
     ("k7_kalkis", "69_vitrin_kalkis", 4200),
     ("k8_puan", "62_vitrin_puan", 4200),
-    ("k9_zemin", "59_vitrin_zemin", 6000),
+    ("k9_zemin", "59_vitrin_zemin", 11000),
 ]
 
 def main():

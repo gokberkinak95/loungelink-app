@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -28,7 +37,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "04:03–08:03",
+  "12:13–16:13",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -72,7 +81,7 @@
   "Deniz K.",
   "HOST",
   "TAV Primeclass",
-  "IST · 3 EKİM · 04:23–06:43",
+  "IST · 3 EKİM · 12:33–14:53",
   "TK1979 · TK",
   "GÜVENİLİR HOST",
   "✓ KABUL EDİLDİN",

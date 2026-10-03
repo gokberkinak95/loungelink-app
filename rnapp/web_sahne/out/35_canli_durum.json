@@ -7,12 +7,13 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
- "errors": [
-  "adım ('dokun_a11y', 'Sohbeti Aç'): Locator.click: Timeout 4000ms exceeded.",
-  "adım ('dokun', 'Durumumu paylaş'): Locator.click: Timeout 4000ms exceeded."
- ],
+ "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
@@ -40,7 +41,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "04:13–08:13",
+  "12:17–16:17",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -73,19 +74,26 @@
   "Profil",
   "",
   "LOUNGELINK",
-  "AKIŞ",
-  "İstek",
-  "Gelen  0",
-  "Gönderdiğim  0",
-  "GELEN İSTEKLER",
-  "— —",
-  "— — — —",
-  "— : —",
-  "— —",
-  "— — — —",
-  "— : —",
-  "BEKLEYEN İSTEK YOK",
-  "Sana gelen bekleyen istek yok. İlanına başvuru geldiğinde burada kabul ya da reddedersin."
+  "CANLI",
+  "Oturum · Canlı Durum",
+  "02:33",
+  ":50",
+  "BULUŞMAYA",
+  "Oturum Aktif",
+  "KARŞI TARAF DİYOR",
+  "",
+  "Kapı A12 önü",
+  "SENİN DURUMUN",
+  "Yeni indim / bagaj bekliyorum",
+  "Güvenlik kuyruğundayım (~10 dk)",
+  "Güvenlikten geçtim, geliyorum (~5 dk)",
+  "Lounge girişindeyim",
+  "Lounge'dayım",
+  "",
+  "Paylaşıldı — karşı taraf görebilir",
+  "",
+  "Konumun paylaşılmaz; yalnız seçtiğin durum görünür.",
+  "Oturuma Git"
  ],
  "tasan": [],
  "bitisik": []

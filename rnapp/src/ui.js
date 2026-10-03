@@ -1339,10 +1339,25 @@ export function FotoSahne({ children, perdeBas = 0.36, perdeGuc = 0.58, odak, od
           🆕 SINIF: "BİR KUTUYU 'İKİ KENARINI SABİTLEYEREK' GERDİĞİNİ
           SANIYORSAN ÖLÇ — BAZI ÖĞELER KENDİ İÇSEL BOYUNU TERCİH EDER VE
           KISITI SESSİZCE YOK SAYAR." */}
+      {/* v7.2 (Gökberk 3 Ekim: "tanıtım arka planları uyumsuz mu?") — perde.png koyu temanın
+          SICAK SİYAHINI gömülü taşıyordu (alt kısım kahve-siyah). v7'de gece mavisi perde + üstte
+          hafif lacivert tül: fotoğraflar (onaylı hikâye) kalır, renk ailesi temaya döner.
+          Açılış "varış"tır (fildişine açılır); tanıtım uçuş içi gecedir (lacivertte kalır). */}
+      {temaModu() === "v7" ? (
+        <>
+          <Katman source={require("../assets/v7_gece_ust.png")} resizeMode="stretch"
+            style={{ position: "absolute", left: 0, width: "100%", top: 0, height: "40%", opacity: 0.55 }} />
+          <Katman source={require("../assets/v7_gece_alt.png")} resizeMode="stretch"
+            style={{ position: "absolute", left: 0, width: "100%",
+                     top: `${perdeBas * 100}%`, height: `${(1 - perdeBas) * 100}%`,
+                     opacity: Math.min(1, perdeGuc + 0.05) }} />
+        </>
+      ) : (
       <Katman source={require("../assets/perde.png")} resizeMode="stretch"
         style={{ position: "absolute", left: 0, width: "100%",
                  top: `${perdeBas * 100}%`, height: `${(1 - perdeBas) * 100}%`,
                  opacity: perdeGuc }} />
+      )}
       {children}
     </View>
   );
@@ -1575,7 +1590,7 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
   // "Değerlendirmeler" 0.424). Bilinçli satır kırığı ("\n") olan başlıkta her satır ayrı ölçülür.
   // Taban 26pt: daha uzunsa iki satıra izin verilir (okunurluk > tek satır).
   const enUzunSatir = typeof baslik === "string" ? Math.max(1, ...baslik.split("\n").map(x => x.trim().length)) : 0;
-  const satirBoy = enUzunSatir ? Math.floor((G - ARA[22] * 2) / (enUzunSatir * 0.44)) : FS.bant + 4;
+  const satirBoy = enUzunSatir ? Math.floor((G - ARA[22] * 2) / (enUzunSatir * 0.5)) : FS.bant + 4;   // 0.44 kısa geldi: "Oturum Devam Ediyor" yine kırıldı (ölçüldü)
   const baslikBoy = temaModu() === "v7" ? Math.max(26, Math.min(kelimeBoy, satirBoy)) : kelimeBoy;
   const fotoUst = -Math.max(0, fotoY - olculenY) * 0.42;
   return (
@@ -3113,9 +3128,15 @@ export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala =
       {/* v7.2 (Gökberk 3 Ekim: "boş durumdaki uçak ikonu bizim app'in uçak ikonu olsun") —
           "ucus" boş durumunda markanın kanadı: şampanya diskte bronz kanat. */}
       {ikon === "ucus" && !pano && temaModu() === "v7" ? (
-        <View style={{ width: 64, height: 64, borderRadius: R.full, alignItems: "center", justifyContent: "center",
-                       backgroundColor: "rgba(212,195,163,0.22)", marginBottom: SP[3] }}>
-          <Image source={KANAT_BRONZ} resizeMode="contain" style={{ width: 40, height: 20 }} />
+        // 3 Ekim ikinci tur (Gökberk: "etrafında yuvarlak olmasa mı?") — disk kalktı: diskte kanat
+        // bir "ikon", yalnız başına ve arkasında kesik bir uçuş iziyle MARKA. K2/K1′ ile aynı dil.
+        <View style={{ width: 132, height: 44, marginBottom: SP[3], justifyContent: "center" }}>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <View key={i} pointerEvents="none" style={{ position: "absolute", left: 6 + i * 9, top: 34 - i * 3.6,
+              width: 4, height: 1.5, borderRadius: R.full, backgroundColor: C.gold, opacity: 0.12 + i * 0.07,
+              transform: [{ rotate: "-22deg" }] }} />
+          ))}
+          <Image source={KANAT_BRONZ} resizeMode="contain" style={{ position: "absolute", right: 0, top: 2, width: 76, height: 38 }} />
         </View>
       ) : !!ikon && !pano && (
         <View style={{

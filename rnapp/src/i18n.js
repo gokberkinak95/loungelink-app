@@ -1519,6 +1519,10 @@ export const D = {
     tagline1: "Aktarma uçuşları bağlar,",
     v7Slogan1: "Aynı lounge'da,", v7Slogan2: "doğru insanla.",
     v7SplashAlt: "Lounge hakkını paylaş, uçuş öncesini bir tanışmaya çevir.",
+    // v7.2 oturum paneli (canlı · puanlama)
+    v7SesCanli: "Oturum · canlı", v7SesIle: "{name} ile", v7SesBuluss: "Buluşma",
+    v7NasilGecti: "Nasıl geçti?", v7Puan1: "Pek iyi değildi.", v7Puan2: "İdare eder.", v7Puan3: "İyiydi.",
+    v7Puan4: "Çok iyiydi.", v7Puan5: "Harika bir sohbetti.", v7PuanBos: "Yıldızlara dokun.",
     // Özellik saymayı bıraktık: "doğrulanmış yolcular, emanet korumalı"
     // bir liste, bir sahne değil. Sahne kuruluyor — kalkışa iki saat var
     // ve iki kişi aynı terminalde birbirini bilmiyor.
@@ -3594,6 +3598,9 @@ export const D = {
     tagline1: "Connecting flights,",
     v7Slogan1: "Same lounge,", v7Slogan2: "the right person.",
     v7SplashAlt: "Share your lounge access and turn the wait before your flight into an introduction.",
+    v7SesCanli: "Session · live", v7SesIle: "With {name}", v7SesBuluss: "Meeting",
+    v7NasilGecti: "How was it?", v7Puan1: "Not great.", v7Puan2: "It was okay.", v7Puan3: "It was good.",
+    v7Puan4: "Really good.", v7Puan5: "A great conversation.", v7PuanBos: "Tap the stars.",
     start: "Get Started",
     login: "Log In",
     name: "FULL NAME",

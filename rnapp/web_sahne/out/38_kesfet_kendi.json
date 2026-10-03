@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -20,7 +7,7 @@
   "",
   "TÜM HAVALİMANLARI VE TARİHLER",
   "Keşfet",
-  "70 ilan · 28 host yayında",
+  "69 ilan · 28 host yayında",
   "Keşfet",
   "",
   "Sen de misafir olabilirsin",
@@ -38,7 +25,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "2 g 12 sa içinde",
+  "2 g 4 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -53,7 +40,7 @@
   "Misafir ücretsiz",
   "TK712",
   "",
-  "4 g 10 sa içinde",
+  "4 g 1 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -68,7 +55,7 @@
   "Misafir ücretsiz",
   "TK2104",
   "",
-  "5 g 7 sa içinde",
+  "4 g 22 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -83,7 +70,7 @@
   "Misafir ücretsiz",
   "TK1953",
   "",
-  "6 g 8 sa içinde",
+  "5 g 23 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -98,7 +85,7 @@
   "Misafir ücretsiz",
   "TK2106",
   "",
-  "9 g 6 sa içinde",
+  "8 g 21 sa içinde",
   "Seyahat ekle",
   "",
   "S",
