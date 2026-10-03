@@ -157,7 +157,7 @@ export async function needsOnboarding(uid) {
   // Doğru kural: tamamlama YALNIZCA sosyal kimlikle (Google/Apple) gelip
   // kayıt sihirbazını hiç görmemiş kullanıcı için gerekir. Ölçüt:
   //   · oturum sağlayıcısı e-posta DEĞİL (app_metadata.provider)
-  //   · VE rol seçilmemiş
+  //   · VE kullanım şartları onayı yok (rol ölçütü işe yaramıyordu — aşağıda)
   // İkisi birden yoksa ekran açılmaz.
   if (!uid) return false;
   try {
@@ -166,9 +166,19 @@ export async function needsOnboarding(uid) {
     const provider = au?.user?.app_metadata?.provider || "email";
     if (provider === "email") return false;          // klasik kayıt → sihirbaz zaten çalıştı
 
-    const { data: u, error: eU } = await supabase.from("users").select("role").eq("id", uid).maybeSingle();
-  if (eU) logError("social_role", eU);
-    return !u?.role;                                  // sosyal + rol yok → tamamlama gerekir
+    // 🔴 4 Ekim 2026 — "ROL YOK" ÖLÇÜTÜ HİÇBİR ZAMAN DOĞRU OLMUYORDU.
+    // Kayıt tetikleyicisi (`handle_new_user`) rolü `coalesce(meta.role, 'guest')`
+    // ile yazar: sosyal kimlikle gelen herkes `guest` doğar, `users.role` asla
+    // boş kalmaz. Bu yüzden tamamlama ekranı hiç açılmıyordu — Google/Apple
+    // ile gelen kullanıcı ROL SEÇMEDEN misafir oluyor ve SÖZLEŞME ONAYI hiç
+    // alınmıyordu (KVKK kanıtı yok).
+    // Doğru ölçüt sihirbazın kendi izi: kullanım şartları onayı (terms_privacy).
+    // Sosyal hesapta bu kayıt yoksa sihirbaz hiç görülmemiştir. Klasik (e-posta)
+    // giriş bu fonksiyonun yukarısında döndüğü için v1.81'in yanlış alarmı geri gelmez.
+    const { data: on, error: eOn } = await supabase.from("consents")
+      .select("type").eq("user_id", uid).eq("type", "terms_privacy").limit(1);
+    if (eOn) { logError("social_onay", eOn); return false; }
+    return !(on && on.length);                        // sosyal + onay yok → tamamlama gerekir
   } catch (e) {
     return false;   // şüphede kalırsak kullanıcıyı ASLA kilitleme
   }

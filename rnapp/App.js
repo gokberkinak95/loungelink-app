@@ -7,7 +7,7 @@ import { ErrorBoundary } from "./src/ErrorBoundary";
 // çağrılarının hataları sessiz kalmasın (v2.78'de denetim eksikliği yakalamıştı).
 import { supabase, setAppVersion, logError } from "./src/supabase";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle } from "./src/cevrimdisi";
-import { signInWithGoogle, signInWithApple, appleAvailable, needsOnboarding, RESET_REDIRECT } from "./src/social";
+import { signInWithGoogle, signInWithApple, appleAvailable, needsOnboarding, RESET_REDIRECT, REDIRECT_URL } from "./src/social";
 import * as ExpoLinking from "expo-linking";
 import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
@@ -693,6 +693,39 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         if (!error) await AsyncStorage.removeItem("ll_onay_bekliyor");
         else logError("grant_consents_tekrar", error);
       } catch (e) {}
+    })();
+    // 4 Ekim 2026: e-posta doğrulamalı kayıtta bekleyen onay · telefon · davet kodu.
+    // Yalnız AYNI e-postayla açılan oturuma yazılır. İş kuralı hataları
+    // (numara başkasında, kod geçersiz/kendi kodu/kullanılmış) kalıcıdır:
+    // bayrak kalkar, kullanıcı ilgili ekranda aynı cümleyi görür. Ağ hatasında
+    // bayrak durur, bir sonraki açılışta yeniden denenir.
+    (async () => {
+      try {
+        const ham = await AsyncStorage.getItem("ll_kayit_bekliyor");
+        if (!ham || !session?.user?.id) return;
+        const b = JSON.parse(ham);
+        const benim = String(session.user.email || "").toLowerCase() === String(b.email || "");
+        if (!benim) return;
+        const kalici = (e) => /phone_taken|invalid_referral_code|self_referral_blocked|referral_already_used|not_eligible/i
+          .test(String(e && (e.message || e.code) || ""));
+        let kalan = { ...b };
+        if (b.onay && b.onay.length) {
+          const { error } = await supabase.rpc("grant_consents", { p_types: b.onay, p_version: "v16" });
+          if (!error) kalan.onay = null; else logError("grant_consents_dogrulama", error);
+        }
+        if (b.tel) {
+          const { error } = await supabase.rpc("declare_phone", { p_phone: b.tel });
+          if (!error || kalici(error)) kalan.tel = null;
+          if (error) logError("declare_phone_dogrulama", error);
+        }
+        if (b.ref) {
+          const { error } = await supabase.rpc("apply_referral", { p_code: b.ref });
+          if (!error || kalici(error)) kalan.ref = null;
+          if (error) logError("apply_referral_dogrulama", error);
+        }
+        if (!kalan.onay && !kalan.tel && !kalan.ref) await AsyncStorage.removeItem("ll_kayit_bekliyor");
+        else await AsyncStorage.setItem("ll_kayit_bekliyor", JSON.stringify(kalan));
+      } catch (e) { logError("kayit_bekliyor", e); }
     })();
     (async () => {
       const need = await needsOnboarding(session?.user?.id);
@@ -1681,7 +1714,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   // v1.74: rol/sözleşme eksikse önce tamamlama ekranı (sosyal giriş yolu).
   if (needsOnb) return (
     <CompleteOnboarding t={t} session={session}
-      onDone={() => setNeedsOnb(false)}
+      // 4 Ekim 2026: rol bu ekranda seçildi (rolumu_sec) — kabuk rolü açılışta
+      // okumuştu; yeniden okutulmazsa "host" seçen kişi misafir arayüzü görürdü.
+      onDone={() => { setNeedsOnb(false); setRolTekrar((v) => v + 1); }}
       onLogout={handleLogout} />
   );
 
@@ -2899,7 +2934,8 @@ function Auth({ mode, t, go, lang, toggleLang }) {
 
   async function resendVerify() {
     try {
-      await supabase.auth.resend({ type: "signup", email: email.trim().toLowerCase() });
+      await supabase.auth.resend({ type: "signup", email: email.trim().toLowerCase(),
+                                   options: { emailRedirectTo: REDIRECT_URL } });
       setResent(true);
     } catch (e) { setErr(mapErr(t, String(e.message || e))); }
   }
@@ -2939,7 +2975,11 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         // ══════════════════════════════════════════════════════════════
         const { data: sud, error } = await supabase.auth.signUp({
           email: email.trim(), password: pass,
-          options: { data: { name: name.trim(), gender: gender || undefined, role: role || "guest", phone: phone || undefined } },
+          // 4 Ekim 2026: onay bağlantısı UYGULAMAYA döner (loungelink://auth-callback →
+          // deeplink.js `signup` türü → oturum → ana sayfa). Adres Supabase'in Redirect
+          // URLs listesinde yoksa Supabase Site URL'ye düşer — bugünkü davranış.
+          options: { emailRedirectTo: REDIRECT_URL,
+                     data: { name: name.trim(), gender: gender || undefined, role: role || "guest", phone: phone || undefined } },
         });
         if (error) {
           // #5: "zaten kayitli" hatasini anlasilir soyle
@@ -2973,6 +3013,19 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         //    O OLAYIN GELMEDİĞİ DALI DA ÇİZMEK ZORUNDASIN."
         // ══════════════════════════════════════════════════════════
         if (!sud || !sud.session) {
+          // 🔴 4 Ekim 2026 — BU DALDA ONAY, TELEFON VE DAVET KODU KAYBOLUYORDU.
+          // Oturum yokken aşağıdaki üç RPC çalışamaz (hepsi auth.uid() ister) ve
+          // eski kod burada dönüyordu: kullanıcı e-postasını doğrulayıp giriş
+          // yaptığında sözleşme onayı (KVKK kanıtı), beyan ettiği telefon ve
+          // girdiği davet kodu hiçbir yerde yoktu. Artık üçü bu e-postaya
+          // bağlı olarak cihazda bekler; `Main` aynı e-postayla ilk açılışta
+          // yazar (başka hesapla girilirse dokunmaz).
+          try {
+            await AsyncStorage.setItem("ll_kayit_bekliyor", JSON.stringify({
+              email: email.trim().toLowerCase(), onay: CONSENT_TYPES,
+              tel: phone.trim() || null, ref: refIn.trim() || null,
+            }));
+          } catch (e) {}
           setBusy(false);
           setVerifyWait(true);
           return;

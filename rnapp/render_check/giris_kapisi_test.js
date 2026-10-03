@@ -587,6 +587,13 @@ async function calis() {
     const bilgiVar = son.indexOf(t.verifySentTitle || "@@yok@@") >= 0;
     ol("kayıt · doğrulama e-postası varsa kullanıcıya SÖYLENİYOR", bilgiVar,
       bilgiVar ? "" : "ekranda doğrulama bilgisi yok — kullanıcı dönen çarkta kalıyor");
+    // 4 Ekim 2026: oturum yokken onay/telefon/davet kodu kaybolmamalı —
+    // bu e-postaya bağlı olarak cihazda beklemeli (Main ilk girişte yazar).
+    let bek = null;
+    try { bek = JSON.parse(ASYNC_STORE["ll_kayit_bekliyor"] || "null"); } catch (e) {}
+    ol("kayıt · doğrulama bekleniyorsa onaylar cihazda BEKLİYOR", !!(bek && bek.onay && bek.onay.indexOf("terms_privacy") >= 0),
+      bek ? JSON.stringify(bek).slice(0, 120) : "ll_kayit_bekliyor yok — onaylar kayboluyor");
+    ol("kayıt · bekleyen kayıt doğru e-postaya bağlı", !!(bek && bek.email === "g@example.com"));
     await bekle(async () => tree.unmount());
     SIGNUP_SONUC = { data: { user: { id: "u1" }, session: { user: { id: "u1" } } }, error: null };
   }

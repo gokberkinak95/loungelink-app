@@ -24,7 +24,8 @@ const supabase = {
   // YOKTUR. Stub bunu async fonksiyonla taklit ettiği için ".catch is not a
   // function" hatası testlerden kaçmıştı (v1.79'da beyaz ekrana sebep oldu).
   // Artık stub da aynı sınırı taşıyor; .catch çağıran kod testte patlar.
-  rpc: (fn) => {
+  rpc: (fn, args) => {
+    if (globalThis.__RPC_LOG) globalThis.__RPC_LOG.push([fn, args]);   // 4 Ekim 2026: isteğe bağlı çağrı kaydı
     const D = globalThis.__DATA || {};
     const v = D.rpc && D.rpc[fn];
     const result = (v === undefined) ? { data: null, error: null }
@@ -42,7 +43,8 @@ const supabase = {
   auth: {
     getSession: async () => ({ data: { session: (globalThis.__DATA || {}).session || null } }),
     getUser: async () => ({ data: { user: ((globalThis.__DATA || {}).session || {}).user || null } }),
-    onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
+    // 4 Ekim 2026: geri çağrı yakalanır (kayit_yonlendirme_test oturum olayı üretir).
+    onAuthStateChange: (cb) => { globalThis.__AUTHCB = cb; return { data: { subscription: { unsubscribe() {} } } }; },
     signInWithPassword: async () => ({ error: null }),
     signInWithOtp: async () => ({ error: null }),
     verifyOtp: async () => ({ error: null }),

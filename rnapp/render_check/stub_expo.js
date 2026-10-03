@@ -4,8 +4,16 @@ module.exports = new Proxy({
   expoConfig: { extra: {} },
   manifest: { extra: {} },
   StatusBar: () => null,
-  default: { getItem: async () => null, setItem: async () => {}, removeItem: async () => {} },
-  getItem: async () => null, setItem: async () => {}, removeItem: async () => {},
+  // 4 Ekim 2026: bellek içi (globalThis.__ASYNC). Varsayılan boş — eski testler
+  // aynı davranışı görür; yönlendirme testi "tanıtım görüldü" bayrağını kurabilir.
+  default: {
+    getItem: async (k) => { const s = globalThis.__ASYNC || {}; return k in s ? s[k] : null; },
+    setItem: async (k, v) => { (globalThis.__ASYNC = globalThis.__ASYNC || {})[k] = String(v); },
+    removeItem: async (k) => { if (globalThis.__ASYNC) delete globalThis.__ASYNC[k]; },
+  },
+  getItem: async (k) => { const s = globalThis.__ASYNC || {}; return k in s ? s[k] : null; },
+  setItem: async (k, v) => { (globalThis.__ASYNC = globalThis.__ASYNC || {})[k] = String(v); },
+  removeItem: async (k) => { if (globalThis.__ASYNC) delete globalThis.__ASYNC[k]; },
   useFonts: () => [true],
   // 🔴 v3.4 — `expo-font` TAKLİDİ SADECE `useFonts` BİLİYORDU.
   // İkon katmanı (`@expo/vector-icons` → `createIconSet`) `Font.isLoaded`,
