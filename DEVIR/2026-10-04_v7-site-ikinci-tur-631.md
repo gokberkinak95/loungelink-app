@@ -31,3 +31,30 @@ Yok.
 ## Acik
 1. Site onayi -> 0.70.0 + push + yayina alma karari.
 2. Firebase (google-services.json + FCM V1) -> sonra yeni build.
+
+## EK · ayni gun: site yayini + giris/kayit denetimi (app 6.3.2)
+
+### Site
+- 0.70.0 (package.json + lock), ekran rafi app 6.3.1 damgali. main'e fast-forward + push (fe40070), site-v7 dali da push.
+- Vercel yayinda: loungelink-website.vercel.app/og.jpg yeni kartla bayt bayt ayni (olculdu).
+- loungelink.co DNS'i bu agda 192.168.1.1'e cozuluyor, yanit yok: alan adi henuz baglanmamis.
+
+### App 6.3.2 (versionCode 281 · buildNumber 275) — commit 9a41587, push edildi
+Gokberk sorusu: login/signup akislari, rol secimi, kayittan sonra tanitim.
+- Rol secimi: e-posta kaydinda adim 2 ZORUNLU (secmeden ilerlenmiyor), rol signUp meta verisiyle gidiyor, handle_new_user users.role'e yaziyor (olculdu: ETKIN_TANIMLAR).
+- BULGU 1 (duzeltildi): Google/Apple ile gelen kullanici rol + sozlesme onayi tamamlama ekranini HIC gormuyordu. needsOnboarding "rol yok" diye bakiyordu; tetikleyici rolu coalesce(...,'guest') ile hep doldurdugu icin kosul hic dogru olmuyordu. Yeni olcut: sosyal saglayici + terms_privacy onayi yok. E-posta hesaplari etkilenmez (v1.81).
+- BULGU 2 (duzeltildi): e-posta dogrulamasi aciksa signUp oturum donmuyor; onay/telefon/davet kodu hic yazilmiyordu. Artik cihazda e-postaya bagli bekliyor (ll_kayit_bekliyor), ayni e-postayla ilk acilista yaziliyor; baska hesaba yazilmaz.
+- BULGU 3 (duzeltildi): tamamlama ekraninda host secen kisi icin kabuk rolu yeniden okunmuyordu.
+- signUp/resend: emailRedirectTo = loungelink://auth-callback (izinli listede yoksa Site URL'ye duser — bugunku davranis).
+- "Kayittan sonra tanitim": kodda yol yok; olculdu (kayit_yonlendirme_test): tanitim/giris/kayit ekranindayken oturum acilinca -> ana sayfa; cikis -> acilis (tanitim degil); tanitim gorulduyse Basla -> kayit.
+- Yeni test render_check/kayit_yonlendirme_test.js 18/18 (npm run render zincirinde). Eski needsOnboarding ile kosuldu: Google senaryosu KIRMIZI (acik kanitlandi).
+- giris_kapisi_test 39/39 · screens 77/77 · mount 56/56 · deeplink 13/13 · dokunma yolu 9/9 · verify: yalniz cairosvg (ortam).
+
+### Bildirim baglantilari
+- Push dokunusu Universal Link KULLANMAZ: payload data.notification_id -> bildirim_hedefi RPC -> ekran. Sunucunun dondugu tum ekranlar (akis/istek/davet/soru/baglanti/oturum, sohbet, istek_sohbet, tanis, cuzdan, degerlendirmeler, guvenlik) uygulamada karsilaniyor; kapali/acik uygulamada dokunus yakalaniyor.
+- Universal Link (iOS) / App Link (Android) KURULU DEGIL: associatedDomains, intentFilters ve sitede .well-known yok. Gerekli olanlar: Apple Team ID (iOS), Android imza SHA-256 (APK'dan okunabilir), canli alan adi (loungelink.co baglanmali), hangi yollarin uygulamayi acacagi karari.
+
+### Acik
+1. Universal/App Link karari ve girdileri (Team ID, alan adi).
+2. Supabase Auth -> URL Configuration -> Redirect URLs: loungelink://** ekli mi (kontrol: Gokberk).
+3. Firebase (onceki).
