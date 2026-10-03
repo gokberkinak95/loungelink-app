@@ -2584,7 +2584,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     // `discover_people.purpose` = visits.purpose (business/connecting/…) —
     // niyet değil. Eski eşleme (coffee/work/wait) hiç tutmuyordu, çip hiç
     // çıkmıyordu. Aynı amaç → "Aynı rota tanışma" (tasarım 05), değilse amacın adı.
-    // 4 Ekim (Gökberk: "'aynı rota tanışma' cümlesi anlaşılmıyor") — `same_purpose` ROTA değil
+    // 3 Ekim (Gökberk: "'aynı rota tanışma' cümlesi anlaşılmıyor") — `same_purpose` ROTA değil
     // seyahat AMACIDIR (iş · aktarma · tatil). Rozet artık ne olduğunu söylüyor: "Aynı amaç · İş".
     const amacAdi = p.purpose ? gorunur((PURPOSES.find(x => x[0] === p.purpose) || [])[1] || null) : null;
     const amac = p.same_purpose
@@ -4172,7 +4172,7 @@ export function Referral({ t, session, onBack }) {
         <RefCodeEntry t={t} />
         <View style={[S.card, { alignItems: "center", paddingVertical: ARA[22] }]}>
           <Text style={{ fontSize: FS.xs, color: C.mut, letterSpacing: 1.5 }}>{t.refCode}</Text>
-          {/* 4 Ekim (Gökberk): kod SEÇİLEBİLİR — uzun basınca kopyala/yapıştır da çalışır. */}
+          {/* 3 Ekim (Gökberk): kod SEÇİLEBİLİR — uzun basınca kopyala/yapıştır da çalışır. */}
           <Text selectable style={{ fontSize: FS.display, fontFamily: MONO[600], fontWeight: "700", color: C.gold, letterSpacing: 3, marginTop: SP[2] }}>{code || "..."}</Text>
           {/* 🔴 v2.99 — BU DÜĞME HİÇBİR ŞEY PAYLAŞMIYORDU.
               `onPress={() => setCopied(true)}` yalnız yazıyı "Kopyalandı"
@@ -4189,7 +4189,7 @@ export function Referral({ t, session, onBack }) {
               🆕 SINIF: "ÇALIŞIYORMUŞ GİBİ GÖRÜNEN BİR DÜĞME, OLMAYAN BİR
               DÜĞMEDEN KÖTÜDÜR — ÇÜNKÜ KULLANICI ONU BİR KEZ DENER VE
               ÜRÜNÜN GERİ KALANINA DA GÜVENMEZ." */}
-          {/* 4 Ekim (Gökberk: "kodu paylaş'ta sadece kopyalama yapıyorsak buton adı 'Kodu kopyala' olsun") —
+          {/* 3 Ekim (Gökberk: "kodu paylaş'ta sadece kopyalama yapıyorsak buton adı 'Kodu kopyala' olsun") —
               paylaşım sayfası yerine PANOYA kopyalama (expo-clipboard). Kişi kendi kodunu "Referans kodun
               var mı?" alanında kullanamaz: sunucu `self_referral_blocked` döner (errMap'te TR+EN cümle). */}
           <Btn label={copied ? t.refCopied : (t.refCopy || t.refShare)} onPress={async () => {
@@ -4207,7 +4207,7 @@ export function Referral({ t, session, onBack }) {
         <View style={S.card}>
           <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.dim, letterSpacing: 1.5, marginBottom: SP[3] }}>{t.refConditions}</Text>
           {/* 🔵 v2.99 — "Guest → Guest" TÜRKÇE ARAYÜZDE İNGİLİZCE duruyordu. */}
-          {/* 4 Ekim — KOŞUL TABLOSU SUNUCUYLA EŞİTLENDİ. Ekran üç kademe vaat ediyordu (+500 · +1.000 ·
+          {/* 3 Ekim — KOŞUL TABLOSU SUNUCUYLA EŞİTLENDİ. Ekran üç kademe vaat ediyordu (+500 · +1.000 ·
               +750); `apply_referral` yalnız kod uygulandığında İKİ TARAFA +500 veriyor, diğer kademeleri
               veren hiçbir kod yok (ölçüldü: points_ledger nedenleri referral_invite/joined). Vaat
               edilmeyen ödül gösterilmez. Kademeler istenirse sunucu tarafı önce yazılır. */}

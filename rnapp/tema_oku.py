@@ -82,7 +82,49 @@ def palet(kapsam="C", yol=None):
     """
     kapsam = _ESLER.get(kapsam, kapsam)      # ACIK → C (bkz. _ESLER notu)
     g = _kaynak(yol)
+    if kapsam == "V7":
+        return _v7(g)
     p, _s = _coz(g, kapsam)
+    return p
+
+
+# ══════════════════════════════════════════════════════════════════════
+# V7 (Aviation Light · 2 Ekim 2026) — `V7` de bir literal değil:
+#     for (const k of Object.keys(KOYU)) V7[k] = _v7Kopya(KOYU[k]);
+#     const V7_TUVAL = "#F9F8F6", V7_INK = "#0D1B2A", ...
+#     Object.assign(V7, { bg: V7_TUVAL, ink: V7_INK, card: "#FFFFFF", ... });
+# Taban KOYU'nun kopyası, üstüne `Object.assign` bloğu; değer hex, rgba
+# ya da `V7_*` sabiti olabilir. YALNIZ V7 için; C/KOYU ayrıştırması hiç
+# değişmez. `Platform.OS === "x" ? A : B` üçlüleri iOS/web dalı (B) ile okunur.
+# ══════════════════════════════════════════════════════════════════════
+_V7_DEGER = (r'(?:Platform\.OS === "\w+" \? [^:]+? : )?'
+             r'("#[0-9A-Fa-f]{6}"|"rgba\([^)]*\)"|V7_[A-Z_]+)')
+
+
+def _v7(g):
+    p = dict(_coz(g, "KOYU")[0])
+    sabit = {}
+    for mm in re.finditer(r"\b(V7_[A-Z_]+)\s*=\s*(\"#[0-9A-Fa-f]{6}\"|\"rgba\([^)]*\)\")", g):
+        sabit[mm.group(1)] = mm.group(2)
+    m = re.search(r"Object\.assign\(V7,\s*\{(.*?)\n\}\);", g, re.S)
+    if not m:
+        return p
+
+    def coz(v):
+        v = sabit.get(v, v)
+        if v.startswith('"#'):
+            return v.strip('"')
+        r = re.match(r'"rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([0-9.]+)\s*\)"', v)
+        return r.groups() if r else None
+
+    sira = [(mm.group(1), coz(mm.group(2)))
+            for mm in re.finditer(r"(\w+)\s*:\s*" + _V7_DEGER, m.group(1))]
+    zemin = next((c for a, c in sira if a == "bg" and isinstance(c, str)), "#FFFFFF")
+    for ad, c in sira:
+        if isinstance(c, str):
+            p[ad] = c
+        elif c:
+            p[ad] = _duzlestir(int(c[0]), int(c[1]), int(c[2]), float(c[3]), zemin)
     return p
 
 

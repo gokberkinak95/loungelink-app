@@ -21,11 +21,11 @@ import http.server, threading, socketserver, os, sys, json, functools, subproces
 from playwright.sync_api import sync_playwright
 
 KOK = os.path.dirname(os.path.abspath(__file__))
-DIST = os.path.join(KOK, "dist")
+DIST = os.environ.get("LL_SAHNE_DIST") or os.path.join(KOK, "dist")   # 3 Ekim: önizleme derlemesi ayrı klasörde
 # 23 Eylül — `LL_SAHNE_DIL=en`: aynı sahneler İngilizce, `out_en/`e.
 # (ham_kod_check.py iki dilin de ekran metnini tarıyor.)
 DIL = os.environ.get("LL_SAHNE_DIL", "tr")
-OUT = os.path.join(KOK, "out" if DIL == "tr" else "out_" + DIL)
+OUT = os.environ.get("LL_SAHNE_OUT") or os.path.join(KOK, "out" if DIL == "tr" else "out_" + DIL)
 os.makedirs(OUT, exist_ok=True)
 KOPRU_PORT = 8765
 
@@ -298,7 +298,7 @@ def adim_uygula(pg, adim, kayit):
         elif tur == "ilk_metin":
             pg.get_by_text(re.compile("^\s*" + re.escape(adim[1]), re.I)).first.click(timeout=4000)
         elif tur == "kart_uyum":
-            # 4 Ekim — belirli bir KARTIN uyum mührüne dokun (tüm mühürlerin etiketi aynı: "Uyum puanı: NN").
+            # 3 Ekim — belirli bir KARTIN uyum mührüne dokun (tüm mühürlerin etiketi aynı: "Uyum puanı: NN").
             kart = pg.locator("div", has_text=adim[1]).filter(has=pg.get_by_label(re.compile("Uyum", re.I))).last
             hedef = kart.get_by_label(re.compile("Uyum", re.I)).first
             ortala(hedef)
@@ -498,7 +498,7 @@ def cek(sahneler, tam=False):
                 for adim in adimlar:
                     adim_uygula(pg, adim, kayit)
                 pg.wait_for_timeout(900)
-                # 4 Ekim: soğuk tarayıcıda ilk sahnede görseller (açılış kanadı) henüz yüklenmemiş olabiliyordu
+                # 3 Ekim: soğuk tarayıcıda ilk sahnede görseller (açılış kanadı) henüz yüklenmemiş olabiliyordu
                 # → kare kanatsız çekildi. Bütün <img>'ler tamamlanana kadar bekle (en çok 6 sn).
                 try:
                     pg.wait_for_function("Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)", timeout=6000)

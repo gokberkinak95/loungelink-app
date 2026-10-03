@@ -41,7 +41,7 @@ const GOLGE = { shadowColor: C.golgeRenk, shadowOpacity: 0.07, shadowRadius: 18,
                 elevation: Platform.OS === "android" ? 2 : 0 };
 const ISIK = { ...GOLGE, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.9)" };
 
-// 4 Ekim (Gökberk: "plan sayfasında seçili planın çerçevesinin üstü yok") — üst ışık kenarı,
+// 3 Ekim (Gökberk: "plan sayfasında seçili planın çerçevesinin üstü yok") — üst ışık kenarı,
 // BİLİNÇLİ çerçevesi olan kutunun üst çizgisini eziyordu. Çerçeveli kutu yalnız gölge alır.
 function isikliMi(style) {
   const o = topla(style, {});

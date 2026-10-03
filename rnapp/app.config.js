@@ -22,7 +22,7 @@
 const fs = require("fs");
 const path = require("path");
 
-// 4 Ekim — EAS'TA DOSYA YOLU. `google-services.json` .gitignore'da ve git kökü C:\LoungeLink:
+// 3 Ekim — EAS'TA DOSYA YOLU. `google-services.json` .gitignore'da ve git kökü C:\LoungeLink:
 // EAS yüklemesi ignore'lu dosyayı TAŞIMAZ (yerelde dursa bile uzakta yok sayılır). Bu yüzden
 // EAS "file" tipi ortam değişkeni `GOOGLE_SERVICES_JSON` (eas env:create … --type file) önce okunur;
 // EAS onu build makinesinde geçici bir dosyaya yazar ve yolunu bu değişkene koyar.

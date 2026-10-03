@@ -87,11 +87,11 @@ ESLESME = [
     # hızlı yanıt çipleri, yazma kutusu, bekleme düğmesi — hepsi görünür.
     # 🆕 SINIF: "VİTRİNE ÜRÜNÜN EN SEYREK HÂLİNİ KOYARSAN, ZİYARETÇİ
     # ÜRÜNÜN KENDİSİNİ SEYREK SANIR — EN DOLU DOĞRU HÂLİNİ KOY."
-    ("ss-eslesme.jpg", "45_sohbet_uzun", "Sohbet — kapıda buluşma koordinasyonu"),
+    ("ss-eslesme.jpg", "86_akis_nehir_sohbet", "Tanış sohbeti — karşılıklı bağlantı kurulunca açılır"),   # v7: bağlantı sohbeti (oturumsuz)
     ("ss-tanis.jpg", "05_tanis", "Tanış — havalimanı yol arkadaşı ağı"),
-    ("ss-m.jpg", "06_sohbet", "Sohbet — oturum öncesi koordinasyon"),
+    ("ss-m.jpg", "45_sohbet_uzun", "Sohbet — oturum öncesi koordinasyon"),   # v7: durum çipleri görünen uzun sohbet
     ("ss-oturum.jpg", "35_canli_durum", "Oturum · canlı durum paylaşımı"),
-    ("ss-puanla.jpg", "23_degerlendirme", "Değerlendirmeler — güven döngüsü"),
+    ("ss-puanla.jpg", "88_oturum_puanla", "Değerlendirme — biten oturumun geri bildirimi"),   # v7: K8 puanlama kartı
     ("ss-profil.jpg", "09_profil", "Profil — puan, oturum, LoungePuan"),
     ("ss-home.jpg", "11_ana_misafir", "Ana ekran — misafir görünümü"),
     ("ss-home2.jpg", "12_ana_host", "Ana sayfa — host paneli"),
