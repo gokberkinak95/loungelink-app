@@ -1913,6 +1913,13 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             style={{ backgroundColor: temaModu() === "v7" ? "transparent" : C.bg, paddingHorizontal: ARA[14],
                      marginTop: temaModu() === "v7" ? -40 : 0, zIndex: 10,
                      paddingTop: temaModu() === "v7" ? ARA[26] : ARA[6], paddingBottom: ARA[18] }}>
+      {/* v7.2 (Gökberk 4. tur: "bildirimlerde işaretlediğim yerde arka planda bir şeyler görüyorum") —
+          çubuğun üst payı tamamen saydamdı: liste metni kapsülün üstünde yarım kesik görünüyordu.
+          Fildişi geçiş (alttan opak → üstte saydam): içerik çubuğun altına süzülerek kaybolur. */}
+      {temaModu() === "v7" ? (
+        <Image pointerEvents="none" source={require("./assets/v7_fildisi_alt.png")} resizeMode="stretch"
+          style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, width: "100%", height: "100%" }} />
+      ) : null}
       {/* 🔴 28 EYLÜL (Gökberk: "tüm iç sayfalarda tabbar görünüyor, arkadaki
           butonları örtüyor; tabbara basınca arkadaki butona basılıyor").
           KÖK: kapsülün Android yükseltmesi 12, iç sayfa katmanınınki 0.

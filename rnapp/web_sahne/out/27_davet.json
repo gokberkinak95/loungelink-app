@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -83,16 +96,11 @@
   "Kodu Uygula",
   "Davet kodun",
   "LL4E6AA0",
-  "Kodu paylaş",
+  "Kodu kopyala",
   "DAVET KOŞULLARI",
-  "Misafir → Misafir",
-  "İlk istek gönderildiğinde",
-  "+500 puan",
-  "Host → Host",
-  "İlk oturum tamamlandığında",
-  "+1.000 puan",
-  "Misafir → Host",
-  "Host doğrulandığında"
+  "Sen ve arkadaşın",
+  "Arkadaşın kodunu uyguladığında ikinize de",
+  "+500 puan"
  ],
  "tasan": [],
  "bitisik": []

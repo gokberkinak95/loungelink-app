@@ -128,6 +128,7 @@ SAHNELER = {
     "88_oturum_puanla": ("selin",  [("dokun", "Şimdi puanla"), ("bekle", 2200), ("dokun", "Şimdi puanla"), ("bekle", 1800)]),   # ekran: Chat · oturum paneli (puanlama · K8)
     "89_seyahat_duzenle": ("gokberk", [("dokun", "Planım"), ("bekle", 900), ("dokun_a11y", "Seyahati düzenle"), ("bekle", 1200)]),   # ekran: EditTrip
     "90_ilan_duzenle": ("selin",   [("dokun", "Planım"), ("bekle", 700), ("dokun_a11y", "İlanlarım"), ("bekle", 900), ("dokun", "İlanı düzenle"), ("bekle", 1200)]),   # ekran: EditAvailability
+    "91_kural_damga": ("nehir", [("dokun", "Keşfet"), ("bekle", 1800), ("dokun_a11y", "Filtre"), ("bekle", 600), ("dokun", "Havalimanı seç…"), ("bekle", 600), ("yaz", "Havalimanı ara…", "ADB"), ("bekle", 800), ("ilk_metin", "ADB"), ("bekle", 900), ("dokun_a11y", "Filtre"), ("bekle", 1500), ("dokun_a11y", "Uyum"), ("bekle", 1200), ("kaydir",), ("bekle", 2600)]),   # K4 · 10/10 şart (Tuna H. · ADB) — damga
     "86_akis_nehir_sohbet":  ("nehir", [("dokun", "SOHBET"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1500)]),   # ekran: Chat (v7 · gokberk dünyasında oturum yok)
     "74_akis_nehir_baglanti":("nehir", [("dokun", "SOHBET"), ("dokun_a11y", "Bağlantılar"), ("bekle", 1200)]),   # ekran: HomeConnections
     "75_akis_arda_ana":      ("arda",  [("bekle", 1500)]),   # ekran: Home
@@ -292,6 +293,14 @@ def adim_uygula(pg, adim, kayit):
             except Exception:
                 ortala(hedef)
                 hedef.click(timeout=4000)
+        elif tur == "ilk_metin":
+            pg.get_by_text(re.compile("^\s*" + re.escape(adim[1]), re.I)).first.click(timeout=4000)
+        elif tur == "kart_uyum":
+            # 4 Ekim — belirli bir KARTIN uyum mührüne dokun (tüm mühürlerin etiketi aynı: "Uyum puanı: NN").
+            kart = pg.locator("div", has_text=adim[1]).filter(has=pg.get_by_label(re.compile("Uyum", re.I))).last
+            hedef = kart.get_by_label(re.compile("Uyum", re.I)).first
+            ortala(hedef)
+            hedef.click(timeout=4000)
         elif tur == "yaz":
             pg.get_by_placeholder(adim[1]).first.fill(adim[2], timeout=4000)
         elif tur == "bekle":
@@ -487,6 +496,12 @@ def cek(sahneler, tam=False):
                 for adim in adimlar:
                     adim_uygula(pg, adim, kayit)
                 pg.wait_for_timeout(900)
+                # 4 Ekim: soğuk tarayıcıda ilk sahnede görseller (açılış kanadı) henüz yüklenmemiş olabiliyordu
+                # → kare kanatsız çekildi. Bütün <img>'ler tamamlanana kadar bekle (en çok 6 sn).
+                try:
+                    pg.wait_for_function("Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)", timeout=6000)
+                except Exception:
+                    kayit["errors"].append("gorseller 6 sn'de yuklenmedi")
                 # Windows'ta PNG yazımı arada kilitleniyor (Errno 22, iki kez ölçüldü): 4 deneme.
                 for _den in range(4):
                     try:

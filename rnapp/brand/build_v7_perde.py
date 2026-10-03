@@ -68,3 +68,17 @@ for y in range(h):
             break
 im.save(os.path.join(A, "v7_acilis_perde.png"))
 print("v7_acilis_perde.png")
+
+# Bildirim kucuk ikonu (Android): BEYAZ siluet, saydam zemin, 96x96 — kanat (v7 marka isareti).
+k = Image.open(os.path.join(A, "mark-kanat.png")).convert("RGBA")
+alfa = k.getchannel("A")
+bbox = alfa.getbbox()
+alfa = alfa.crop(bbox)
+w, h = alfa.size
+olcek = 80 / max(w, h)
+alfa = alfa.resize((max(1, round(w * olcek)), max(1, round(h * olcek))), Image.LANCZOS)
+ikon = Image.new("RGBA", (96, 96), (255, 255, 255, 0))
+beyaz = Image.new("RGBA", alfa.size, (255, 255, 255, 255)); beyaz.putalpha(alfa)
+ikon.alpha_composite(beyaz, ((96 - alfa.width) // 2, (96 - alfa.height) // 2))
+ikon.save(os.path.join(A, "notification-icon.png"))
+print("notification-icon.png")

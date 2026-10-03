@@ -35,6 +35,13 @@ def main():
                 kim = cek.SAHNELER[sahne][0]
                 pg.goto(f"http://127.0.0.1:{port}/?sahne={sahne}&kim={kim}&dil=tr&kopru=http://127.0.0.1:{cek.KOPRU_PORT}",
                         wait_until="networkidle")
+                # Soğuk tarayıcı: görseller yüklenmeden hareket başlarsa (K1) kanat görünmüyordu.
+                # Önce her şey yüklensin, sonra sayfa yeniden açılsın ve hareket baştan oynasın.
+                try:
+                    pg.wait_for_function("Array.from(document.images).every(i => i.complete && i.naturalWidth > 0)", timeout=8000)
+                except Exception:
+                    pass
+                pg.reload(wait_until="networkidle")
                 pg.wait_for_timeout(sure)
                 ctx.close()
                 vid = glob.glob(os.path.join(gecici, "*.webm"))

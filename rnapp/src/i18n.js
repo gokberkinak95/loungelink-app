@@ -1523,6 +1523,8 @@ export const D = {
     v7SesCanli: "Oturum · canlı", v7SesIle: "{name} ile", v7SesBuluss: "Buluşma",
     v7NasilGecti: "Nasıl geçti?", v7Puan1: "Pek iyi değildi.", v7Puan2: "İdare eder.", v7Puan3: "İyiydi.",
     v7Puan4: "Çok iyiydi.", v7Puan5: "Harika bir sohbetti.", v7PuanBos: "Yıldızlara dokun.",
+    v7AyniAmac: "Aynı amaç · {x}", v7GuvenKisa: "güven {n}",
+    refCopy: "Kodu kopyala", v7RefKim: "Sen ve arkadaşın", v7RefNe: "Arkadaşın kodunu uyguladığında ikinize de",
     // Özellik saymayı bıraktık: "doğrulanmış yolcular, emanet korumalı"
     // bir liste, bir sahne değil. Sahne kuruluyor — kalkışa iki saat var
     // ve iki kişi aynı terminalde birbirini bilmiyor.
@@ -3601,6 +3603,8 @@ export const D = {
     v7SesCanli: "Session · live", v7SesIle: "With {name}", v7SesBuluss: "Meeting",
     v7NasilGecti: "How was it?", v7Puan1: "Not great.", v7Puan2: "It was okay.", v7Puan3: "It was good.",
     v7Puan4: "Really good.", v7Puan5: "A great conversation.", v7PuanBos: "Tap the stars.",
+    v7AyniAmac: "Same purpose · {x}", v7GuvenKisa: "trust {n}",
+    refCopy: "Copy code", v7RefKim: "You and your friend", v7RefNe: "When your friend applies your code, each of you gets",
     start: "Get Started",
     login: "Log In",
     name: "FULL NAME",

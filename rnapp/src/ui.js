@@ -582,7 +582,13 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
         alignSelf: cip ? "flex-start" : undefined,
         flex: segment ? 1 : undefined,
         opacity: disabled ? 0.55 : 1,
-      }, stil]}>
+      },
+      // v7.2 (Gökberk 4. tur: "gölgelendirmeler tanıştaki uçuş/salon/rota gibi sekme yapılarına da")
+      temaModu() === "v7" ? {
+        backgroundColor: secili ? secZemin : (zemin === "yok" ? "transparent" : "#FFFFFF"),
+        borderColor: secili ? (C.goldLine || T2.bd) : "transparent",
+        shadowColor: "#0D1B2A", shadowOpacity: zemin === "yok" ? 0 : 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
+      } : null, stil]}>
       {/* Radyo noktası — seçili hâlin İKİNCİ işareti. Yalnız renkle
           anlatılan bir seçim, renk körü bir kullanıcıda kaybolur.
           🆕 SINIF: "SEÇİLİLİK TEK BİR KANALDAN ANLATILIRSA, O KANALI
@@ -765,7 +771,10 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
   }
   const zemin = secili ? C.goldBtn
     : dolgu ? ((C.badge && C.badge[dolgu === true ? (ton === "ok" ? "ok" : ton === "engel" ? "block" : "cost") : dolgu] || {}).bg || C.bgAlt)
-    : C.bgAlt;
+    : (temaModu() === "v7" ? "#FFFFFF" : C.bgAlt);
+  // v7.2 (Gökberk 4. tur: "badge alanlarına da gölge") — çip zeminde kaybolmasın.
+  const v7Golge = temaModu() === "v7" && !kabartma
+    ? { shadowColor: "#0D1B2A", shadowOpacity: 0.08, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1 } : null;
   // ══════════════════════════════════════════════════════════════════
   // `kabartma` — KARAR ROZETİ BİR ETİKET DEĞİL, BİR MÜHÜR (12 Eylül)
   //
@@ -793,7 +802,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
     <View style={[{ height: 26, borderRadius: R.full, paddingHorizontal: ARA[12],
                     flexDirection: "row", alignItems: "center", alignSelf: "flex-start",
                     backgroundColor: zemin,
-                    borderWidth: 0 },
+                    borderWidth: 0 }, v7Golge,
                   kabartma ? {
                     // v7: siyah %38 gölge fildişi zeminde "kirli" duruyordu → lacivert %10.
                     shadowColor: temaModu() === "v7" ? "#0D1B2A" : "#000000",

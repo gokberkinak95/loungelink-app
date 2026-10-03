@@ -198,3 +198,47 @@ Web sahnedeki 3 hatalı sahne v7 kaynaklı değil:
   - app_boot gecti
 - Web sahne 89/89 temiz. 9 video.
 - Onay sayfasi v5.
+
+## EK 5 · 4 Ekim (son tur, kullanim siniri doldu - build ALINMADI)
+- Surum 6.3.0: app.json versionCode 279, buildNumber 273, package.json + lock.
+- Splash kanadi: kod dogru, olculdu (12k acik piksel). Eksiklik cekim yarisiydi.
+  - Sebep: soguk tarayicida ilk sahne.
+  - Duzeltme: cek.py ve hareket_kayit.py gorseller yuklenene kadar bekler; K1 videosu yeniden kayitla duzelir.
+- kutu_isik: cerceveli kutu yalniz golge alir; Plan secili cercevesi duzeldi.
+- Golge ve rozetler:
+  - Secim/Cip v7: beyaz + golge.
+  - Rozetler ikonlu: "Ayni amac · X" (eski "Ayni rota tanisma" yanlisti, same_purpose = seyahat amaci), "Temel dogrulama · guven N".
+- Sekme cubugu arkasina fildisi gecis (bildirimlerde metin sizmasi).
+- K4: scene 91_kural_damga (Nehir · ADB Tuna H. ilani, 10/10 sart) -> damga gorunuyor. 03b'de sart bilinmiyor -> damga yok (dogru davranis).
+- Push:
+  - notification-icon = kanat siluet; renk #8A7247; kanal isigi sampanya.
+  - ⚠️ google-services.json YOK: Android push hic calismadi (eskiden beri). Gokberk Firebase'den indirip rnapp/ koymali.
+- Davet:
+  - "Kodu kopyala" (expo-clipboard YENI native bagimlilik), kod secilebilir.
+  - Kosul tablosu sunucuyla esitlendi: yalniz +500/+500 var. Ekranin vaat ettigi +1000/+750 kademeleri BE'de yok; karar Gokberk'te.
+  - BE testi:
+    - kendi kodu self_referral_blocked
+    - gecersiz kod invalid
+    - basarili +500/+500
+    - tekrar kullanma referral_already_used
+- e2e Windows kosucusu: render_check/e2e_win_kos.py.
+  - Duzeltilenler: psql -d, tam ortam, cp1254 -c -> -f.
+  - pgserver initdb'ye --no-locale (site-packages, yedek .yedek).
+- e2e sonuclari:
+  - iptal 47/47
+  - edge 19/19
+  - flow_matrix 27/27
+  - onboarding 16/16
+  - rule_dims 55/55
+  - tam_akis 171/171
+  - rpc_field ok
+  - two_account 14 adim ok
+  - flight_chain: kendi siralamasi 268a'yi 268'den once kosuyor (268a elle kosulan kosullu dosya) -> test altyapisi, urun hatasi degil.
+  - win_e2e: IndexError (incelenmedi).
+- ACIK:
+  - EAS build + push onayi
+  - google-services.json
+  - davet kademeleri karari
+  - web sitesi v7 guncellemesi + uygulama ici gorseller
+  - 91 sahnesini galeriye ekleme ve tam sahne + video yeniden kayit
+  - win_e2e

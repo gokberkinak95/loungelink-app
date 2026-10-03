@@ -38,6 +38,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
 import { RotaHatti, BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
+import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
@@ -2582,8 +2583,12 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     // `discover_people.purpose` = visits.purpose (business/connecting/…) —
     // niyet değil. Eski eşleme (coffee/work/wait) hiç tutmuyordu, çip hiç
     // çıkmıyordu. Aynı amaç → "Aynı rota tanışma" (tasarım 05), değilse amacın adı.
-    const amac = p.same_purpose ? t.reqTypeRoute
-      : (p.purpose ? gorunur((PURPOSES.find(x => x[0] === p.purpose) || [])[1] || null) : null);
+    // 4 Ekim (Gökberk: "'aynı rota tanışma' cümlesi anlaşılmıyor") — `same_purpose` ROTA değil
+    // seyahat AMACIDIR (iş · aktarma · tatil). Rozet artık ne olduğunu söylüyor: "Aynı amaç · İş".
+    const amacAdi = p.purpose ? gorunur((PURPOSES.find(x => x[0] === p.purpose) || [])[1] || null) : null;
+    const amac = p.same_purpose
+      ? (amacAdi ? String(t.v7AyniAmac || "{x}").replace("{x}", amacAdi) : t.reqTypeRoute)
+      : amacAdi;
     return (
     <TouchableOpacity activeOpacity={0.85} disabled={!onAc && !p.user_id} hitSlop={TAP.slop}
       onPress={onAc || (() => p.user_id && onOpenProfile && onOpenProfile(p.user_id))}
@@ -2619,13 +2624,14 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
         {!!rota && <Text numberOfLines={1} style={{ color: C.mutedAA, fontSize: FS.xs + 1, marginTop: ARA[2] }}>{rota}</Text>}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginTop: ARA[8] }}>
           {/* tasarım 05: aynı uçuş = teal ("ok"), amaç = bilgi tonu */}
-          {flightTag ? <Cip etiket={t.sameFlight} ton="teal" /> : null}
-          {amac ? <Cip etiket={amac} ton="purple" /> : null}
+          {flightTag ? <Cip etiket={t.sameFlight} ton="teal" isaret="ucus" /> : null}
+          {amac ? <Cip etiket={amac} ton="purple" isaret="hedef" /> : null}
           {/* 5 Eylül (Gökberk: "ilana git düğmesini kaldırdık mı?") — kartta
               düğme yok (tasarım 05); ilanı olan kişi altın çiple işaretlenir,
               kısayol bağlantı sayfasında ("İlanına git"). Host'a gösterilmez. */}
           {p.is_hosting && p.host_avail_id && rol !== "host" ? <Cip etiket={t.meetHasListing} ton="gold" /> : null}
-          {p.badge ? <Cip etiket={`• ${badgeLabel(t, p.badge)}${p.score != null ? ` · ${p.score}` : ""}`} ton="notr" /> : null}
+          {/* "• Temel Doğrulama · 38" — 38'in ne olduğu yazmıyordu → "Temel doğrulama · güven 38" */}
+          {p.badge ? <Cip etiket={`${badgeLabel(t, p.badge)}${p.score != null ? ` · ${String(t.v7GuvenKisa || "{n}").replace("{n}", String(p.score))}` : ""}`} ton="notr" isaret="guvenlik" /> : null}
           {p.connected ? <Cip etiket={t.connActiveShort} ton="teal" /> : null}
           {p.rel === "pending" ? <Cip etiket={t.connSent} ton="notr" /> : null}
           {ikinci}
@@ -4164,7 +4170,8 @@ export function Referral({ t, session, onBack }) {
         <RefCodeEntry t={t} />
         <View style={[S.card, { alignItems: "center", paddingVertical: ARA[22] }]}>
           <Text style={{ fontSize: FS.xs, color: C.mut, letterSpacing: 1.5 }}>{t.refCode}</Text>
-          <Text style={{ fontSize: FS.display, fontFamily: MONO[600], fontWeight: "700", color: C.gold, letterSpacing: 3, marginTop: SP[2] }}>{code || "..."}</Text>
+          {/* 4 Ekim (Gökberk): kod SEÇİLEBİLİR — uzun basınca kopyala/yapıştır da çalışır. */}
+          <Text selectable style={{ fontSize: FS.display, fontFamily: MONO[600], fontWeight: "700", color: C.gold, letterSpacing: 3, marginTop: SP[2] }}>{code || "..."}</Text>
           {/* 🔴 v2.99 — BU DÜĞME HİÇBİR ŞEY PAYLAŞMIYORDU.
               `onPress={() => setCopied(true)}` yalnız yazıyı "Kopyalandı"
               yapıyordu; panoda hiçbir şey yoktu. Altındaki üç kutu da
@@ -4180,30 +4187,29 @@ export function Referral({ t, session, onBack }) {
               🆕 SINIF: "ÇALIŞIYORMUŞ GİBİ GÖRÜNEN BİR DÜĞME, OLMAYAN BİR
               DÜĞMEDEN KÖTÜDÜR — ÇÜNKÜ KULLANICI ONU BİR KEZ DENER VE
               ÜRÜNÜN GERİ KALANINA DA GÜVENMEZ." */}
-          <Btn label={copied ? t.refCopied : t.refShare} onPress={async () => {
+          {/* 4 Ekim (Gökberk: "kodu paylaş'ta sadece kopyalama yapıyorsak buton adı 'Kodu kopyala' olsun") —
+              paylaşım sayfası yerine PANOYA kopyalama (expo-clipboard). Kişi kendi kodunu "Referans kodun
+              var mı?" alanında kullanamaz: sunucu `self_referral_blocked` döner (errMap'te TR+EN cümle). */}
+          <Btn label={copied ? t.refCopied : (t.refCopy || t.refShare)} onPress={async () => {
               if (!code) return;
-              setPaylasiyor(true);
               try {
-                // 🔴 DEĞİŞKENİ `r` DİYE ADLANDIRMIŞTIM ve RPC alan nöbetçisi
-                // `r.action`'ı `iletisim_epostam_yaz()`ın dönüşü sandı. Aynı
-                // sınıf hatayı bu projede ikinci kez yaptım (v2.96: `k`).
-                // 🆕 SINIF: "BİR DEĞİŞKEN ADI YALNIZ İNSANA DEĞİL, KAYNAĞI
-                // ADLA İZLEYEN NÖBETÇİYE DE BİLDİRİMDİR."
-                const paylasim = await Share.share({
-                  message: String(t.refShareMsg || "").replace("{kod}", String(code)),
-                });
-                if (paylasim && paylasim.action === Share.sharedAction) setCopied(true);
-              } catch (e) { logError("referans_paylas", e); }
-              finally { setPaylasiyor(false); }
+                await Clipboard.setStringAsync(String(code));
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2400);
+              } catch (e) { logError("referans_kopyala", e); }
             }}
-            disabled={!code || paylasiyor} busy={paylasiyor}
+            disabled={!code}
             style={{ marginTop: ARA[14], paddingHorizontal: ARA[26] }} />
         </View>
         {/* MVP: davet koşulları tablosu */}
         <View style={S.card}>
           <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.dim, letterSpacing: 1.5, marginBottom: SP[3] }}>{t.refConditions}</Text>
           {/* 🔵 v2.99 — "Guest → Guest" TÜRKÇE ARAYÜZDE İNGİLİZCE duruyordu. */}
-          {[[t.refWhoGG, t.refCondGG, "+500"], [t.refWhoHH, t.refCondHH, "+1.000"], [t.refWhoGH, t.refCondGH, "+750"]].map(([who, when, pts], i, arr) => (
+          {/* 4 Ekim — KOŞUL TABLOSU SUNUCUYLA EŞİTLENDİ. Ekran üç kademe vaat ediyordu (+500 · +1.000 ·
+              +750); `apply_referral` yalnız kod uygulandığında İKİ TARAFA +500 veriyor, diğer kademeleri
+              veren hiçbir kod yok (ölçüldü: points_ledger nedenleri referral_invite/joined). Vaat
+              edilmeyen ödül gösterilmez. Kademeler istenirse sunucu tarafı önce yazılır. */}
+          {[[t.v7RefKim, t.v7RefNe, "+500"]].map(([who, when, pts], i, arr) => (
             <View key={who} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: SP[2], borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: C.line }}>
               <View>
                 <Text style={{ fontSize: FS.sm, color: C.ink }}>{who}</Text>

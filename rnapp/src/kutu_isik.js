@@ -30,7 +30,7 @@ function topla(st, o) {
   if (Array.isArray(st)) { for (let i = 0; i < st.length; i++) topla(st[i], o); return o; }
   if (typeof st !== "object") return o;
   for (const k of ["backgroundColor", "borderRadius", "padding", "paddingVertical",
-                   "paddingHorizontal", "paddingTop", "width", "shadowOpacity"]) {
+                   "paddingHorizontal", "paddingTop", "width", "shadowOpacity", "borderWidth", "borderColor"]) {
     if (st[k] !== undefined) o[k] = st[k];
   }
   return o;
@@ -41,14 +41,21 @@ const ISIK = Platform.OS === "android"
   : { shadowColor: "#0D1B2A", shadowOpacity: 0.07, shadowRadius: 18, shadowOffset: { width: 0, height: 6 },
       borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.9)" };
 
+// 4 Ekim (Gökberk: "plan sayfasında seçili planın çerçevesinin üstü yok") — üst ışık kenarı,
+// BİLİNÇLİ çerçevesi olan kutunun üst çizgisini eziyordu. Çerçeveli kutu yalnız gölge alır.
+const GOLGE = Platform.OS === "android" ? { elevation: 2 }
+  : { shadowColor: "#0D1B2A", shadowOpacity: 0.07, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } };
 function isikliMi(style) {
   const o = topla(style, {});
-  if (!o.backgroundColor || !tintler().has(o.backgroundColor)) return false;
-  if (o.width !== undefined) return false;
-  if (o.shadowOpacity !== undefined) return false;   // kendi gölgesini seçmiş
-  if (!(o.borderRadius >= 10)) return false;
+  if (!o.backgroundColor || !tintler().has(o.backgroundColor)) return null;
+  if (o.width !== undefined) return null;
+  if (o.shadowOpacity !== undefined) return null;   // kendi gölgesini seçmiş
+  if (!(o.borderRadius >= 10)) return null;
   const pay = Math.max(o.padding || 0, o.paddingVertical || 0, o.paddingHorizontal || 0, o.paddingTop || 0);
-  return pay >= 10;
+  if (pay < 10) return null;
+  const cerceveli = (o.borderWidth || 0) > 0 && o.borderColor && o.borderColor !== "transparent"
+                    && !/rgba\([^)]*,\s*0\)$/.test(String(o.borderColor));
+  return cerceveli ? GOLGE : ISIK;
 }
 
 export function bilgiKutusuUygula() {
@@ -57,9 +64,8 @@ export function bilgiKutusuUygula() {
   const eski = B.render;
   B.__llKutu = true;
   B.render = function (props, ...rest) {
-    if (props && props.style && temaModu() === "v7" && isikliMi(props.style)) {
-      return eski.call(this, { ...props, style: [props.style, ISIK] }, ...rest);
-    }
+    const ek = props && props.style && temaModu() === "v7" ? isikliMi(props.style) : null;
+    if (ek) return eski.call(this, { ...props, style: [props.style, ek] }, ...rest);
     return eski.call(this, props, ...rest);
   };
   return true;

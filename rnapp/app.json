@@ -2,7 +2,7 @@
   "expo": {
     "name": "LoungeLink",
     "slug": "loungelink",
-    "version": "6.2.7",
+    "version": "6.3.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.loungelink.app",
-      "versionCode": 278,
+      "versionCode": 279,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -51,7 +51,7 @@
       [
         "expo-notifications",
         {
-          "color": "#E0BE7A",
+          "color": "#8A7247",
           "icon": "./assets/notification-icon.png",
           "defaultChannel": "default"
         }
@@ -97,7 +97,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.loungelink.app",
-      "buildNumber": "272",
+      "buildNumber": "273",
       "supportsTablet": false,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Biniş kartı ekran görüntünü seçebilmen için galeri erişimi gerekiyor. Seçtiğin görsel cihazından çıkmaz; okunduktan sonra kopyası silinir.",
@@ -111,7 +111,7 @@
     "newArchEnabled": true,
     "notification": {
       "icon": "./assets/notification-icon.png",
-      "color": "#E0BE7A"
+      "color": "#8A7247"
     },
     "locales": {
       "tr": "./assets/locales/tr.json",

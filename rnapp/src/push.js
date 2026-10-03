@@ -109,7 +109,8 @@ async function tokenKaydet() {
           // Gece sisteminin altını (#E0BE7A). Eskiden AÇIK temanın
           // altını (#B8943A) yazıyordu — koyu bildirim gölgesinde
           // çamurlu okunuyordu ve ürünün hiçbir yerinde o renk yok.
-          lightColor: C.gold,
+          // v7: bildirim ışığı şampanya (marka ışığı); simge ve uygulama adı app.json'da bronz.
+          lightColor: C.goldBtn || C.gold,
         });
       }
     }
