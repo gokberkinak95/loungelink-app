@@ -74,6 +74,10 @@ MUAF = {
     "altin_acik.png": "açık tema gradyanı — şampanya kararı KOYU bloğa ait",
     "mark-gold.png":  "açık tema markası — koyu temada mark-light.png kullanılır",
     "zemin-acik.png": "açık tema zemini",
+    # v7 Aviation Light (2 Ekim 2026 onay): markanın İKİNCİ kutbu gece mavisi #1A2B4C (hue ~265).
+    # Bu iki varlık o rengin kendisi (bant gecesi · gök bulutu); şampanya bandına çekmek tasarımı bozar.
+    "v7_gece_ust.png":     "v7 gece mavisi bant geçişi (#1A2B4C) — onaylı A tasarımının gökyüzü",
+    "isik_bulutu_gok.png": "v7 K9 canlı zeminin gök mavisi bulutu (#9FB3CB) — onaylı hareket dili",
 }
 
 

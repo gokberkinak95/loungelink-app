@@ -7,6 +7,10 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -24,10 +28,10 @@
   "UÇUŞ",
   "TK1979",
   "SALON",
-  "12:53–16:53",
+  "17:19–21:19",
   "KİŞİ",
   "1 + 1",
-  "Keşfet'te 10 uyumlu ilan →",
+  "Keşfet'te 7 uyumlu ilan →",
   "",
   "Host bul",
   "11 EKİM · TATİL",

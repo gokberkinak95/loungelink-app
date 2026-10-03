@@ -40,7 +40,7 @@ import { MONO } from "./typography";
 import { RotaHatti, BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
 import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
-import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, BackHandler, Image, Linking, Modal, Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
 import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
@@ -1772,7 +1772,8 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                           AYNI şampanya hap — kabartma kenar, gradyan, ok. Kapı eylemi de bir eylemdir. */}
                       {temaModu() === "v7" ? (
                         <View pointerEvents="none">
-                          <Btn v="gold" cip sagAd="sag" label={!phoneOk ? t.gateVerifyNow : t.gateAddTripNow} onPress={() => {}}
+                          <Btn v="gold" cip sagAd="sag" label={!phoneOk ? t.gateVerifyNow : t.gateAddTripNow}
+                            onPress={() => { if (!phoneOk && onVerify) onVerify(); else if (!r.has_trip && onAddTrip) onAddTrip(r); }}
                             disabled={!phoneOk && !onVerify} />
                         </View>
                       ) : (
@@ -2732,10 +2733,11 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             {/* v7.2 (Gökberk 4. tur: "arama çubuğu çok kaba") — yumuşak hap: tam yuvarlak, beyaz cam,
                 lacivert %5 gölge, küçük yazı ve sessiz ikon. Odak ışığı kabın kendisinde değil girişte. */}
             <View style={temaModu() === "v7"
-              ? { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(255,255,255,0.78)",
+              ? { flexDirection: "row", alignItems: "center",
+                  backgroundColor: Platform.OS === "android" ? C.card : "rgba(255,255,255,0.78)", elevation: 2,
                   borderRadius: R.full, paddingHorizontal: ARA[18], marginBottom: ARA[14], minHeight: 46,
                   borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
-                  shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 5 } }
+                  shadowColor: C.golgeRenk, shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 5 } }
               : { flexDirection: "row", alignItems: "center", backgroundColor: C.camYuzey || C.card,
                            borderRadius: R.lg, paddingHorizontal: ARA[14], marginBottom: ARA[14],
                            ...ustIsik(C.parlama || C.line) }}>

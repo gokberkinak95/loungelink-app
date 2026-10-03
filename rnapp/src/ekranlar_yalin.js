@@ -34,7 +34,7 @@ import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
 import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
 import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi } from "./ortak";
@@ -103,22 +103,12 @@ export function SekmeSeridi({ secenekler, secili, onSec }) {
     // ══════════════════════════════════════════════════════════════════
     return (
       <View style={{ flexDirection: "row", marginBottom: ARA[18], padding: 4, borderRadius: R.full,
-                     backgroundColor: "rgba(255,255,255,0.55)", borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)",
-                     shadowColor: "#0D1B2A", shadowOpacity: 0.06, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } }}>
+                     // Android: ray opak sıcak gri (cam + elevation iç gölge çizer); seçili beyaz hap elevation'lı
+                     backgroundColor: Platform.OS === "android" ? C.warmBlock2 : "rgba(255,255,255,0.55)",
+                     borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)",
+                     shadowColor: C.golgeRenk, shadowOpacity: 0.06, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } }}>
         {secenekler.map(([k, lb, n]) => {
-          const on = secili === k;
-          return (
-            <TouchableOpacity key={k} hitSlop={TAP.slop} onPress={() => onSec(k)} accessibilityRole="tab"
-              accessibilityState={{ selected: on }} accessibilityLabel={`${lb}${n != null ? " · " + n : ""}`}
-              style={[{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 40, borderRadius: R.full },
-                      on ? { backgroundColor: "#FFFFFF", borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
-                             shadowColor: "#0D1B2A", shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
-                             elevation: 2 } : null]}>
-              <Text style={{ fontSize: FS.sm + 0.5, fontWeight: on ? "700" : "500", color: on ? C.ink : C.mut }}>
-                {lb}{n != null ? <Text style={{ fontFamily: MONO[500], color: on ? C.goldText : C.dim }}>{"  " + n}</Text> : null}
-              </Text>
-            </TouchableOpacity>
-          );
+          return <Secim key={k} bicim="camSegment" etiket={lb} sayi={n} secili={secili === k} onPress={() => onSec(k)} />;
         })}
       </View>
     );
@@ -1984,8 +1974,11 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
              doConfirm · setConfirmCancel · onLiveStatus · onReport · setSosOpen.
              ══════════════════════════════════════════════════════════════ */
           <View>
-            <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.2, color: C.green, textAlign: "center" }}>
-              {"● " + BUYUK(t.v7SesCanli || t.sessActiveShort)}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+              <View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: C.green, marginRight: ARA[6] }} />
+              <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.2, color: C.green }}>
+                {BUYUK(t.v7SesCanli || t.sessActiveShort)}</Text>
+            </View>
             <Text style={{ fontFamily: F.serifGosterim, fontSize: FS.bant, color: C.ink, textAlign: "center", marginTop: ARA[6] }}>
               {String(t.v7SesIle || "{name}").replace("{name}", shortName(det?.other_name || otherName) || "")}</Text>
             <View style={{ alignItems: "center", marginTop: ARA[18] }}>
@@ -2005,9 +1998,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
               })()}
             </View>
             {/* Buluşma kartı: salon · uçuş · kredi (emanette) — ince çizgilerle */}
-            <View style={{ backgroundColor: "#FFFFFF", borderRadius: R.lg, paddingHorizontal: ARA[18], paddingVertical: ARA[6], marginTop: ARA[18],
+            <View style={{ backgroundColor: C.card, borderRadius: R.lg, paddingHorizontal: ARA[18], paddingVertical: ARA[6], marginTop: ARA[18],
                            borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
-                           shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
+                           shadowColor: C.golgeRenk, shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
               {[[t.sessLounge || t.lounge, det?.lounge
                   ? det.lounge + (det.airport_code && det.lounge !== det.airport_code ? " · " + det.airport_code : "")
                   : (ctx && ctx !== t.loungeSession ? ctx : "—")],
@@ -2033,12 +2026,12 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             <View style={{ flexDirection: "row", gap: ARA[10] }}>
               {[[t.you, myConfirmed], [shortName(det?.other_name || otherName) || "—", isHost ? sess.guest_confirmed : sess.host_confirmed]].map(([ad, ok], i) => (
                 <View key={i} style={{ flex: 1, flexDirection: "row", alignItems: "center", borderRadius: R.full, paddingVertical: ARA[10], paddingHorizontal: ARA[14],
-                                       backgroundColor: ok ? "rgba(46,106,79,0.08)" : "rgba(255,255,255,0.7)",
-                                       borderWidth: 1, borderColor: ok ? "rgba(46,106,79,0.22)" : "rgba(166,90,34,0.22)" }}>
+                                       backgroundColor: ok ? C.green + "14" : "rgba(255,255,255,0.7)",
+                                       borderWidth: 1, borderColor: ok ? C.green + "38" : C.amber + "38" }}>
                   <Ikon ad={ok ? "tamamDaire" : "bekliyor"} boy={16} renk={ok ? C.green : C.amber} />
                   <View style={{ marginLeft: ARA[8], flex: 1, minWidth: 0 }}>
                     <Text numberOfLines={1} style={{ fontSize: FS.sm, fontWeight: "700", color: C.ink }}>{ad}</Text>
-                    <Text style={{ fontSize: FS.micro, color: ok ? C.green : C.amber, marginTop: 1 }}>{ok ? t.confirmedWord : t.waitingWord}</Text>
+                    <Text style={{ fontSize: FS.micro, color: ok ? C.green : C.amber }}>{ok ? t.confirmedWord : t.waitingWord}</Text>
                   </View>
                 </View>
               ))}
@@ -2052,20 +2045,12 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             </View>
             {/* Sakin araçlar: nerede olduğunu söyle · sorun bildir (cam haplar) */}
             <View style={{ flexDirection: "row", gap: ARA[10], marginTop: ARA[14] }}>
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => onLiveStatus && onLiveStatus(sess.id)}
-                accessibilityRole="button" accessibilityLabel={t.liveStatusBtn}
-                style={{ flex: 1, minHeight: TAP.minHeight, flexDirection: "row", alignItems: "center", justifyContent: "center", borderRadius: R.full,
-                         backgroundColor: "rgba(255,255,255,0.7)", borderWidth: 1, borderColor: "rgba(47,107,95,0.22)" }}>
-                <Ikon ad="konum" boy={15} renk={C.tealInk} stil={{ marginRight: ARA[6] }} />
-                <Text numberOfLines={1} style={{ color: C.tealInk, fontWeight: "700", fontSize: FS.sm }}>{t.sessWhereShort}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => (onReport ? onReport(otherId, otherName, sess && sess.id) : onSafety && onSafety())}
-                accessibilityRole="button" accessibilityLabel={t.reportIssue}
-                style={{ flex: 1, minHeight: TAP.minHeight, flexDirection: "row", alignItems: "center", justifyContent: "center", borderRadius: R.full,
-                         backgroundColor: "rgba(255,255,255,0.7)", borderWidth: 1, borderColor: "rgba(178,69,58,0.22)" }}>
-                <Ikon ad="uyari" boy={15} renk={C.redInk} stil={{ marginRight: ARA[6] }} />
-                <Text numberOfLines={1} style={{ color: C.redInk, fontWeight: "700", fontSize: FS.sm }}>{t.sessReportShort}</Text>
-              </TouchableOpacity>
+              <Btn v="camTeal" sm solAd="konum" label={t.sessWhereShort} a11yLabel={t.liveStatusBtn}
+                onPress={() => onLiveStatus && onLiveStatus(sess.id)}
+                style={{ flex: 1, borderRadius: R.full, paddingHorizontal: ARA[10] }} />
+              <Btn v="camKirmizi" sm solAd="uyari" label={t.sessReportShort} a11yLabel={t.reportIssue}
+                onPress={() => (onReport ? onReport(otherId, otherName, sess && sess.id) : onSafety && onSafety())}
+                style={{ flex: 1, borderRadius: R.full, paddingHorizontal: ARA[10] }} />
             </View>
             <Btn v="redSoft" sm full label={t.sosBtn} solAd="acil" onPress={() => setSosOpen(true)}
               a11yLabel={t.sosBtn} style={{ marginTop: ARA[10] }} />
@@ -2241,9 +2226,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
               <>
                 <GeceKarti stil={{ marginTop: ARA[18] }}>
                   <TakimyildizPuan deger={stars} onDegis={setStars} boy={36} gece />
-                  <Text style={{ fontFamily: F.serifGosterim, fontStyle: "italic", fontSize: FS.title, color: "#F9F8F6",
+                  <Text style={{ fontFamily: F.serifGosterim, fontStyle: "italic", fontSize: FS.title, color: C.foto.marka,
                                  textAlign: "center", marginTop: ARA[10], opacity: stars ? 1 : 0.6 }}>
-                    {stars ? t["v7Puan" + stars] : t.v7PuanBos}</Text>
+                    {stars ? [t.v7Puan1, t.v7Puan2, t.v7Puan3, t.v7Puan4, t.v7Puan5][stars - 1] : t.v7PuanBos}</Text>
                 </GeceKarti>
                 <Text style={[S.label, { marginTop: ARA[18] }]}>{t.comment}</Text>
                 <TextInput style={S.input} value={comment} onChangeText={setComment} placeholder={t.commentPh} placeholderTextColor={C.dim} />
@@ -2255,8 +2240,8 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
               </>
             ) : null}
             {/* Kazanç: tek satır, iki mono sayı */}
-            <View style={{ flexDirection: "row", backgroundColor: "#FFFFFF", borderRadius: R.lg, marginTop: ARA[14], paddingVertical: ARA[14],
-                           shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
+            <View style={{ flexDirection: "row", backgroundColor: C.card, borderRadius: R.lg, marginTop: ARA[14], paddingVertical: ARA[14],
+                           shadowColor: C.golgeRenk, shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
               {[[isHost ? "+500" : "+200", t.loungePoints], ["+1", t.sessionWord]].map(([v, k], i) => (
                 <View key={k} style={{ flex: 1, alignItems: "center", borderLeftWidth: i ? StyleSheet.hairlineWidth : 0, borderLeftColor: C.line2 || C.line }}>
                   <Text style={{ fontFamily: MONO[600], fontSize: FS.title, color: C.goldText }}>{v}</Text>
@@ -2936,7 +2921,7 @@ export function Notifications({ t, session, onRefreshBadge, onGit, onBack }) {
         <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.notifMarkAll}
           onPress={markAll}
           style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", minHeight: TAP.minHeight, marginTop: ARA[4] }}>
-          {/* v7 (Gökberk 3 Ekim): bant gece mavisi — bronz yazı okunmuyordu → şampanya. */}
+          {/* v7 (Gökberk 3 Ekim): bant gece mavisi; bronz yazı okunmuyordu, şampanya oldu. */}
           <Ikon ad="tamam" boy={14} renk={temaModu() === "v7" ? C.foto.dugum : C.goldText} stil={{ marginRight: ARA[6] }} />
           <Text style={{ color: temaModu() === "v7" ? C.foto.dugum : C.goldText, fontSize: FS.sm, fontWeight: "700" }}>
             {String(t.notifMarkAll || "")}{` · ${okunmamisSay}`}

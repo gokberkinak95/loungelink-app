@@ -82,3 +82,15 @@ beyaz = Image.new("RGBA", alfa.size, (255, 255, 255, 255)); beyaz.putalpha(alfa)
 ikon.alpha_composite(beyaz, ((96 - alfa.width) // 2, (96 - alfa.height) // 2))
 ikon.save(os.path.join(A, "notification-icon.png"))
 print("notification-icon.png")
+
+# altin_v7.png: sampanya dugme gradyani (Btn / sikke / secili cip ortak malzemesi).
+# Ust #E6DAC4 (goldBtnUst) -> alt #C4AF88 (goldBtn2), 4x512 dogrusal; orta nokta #D4C3A3.
+# (Sevkiyattaki dosyayla kanal basina en fazla 3/255 fark; 3 Ekim olculdu.)
+g = Image.new("RGB", (4, 512))
+for y in range(512):
+    t = y / 511.0
+    c = tuple(int(round(a + (b - a) * t)) for a, b in zip((0xE6, 0xDA, 0xC4), (0xC4, 0xAF, 0x88)))
+    for x in range(4):
+        g.putpixel((x, y), c)
+g.save(os.path.join(A, "altin_v7.png"))
+print("altin_v7.png")

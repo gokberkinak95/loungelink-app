@@ -52,6 +52,11 @@ REFERANSTAN BİR YÜKÜMLÜLÜĞE ÇEVİRİR."
 | `mark-kemer.png` | `brand/build_kemer.py` → `varlik_tablosu` (20 Eyl 2026 · ürün içi marka işareti, koyu zemin) | kendi üretimimiz | ✓ |
 | `mark-kemer-ink.png` | `brand/build_kemer.py` → `varlik_tablosu` (20 Eyl 2026 · ürün içi marka işareti, açık zemin) | kendi üretimimiz | ✓ |
 | `mark-kanat.png` | `brand/build_brand.py` (20 Eyl 2026 · açılış ekranı işareti — `mark-light.png` mürekkebe kırpılıp fildişi #FAEEDC pişirildi) | kendi üretimimiz | ✓ |
+| `altin_v7.png` | `brand/build_v7_perde.py` (v7 Aviation Light · şampanya düğme gradyanı #E6DAC4→#C4AF88) | kendi üretimimiz | ✓ |
+| `v7_*.png` | `brand/build_v7_perde.py` (v7 · gece/sis/fildişi/ışık gradyanları ve açılış perdesi — yalnız renk geçişi, kaynak görsel yok) | kendi üretimimiz | ✓ |
+| `mark-kanat-sampanya.png` | `brand/build_v7_perde.py` (v7 · `mark-kanat.png` şampanyaya boyandı) | kendi üretimimiz | ✓ |
+| `mark-kanat-bronz.png` | `brand/build_v7_perde.py` (v7 · `mark-kanat.png` bronza boyandı) | kendi üretimimiz | ✓ |
+| `isik_bulutu_*.png` | `brand/build_v7_perde.py` (v7 · `isik_bulutu.png` alfası şampanya/gök mavisine pişirildi — RNW tintColor kayması) | kendi üretimimiz | ✓ |
 | `fonts/Archivo-*.ttf` | Google Fonts · **DEĞİŞTİRİLDİ** (22 sembol glifi eklendi, `brand/build_simgeler.py`) | OFL-1.1 (`OFL-Archivo.txt`) — Reserved Font Name YOK, değişiklik serbest | ✓ |
 | `fonts/CormorantGaramond-*.ttf` | Google Fonts · **DEĞİŞTİRİLDİ** (aynı 22 glif + 30 Ağu 2026: değişken fonttan 300/600/700 statik kesit üretildi) | OFL-1.1 (`OFL.txt`) — Reserved Font Name YOK | ✓ |
 | `fonts/PlusJakartaSans-*.ttf` | Google Fonts (Tokotype) · **DEĞİŞTİRİLDİ** (aynı 21 sembol glifi, `brand/build_simgeler.py`) | OFL-1.1 (`OFL-PlusJakartaSans.txt`) — Reserved Font Name YOK | ✓ |

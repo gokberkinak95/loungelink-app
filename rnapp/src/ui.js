@@ -148,7 +148,7 @@ const BTN = {
   ust:     { bg: "rgba(255,255,255,0.04)", fg: C.foto.baslik, bd: C.line2 || C.line },
   // v7: AÇIK zemindeki daire (giriş kapısı, sohbet başlığı). `ust` beyaz camdı → fildişi
   // üstünde görünmüyordu (ölçüldü: 16_giris, 17_kayit, 06_sohbet).
-  ustAcik: { bg: "rgba(13,27,42,0.04)", fg: C.ink, bd: "rgba(13,27,42,0.14)" },
+  ustAcik: { bg: C.ink + "0A", fg: C.ink, bd: C.ink + "24" },
   muted:   { bg: C.bgAlt,  fg: C.mutedAA, bd: C.line },
   // ──────────────────────────────────────────────────────────────────────
   // 🔴 v3.9 — YUMUŞAK (TINT) VARYANTLAR: `Btn`in İKİNCİ KAPSAM BOŞLUĞU.
@@ -170,6 +170,9 @@ const BTN = {
   tealSoft:   { bg: C.tealBg,   fg: C.tealInk,   bd: C.teal + "40" },
   redSoft:    { bg: C.redBg,    fg: C.redInk,    bd: C.red + "40" },
   greenSoft:  { bg: C.greenBg,  fg: C.greenInk,  bd: C.green + "40" },
+  // v7 sakin araçlar (canlı oturum): beyaz cam hap, durum rengi yalnız mürekkep + ince kenar
+  camTeal:    { bg: "rgba(255,255,255,0.7)", fg: C.tealInk, bd: C.teal + "38" },
+  camKirmizi: { bg: "rgba(255,255,255,0.7)", fg: C.redInk,  bd: C.red + "38" },
 };
 temaYenidenKur(() => {
   BTN.gold.bg = BTN.gold.bd = C.goldBtn;
@@ -180,6 +183,9 @@ temaYenidenKur(() => {
   BTN.danger.bg = BTN.danger.bd = C.dangerBtn;
   BTN.purple.bg = BTN.purple.bd = C.goldBtn; BTN.purple.fg = C.onGold;   // 3 Eylül: altın (bkz. harita)
   BTN.rose.bg = BTN.rose.bd = C.red;
+  BTN.ustAcik.bg = C.ink + "0A"; BTN.ustAcik.fg = C.ink; BTN.ustAcik.bd = C.ink + "24";
+  BTN.camTeal.fg = C.tealInk; BTN.camTeal.bd = C.teal + "38";
+  BTN.camKirmizi.fg = C.redInk; BTN.camKirmizi.bd = C.red + "38";
   BTN.outline.fg = C.goldText; BTN.outline.bd = C.gold;
   // v6.1 — hayalet/sessiz düğme zemine karışıyordu ("Sohbete dön", "Şimdi değil").
   // Blok zemini + ışık kenarı + fildişi mürekkep: ikincil ama NET.
@@ -517,7 +523,26 @@ const SECIM_TON = {
 
 export function Secim({ etiket, alt, secili, onPress, ton = "gold",
                         bicim = "cip", ikon, sag, disabled, stil,
-                        a11yRol = "button", coklu, dolu, zemin = "kart", a11yLabel }) {
+                        a11yRol = "button", coklu, dolu, zemin = "kart", a11yLabel, sayi }) {
+  // v7.2 CAM SEGMENT (Seyahatlerim/İlanlarım · İstekler sekmeleri): buzlu rayın içindeki dilim.
+  // Seçili = kabarık beyaz hap (gölge %8 + üst ışık); sayı mono, seçilide bronz.
+  if (bicim === "camSegment") {
+    return (
+      <TouchableOpacity hitSlop={TAP.slop} onPress={disabled ? undefined : onPress} accessibilityRole={a11yRol === "button" ? "tab" : a11yRol}
+        accessibilityState={{ selected: !!secili, disabled: !!disabled }}
+        accessibilityLabel={a11yLabel || `${etiket}${sayi != null ? " · " + sayi : ""}`}
+        style={[{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", minHeight: 40, borderRadius: R.full,
+                  backgroundColor: secili ? C.card : "transparent" },
+                secili ? { borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
+                           shadowColor: C.golgeRenk, shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
+                           elevation: 2 } : null, stil]}>
+        <Text style={{ fontSize: FS.sm + 0.5, fontWeight: secili ? "700" : "500", color: secili ? C.ink : C.mut }}>
+          {etiket}{sayi != null ? <Text style={{ fontFamily: MONO[500], color: secili ? C.goldText : C.dim }}>{"  " + sayi}</Text> : null}
+        </Text>
+        {!!sag && <View style={{ marginLeft: SP[2] }}>{sag}</View>}
+      </TouchableOpacity>
+    );
+  }
   // 🔴 RENKLER ÇAĞRIDA OKUNUYOR, MODÜL YÜKLENİRKEN DEĞİL. `BTN` haritası
   // modül seviyesinde kurulduğu için tema değişince elle yeniden
   // yazılmak zorunda (`temaYenidenKur`). Aynı hatayı ikinci kez
@@ -585,9 +610,10 @@ export function Secim({ etiket, alt, secili, onPress, ton = "gold",
       },
       // v7.2 (Gökberk 4. tur: "gölgelendirmeler tanıştaki uçuş/salon/rota gibi sekme yapılarına da")
       temaModu() === "v7" ? {
-        backgroundColor: secili ? secZemin : (zemin === "yok" ? "transparent" : "#FFFFFF"),
+        backgroundColor: secili ? secZemin : (zemin === "yok" ? "transparent" : C.card),
         borderColor: secili ? (C.goldLine || T2.bd) : "transparent",
-        shadowColor: "#0D1B2A", shadowOpacity: zemin === "yok" ? 0 : 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
+        shadowColor: C.golgeRenk, shadowOpacity: zemin === "yok" ? 0 : 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 3 },
+        elevation: zemin === "yok" || secili ? 0 : 1,
       } : null, stil]}>
       {/* Radyo noktası — seçili hâlin İKİNCİ işareti. Yalnız renkle
           anlatılan bir seçim, renk körü bir kullanıcıda kaybolur.
@@ -753,8 +779,9 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
                       borderBottomColor: secili ? "rgba(110,90,57,0.32)" : "rgba(255,255,255,0.10)" },
                     Platform.OS === "web" && !secili ? { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" } : null,
                     stil]}>
-        {secili ? <Image source={ALTIN_GRADYAN()} resizeMode="stretch"
-                    style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, width: "100%", height: "100%" }} /> : null}
+        {secili ? <View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0 }}>
+                    <Image source={ALTIN_GRADYAN()} resizeMode="stretch" style={{ width: "100%", height: "100%" }} />
+                  </View> : null}
         {ikon ? <View style={{ marginRight: ARA[4] }}>{ikon}</View> : null}
         <Text numberOfLines={1} style={{ fontSize: FS.xs, fontWeight: secili ? "700" : "600", letterSpacing: 0.4,
                                          color: secili ? C.onGold : C.foto.baslik }}>{etiket}</Text>
@@ -771,10 +798,11 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
   }
   const zemin = secili ? C.goldBtn
     : dolgu ? ((C.badge && C.badge[dolgu === true ? (ton === "ok" ? "ok" : ton === "engel" ? "block" : "cost") : dolgu] || {}).bg || C.bgAlt)
-    : (temaModu() === "v7" ? "#FFFFFF" : C.bgAlt);
+    : (temaModu() === "v7" ? C.card : C.bgAlt);
   // v7.2 (Gökberk 4. tur: "badge alanlarına da gölge") — çip zeminde kaybolmasın.
   const v7Golge = temaModu() === "v7" && !kabartma
-    ? { shadowColor: "#0D1B2A", shadowOpacity: 0.08, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1 } : null;
+    ? { shadowColor: C.golgeRenk, shadowOpacity: 0.08, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
+        elevation: /^#[0-9a-f]{6}$/i.test(String(zemin)) ? 1 : 0 } : null;
   // ══════════════════════════════════════════════════════════════════
   // `kabartma` — KARAR ROZETİ BİR ETİKET DEĞİL, BİR MÜHÜR (12 Eylül)
   //
@@ -805,7 +833,7 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
                     borderWidth: 0 }, v7Golge,
                   kabartma ? {
                     // v7: siyah %38 gölge fildişi zeminde "kirli" duruyordu → lacivert %10.
-                    shadowColor: temaModu() === "v7" ? "#0D1B2A" : "#000000",
+                    shadowColor: temaModu() === "v7" ? C.golgeRenk : "#000000",
                     shadowOpacity: temaModu() === "v7" ? 0.10 : 0.38, shadowRadius: 6,
                     shadowOffset: { width: 0, height: 2 }, elevation: 3,
                     overflow: "hidden",
@@ -1355,7 +1383,7 @@ export function FotoSahne({ children, perdeBas = 0.36, perdeGuc = 0.58, odak, od
       {temaModu() === "v7" ? (
         <>
           <Katman source={require("../assets/v7_gece_ust.png")} resizeMode="stretch"
-            style={{ position: "absolute", left: 0, width: "100%", top: 0, height: "40%", opacity: 0.55 }} />
+            style={{ position: "absolute", left: 0, right: 0, width: "100%", top: 0, height: "40%", opacity: 0.55 }} />
           <Katman source={require("../assets/v7_gece_alt.png")} resizeMode="stretch"
             style={{ position: "absolute", left: 0, width: "100%",
                      top: `${perdeBas * 100}%`, height: `${(1 - perdeBas) * 100}%`,
@@ -2839,9 +2867,9 @@ export function akisKarti() {
   if (temaModu() !== "v7") {
     return { paddingVertical: SP[4], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line };
   }
-  return { backgroundColor: "#FFFFFF", borderRadius: R.lg, padding: ARA[18], marginBottom: ARA[14],
+  return { backgroundColor: C.card, borderRadius: R.lg, padding: ARA[18], marginBottom: ARA[14],
            borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
-           shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 },
+           shadowColor: C.golgeRenk, shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 },
            elevation: 1 };
 }
 // ══════════════════════════════════════════════════════════════════════
@@ -2859,7 +2887,7 @@ export function RotaHatti({ kalkis, varis, boy = FS.display + 4, stil }) {
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", marginHorizontal: ARA[12], overflow: "hidden" }}>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center", overflow: "hidden" }}>
             {Array.from({ length: 40 }).map((_, k) => (
-              <View key={k} style={{ width: 3, height: 1.5, borderRadius: 1, backgroundColor: C.goldText, marginRight: 4,
+              <View key={k} style={{ width: 3, height: 1.5, borderRadius: R.full, backgroundColor: C.goldText, marginRight: 4,
                                      opacity: Math.min(0.85, 0.3 + k * 0.03) }} />
             ))}
           </View>
@@ -3158,7 +3186,7 @@ export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala =
       ...(temaModu() === "v7" && !pano ? {
         borderWidth: 0, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)", borderStyle: "solid",
         borderRadius: R.lg, backgroundColor: "rgba(255,255,255,0.55)",
-        shadowColor: "#0D1B2A", shadowOpacity: 0.06, shadowRadius: 18, shadowOffset: { width: 0, height: 6 },
+        shadowColor: C.golgeRenk, shadowOpacity: 0.06, shadowRadius: 18, shadowOffset: { width: 0, height: 6 },
       } : null),
     }}>
       {!!pano && <SessizPano baslik={pano.baslik} durum={pano.durum} />}
@@ -3218,7 +3246,7 @@ export function CamSerit({ children, stil }) {
   // Gökberk 3 Ekim: "arka planla neredeyse aynı ton — çevresine gölge mi eklesek?" Evet:
   // lacivert ortam gölgesi (%7, 20pt) + üst kenarda 1px ışık. Çerçeve yok; şerit zeminden
   // ışıkla ayrılır. Android'de gölge elevation ile (overflow hidden gölgeyi kesmesin diye kapta).
-  const golge = { shadowColor: "#0D1B2A", shadowOpacity: 0.07, shadowRadius: 20, shadowOffset: { width: 0, height: 8 } };
+  const golge = { shadowColor: C.golgeRenk, shadowOpacity: 0.07, shadowRadius: 20, shadowOffset: { width: 0, height: 8 } };
   const kenar = { borderRadius: R.lg, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)" };
   if (B) {
     // iOS: gölge dış kapta, bulanıklık iç kapta (köşe kırpması gölgeyi kesmesin).
@@ -3233,7 +3261,8 @@ export function CamSerit({ children, stil }) {
   // Android: yarı saydam yüzeye elevation gölgeyi kartın İÇİNDEN çiziyor (v6.3 ölçümü) →
   // elevation yok, zemin %82 beyaz (bulanıklık da yok; şerit yine zeminden ayrılır).
   if (Platform.OS === "android") {
-    return <View style={[kenar, { backgroundColor: "rgba(255,255,255,0.82)" }, stil]}>{children}</View>;
+    // Opak beyaz: elevation ancak opak yüzeyde doğru çizilir (yarı saydamda kartın içine düşüyordu).
+    return <View style={[kenar, { backgroundColor: C.card, elevation: 2, shadowColor: C.golgeRenk, shadowOpacity: 0.06 }, stil]}>{children}</View>;
   }
   const web = Platform.OS === "web" ? { backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" } : null;
   return <View style={[kenar, golge, { backgroundColor: "rgba(255,255,255,0.55)" }, web, stil]}>{children}</View>;
@@ -3299,8 +3328,10 @@ export const POPUP_YUZEY = () => ({
 //   · iç halka: %84 çapta ince darp halkası (para kenarı)
 // Kabın kendisi daire + overflow hidden olmalı; gölge (0.04) kapta.
 // ══════════════════════════════════════════════════════════════════════
-export const SIKKE_GOLGE = { shadowColor: "#0D1B2A", shadowOpacity: 0.04, shadowRadius: 10,
-                             shadowOffset: { width: 0, height: 5 }, elevation: 2 };
+export const SIKKE_GOLGE = { shadowColor: C.golgeRenk, shadowOpacity: 0.04, shadowRadius: 10,
+                             shadowOffset: { width: 0, height: 5 }, elevation: 2,
+                             // Android elevation zeminsiz görünümde gölge çizmiyor → dış kapta sikke rengi
+                             backgroundColor: Platform.OS === "android" ? C.goldBtn : undefined };
 export function SikkeYuzey({ boy }) {
   const tam = { position: "absolute", left: 0, top: 0, width: boy, height: boy, borderRadius: boy / 2 };
   const ic = boy * 0.84, kay = (boy - ic) / 2;

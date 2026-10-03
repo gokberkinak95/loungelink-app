@@ -1912,13 +1912,17 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             pointerEvents={temaModu() === "v7" ? "box-none" : "auto"}
             style={{ backgroundColor: temaModu() === "v7" ? "transparent" : C.bg, paddingHorizontal: ARA[14],
                      marginTop: temaModu() === "v7" ? -40 : 0, zIndex: 10,
+                     // Android sırayı zIndex değil elevation ile verir: kartlar (elevation 2) çubuğun
+                     // fildişi geçişinin ÜSTÜNE çizilmesin. Zeminsiz kapta gölge çizilmez, yalnız sıra.
+                     elevation: temaModu() === "v7" && Platform.OS === "android" ? 12 : undefined, shadowOpacity: 0,
                      paddingTop: temaModu() === "v7" ? ARA[26] : ARA[6], paddingBottom: ARA[18] }}>
       {/* v7.2 (Gökberk 4. tur: "bildirimlerde işaretlediğim yerde arka planda bir şeyler görüyorum") —
           çubuğun üst payı tamamen saydamdı: liste metni kapsülün üstünde yarım kesik görünüyordu.
           Fildişi geçiş (alttan opak → üstte saydam): içerik çubuğun altına süzülerek kaybolur. */}
       {temaModu() === "v7" ? (
-        <Image pointerEvents="none" source={require("./assets/v7_fildisi_alt.png")} resizeMode="stretch"
-          style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, width: "100%", height: "100%" }} />
+        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}>
+          <Image source={require("./assets/v7_fildisi_alt.png")} resizeMode="stretch" style={{ width: "100%", height: "100%" }} />
+        </View>
       ) : null}
       {/* 🔴 28 EYLÜL (Gökberk: "tüm iç sayfalarda tabbar görünüyor, arkadaki
           butonları örtüyor; tabbara basınca arkadaki butona basılıyor").
@@ -1932,12 +1936,12 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           KURALLARLA BELİRLENİR — YÜKSELTME VERDİĞİN HER ŞEY, ÜSTÜNE
           ÇIKACAK KATMANDAN DAHA ALÇAK OLMALI." */}
       <View style={temaModu() === "v7"
-        ? { flexDirection: "row", alignItems: "flex-end", borderRadius: 24,
-            backgroundColor: Platform.OS === "web" ? "rgba(255,255,255,0.74)" : Platform.OS === "ios" ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.94)",
+        ? { flexDirection: "row", alignItems: "flex-end", borderRadius: R.xl,
+            backgroundColor: Platform.OS === "web" ? "rgba(255,255,255,0.74)" : Platform.OS === "ios" ? "rgba(255,255,255,0.88)" : C.card,
             borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.95)",
             ...(Platform.OS === "web" ? { backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" } : null),
             paddingTop: ARA[10], paddingBottom: ARA[10], paddingHorizontal: ARA[6],
-            shadowColor: "#0D1B2A", shadowOpacity: 0.10, shadowRadius: 24, shadowOffset: { width: 0, height: 10 },
+            shadowColor: C.golgeRenk, shadowOpacity: 0.10, shadowRadius: 24, shadowOffset: { width: 0, height: 10 },
             elevation: topOverlay && !katmanCubuguGoster ? 0 : 10 }
         : { flexDirection: "row", backgroundColor: C.surface, borderRadius: ARA[30],
                      borderTopWidth: 1, borderTopColor: C.parlama || "transparent",
@@ -2467,13 +2471,16 @@ function SplashV7({ t, go, lang, toggleLang }) {
         </View>
       </View>
       <View style={{ paddingHorizontal: ARA[22], paddingBottom: ARA[40], gap: ARA[10] }}>
+        {/* Cam satır (bağlantı satırı, eylem düğmesi değil): dokunma kabı saydam, yüzey içte. */}
         <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.splashGuide}
-          onPress={() => go("guide")}
-          style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-                   backgroundColor: C.camYuzey, borderRadius: R.lg, paddingHorizontal: ARA[18], minHeight: 52,
-                   shadowColor: "#0D1B2A", shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}>
-          <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "600", flex: 1 }}>{t.splashGuide}</Text>
-          <Ikon ad="sag" boy={16} renk={C.goldText} />
+          onPress={() => go("guide")}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                         backgroundColor: C.camYuzey, borderRadius: R.lg, paddingHorizontal: ARA[18], minHeight: 52,
+                         shadowColor: C.golgeRenk, shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
+                         elevation: Platform.OS === "android" ? 1 : 0 }}>
+            <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "600", flex: 1 }}>{t.splashGuide}</Text>
+            <Ikon ad="sag" boy={16} renk={C.goldText} />
+          </View>
         </TouchableOpacity>
         <Btn v="gold" full label={t.start} onPress={basla} />
         <Btn v="ghost" full label={t.haveAcc} onPress={() => go("login")} />
@@ -3681,7 +3688,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
           <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} accessibilityRole="button" accessibilityLabel={t.goVerify}>
             <CamSerit stil={{ paddingVertical: ARA[14], paddingHorizontal: ARA[18], flexDirection: "row", alignItems: "center" }}>
               <View style={{ width: 34, height: 34, borderRadius: R.full, alignItems: "center", justifyContent: "center",
-                             backgroundColor: "rgba(226,135,67,0.10)", marginRight: ARA[12] }}>
+                             backgroundColor: C.sicak + "1A", marginRight: ARA[12] }}>
                 <Ikon ad="guvenlik" boy={17} renk={C.amberInk} />
               </View>
               <Text style={{ color: C.body, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: Math.round(FS.sm * 1.45) }}>{t.phoneWhy}</Text>
@@ -4026,4 +4033,4 @@ export default function App() {
 // 🆕 SINIF: "TEST KAPSAMI GENELLİKLE OTURUM AÇTIKTAN SONRA BAŞLAR —
 // OYSA KULLANICI ORADAN BAŞLAMAZ."
 // ============================================================
-export { Splash, Onboarding, Auth, SocialAuthButtons, LangBtn, OfflineBanner };
+export { Splash, SplashV7, SplashKoyu, Onboarding, Auth, SocialAuthButtons, LangBtn, OfflineBanner };

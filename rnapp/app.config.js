@@ -22,7 +22,16 @@
 const fs = require("fs");
 const path = require("path");
 
+// 4 Ekim — EAS'TA DOSYA YOLU. `google-services.json` .gitignore'da ve git kökü C:\LoungeLink:
+// EAS yüklemesi ignore'lu dosyayı TAŞIMAZ (yerelde dursa bile uzakta yok sayılır). Bu yüzden
+// EAS "file" tipi ortam değişkeni `GOOGLE_SERVICES_JSON` (eas env:create … --type file) önce okunur;
+// EAS onu build makinesinde geçici bir dosyaya yazar ve yolunu bu değişkene koyar.
 module.exports = ({ config }) => {
+  const easYol = process.env.GOOGLE_SERVICES_JSON;
+  if (easYol && fs.existsSync(easYol) && config.android) {
+    config.android.googleServicesFile = easYol;
+    return config;
+  }
   const yol = path.join(__dirname, "google-services.json");
   const varMi = fs.existsSync(yol);
 

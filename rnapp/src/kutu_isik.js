@@ -36,15 +36,13 @@ function topla(st, o) {
   return o;
 }
 
-const ISIK = Platform.OS === "android"
-  ? { elevation: 2, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.9)" }
-  : { shadowColor: "#0D1B2A", shadowOpacity: 0.07, shadowRadius: 18, shadowOffset: { width: 0, height: 6 },
-      borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.9)" };
+// iOS shadow* + Android elevation BIRLIKTE (cihaz parite kurali); her platform kendi alanini okur.
+const GOLGE = { shadowColor: C.golgeRenk, shadowOpacity: 0.07, shadowRadius: 18, shadowOffset: { width: 0, height: 6 },
+                elevation: Platform.OS === "android" ? 2 : 0 };
+const ISIK = { ...GOLGE, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.9)" };
 
 // 4 Ekim (Gökberk: "plan sayfasında seçili planın çerçevesinin üstü yok") — üst ışık kenarı,
 // BİLİNÇLİ çerçevesi olan kutunun üst çizgisini eziyordu. Çerçeveli kutu yalnız gölge alır.
-const GOLGE = Platform.OS === "android" ? { elevation: 2 }
-  : { shadowColor: "#0D1B2A", shadowOpacity: 0.07, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } };
 function isikliMi(style) {
   const o = topla(style, {});
   if (!o.backgroundColor || !tintler().has(o.backgroundColor)) return null;

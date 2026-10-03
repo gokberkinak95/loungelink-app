@@ -123,7 +123,7 @@ GIRIS_YOLU = [
 # düğmesi çalışırken bunun ölü kalması mümkündür — ayrı yol, ayrı kanıt.
 DENE_YOLU = [
     ("Splash → Önce dene",      "dokun", "Önce dene: hangi salona girebilirim?", "Salon Rehberi"),
-    ("Salon Rehberi → ‹ Geri",  "dokun", "‹ Geri",                                "Aktarma uçuşları"),
+    ("Salon Rehberi → ‹ Geri",  "dokun", "‹ Geri",                                "Önce dene: hangi salona"),   # v7: iki splash'te de ortak iz (eski koyu slogan v7'de yok)
 ]
 
 

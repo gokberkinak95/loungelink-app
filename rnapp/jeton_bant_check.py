@@ -120,6 +120,8 @@ SINYAL = {
     "dangerBtn2":  "yıkıcı eylem düğmesinin gradyan alt ucu",
     "hataBg":      "hata yüzeyi",
     "hataLine":    "hata kenarı",
+    # ── v7 AVIATION LIGHT (2 Ekim 2026, A tasarımı onaylı) ────────────
+    "amberMikro":  "v7 güneş batımı amberi #E28743 — YALNIZ mikro: yeni/uyarı noktası ve odak ışıması; metin değil (metin amberi #A65A22)",
 }
 
 # ── MARKA ZORUNLULUĞU — kroma tavanı YOK, çünkü rengi biz seçmiyoruz ──

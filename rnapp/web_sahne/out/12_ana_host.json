@@ -5,6 +5,10 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -14,7 +18,7 @@
  "metin": [
   "LOUNGELINK",
   "",
-  "GÜNAYDIN",
+  "İYİ GÜNLER",
   "Selin B.",
   "• Güvenilir Host",
   "6",
@@ -71,6 +75,10 @@
   "“Uçuştan önce kahve?”",
   "Misafiri kabul et",
   "Reddet",
+  "",
+  "Radar kapalı",
+  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
+  "Radarı aç",
   "⭐ Son oturumunu puanla",
   "TAV Primeclass · 3 Ekim",
   "",

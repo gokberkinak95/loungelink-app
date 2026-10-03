@@ -166,24 +166,37 @@ const ODAK_ISIK = {
 // v7 (Gökberk 3 Ekim: "Tanış'ta arama alanında siyah bant") — koyu temanın odak zemini
 // (#181614) açık temada kapkara bir kutu çiziyordu. v7 odağı: beyaz zemin + %8 amber ışıma.
 // theme.js'e import yok (döngü riski): tema modu çağrı anında okunur.
-const ODAK_ISIK_V7 = {
-  shadowColor: "#E28743", shadowOpacity: 0.08, shadowRadius: 18,
-  shadowOffset: { width: 0, height: 0 },
-  backgroundColor: "#FFFFFF",
-  outlineWidth: 0, outlineStyle: "none",   // web: tarayicinin siyah odak cercevesi (cihazda anlamsiz, zararsiz)
-};
+// Renkler tema jetonundan, ilk cagrida bir kez kurulur (v7 paleti sabit).
+let ODAK_ISIK_V7 = null;
+function odakV7() {
+  if (ODAK_ISIK_V7) return ODAK_ISIK_V7;
+  const C = require("./theme").C;
+  ODAK_ISIK_V7 = {
+    shadowColor: C.sicak, shadowOpacity: 0.08, shadowRadius: 18,
+    shadowOffset: { width: 0, height: 0 },
+    backgroundColor: C.card,
+    outlineWidth: 0, outlineStyle: "none",   // web: tarayicinin siyah odak cercevesi (cihazda anlamsiz, zararsiz)
+  };
+  return ODAK_ISIK_V7;
+}
 // v7.2 (Gokberk 4. tur: "giris yap sayfasi e-posta / sifre alanlari arka planda kayboluyor") —
 // blok zeminli (#F1EFEB) giris alanlari v7'de BEYAZ yuzey + lacivert %5 golge. Saydam zeminli
 // girisler (arama hapi, sohbet cubugu) dokunulmaz: zemini kabin kendisi ciziyor.
-const GIRIS_V7 = { backgroundColor: "#FFFFFF", borderColor: "transparent",
-  shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } };
+let GIRIS_V7 = null;
+function girisV7() {
+  if (GIRIS_V7) return GIRIS_V7;
+  const C = require("./theme").C;
+  GIRIS_V7 = { backgroundColor: C.card, borderColor: "transparent",
+    shadowColor: C.golgeRenk, shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 1 };
+  return GIRIS_V7;
+}
 function girisYuzeyi(style) {
   try {
     if (require("./theme").temaModu() !== "v7") return null;
     const d = StyleSheet.flatten(style) || {};
-    return d.backgroundColor === "#F1EFEB" ? GIRIS_V7 : null;
+    return d.backgroundColor === require("./theme").C.surfaceAlt ? girisV7() : null;
   } catch (e) { return null; }
 }
 function odakIsik() {
-  try { return require("./theme").temaModu() === "v7" ? ODAK_ISIK_V7 : ODAK_ISIK; } catch (e) { return ODAK_ISIK; }
+  try { return require("./theme").temaModu() === "v7" ? odakV7() : ODAK_ISIK; } catch (e) { return ODAK_ISIK; }
 }

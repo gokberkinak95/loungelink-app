@@ -1799,6 +1799,8 @@ temaYenidenKur(() => {
   ELEV.card.shadowRadius = v7 ? 16 : 8;
   ELEV.card.shadowOffset = { width: 0, height: v7 ? 6 : 2 };
   if (v7) { ELEV.card.shadowOpacity = 0.06; ELEV.raised.shadowOpacity = 0.10; }
+  // v7 · Android: kart opak beyaz olduğu için elevation güvenli → gölge Android'de de görünür.
+  ELEV.card.elevation = v7 && Platform.OS === "android" ? 2 : 0;
   BTN.golge.shadowColor = C.goldGolge;
   // 🔴 12 EYLÜL · PARİTE TURU — BU SATIR BENİM KENDİ DEĞİŞİKLİĞİMİ EZİYORDU.
   // `BTN.golge`i 0.34 → 0.20'ye indirmiştim (şampanya parıltı yarıya insin
@@ -2036,7 +2038,10 @@ const V7_CIZGI = "rgba(13,27,42,0.07)", V7_YOK = "rgba(0,0,0,0)";
 Object.assign(V7, {
   // zemin · yüzey merdiveni
   bg: V7_TUVAL, paper: V7_TUVAL, card: "#FFFFFF", surface: "#FFFFFF", surfaceAlt: V7_BLOK,
-  bgAlt: V7_BLOK, avatarBg: "#ECE9E3", camYuzey: V7_CAM, camKart: V7_CAM, camIz: "rgba(255,255,255,0.40)",
+  // Android: cam kart OPAK beyaz — yarı saydam yüzeyde Android gölgesi kartın İÇİNE düşüyor
+  // (v6.3 ölçümü); fildişi tuvalde %65 beyaz cam ile opak beyaz arasındaki fark ~1/255.
+  bgAlt: V7_BLOK, avatarBg: "#ECE9E3",
+  camYuzey: Platform.OS === "android" ? "#FFFFFF" : V7_CAM, camKart: Platform.OS === "android" ? "#FFFFFF" : V7_CAM, camIz: "rgba(255,255,255,0.40)",
   popupZemin: "#FFFFFF", goldSoft: V7_SECILI, pasifRozet: "#ECE9E3",
   goldBg: V7_BLOK, amberBg: "#FBEFE5", goldTint: "#F6F0E4", greenBg: "#EDF4EF", purpleBg: V7_BLOK,
   tealBg: "#EDF3F2", tealTint: "#EDF3F2", tealTint2: "#E8F0EF", balonBen: "#EFE6D6",

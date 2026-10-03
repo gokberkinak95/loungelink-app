@@ -144,7 +144,7 @@ IDDIALAR = [
 
     ("üst bilgi altın",
      r"\.dugum\{[^}]*color:var\(--altin\)",
-     "ui.js", r"letterSpacing: 2\.4[\s\S]{0,120}?color: C\.gold",
+     "ui.js", r"letterSpacing: 2\.4[\s\S]{0,120}?color: (?:temaModu\(\) === \"v7\" \? C\.foto\.dugum : )?C\.gold",   # v7: düğüm şampanya (marka rengi)
      "düğüm noktası markanın rengiyle işaretleniyor"),
 
     # 🔴 26 EYLÜL · v6.1 — İDDİA BİLEREK DEĞİŞTİ. Gökberk önce/sonra
@@ -154,7 +154,7 @@ IDDIALAR = [
     # olduğu. Gövde/düğme/sayı sans-mono kalıyor (başka iddialar ölçüyor).
     ("başlık serif (v6.1 onay)",
      r"\.ust-h1\{",
-     "ui.js", r"fontSize: FS\.bant \+ 4[\s\S]{0,160}?fontFamily: F\.serifGosterim",
+     "ui.js", r"fontSize: (?:FS\.bant \+ 4|baslikBoy)[\s\S]{0,160}?fontFamily: F\.serifGosterim",   # v7: boy kelimeye göre (baslikBoy)
      "ekran başlıkları serif — önizleme onaylı (26 Eylül)"),
 
     ("isim serif-ince",

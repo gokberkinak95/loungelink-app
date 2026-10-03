@@ -125,6 +125,8 @@ SAHNELER = {
     # v7.2 (Gökberk 3 Ekim: "tasarımda olmayan ekranları ekle ki doğruluğu teyitleyelim")
     "87_oturum_canli": ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1500),
                                     ("dokun_a11y", "Oturumu tamamla"), ("bekle", 1800)]),   # ekran: Chat · oturum paneli (canlı)
+    "87b_oturum_araclar": ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1500),
+                                    ("dokun_a11y", "Oturumu tamamla"), ("bekle", 1800), ("gor", "Sorun bildir"), ("bekle", 1200)]),   # ekran: Chat · oturum paneli (sakin araçlar · Btn camTeal/camKirmizi)
     "88_oturum_puanla": ("selin",  [("dokun", "Şimdi puanla"), ("bekle", 2200), ("dokun", "Şimdi puanla"), ("bekle", 1800)]),   # ekran: Chat · oturum paneli (puanlama · K8)
     "89_seyahat_duzenle": ("gokberk", [("dokun", "Planım"), ("bekle", 900), ("dokun_a11y", "Seyahati düzenle"), ("bekle", 1200)]),   # ekran: EditTrip
     "90_ilan_duzenle": ("selin",   [("dokun", "Planım"), ("bekle", 700), ("dokun_a11y", "İlanlarım"), ("bekle", 900), ("dokun", "İlanı düzenle"), ("bekle", 1200)]),   # ekran: EditAvailability

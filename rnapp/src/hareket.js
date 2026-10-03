@@ -263,13 +263,15 @@ export function GeceKarti({ children, stil }) {
   return (
     // 4. tur (Gokberk: "laciverti header'a uygun, biraz daha soft"): bandin gece mavisi
     // (#1A2B4C) %90 — fildisi sayfa hafifce sizar; ustte koyulasan tul, altta safak sisi izi.
-    <View style={[{ borderRadius: R.lg + 4, overflow: "hidden", backgroundColor: "rgba(26,43,76,0.9)",
+    <View style={[{ borderRadius: R.lg + 4, overflow: "hidden", backgroundColor: C.gece + "E6",
                     paddingVertical: ARA[22], paddingHorizontal: ARA[14],
-                    shadowColor: "#0D1B2A", shadowOpacity: 0.10, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } }, stil]}>
-      <Image source={require("../assets/v7_gece_ust.png")} resizeMode="stretch"
-        style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "60%", opacity: 0.35 }} />
-      <Image source={require("../assets/v7_sis_alt.png")} resizeMode="stretch"
-        style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: "55%", opacity: 0.16 }} />
+                    shadowColor: C.golgeRenk, shadowOpacity: 0.10, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } }, stil]}>
+      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, height: "60%", opacity: 0.35 }}>
+        <Image source={require("../assets/v7_gece_ust.png")} resizeMode="stretch" style={{ width: "100%", height: "100%" }} />
+      </View>
+      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "55%", opacity: 0.16 }}>
+        <Image source={require("../assets/v7_sis_alt.png")} resizeMode="stretch" style={{ width: "100%", height: "100%" }} />
+      </View>
       {TOZ.map(([x, y, b], i) => (
         <View key={i} pointerEvents="none" style={{ position: "absolute", left: `${x * 100}%`, top: `${y * 100}%`,
           width: b, height: b, borderRadius: R.full, backgroundColor: "rgba(249,248,246,0.55)" }} />
@@ -491,9 +493,9 @@ export function SessizPano({ baslik, durum }) {
                backgroundColor: C.bg, padding: ARA[14], marginBottom: SP[4] },
                // v7.2 (Gökberk 4. tur: "gelen istekler boş görünüm kartı kayboluyor") — beyaz pano,
                // köşe 20, lacivert %6 gölge, üst ışık; çizgi yok.
-               temaModu() === "v7" ? { backgroundColor: "#FFFFFF", borderWidth: 0, borderRadius: R.lg,
+               temaModu() === "v7" ? { backgroundColor: C.card, borderWidth: 0, borderRadius: R.lg,
                  borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
-                 shadowColor: "#0D1B2A", shadowOpacity: 0.06, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } } : null]}>
+                 shadowColor: C.golgeRenk, shadowOpacity: 0.06, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 2 } : null]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: SP[3] }}>
         <Text style={{ fontSize: FS.xs, color: C.muted, letterSpacing: 2 }}>{baslik}</Text>
         <Animated.View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: C.gold,

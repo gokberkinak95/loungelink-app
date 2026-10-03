@@ -594,6 +594,9 @@ const CASES = [
   // burada: boş veriyle çökme, taşma ve iki temada çizilme ölçülüyor.
   // ══════════════════════════════════════════════════════════════════
   ["Splash",           A.Splash,           { t }],
+  // v7: Splash tema anahtarı; iki gövde de doğrudan çizilir (koyu gövde tema tercihiyle ulaşılabilir).
+  ["SplashV7",         A.SplashV7,         { t, go: () => {}, lang: "tr", toggleLang: () => {} }],
+  ["SplashKoyu",       A.SplashKoyu,       { t, go: () => {}, lang: "tr", toggleLang: () => {} }],
   ["Onboarding",       A.Onboarding,       { t, onDone: () => {}, onLogin: () => {} }],
   ["Home",             A.Home,             { t, lang: "tr", session, onOpenChat: () => {},
     onOpenCompanion: () => {}, onVerify: () => {}, onRole: () => {}, setRadar: () => {},
