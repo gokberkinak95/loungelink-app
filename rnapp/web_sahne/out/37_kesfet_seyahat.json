@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -31,7 +22,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "4 sa 16 dk içinde",
+  "3 sa 37 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -60,7 +51,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "5 sa 56 dk içinde",
+  "5 sa 17 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -74,7 +65,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "7 sa 56 dk içinde",
+  "7 sa 17 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -88,7 +79,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "9 sa 56 dk içinde",
+  "9 sa 17 dk içinde",
   "Seyahat ekle",
   "",
   "D",
@@ -98,7 +89,7 @@
   "%72",
   "UYUM",
   "TAV Primeclass",
-  "IST · 3 EKİM · 12:37–14:57",
+  "IST · 3 EKİM · 13:13–15:33",
   "",
   "Misafir ücretsiz",
   "TK1979"

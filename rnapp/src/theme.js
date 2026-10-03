@@ -1793,6 +1793,12 @@ temaYenidenKur(() => {
   ELEV.card.shadowOpacity = 0.05 * carp;
   ELEV.raised.shadowColor = renk;
   ELEV.raised.shadowOpacity = 0.10 * carp;
+  // v7.2 (Gökberk 4. tur: "tüm kart alanlarında gölgelendirme kullansak mı? kartlar arka planda
+  // kaybolmasın") — v7'de kart gölgesi %3 · 8pt'ydi: fildişinde görünmüyordu. Lacivert %6 · 16pt,
+  // 6pt düşüş; yükseltilmiş %10. Android'de elevation 0 kalır (yarı saydam cam kart kuralı).
+  ELEV.card.shadowRadius = v7 ? 16 : 8;
+  ELEV.card.shadowOffset = { width: 0, height: v7 ? 6 : 2 };
+  if (v7) { ELEV.card.shadowOpacity = 0.06; ELEV.raised.shadowOpacity = 0.10; }
   BTN.golge.shadowColor = C.goldGolge;
   // 🔴 12 EYLÜL · PARİTE TURU — BU SATIR BENİM KENDİ DEĞİŞİKLİĞİMİ EZİYORDU.
   // `BTN.golge`i 0.34 → 0.20'ye indirmiştim (şampanya parıltı yarıya insin

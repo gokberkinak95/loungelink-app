@@ -37,7 +37,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
-import { BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
+import { RotaHatti, BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
@@ -2723,14 +2723,22 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
       {sub === "discover" ? (
         people === null ? <Load icerik /> : (
           <>
-            <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: C.camYuzey || C.card,
+            {/* v7.2 (Gökberk 4. tur: "arama çubuğu çok kaba") — yumuşak hap: tam yuvarlak, beyaz cam,
+                lacivert %5 gölge, küçük yazı ve sessiz ikon. Odak ışığı kabın kendisinde değil girişte. */}
+            <View style={temaModu() === "v7"
+              ? { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(255,255,255,0.78)",
+                  borderRadius: R.full, paddingHorizontal: ARA[18], marginBottom: ARA[14], minHeight: 46,
+                  borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
+                  shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 14, shadowOffset: { width: 0, height: 5 } }
+              : { flexDirection: "row", alignItems: "center", backgroundColor: C.camYuzey || C.card,
                            borderRadius: R.lg, paddingHorizontal: ARA[14], marginBottom: ARA[14],
                            ...ustIsik(C.parlama || C.line) }}>
-              <Ikon ad="ara" boy={16} renk={C.mut} stil={{ marginRight: ARA[10] }} />
+              <Ikon ad="ara" boy={temaModu() === "v7" ? 15 : 16} renk={temaModu() === "v7" ? C.dim : C.mut} stil={{ marginRight: ARA[10] }} />
               <TextInput value={ara} onChangeText={setAra} placeholder={t.meetSearchPh}
                 placeholderTextColor={C.dim} autoCorrect={false} returnKeyType="search"
-                accessibilityLabel={t.meetSearchPh}
-                style={{ flex: 1, color: C.ink, fontSize: FS.base, paddingVertical: ARA[12] }} />
+                accessibilityLabel={t.meetSearchPh} __isiksiz={temaModu() === "v7"}
+                style={{ flex: 1, color: C.ink, fontSize: temaModu() === "v7" ? FS.sm : FS.base, paddingVertical: ARA[12],
+                         ...(temaModu() === "v7" ? { outlineWidth: 0, outlineStyle: "none" } : null) }} />
               {ara ? (
                 <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.close}
                   onPress={() => setAra("")} style={{ minHeight: TAP.minHeight, justifyContent: "center", paddingLeft: ARA[8] }}>
@@ -6243,13 +6251,7 @@ export function SeyahatFormu({ t, f, set, airports, carriers, kilitli, mod, adim
               {!!f.flight && <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs }}>{BUYUK(f.flight)}</Text>}
             </View>
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[8] }}>
-              <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.display + 2 }}>{f.airport || "—"}</Text>
-              {!!f.destination && (<>
-                <View style={{ flex: 1, flexDirection: "row", marginHorizontal: ARA[12], overflow: "hidden" }}>
-                  {Array.from({ length: 14 }).map((_, k) => <View key={k} style={{ width: 3, height: 1, backgroundColor: C.goldText, marginRight: ARA[4], opacity: 0.7 }} />)}
-                </View>
-                <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.display + 2 }}>{f.destination}</Text>
-              </>)}
+              <RotaHatti kalkis={f.airport || "—"} varis={f.destination} boy={FS.display + 2} stil={{ flex: 1 }} />
             </View>
           </View>
           <View style={{ flexDirection: "row", marginHorizontal: SP[4], overflow: "hidden" }}>
@@ -6828,18 +6830,7 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
               <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.xs, letterSpacing: 0.6 }}>{BUYUK(yakin.flight_number)}</Text>
             )}
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[10] }}>
-            <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.display + 6, letterSpacing: 0.6 }}>{yakin.airport_code}</Text>
-            {!!varis && (<>
-              <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: ARA[14] }}>
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <View key={i} style={{ width: 3, height: 1, backgroundColor: C.goldText, marginRight: ARA[4], opacity: 0.5 + i * 0.06 }} />
-                ))}
-                <Ikon ad="sag" boy={12} renk={C.goldText} />
-              </View>
-              <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.display + 6, letterSpacing: 0.6 }}>{varis}</Text>
-            </>)}
-          </View>
+          <RotaHatti kalkis={yakin.airport_code} varis={varis} boy={FS.display + 6} stil={{ marginTop: ARA[10] }} />
           <Text style={{ color: C.body, fontSize: FS.sm, marginTop: ARA[8], lineHeight: 19 }}>{t.heroWithTripSub}</Text>
         </View>
         {/* Delikli kesim: kartı iki koçana ayıran kesik çizgi. */}

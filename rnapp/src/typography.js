@@ -153,7 +153,7 @@ function isikliGiris(Bilesen) {
       ...props,
       onFocus: (e) => { setOdak(true); props.onFocus && props.onFocus(e); },
       onBlur: (e) => { setOdak(false); props.onBlur && props.onBlur(e); },
-      style: [props.style, odak ? odakIsik() : null],
+      style: [props.style, girisYuzeyi(props.style), odak ? odakIsik() : null],
     };
     return eski.call(this, yeni, ...rest);
   };
@@ -170,8 +170,20 @@ const ODAK_ISIK_V7 = {
   shadowColor: "#E28743", shadowOpacity: 0.08, shadowRadius: 18,
   shadowOffset: { width: 0, height: 0 },
   backgroundColor: "#FFFFFF",
-  outlineWidth: 0,   // web: tarayicinin siyah odak cercevesi (cihazda anlamsiz, zararsiz)
+  outlineWidth: 0, outlineStyle: "none",   // web: tarayicinin siyah odak cercevesi (cihazda anlamsiz, zararsiz)
 };
+// v7.2 (Gokberk 4. tur: "giris yap sayfasi e-posta / sifre alanlari arka planda kayboluyor") —
+// blok zeminli (#F1EFEB) giris alanlari v7'de BEYAZ yuzey + lacivert %5 golge. Saydam zeminli
+// girisler (arama hapi, sohbet cubugu) dokunulmaz: zemini kabin kendisi ciziyor.
+const GIRIS_V7 = { backgroundColor: "#FFFFFF", borderColor: "transparent",
+  shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } };
+function girisYuzeyi(style) {
+  try {
+    if (require("./theme").temaModu() !== "v7") return null;
+    const d = StyleSheet.flatten(style) || {};
+    return d.backgroundColor === "#F1EFEB" ? GIRIS_V7 : null;
+  } catch (e) { return null; }
+}
 function odakIsik() {
   try { return require("./theme").temaModu() === "v7" ? ODAK_ISIK_V7 : ODAK_ISIK; } catch (e) { return ODAK_ISIK; }
 }

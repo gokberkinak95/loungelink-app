@@ -46,3 +46,25 @@ for ad, renk in (("isik_bulutu_sampanya.png", (212, 195, 163)), ("isik_bulutu_go
 
 # Tanitim perdesi (v7): sicak siyah yerine gece mavisi, alt opak
 yap("v7_gece_alt.png", (13, 27, 42), True)
+
+# Acilis perdesi (tek parca, A tuvali duraklari): renk + alfa birlikte enterpole edilir.
+# Neden tek parca: yuzde yukseklikli serit katmanlar web'de guvenilir cizilmedi
+# (olculdu: %74-%90 fildisi rampasi hic cizilmemis, Giris yap'in ustunde sert cizgi).
+DURAK = [(0.00, (26, 43, 76), 0.82), (0.40, (26, 43, 76), 0.50), (0.56, (40, 58, 92), 0.44),
+         (0.74, (230, 235, 240), 0.92), (0.90, (249, 248, 246), 1.00), (1.00, (249, 248, 246), 1.00)]
+h = 1024
+im = Image.new("RGBA", (8, h))
+for y in range(h):
+    t = y / (h - 1)
+    for i in range(len(DURAK) - 1):
+        t0, c0, a0 = DURAK[i]; t1, c1, a1 = DURAK[i + 1]
+        if t0 <= t <= t1:
+            u = (t - t0) / max(1e-6, t1 - t0)
+            u = u * u * (3 - 2 * u)   # yumusak gecis (smoothstep): duraklarda kirik yok
+            c = tuple(round(c0[k] + (c1[k] - c0[k]) * u) for k in range(3))
+            a = round(255 * (a0 + (a1 - a0) * u))
+            for x in range(8):
+                im.putpixel((x, y), c + (a,))
+            break
+im.save(os.path.join(A, "v7_acilis_perde.png"))
+print("v7_acilis_perde.png")

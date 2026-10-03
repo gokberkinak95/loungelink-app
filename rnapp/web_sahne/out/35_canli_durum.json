@@ -7,10 +7,6 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -37,11 +33,10 @@
   "BUGÜN · BİNİŞ",
   "TK1979",
   "IST",
-  "",
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "12:17–16:17",
+  "12:53–16:53",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -76,8 +71,8 @@
   "LOUNGELINK",
   "CANLI",
   "Oturum · Canlı Durum",
-  "02:33",
-  ":50",
+  "02:30",
+  ":46",
   "BULUŞMAYA",
   "Oturum Aktif",
   "KARŞI TARAF DİYOR",

@@ -2428,22 +2428,13 @@ function SplashV7({ t, go, lang, toggleLang }) {
       <View pointerEvents="none" style={{ position: "absolute", left: -16, top: 0, right: -16, bottom: 0 }}>
         <Image source={require("./assets/bant.jpg")} resizeMode="cover" style={{ width: "100%", height: "100%" }} />
       </View>
-      <View pointerEvents="none" style={[tam, { backgroundColor: C.meshUst, opacity: 0.5 }]} />
-      {/* ⚠️ Renk GÖMÜLÜ gradyanlar (brand/build_v7_perde.py): web'de tintColor SVG filtresi
-          kimliği kayıyor ve katman hiç çizilmiyordu (ölçüldü: #tint-5 sayfada yok). */}
-      <Katman source={require("./assets/v7_gece_ust.png")} resizeMode="stretch"
-        style={{ position: "absolute", width: "100%", left: 0, top: 0, right: 0, height: "44%", opacity: 0.64 }} />
-      {/* A tuvalinin DURAKLARI birebir (ölçüldü: doğrusal tek rampa düğmelerin hizasında
-          184 gri veriyordu, tasarım ≈235): sis %40→%74 rampa, %74'ten aşağı düz %92 sis;
-          fildişi %74→%90 rampa, %90'dan aşağı düz fildişi. */}
-      <Katman source={require("./assets/v7_sis_alt.png")} resizeMode="stretch"
-        style={{ position: "absolute", width: "100%", left: 0, right: 0, top: "56%", height: "18%", opacity: 0.92 }} />
-      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "74%", bottom: 0,
-                                          backgroundColor: C.doku.ufuk, opacity: 0.92 }} />
-      <Katman source={require("./assets/v7_fildisi_alt.png")} resizeMode="stretch"
-        style={{ position: "absolute", width: "100%", left: 0, right: 0, top: "74%", height: "16%" }} />
-      <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: "90%", bottom: 0,
-                                          backgroundColor: C.bg }} />
+      {/* v7.2 · TEK PARÇA PERDE (brand/build_v7_perde.py · v7_acilis_perde.png): A tuvalinin
+          durakları renk + alfa olarak gömülü (gece %82 → %50 → şafak sisi %92 → fildişi). Yüzde
+          yükseklikli şerit katmanlar web'de güvenilir çizilmedi (ölçüldü: fildişi rampası yoktu,
+          Giriş yap'ın üstünde sert çizgi). Fotoğrafla AYNI kurulum: mutlak kap + %100 görsel. */}
+      <View pointerEvents="none" style={tam}>
+        <Image source={require("./assets/v7_acilis_perde.png")} resizeMode="stretch" style={{ width: "100%", height: "100%" }} />
+      </View>
       <View style={{ position: "absolute", right: ARA[22], top: TOPPAD + ARA[20], zIndex: 2 }}>
         <LangBtn lang={lang} toggleLang={toggleLang} />
       </View>
@@ -2463,7 +2454,8 @@ function SplashV7({ t, go, lang, toggleLang }) {
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <View style={{ width: kanatG, height: kanatH }}>
           <AcilisIsigi g={kanatG} y={kanatH} />
-          <Katman source={require("./assets/mark-kanat.png")} resizeMode="contain"
+          {/* Düz Image (Katman'da web'de görünmedi — ölçüldü, 3 Ekim). */}
+          <Image source={require("./assets/mark-kanat.png")} resizeMode="contain"
             style={{ width: kanatG, height: kanatH }} />
         </View>
       </View>

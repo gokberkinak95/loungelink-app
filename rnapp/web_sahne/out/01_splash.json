@@ -11,18 +11,6 @@
   {
    "t": "error",
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -61,17 +49,17 @@
   },
   {
    "g": 483,
-   "sol": -12,
+   "sol": -11,
    "tx": ""
   },
   {
    "g": 483,
-   "sol": -12,
+   "sol": -11,
    "tx": ""
   },
   {
    "g": 483,
-   "sol": -12,
+   "sol": -11,
    "tx": ""
   }
  ],

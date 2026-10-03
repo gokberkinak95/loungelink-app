@@ -2835,6 +2835,34 @@ export function akisKarti() {
            shadowColor: "#0D1B2A", shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 },
            elevation: 1 };
 }
+// ══════════════════════════════════════════════════════════════════════
+// v7.2 · ROTA HATTI (Gökberk 4. tur: "IST ------ LHR: sonunda kendi uçak logomuz vardı; seyahatlerimde
+// çizgi LHR'ye uzanmıyor, ana sayfada LHR sayfanın ortasında"). Üç ayrı çizim vardı (8 / 14 / 14
+// sabit nokta) → tek bileşen: kodlar KENARLARDA, aradaki kesik hat boşluğu DOLDURUR ve varışın
+// hemen önünde markanın küçük kanadıyla biter. Her kartta aynı oran.
+// ══════════════════════════════════════════════════════════════════════
+export function RotaHatti({ kalkis, varis, boy = FS.display + 4, stil }) {
+  const kod = { fontFamily: MONO[500], fontSize: boy, letterSpacing: 0.6 };
+  return (
+    <View style={[{ flexDirection: "row", alignItems: "center" }, stil]}>
+      <Text style={[kod, { color: C.ink }]}>{kalkis || "—"}</Text>
+      {!!varis && (<>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", marginHorizontal: ARA[12], overflow: "hidden" }}>
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center", overflow: "hidden" }}>
+            {Array.from({ length: 40 }).map((_, k) => (
+              <View key={k} style={{ width: 3, height: 1.5, borderRadius: 1, backgroundColor: C.goldText, marginRight: 4,
+                                     opacity: Math.min(0.85, 0.3 + k * 0.03) }} />
+            ))}
+          </View>
+          <Image source={temaModu() === "v7" ? KANAT_BRONZ : MARKA_KANAT} resizeMode="contain"
+            tintColor={temaModu() === "v7" ? undefined : C.goldText}
+            style={{ width: Math.round(boy * 0.95), height: Math.round(boy * 0.47), marginLeft: 4 }} />
+        </View>
+        <Text style={[kod, { color: C.mut }]}>{varis}</Text>
+      </>)}
+    </View>
+  );
+}
 export function yeniCerceve(yeni) {
   return yeni ? { borderWidth: 1, borderColor: C.goldLine || C.goldText } : null;
 }
@@ -3128,16 +3156,8 @@ export function BosDurum({ ikon, baslik, metin, eylem, sikisik = false, ortala =
       {/* v7.2 (Gökberk 3 Ekim: "boş durumdaki uçak ikonu bizim app'in uçak ikonu olsun") —
           "ucus" boş durumunda markanın kanadı: şampanya diskte bronz kanat. */}
       {ikon === "ucus" && !pano && temaModu() === "v7" ? (
-        // 3 Ekim ikinci tur (Gökberk: "etrafında yuvarlak olmasa mı?") — disk kalktı: diskte kanat
-        // bir "ikon", yalnız başına ve arkasında kesik bir uçuş iziyle MARKA. K2/K1′ ile aynı dil.
-        <View style={{ width: 132, height: 44, marginBottom: SP[3], justifyContent: "center" }}>
-          {[0, 1, 2, 3, 4, 5].map((i) => (
-            <View key={i} pointerEvents="none" style={{ position: "absolute", left: 6 + i * 9, top: 34 - i * 3.6,
-              width: 4, height: 1.5, borderRadius: R.full, backgroundColor: C.gold, opacity: 0.12 + i * 0.07,
-              transform: [{ rotate: "-22deg" }] }} />
-          ))}
-          <Image source={KANAT_BRONZ} resizeMode="contain" style={{ position: "absolute", right: 0, top: 2, width: 76, height: 38 }} />
-        </View>
+        // 3 Ekim: disk kalktı; dördüncü tur (Gökberk): iz noktaları da kalktı — yalnız kanat, ortada.
+        <Image source={KANAT_BRONZ} resizeMode="contain" style={{ width: 72, height: 36, marginBottom: SP[3] }} />
       ) : !!ikon && !pano && (
         <View style={{
           // 🔴 `borderRadius: 22` YAZMIYORUM. 44/2 elle hesaplanmış bir

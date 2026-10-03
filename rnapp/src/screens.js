@@ -11,7 +11,7 @@ import { logError, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { MONO } from "./typography";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP, temaModu } from "./theme";
-import { BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
+import { RotaHatti, BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -256,15 +256,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                   <TouchableOpacity hitSlop={TAP.slop} onPress={() => onEditTrip && onEditTrip(r)}
                     accessibilityRole="button" accessibilityLabel={t.editTrip}
                     style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[8] }}>
-                    <Text style={{ color: C.ink, fontFamily: MONO[500], fontSize: FS.display + 4, letterSpacing: 0.6 }}>{r.airport_code}</Text>
-                    {!!varis && (<>
-                      <View style={{ flex: 1, flexDirection: "row", alignItems: "center", marginHorizontal: ARA[12], overflow: "hidden" }}>
-                        {Array.from({ length: 14 }).map((_, k) => (
-                          <View key={k} style={{ width: 3, height: 1, backgroundColor: C.goldText, marginRight: ARA[4], opacity: 0.7 }} />
-                        ))}
-                      </View>
-                      <Text style={{ color: C.mut, fontFamily: MONO[500], fontSize: FS.display + 4, letterSpacing: 0.6 }}>{varis}</Text>
-                    </>)}
+                    <RotaHatti kalkis={r.airport_code} varis={varis} stil={{ flex: 1 }} />
                   </TouchableOpacity>
                   {!!r.carrier_code && (
                     <View style={{ marginTop: ARA[8] }}>

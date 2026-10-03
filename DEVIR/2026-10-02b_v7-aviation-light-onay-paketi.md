@@ -173,3 +173,28 @@ Web sahnedeki 3 hatalı sahne v7 kaynaklı değil:
   - app_boot gecti
 - Web sahne 89/89 temiz (ilk kez tamami). 9 hareket videosu.
 - Onay sayfasi v4.
+
+## EK 4 · 3 Ekim dorduncu tur
+- Splash:
+  - Kanat web'de cizilmiyordu (Katman); duz Image'a dondu.
+  - Sis/fildisi seritleri web'de guvenilir degil (olculdu: %90'a kadar 213 gri, alti 248) -> tek parca `v7_acilis_perde.png`.
+    - A tuvali duraklari renk+alfa, smoothstep; `brand/build_v7_perde.py`.
+- `RotaHatti` (ui.js, YENI): uc ayri rota cizimi (8/14/14 nokta) tek bilesen.
+  - Kodlar kenarda, kesik hat dolar, sonunda bronz kanat.
+  - Kullanim: screens.js Seyahatlerim, ekranlar_ana ana sayfa karti + seyahat formu.
+- Golgeler:
+  - theme ELEV.card v7 %6·16pt·y6, raised %10.
+  - typography: #F1EFEB zeminli girisler v7'de beyaz + %5 golge.
+  - SessizPano v7 beyaz kart + golge.
+- Tanis arama: v7 yumusak hap (R.full, beyaz cam, golge, FS.sm, outline none). Odak v7: outlineStyle none.
+- BosDurum "ucus": yalniz kanat (iz noktalari kalkti).
+- GeceKarti: rgba(26,43,76,0.9) + ust tul + alt safak izi + golge.
+- Testler:
+  - check temiz
+  - tasma 0
+  - screens 77/77
+  - mount 54/54
+  - giris 37/37
+  - app_boot gecti
+- Web sahne 89/89 temiz. 9 video.
+- Onay sayfasi v5.

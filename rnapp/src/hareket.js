@@ -18,7 +18,7 @@
 // ============================================================================
 import React, { useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Easing, Image, Platform, Text, TouchableOpacity, View } from "react-native";
-import { ARA, C, FS, R, SP, TAP } from "./theme";
+import { ARA, C, FS, R, SP, TAP, temaModu } from "./theme";
 import { MONO } from "./typography";
 import { Ikon } from "./ikon";
 import { BUYUK } from "./i18n";
@@ -261,11 +261,15 @@ export function GeceKarti({ children, stil }) {
   const TOZ = [[0.08, 0.22, 2], [0.18, 0.70, 1.5], [0.30, 0.12, 1.5], [0.44, 0.84, 2], [0.62, 0.18, 1.5],
                [0.74, 0.64, 2], [0.86, 0.30, 1.5], [0.93, 0.80, 1.5], [0.52, 0.48, 1], [0.24, 0.46, 1]];
   return (
-    <View style={[{ borderRadius: R.lg + 4, overflow: "hidden", backgroundColor: "#0D1B2A",
-                    paddingVertical: ARA[22], paddingHorizontal: ARA[14] }, stil]}>
+    // 4. tur (Gokberk: "laciverti header'a uygun, biraz daha soft"): bandin gece mavisi
+    // (#1A2B4C) %90 — fildisi sayfa hafifce sizar; ustte koyulasan tul, altta safak sisi izi.
+    <View style={[{ borderRadius: R.lg + 4, overflow: "hidden", backgroundColor: "rgba(26,43,76,0.9)",
+                    paddingVertical: ARA[22], paddingHorizontal: ARA[14],
+                    shadowColor: "#0D1B2A", shadowOpacity: 0.10, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } }, stil]}>
       <Image source={require("../assets/v7_gece_ust.png")} resizeMode="stretch"
-        style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", opacity: 0.9,
-                 transform: [{ scaleY: -1 }] }} />
+        style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "60%", opacity: 0.35 }} />
+      <Image source={require("../assets/v7_sis_alt.png")} resizeMode="stretch"
+        style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: "55%", opacity: 0.16 }} />
       {TOZ.map(([x, y, b], i) => (
         <View key={i} pointerEvents="none" style={{ position: "absolute", left: `${x * 100}%`, top: `${y * 100}%`,
           width: b, height: b, borderRadius: R.full, backgroundColor: "rgba(249,248,246,0.55)" }} />
@@ -483,8 +487,13 @@ export function SessizPano({ baslik, durum }) {
   );
   return (
     <View accessible accessibilityLabel={durum}
-      style={{ alignSelf: "stretch", borderRadius: R.sm, borderWidth: 1, borderColor: C.line,
-               backgroundColor: C.bg, padding: ARA[14], marginBottom: SP[4] }}>
+      style={[{ alignSelf: "stretch", borderRadius: R.sm, borderWidth: 1, borderColor: C.line,
+               backgroundColor: C.bg, padding: ARA[14], marginBottom: SP[4] },
+               // v7.2 (Gökberk 4. tur: "gelen istekler boş görünüm kartı kayboluyor") — beyaz pano,
+               // köşe 20, lacivert %6 gölge, üst ışık; çizgi yok.
+               temaModu() === "v7" ? { backgroundColor: "#FFFFFF", borderWidth: 0, borderRadius: R.lg,
+                 borderTopWidth: 1, borderTopColor: "rgba(255,255,255,1)",
+                 shadowColor: "#0D1B2A", shadowOpacity: 0.06, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } } : null]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: SP[3] }}>
         <Text style={{ fontSize: FS.xs, color: C.muted, letterSpacing: 2 }}>{baslik}</Text>
         <Animated.View style={{ width: 6, height: 6, borderRadius: R.full, backgroundColor: C.gold,
