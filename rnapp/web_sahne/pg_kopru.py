@@ -232,7 +232,60 @@ def rpc_sorgusu(cur, fn, args):
         cur.execute("select to_json(%s)" % call, params)
     return {"data": cur.fetchone()[0], "error": None}
 
+def kimlik(istek):
+    """
+    4 Ekim 2026 — KİMLİK İŞLEMLERİ GERÇEK VERİTABANINDA (akis_e2e.py).
+    Taklit `signUp` hiçbir şey yazmıyordu; kayıt akışı uçtan uca sınanamıyordu.
+    Artık `auth.users`a yazılıyor ve `handle_new_user` tetikleyicisi GERÇEKTEN
+    çalışıyor (rol, profil, güven puanı, açılış kredisi). Hata metinleri
+    Supabase GoTrue'nun birebir metinleri — uygulamanın `mapErr`i de sınanır.
+    `onay_kapali=False` → e-posta doğrulaması AÇIK davranışı (oturum dönmez).
+    """
+    op, e = istek.get("op"), str(istek.get("email") or "").strip().lower()
+    conn = psycopg2.connect(**DSN)
+    try:
+        cur = conn.cursor()
+        if op == "signup":
+            if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", e):
+                return {"data": None, "error": {"message": "Unable to validate email address: invalid format", "code": "validation_failed"}}
+            if len(str(istek.get("password") or "")) < 6:
+                return {"data": None, "error": {"message": "Password should be at least 6 characters.", "code": "weak_password"}}
+            cur.execute("select 1 from auth.users where lower(email)=%s", (e,))
+            if cur.fetchone():
+                return {"data": None, "error": {"message": "User already registered", "code": "user_already_exists"}}
+            onayli = bool(istek.get("onay_kapali", True))
+            cur.execute("""insert into auth.users (id, aud, role, email, encrypted_password, email_confirmed_at,
+                             created_at, updated_at, raw_app_meta_data, raw_user_meta_data)
+                           values (gen_random_uuid(), 'authenticated', 'authenticated', %s, extensions.crypt(%s, extensions.gen_salt('bf')),
+                                   case when %s then now() end, now(), now(), '{"provider":"email"}'::jsonb, %s::jsonb)
+                           returning id""", (e, istek.get("password"), onayli, json.dumps(istek.get("data") or {})))
+            uid = str(cur.fetchone()[0]); conn.commit()
+            user = {"id": uid, "email": e, "app_metadata": {"provider": "email"}}
+            return {"data": {"user": user, "session": {"user": user, "access_token": "sahne"} if onayli else None}, "error": None}
+        if op == "signin":
+            cur.execute("""select id, email_confirmed_at is not null, encrypted_password = extensions.crypt(%s, encrypted_password),
+                                  coalesce(raw_app_meta_data, '{}'::jsonb)
+                             from auth.users where lower(email)=%s""", (str(istek.get("password") or ""), e))
+            r = cur.fetchone()
+            if not r or not r[2]:
+                return {"data": None, "error": {"message": "Invalid login credentials", "code": "invalid_credentials"}}
+            if not r[1]:
+                return {"data": None, "error": {"message": "Email not confirmed", "code": "email_not_confirmed"}}
+            user = {"id": str(r[0]), "email": e, "app_metadata": r[3] if isinstance(r[3], dict) else json.loads(r[3])}
+            return {"data": {"user": user, "session": {"user": user, "access_token": "sahne"}}, "error": None}
+        if op == "reset":
+            if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", e):
+                return {"data": None, "error": {"message": "Unable to validate email address: invalid format", "code": "validation_failed"}}
+            cur.execute("update auth.users set recovery_token = md5(random()::text) where lower(email)=%s", (e,))
+            conn.commit()
+            return {"data": {}, "error": None}   # GoTrue gibi: e-posta yoksa da başarı (kullanıcı taraması yok)
+        return {"data": None, "error": {"message": "bilinmeyen kimlik islemi", "code": "KOPRU"}}
+    finally:
+        conn.close()
+
 def calistir(istek):
+    if istek.get("kind") == "auth":
+        return kimlik(istek)
     uid = istek.get("uid")
     conn = psycopg2.connect(**DSN)
     try:

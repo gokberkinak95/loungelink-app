@@ -246,7 +246,10 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
     load();
   }
 
-  const stMap = { pending: [t.st_pending, C.gold], accepted: [t.st_accepted, C.green], declined: [t.st_declined, C.red], cancelled: [t.st_cancelled, C.mut] };
+  const stMap = { pending: [t.st_pending, C.gold], accepted: [t.st_accepted, C.green], declined: [t.st_declined, C.red], cancelled: [t.st_cancelled, C.mut],
+                  // 4 Ekim — süpürge (316) saati geçen bekleyen isteği 'expired' değil 'cancelled' yapar;
+                  // yine de ham durum adı asla etikete düşmesin.
+                  expired: [t.reqExpiredShort, C.mut], completed: [t.completedWord, C.green] };
 
   if (loadErr) return (
     <View style={{ marginTop: ARA[22] }}><LoadFail t={t} onRetry={load} /></View>
@@ -4795,13 +4798,14 @@ export function Wallet({ t, session, onBack }) {
     if (error) { setLoadErr(true); return; }
     setLoadErr(false);
     setLed(data || []);
-    // Bakiye = defterin EN SON satirindaki balance_after (tek kaynak: credit_ledger).
-    // Ayri bir RPC yok; olmayan fonksiyonu cagirmak yerine defterden okuyoruz.
-    const { data: last, error: hata10 } = await supabase.from("credit_ledger")
-      .select("balance_after").eq("user_id", uid)
-      .order("created_at", { ascending: false }).limit(1);
-      if (hata10) logError("ekranlar_yalin.js:3208", hata10);
-    setBal(last?.[0]?.balance_after ?? 0);
+    // Bakiye = defterin TOPLAMI (user_balances görünümü — ana sayfa şeridi ve Profil ile aynı).
+    // 🔴 4 Ekim (uçtan uca test) — eskiden "en son satırın balance_after"ı okunuyordu; aynı
+    // işlemde yazılan satırların created_at'i eşit olduğundan "en son" keyfiydi: Cüzdan 20,
+    // ana sayfa 15 gösterdi (ölçüldü). Aynı sayı iki ekranda iki değer olamaz.
+    const { data: bl, error: hata10 } = await supabase.from("user_balances")
+      .select("credits").eq("user_id", uid).maybeSingle();
+    if (hata10) logError("ekranlar_yalin.js:3208", hata10);
+    setBal(Number(bl?.credits ?? 0));
   }, [session]);
   useEffect(() => { load(); }, [load]);
 

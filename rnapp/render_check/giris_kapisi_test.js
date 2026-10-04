@@ -113,12 +113,12 @@ STUBS["react-native"] = new Proxy({}, {
     // ürünün ihtiyacı değişince kırıldı.
     if (k === "Animated") return {
       View: h("View"), Text: h("Text"), Image: h("Image"), ScrollView: h("ScrollView"),
-      timing: () => ({ start: (cb) => cb && cb() }),
+      timing: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
       spring: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
-      stagger: () => ({ start: (cb) => cb && cb() }),
-      delay: () => ({ start: (cb) => cb && cb() }),
-      sequence: () => ({ start: (cb) => cb && cb() }),
-      parallel: () => ({ start: (cb) => cb && cb() }),
+      stagger: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
+      delay: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
+      sequence: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
+      parallel: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
       loop: () => ({ start: () => {}, stop: () => {} }),
       event: () => () => {},
       Value: function () {

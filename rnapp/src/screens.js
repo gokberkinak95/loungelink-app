@@ -280,7 +280,9 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: ARA[14] }}>
                     <TouchableOpacity disabled={n === 0} onPress={git} hitSlop={TAP.slop} style={{ flex: 1, minWidth: 0, minHeight: TAP.minHeight, justifyContent: "center" }}
-                      accessibilityRole="button" accessibilityLabel={varMi ? t.tripMatchCta : t.tripMatchNone}>
+                      accessibilityRole="button"
+                      // 4 Ekim 2026: etiket de görünen metinle AYNI dolduruluyor ({n} ekran okuyucuya ham gidiyordu)
+                      accessibilityLabel={n == null ? t.tripMatchCounting : n > 0 ? String(t.tripMatchCta).replace("{n}", String(n)) : t.tripMatchNone}>
                       <Text numberOfLines={1} style={{ color: varMi ? C.goldText : C.mut, fontSize: FS.sm, fontWeight: "600" }}>
                         {n == null ? t.tripMatchCounting
                           : n > 0 ? String(t.tripMatchCta).replace("{n}", String(n))
@@ -1432,11 +1434,11 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
       supabase.from("profiles").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("verifications").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("trust_scores").select("*").eq("user_id", uid).maybeSingle(),
-      supabase.from("user_balances").select("points").eq("user_id", uid).maybeSingle(),
-      uidC ? supabase.from("credit_ledger")
-        .select("balance_after").eq("user_id", uidC)
-        .order("created_at", { ascending: false }).limit(1)
-        .then(r => r.data).catch(() => null) : Promise.resolve(null),
+      // 4 Ekim (uçtan uca test) — kredi artık ana sayfa şeridiyle AYNI kaynaktan (user_balances =
+      // defterin TOPLAMI). Eskiden "en son satırın balance_after"ıydı: aynı işlemde yazılan
+      // satırların created_at'i eşit, "en son" keyfi → Profil 20, ana sayfa 15 (ölçüldü).
+      supabase.from("user_balances").select("credits, points").eq("user_id", uid).maybeSingle(),
+      Promise.resolve(null),
       // #34: tamamlanan oturum sayim (guest veya host olarak)
       supabase.from("sessions")
         .select("id, requests!inner(guest_id, host_id)").eq("status", "completed").limit(200)
@@ -1458,7 +1460,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
       const v0 = (vs0 && vs0[0]) || (av0 && av0[0]);
       setSehir(v0 ? ((v0.airports && v0.airports.city) || v0.airport_code || "") : "");
     }
-    if (uidC) setCredits(cl?.[0]?.balance_after ?? 0);
+    if (uidC) setCredits(Number(bal?.credits ?? 0)); void cl;
     const sesN = (ss || []).filter(x => x.requests?.guest_id === uid || x.requests?.host_id === uid).length;
     const rAvg = rr?.length
       ? (rr.reduce((a, x) => a + (x.score || 0), 0) / rr.length).toFixed(1)

@@ -412,6 +412,18 @@ def dunyayi_tazele():
             continue
         if r.returncode == 0:
             print("  ✓ sahne dünyası tazelendi (sahne_seed.sql)")
+            # 4 Ekim — akış dünyası (akis.* · Nehir/Arda/Cem/Bora/Duru…) da now()'a göre
+            # kurulu ve uçtan uca test onu DEĞİŞTİRİYOR (kabul/ret/erteleme). Her koşu
+            # SEED8 → SEED9'dan başlar; yoksa ikinci koşu birincinin artığını test eder.
+            for ad in ("SEED8_AKIS_TEZGAHI.sql", "SEED9_AKIS_GENIS.sql"):
+                yol = os.path.join(KOK, "..", "..", "sql", ad)
+                if not os.path.exists(yol):
+                    continue
+                r2 = subprocess.run([psql, "-h", "127.0.0.1", "-U", "postgres", "-d", "ll",
+                                     "-v", "ON_ERROR_STOP=1", "-q", "-f", yol],
+                                    capture_output=True, text=True, timeout=300)
+                print(("  ✓ akış dünyası tazelendi (%s)" % ad) if r2.returncode == 0 else
+                      ("  ⚠ %s ATILAMADI: %s" % (ad, ((r2.stderr or "").strip().splitlines() or [""])[-1][:160])))
         else:
             print("  ⚠ TOHUM ATILAMADI — sahneler BAYAT bir dünyada çekiliyor:")
             print("     " + (r.stderr or "").strip().splitlines()[-1][:160])

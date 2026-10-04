@@ -20,6 +20,17 @@ const KISI = {
   // 1 Ekim — SEED8 + SEED9 akış dünyası (sql/SEED9_AKIS_GENIS.sql): her durumdan veri
   nehir:   { id: "88880000-0000-4000-8000-000000000001", email: "akis.host@seed.loungelink.test" },
   arda:    { id: "88880000-0000-4000-8000-000000000011", email: "akis.misafir@seed.loungelink.test" },
+  // 4 Ekim 2026 — uçtan uca akış testi (akis_e2e.py) için uç durum kişileri
+  tuna:    { id: "88880000-0000-4000-8000-000000000002", email: "akis.host2@seed.loungelink.test" },
+  selen:   { id: "88880000-0000-4000-8000-000000000003", email: "akis.host3@seed.loungelink.test" },
+  bora:    { id: "88880000-0000-4000-8000-000000000012", email: "akis.misafir2@seed.loungelink.test" },
+  cem:     { id: "88880000-0000-4000-8000-000000000013", email: "akis.misafir3@seed.loungelink.test" },
+  duru:    { id: "88880000-0000-4000-8000-000000000014", email: "akis.misafir4@seed.loungelink.test" },
+  ela:     { id: "88880000-0000-4000-8000-000000000021", email: "akis.kural@seed.loungelink.test" },
+  can:     { id: "88880000-0000-4000-8000-000000000022", email: "akis.kredisiz@seed.loungelink.test" },
+  mina:    { id: "88880000-0000-4000-8000-000000000023", email: "akis.dogrulanmamis@seed.loungelink.test" },
+  mert:    { id: "a1b2c3d4-0000-4000-8000-00000000000e", email: "mert@sahne.loungelink.test" },
+  ece:     { id: "a1b2c3d4-0000-4000-8000-000000000011", email: "ece@sahne.loungelink.test" },
 };
 
 export function sahneKur(ad, q) {
@@ -27,7 +38,8 @@ export function sahneKur(ad, q) {
   globalThis.__KOPRU = q.get("kopru") || "http://127.0.0.1:8765";
   const kim = q.get("kim") || "";
   const k = KISI[kim];
-  globalThis.__SESSION = k ? { user: { id: k.id, email: k.email }, access_token: "sahne" } : null;
+  globalThis.__SESSION = k ? { user: { id: k.id, email: k.email, app_metadata: { provider: "email" } }, access_token: "sahne" } : null;
+  globalThis.__ONAY_ACIK = q.get("onay") === "acik";   // 4 Ekim 2026: e-posta doğrulaması açık kayıt
   // 🔴 12 Eylül · gece — AMBİYANS SABİTLENİYOR. `Atmosfer`in ufuk kuşağı
   // artık günün saatine bağlı; sahne görüntüleri saate bağlı olamaz.
   // `?an=safak|gunduz|aksam|gece` ile dört kuşak da çekilebiliyor.

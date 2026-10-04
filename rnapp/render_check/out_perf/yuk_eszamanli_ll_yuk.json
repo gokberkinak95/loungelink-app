@@ -1,0 +1,187 @@
+[
+ {
+  "vu": 10,
+  "islem": 1279,
+  "islem_sn": 42.6,
+  "p50": 9.0,
+  "p95": 1040.6,
+  "p99": 1255.6,
+  "hata": 74,
+  "hata_ornek": [
+   "acik_istek_tavani",
+   "guests_not_allowed",
+   "insufficient_credits"
+  ],
+  "akis": {
+   "ana_sayfa": {
+    "n": 484,
+    "p50": 8.1,
+    "p95": 488.2
+   },
+   "kesfet_SAW": {
+    "n": 251,
+    "p50": 508.0,
+    "p95": 660.4
+   },
+   "kesfet_ozeti": {
+    "n": 109,
+    "p50": 1071.2,
+    "p95": 1380.3
+   },
+   "bildirimler": {
+    "n": 214,
+    "p50": 2.0,
+    "p95": 3.3
+   },
+   "istek_gonder_iptal": {
+    "n": 61,
+    "p50": 378.6,
+    "p95": 487.6
+   },
+   "planim": {
+    "n": 86,
+    "p50": 7.0,
+    "p95": 10.5
+   }
+  }
+ },
+ {
+  "vu": 25,
+  "islem": 1742,
+  "islem_sn": 58.1,
+  "p50": 8.9,
+  "p95": 1994.1,
+  "p99": 2826.0,
+  "hata": 86,
+  "hata_ornek": [
+   "acik_istek_tavani",
+   "guests_not_allowed",
+   "insufficient_credits"
+  ],
+  "akis": {
+   "ana_sayfa": {
+    "n": 676,
+    "p50": 6.8,
+    "p95": 93.0
+   },
+   "kesfet_SAW": {
+    "n": 352,
+    "p50": 999.7,
+    "p95": 1959.4
+   },
+   "kesfet_ozeti": {
+    "n": 139,
+    "p50": 1962.5,
+    "p95": 3279.2
+   },
+   "bildirimler": {
+    "n": 285,
+    "p50": 1.7,
+    "p95": 6.3
+   },
+   "istek_gonder_iptal": {
+    "n": 73,
+    "p50": 743.8,
+    "p95": 1693.6
+   },
+   "planim": {
+    "n": 131,
+    "p50": 6.7,
+    "p95": 27.2
+   }
+  }
+ },
+ {
+  "vu": 50,
+  "islem": 2031,
+  "islem_sn": 67.7,
+  "p50": 13.6,
+  "p95": 4635.8,
+  "p99": 6729.3,
+  "hata": 111,
+  "hata_ornek": [
+   "acik_istek_tavani",
+   "guest_carrier_mismatch",
+   "guests_not_allowed",
+   "insufficient_credits"
+  ],
+  "akis": {
+   "ana_sayfa": {
+    "n": 835,
+    "p50": 9.5,
+    "p95": 319.7
+   },
+   "kesfet_SAW": {
+    "n": 379,
+    "p50": 1757.1,
+    "p95": 4763.0
+   },
+   "kesfet_ozeti": {
+    "n": 160,
+    "p50": 3999.6,
+    "p95": 7975.7
+   },
+   "bildirimler": {
+    "n": 318,
+    "p50": 1.9,
+    "p95": 9.7
+   },
+   "istek_gonder_iptal": {
+    "n": 82,
+    "p50": 1260.3,
+    "p95": 3962.1
+   },
+   "planim": {
+    "n": 146,
+    "p50": 8.6,
+    "p95": 73.8
+   }
+  }
+ },
+ {
+  "vu": 80,
+  "islem": 1897,
+  "islem_sn": 63.2,
+  "p50": 14.1,
+  "p95": 7973.9,
+  "p99": 14208.5,
+  "hata": 74,
+  "hata_ornek": [
+   "acik_istek_tavani",
+   "guests_not_allowed",
+   "insufficient_credits"
+  ],
+  "akis": {
+   "ana_sayfa": {
+    "n": 787,
+    "p50": 11.5,
+    "p95": 268.3
+   },
+   "kesfet_SAW": {
+    "n": 333,
+    "p50": 1526.6,
+    "p95": 4049.7
+   },
+   "kesfet_ozeti": {
+    "n": 169,
+    "p50": 8378.3,
+    "p95": 17619.2
+   },
+   "bildirimler": {
+    "n": 295,
+    "p50": 1.9,
+    "p95": 6.1
+   },
+   "istek_gonder_iptal": {
+    "n": 99,
+    "p50": 1090.7,
+    "p95": 3043.6
+   },
+   "planim": {
+    "n": 140,
+    "p50": 9.2,
+    "p95": 48.4
+   }
+  }
+ }
+]

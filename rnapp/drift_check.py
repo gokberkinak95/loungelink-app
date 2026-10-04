@@ -31,6 +31,14 @@ ll_paths.require_sql('drift_check')
 # Bilerek kaldırıldığı doğrulanmış adımlar — bir daha uyarma.
 # Biçim: (fonksiyon, düşen etkinin içerdiği metin)
 ALLOWLIST = {
+    # --- 4 Ekim 2026 · uçtan uca test turu (SQL 316 · 320 · 322) ---
+    # 316: bayat istek bildirimi `insert notifications` yerine `bildir()` (TR+EN, doğru sebep).
+    ('bayat_istekleri_iade_et', 'insert notifications'),
+    # 320: preflag gövdesi CANLI tanımdan (313 yaması `bildir()` zaten içeride); dosyadaki
+    #      eski `insert notifications` canlıda 313'ten beri yok — kayıp değil.
+    ('create_request_impl_preflag', 'insert notifications'),
+    # 322: ilan kapatma `hesap_acik_islerini_kapat` yardımcısına taşındı (silme + yasak ortak).
+    ('delete_my_account', 'update availabilities'),
     # --- SQL 280 (1 Eylül) · İADE TEK KAPIDAN ---
     # `respond_request` (decline) ve `cancel_request` içindeki elle
     # `insert into credit_ledger` BİLEREK kaldırıldı: iade artık

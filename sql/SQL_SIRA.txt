@@ -1,3 +1,26 @@
+SQL SIRASI - 4 Ekim 2026 - YENI: 315..320 (uctan uca test + yuk testi turu) - 313/314ten SONRA
+
+  Supabase SQL Editor'de SIRAYLA (her dosyayi ayri, tamamini yapistir). Hepsi tekrar kosulabilir,
+  her dosyanin sonunda bir DOGRULAMA sorgusu var: tum satirlarda tamam = true beklenir.
+
+  1) 315_bo_rapor_fonksiyonlari_kullaniciya_kapali.sql
+       -> GUVENLIK: 15 BO rapor fonksiyonu her uygulama kullanicisina acikti (kredi ekonomisi,
+          odul maliyeti, salon kuyrugu okunabiliyordu). Artik yalniz service_role (BO). BO'da ekran degismez.
+  2) 316_bayat_istek_supurgede.sql
+       -> Saati gecmis BEKLEYEN istek 5 dakikada kapanir + kredi iadesi + TR/EN dogru sebepli bildirim
+       -> YUK: supurge freni ana sayfa acilislarini tek siraya diziyordu (80 kullanicida 22 sn) -> skip locked
+  3) 317_kesfet_olcek.sql
+       -> Kesfet ve ana sayfa havalimani ozeti olcekte 39 sn / 37 sn idi -> ~1,3 sn / ~0,4 sn
+       -> DOGRULUK: ozet sayilari 100 ilani asinca eksik cikiyordu
+  4) 318_ana_sayfa_akisi_olcek.sql     -> ana sayfa akis sayaclari 367 ms -> 7 ms
+  5) 319_tanis_gorunurluk_olcek.sql    -> Tanis 15,5 sn -> 0,7 sn - kisi arama - radar - havalimani nabzi
+  6) 320_istek_puani_daraltilmis.sql   (317'den SONRA)
+       -> istek gonderme ~430 ms -> ~150 ms; eslesme puani artik dogru kaydedilir
+       -> Kesfet erisim karari ilan basina 8 kez yerine 1 kez
+
+  Yeni app surumu bu dosyalar OLMADAN da calisir (yalniz yavas kalir / eski davranis surer).
+
+---------------------------------------------------------------------------
 SQL SIRASI - 2 Ekim 2026 - YENI: 313 + 314 + test verisi (app 6.2.7) - 311 ve 312den SONRA
 
   (311 ve 312yi henuz kosmadiysan once onlar - asagidaki 1 Ekim turu.)

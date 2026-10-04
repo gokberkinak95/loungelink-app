@@ -109,6 +109,10 @@ function makeRpc(fn, args) {
   };
 }
 
+function authOlay(tur, oturum) {
+  (globalThis.__AUTH_CB || []).forEach((cb) => { try { cb(tur, oturum); } catch (e) {} });
+}
+
 export const supabase = {
   from: makeQuery,
   rpc: makeRpc,
@@ -120,12 +124,37 @@ export const supabase = {
   auth: {
     getSession: async () => ({ data: { session: globalThis.__SESSION || null }, error: null }),
     getUser: async () => ({ data: { user: (globalThis.__SESSION || {}).user || null }, error: null }),
-    onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
-    signOut: async () => ({ error: null }),
+    // 4 Ekim 2026 — köprü varken kimlik GERÇEK (pg_kopru `kind: auth`): kayıt
+    // auth.users'a yazar, tetikleyici çalışır; giriş şifreyi doğrular; oturum
+    // olayları uygulamanın dinleyicisine gerçekten gider. `?onay=acik` →
+    // e-posta doğrulaması açık davranışı (kayıt oturum döndürmez).
+    onAuthStateChange: (cb) => {
+      (globalThis.__AUTH_CB = globalThis.__AUTH_CB || []).push(cb);
+      return { data: { subscription: { unsubscribe() {} } } };
+    },
+    signOut: async () => { globalThis.__SESSION = null; authOlay("SIGNED_OUT", null); return { error: null }; },
     setSession: async () => ({ data: {}, error: null }),
-    signInWithPassword: async () => ({ data: { session: globalThis.__SESSION }, error: null }),
-    signUp: async () => ({ data: {}, error: null }),
-    resetPasswordForEmail: async () => ({ data: {}, error: null }),
+    signInWithPassword: async ({ email, password } = {}) => {
+      if (!globalThis.__KOPRU) return { data: { session: globalThis.__SESSION }, error: null };
+      const r = await kopru({ kind: "auth", op: "signin", email, password });
+      if (r.error) return { data: { session: null, user: null }, error: r.error };
+      globalThis.__SESSION = r.data.session; authOlay("SIGNED_IN", r.data.session);
+      return { data: r.data, error: null };
+    },
+    signUp: async ({ email, password, options } = {}) => {
+      if (!globalThis.__KOPRU) return { data: {}, error: null };
+      const r = await kopru({ kind: "auth", op: "signup", email, password, data: (options || {}).data || {},
+                              onay_kapali: globalThis.__ONAY_ACIK ? false : true });
+      if (r.error) return { data: { user: null, session: null }, error: r.error };
+      if (r.data.session) { globalThis.__SESSION = r.data.session; authOlay("SIGNED_IN", r.data.session); }
+      return { data: r.data, error: null };
+    },
+    resetPasswordForEmail: async (email) => {
+      if (!globalThis.__KOPRU) return { data: {}, error: null };
+      const r = await kopru({ kind: "auth", op: "reset", email });
+      return { data: r.data || {}, error: r.error };
+    },
+    resend: async () => ({ data: {}, error: null }),
     updateUser: async () => ({ data: {}, error: null }),
     verifyOtp: async () => ({ data: {}, error: null }),
     exchangeCodeForSession: async () => ({ data: {}, error: null }),

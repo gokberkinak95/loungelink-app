@@ -1,0 +1,29 @@
+Veritabanı ll_yuk · max_connections=100 · kademe süresi 30s · kullanıcı havuzu 2000 · başvurulabilir çift 3000
+  VU=10   işlem/sn=51.8    p50=8.9     p95=911.7    p99=986.0    hata=68 ['guests_not_allowed', 'insufficient_credits']
+        ana_sayfa            n=596   p50=7.8     p95=433.6
+        kesfet_IST           n=341   p50=281.4   p95=316.6
+        kesfet_ozeti         n=120   p50=875.4   p95=945.1
+        bildirimler          n=236   p50=1.9     p95=2.9
+        istek_gonder_iptal   n=75    p50=934.4   p95=1037.1
+        planim               n=117   p50=6.4     p95=18.8
+  VU=25   işlem/sn=59.1    p50=9.2     p95=2020.4   p99=2899.7   hata=85 ['acik_istek_tavani', 'guests_not_allowed', 'insufficient_credits']
+        ana_sayfa            n=706   p50=6.0     p95=71.5
+        kesfet_IST           n=366   p50=618.6   p95=1303.5
+        kesfet_ozeti         n=157   p50=1925.1  p95=3265.1
+        bildirimler          n=249   p50=1.5     p95=5.4
+        istek_gonder_iptal   n=81    p50=1646.5  p95=2600.2
+        planim               n=128   p50=7.2     p95=23.7
+  VU=50   işlem/sn=68.7    p50=12.1    p95=3899.4   p99=7196.7   hata=105 ['acik_istek_tavani', 'guests_not_allowed', 'insufficient_credits']
+        ana_sayfa            n=856   p50=8.3     p95=240.4
+        kesfet_IST           n=385   p50=1000.5  p95=3002.6
+        kesfet_ozeti         n=137   p50=3542.7  p95=7802.4
+        bildirimler          n=324   p50=1.7     p95=6.3
+        istek_gonder_iptal   n=109   p50=3172.6  p95=7520.5
+        planim               n=144   p50=7.8     p95=44.0
+  VU=80   işlem/sn=69.6    p50=14.5    p95=6440.4   p99=12669.5  hata=102 ['guests_not_allowed', 'insufficient_credits']
+        ana_sayfa            n=850   p50=10.8    p95=363.3
+        kesfet_IST           n=401   p50=1201.9  p95=3737.9
+        kesfet_ozeti         n=158   p50=6451.7  p95=15235.4
+        bildirimler          n=307   p50=1.7     p95=17.4
+        istek_gonder_iptal   n=105   p50=3852.4  p95=10835.9
+        planim               n=164   p50=9.7     p95=55.4

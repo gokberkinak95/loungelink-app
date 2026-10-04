@@ -1,0 +1,6 @@
+Aggregate  (cost=12.75..12.76 rows=1 width=8) (actual time=663.023..663.024 rows=1 loops=1)
+  Buffers: shared hit=642205
+  ->  Function Scan on discover_people  (cost=0.25..10.25 rows=1000 width=0) (actual time=663.010..663.014 rows=100 loops=1)
+        Buffers: shared hit=642205
+Planning Time: 0.028 ms
+Execution Time: 663.041 ms

@@ -3189,7 +3189,10 @@ function Auth({ mode, t, go, lang, toggleLang }) {
                 <>
                   <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[6], lineHeight: 19 }}>{t.forgotBody}</Text>
                   <Text style={st.label}>{t.email}</Text>
-                  <TextInput style={st.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+                  {/* 4 Ekim 2026: yer tutucu + erişilebilirlik etiketi yoktu (ekran okuyucu alanı adlandıramıyordu) */}
+                  <TextInput style={st.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address"
+                    placeholder={t.emailPh} placeholderTextColor={C.mut} accessibilityLabel={t.email}
+                    autoComplete="email" textContentType="emailAddress" />
                   <Btn label={t.forgotSend} onPress={sendReset} disabled={busy} busy={busy} style={{ marginTop: ARA[22] }} />
                   {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
                   <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: ARA[18], alignItems: "center" }}
@@ -3297,7 +3300,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
             <IconField icon={<Ikon ad="eposta" boy={15} renk={C.muted} />}><TextInput style={st.inputBare} value={email} onChangeText={setEmail}
               autoCapitalize="none" autoCorrect={false} keyboardType="email-address"
               autoComplete="email" textContentType="emailAddress"
-              placeholder="email@example.com" placeholderTextColor={C.mut} /></IconField>
+              placeholder={t.emailPh} placeholderTextColor={C.mut} /></IconField>
             {/* 🔴 `t.phone || "Telefon"` ve sabit Türkçe yer tutucular: sözlükte
                 anahtar VARDI (`phone: "TELEFON"`), yedek metin gereksizdi ve
                 İngilizce dilde yer tutucular Türkçe kalıyordu. */}
@@ -3965,7 +3968,9 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
       {/* Kaybedecek bir şeyi henüz olmayan kullanıcı için izin HAZIRLIĞI
           burada: sakin gün, ısrar etmeden anlatmak için doğru an. */}
       <UlasilabilirlikKarti t={t} tazele={tazele} goster={["bilgi"]} />
-      <HomeConnections t={t} session={session} onOpenChat={onOpenCompanion} />
+      {/* 4 Ekim 2026 (uçtan uca test): davet aynı sayfada kabul edilince bağlantı listesi
+          tazelenmiyordu — "Bağlantılarım · 1" kalıyordu, kabul edilen kişi görünmüyordu. */}
+      <HomeConnections t={t} session={session} onOpenChat={onOpenCompanion} tazele={tazele + akisTazele} />
       </View>
     </ScrollView>
     </>

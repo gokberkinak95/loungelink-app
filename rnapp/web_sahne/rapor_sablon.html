@@ -1,0 +1,165 @@
+<title>Sağlamlık Denetimi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --zemin:#F6F4EF; --yuzey:#FFFFFF; --yuzey2:#EFECE4; --cizgi:#DDD7CA; --murekkep:#14213A; --ikincil:#4A5468; --sessiz:#7A8295;
+  --vurgu:#8C6A2F; --vurgu-zemin:#F3EADA; --gece:#14213A; --gece-yazi:#F3EEE3;
+  --iyi:#1F6B4A; --iyi-zemin:#E2F1E8; --kotu:#A3352B; --kotu-zemin:#F8E4E1; --uyari:#8A5A00; --uyari-zemin:#FBEFD6;
+  --serif:"Newsreader", Georgia, "Times New Roman", serif; --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark; --zemin:#0E1626; --yuzey:#152038; --yuzey2:#1B2844; --cizgi:#2A3A5C; --murekkep:#EEF0F5; --ikincil:#B9C0D0; --sessiz:#8D96AB;
+  --vurgu:#E2C58F; --vurgu-zemin:#2A2A2E; --gece:#0A1120; --gece-yazi:#F3EEE3;
+  --iyi:#7FD4A6; --iyi-zemin:#14322A; --kotu:#F09A90; --kotu-zemin:#3A1E22; --uyari:#F0C46A; --uyari-zemin:#352B14; } }
+:root[data-theme="dark"]{
+  color-scheme:dark; --zemin:#0E1626; --yuzey:#152038; --yuzey2:#1B2844; --cizgi:#2A3A5C; --murekkep:#EEF0F5; --ikincil:#B9C0D0; --sessiz:#8D96AB;
+  --vurgu:#E2C58F; --vurgu-zemin:#2A2A2E; --gece:#0A1120; --gece-yazi:#F3EEE3;
+  --iyi:#7FD4A6; --iyi-zemin:#14322A; --kotu:#F09A90; --kotu-zemin:#3A1E22; --uyari:#F0C46A; --uyari-zemin:#352B14; }
+*{box-sizing:border-box}
+body{background:var(--zemin); color:var(--murekkep); font:15px/1.6 var(--sans); padding-inline:16px; padding-block:0 64px}
+.sayfa{max-width:1080px; margin:0 auto}
+header.ust{background:var(--gece); color:var(--gece-yazi); margin:0 -16px 28px; padding:36px 16px 30px}
+header.ust .ic{max-width:1080px; margin:0 auto}
+.kas{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#E2C58F; margin:0 0 12px}
+h1{font:600 clamp(28px,4.4vw,42px)/1.15 var(--serif); margin:0 0 10px; text-wrap:balance}
+header.ust p{margin:0; max-width:68ch; color:#C9CFDC}
+.rakamlar{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-top:24px}
+.rakam{border:1px solid rgba(226,197,143,.28); border-radius:10px; padding:14px 16px}
+.rakam b{display:block; font:500 26px/1.1 var(--mono); color:#F3EEE3; font-variant-numeric:tabular-nums}
+.rakam span{font-size:13px; color:#AEB6C8}
+h2{font:600 24px/1.25 var(--serif); margin:44px 0 6px; text-wrap:balance}
+h2 + .alt{color:var(--ikincil); margin:0 0 16px; max-width:72ch}
+h3{font:600 15px/1.3 var(--sans); margin:22px 0 8px}
+p{max-width:72ch}
+.tablo{overflow-x:auto; border:1px solid var(--cizgi); border-radius:10px; background:var(--yuzey)}
+table{border-collapse:collapse; width:100%; font-size:13.5px}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--cizgi); vertical-align:top}
+th{font:600 11.5px/1.2 var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--sessiz); background:var(--yuzey2); white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.sayi,th.sayi{text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+td.kod{font-family:var(--mono); font-weight:500; white-space:nowrap}
+td.kanit{font-family:var(--mono); font-size:12px; color:var(--ikincil); max-width:420px}
+td.d{font-weight:700; text-align:center; width:28px}
+td.d.ok{color:var(--iyi)} td.d.no{color:var(--kotu)}
+.iyi{color:var(--iyi)} .kotu{color:var(--kotu)}
+.onem{display:inline-block; font:600 11px/1 var(--sans); padding:4px 7px; border-radius:6px; white-space:nowrap}
+.onem.kritik{background:var(--kotu-zemin); color:var(--kotu)} .onem.yuksek{background:var(--uyari-zemin); color:var(--uyari)}
+.onem.orta{background:var(--vurgu-zemin); color:var(--vurgu)} .onem.dusuk{background:var(--yuzey2); color:var(--ikincil)}
+details.bolum{border:1px solid var(--cizgi); border-radius:10px; background:var(--yuzey); margin:10px 0}
+details.bolum > summary{cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; font-weight:600}
+details.bolum > summary::-webkit-details-marker{display:none}
+details.bolum > summary::before{content:"›"; color:var(--sessiz); margin-right:8px; transition:transform .15s}
+details.bolum[open] > summary::before{transform:rotate(90deg)}
+details.bolum .bad{flex:1}
+details.bolum .tablo{border:0; border-top:1px solid var(--cizgi); border-radius:0 0 10px 10px}
+.say{font:500 13px/1 var(--mono); padding:5px 9px; border-radius:6px}
+.say.tam{background:var(--iyi-zemin); color:var(--iyi)} .say.eksik{background:var(--kotu-zemin); color:var(--kotu)}
+.kart{border:1px solid var(--cizgi); border-radius:10px; background:var(--yuzey); padding:16px 18px; margin:12px 0}
+.kart.karar{border-left:3px solid var(--vurgu)}
+.kart h3{margin-top:0}
+ol.sira{padding-left:22px} ol.sira li{margin:6px 0} code{font:13px var(--mono); background:var(--yuzey2); padding:1px 5px; border-radius:4px}
+.not{font-size:13px; color:var(--sessiz)}
+.izgara{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:12px}
+.cubuk{height:8px; border-radius:4px; background:var(--yuzey2); position:relative; min-width:120px}
+.cubuk i{position:absolute; inset:0 auto 0 0; border-radius:4px; background:var(--kotu)}
+.cubuk i.y{background:var(--iyi)}
+</style>
+
+<header class="ust"><div class="ic">
+  <p class="kas">LoungeLink · 4 Ekim 2026 · app 6.3.3 · BO 1.96.3</p>
+  <h1>Uçtan uca test, yük testi ve sınırlarımız</h1>
+  <p>Uygulama, BO ve sunucu (BE) — misafir ve host gözüyle, mutlu yol · uç durum · alternatif · olumsuz akışlar. Her satır ölçüme dayanır: ekranda görülen, veritabanında oluşan ve yan etkileri (kredi, slot, bildirim, görünürlük).</p>
+  <div class="rakamlar">
+    <div class="rakam"><b>{{GECEN}}/{{TOPLAM}}</b><span>akış kontrolü geçti · {{BOLUM_SAYISI}} bölüm</span></div>
+    <div class="rakam"><b>{{BULGU_SAYISI}}</b><span>bulgu (hata + performans) — biri hariç hepsi düzeltildi</span></div>
+    <div class="rakam"><b>39,6 sn → 1,3 sn</b><span>Keşfet · ölçek dünyasında (50 bin üye)</span></div>
+    <div class="rakam"><b>22,8 sn → 11 ms</b><span>ana sayfa p50 · 80 eşzamanlı kullanıcı</span></div>
+  </div>
+</div></header>
+
+<main class="sayfa">
+
+<h2>Önce bilmen gerekenler</h2>
+<p class="alt">Üç kritik bulgu canlıyı doğrudan etkiliyordu; üçü de düzeltildi, Supabase'de SQL'ler koşulunca devreye girer.</p>
+<div class="izgara">
+  <div class="kart"><h3 class="kotu">Hesap silme çalışmıyordu (B14)</h3><p>"Hesabımı sil" 282'den beri her seferinde geri alınıyordu: hesap silinmiyor, BO'ya talep düşmüyordu. Mağaza ve KVKK kuralı. <b>SQL 322.</b></p></div>
+  <div class="kart"><h3 class="kotu">Kullanıcı BO raporlarını okuyabiliyordu (B6)</h3><p>15 iç rapor fonksiyonu (kredi ekonomisi, ödül maliyeti, salon kuyruğu) her uygulama kullanıcısına açıktı. <b>SQL 315.</b></p></div>
+  <div class="kart"><h3 class="kotu">Ölçekte Keşfet ve Tanış dakikalar sürerdi (P1, P4)</h3><p>50 bin üyede Keşfet 39,6 sn, Tanış 15,5 sn; 80 eşzamanlı kullanıcıda ana sayfa 22,8 sn. <b>SQL 316–320.</b></p></div>
+</div>
+
+<h2>Sınırlarımız — yük testi</h2>
+<p class="alt">Yerel kopya (ll_yuk) yapay "büyüme yılı" verisiyle: 50.076 üye · 30.088 ilan · 145.743 istek · 600.256 bildirim · 300.047 mesaj (423 MB). Her fonksiyon gerçek kullanıcı adına (RLS + auth.uid) çağrıldı. Mutlak sayılar 12 çekirdekli dizüstüne aittir; Supabase'de ağ turu (~40–120 ms) eklenir. Önemli olan eğim ve kırılma noktası.</p>
+
+<h3>Tek çağrı — önce / sonra (p50)</h3>
+<div class="tablo"><table>
+<thead><tr><th>Ekran · fonksiyon</th><th class="sayi">Önce</th><th class="sayi">Sonra</th><th>Kök sebep</th><th>SQL</th></tr></thead>
+<tbody>
+<tr><td>Keşfet · discover_availabilities (filtresiz)</td><td class="sayi kotu">39.650 ms</td><td class="sayi iyi">1.170 ms</td><td>ilan başına is_visible → test_hesabi_gizli_mi (satır içine alınamayan çağrı, 30 bin kez)</td><td class="kod">317</td></tr>
+<tr><td>Ana sayfa · kesfet_ozeti</td><td class="sayi kotu">37.270 ms</td><td class="sayi iyi">483 ms</td><td>aynı kök + 100 ilan sınırlı listeden sayım (sayılar eksik çıkıyordu)</td><td class="kod">317</td></tr>
+<tr><td>Tanış · discover_people</td><td class="sayi kotu">15.500 ms</td><td class="sayi iyi">687 ms</td><td>aynı kök, 50 bin profil</td><td class="kod">319</td></tr>
+<tr><td>Tanış · kisi_ara (herkesle eşleşen arama)</td><td class="sayi kotu">19.190 ms</td><td class="sayi">3.170 ms</td><td>aynı kök; kalan süre her eşleşmede profil görünürlük kararı (aşırı uç: 50 bin eşleşme)</td><td class="kod">319</td></tr>
+<tr><td>Ana sayfa · ana_sayfa_akisi</td><td class="sayi kotu">367 ms</td><td class="sayi iyi">12 ms</td><td>"yeni sohbet" noktası bütün okunmamış mesajları tarıyordu</td><td class="kod">318</td></tr>
+<tr><td>İstek gönder · create_request</td><td class="sayi kotu">~430 ms</td><td class="sayi iyi">~150 ms</td><td>kayıt için havalimanının tüm keşif listesi kuruluyordu</td><td class="kod">320</td></tr>
+<tr><td>Keşfet (havalimanı) · erişim kararı</td><td class="sayi kotu">800 karar / 100 ilan</td><td class="sayi iyi">100</td><td>satır içine alınan CTE kararı 8 kez koşturuyordu</td><td class="kod">320</td></tr>
+<tr><td>Ana sayfa nabzı · havalimani_nabzi</td><td class="sayi kotu">1.026 ms</td><td class="sayi iyi">141 ms</td><td>test hesabı kontrolü 45 bin kez</td><td class="kod">319</td></tr>
+</tbody></table></div>
+
+<h3>Eşzamanlı kullanıcı — karma oturum (ana sayfa %40 · Keşfet %20 · bildirim %15 · istek gönder/iptal %10 · özet %8 · Planım %7)</h3>
+<div class="tablo"><table>
+<thead><tr><th class="sayi">Eşzamanlı</th><th class="sayi">İşlem/sn önce</th><th class="sayi">İşlem/sn sonra</th><th class="sayi">Ana sayfa p50 önce</th><th class="sayi">Ana sayfa p50 sonra</th><th class="sayi">Keşfet p50 sonra</th><th class="sayi">İstek gönder p50 sonra</th></tr></thead>
+<tbody>
+<tr><td class="sayi">10</td><td class="sayi">9,9</td><td class="sayi iyi">42,6</td><td class="sayi kotu">2.210 ms</td><td class="sayi iyi">8 ms</td><td class="sayi">508 ms</td><td class="sayi">379 ms</td></tr>
+<tr><td class="sayi">25</td><td class="sayi">11,1</td><td class="sayi iyi">58,1</td><td class="sayi kotu">6.038 ms</td><td class="sayi iyi">7 ms</td><td class="sayi">1.000 ms</td><td class="sayi">744 ms</td></tr>
+<tr><td class="sayi">50</td><td class="sayi">11,8</td><td class="sayi iyi">67,7</td><td class="sayi kotu">15.808 ms</td><td class="sayi iyi">10 ms</td><td class="sayi">1.757 ms</td><td class="sayi">1.260 ms</td></tr>
+<tr><td class="sayi">80</td><td class="sayi">13,4</td><td class="sayi iyi">63,2</td><td class="sayi kotu">22.809 ms</td><td class="sayi iyi">12 ms</td><td class="sayi">1.527 ms</td><td class="sayi">1.091 ms</td></tr>
+</tbody></table></div>
+<p class="not">"Önce" sütunu SQL 316'dan (süpürge freni) önceki ölçüm. Hatalar yalnız iş kuralı (kredi yok, açık istek tavanı, misafir alınmıyor) — sistem hatası 0.</p>
+
+<h3>Nerede zorlanırız, nasıl önleriz</h3>
+<div class="tablo"><table>
+<thead><tr><th>Sınır</th><th>Ne zaman hissedilir</th><th>Önlem</th></tr></thead>
+<tbody>
+<tr><td><b>Keşfet havalimanı listesi</b> ~150–220 ms tek başına, yükte ~1–1,7 sn</td><td>Bir havalimanında yüzlerce canlı ilan + yoğun saat</td><td>Kısa vadede yeterli. Büyümede: ilan kartı ön-hesaplaması (puan girdileri tabloya) ve sayfalama; şu an genel "havalimanı boşsa tümü" filtresi indeks kullanamıyor ve 50 bin satırlık üye/profil tablosunu karma ediyor.</td></tr>
+<tr><td><b>kesfet_ozeti</b> yükte en çok CPU yiyen çağrı</td><td>Aynı anda çok ana sayfa açılışı</td><td>Uygulamada düzeltildi: kart çizilmeyecekse sorulmuyor + 60 sn önbellek. Sonraki adım: sunucuda dakikalık özet tablosu (pg_cron).</td></tr>
+<tr><td><b>Kişi arama</b> geniş eşleşmede saniyeler</td><td>"Ay", "Me" gibi 2 harfli aramalar, 50 bin+ üye</td><td>Aday kümesini önce sınırla (ilk 200 isim), sonra görünürlük kararı; isim için trigram indeksi.</td></tr>
+<tr><td><b>Süpürge</b> (expire_stale_sessions) koşunca 150–450 ms</td><td>5 dakikada bir, veri büyüdükçe uzar</td><td>Artık kimseyi bekletmiyor (skip locked). Supabase'de pg_cron işi açık olmalı (ll-supurge, 5 dk) — uygulama tetiği yedek.</td></tr>
+<tr><td><b>Bağlantı havuzu</b></td><td>Yerel testte 100 bağlantıda tavan; Supabase'de doğrudan bağlantı sınırı plana bağlı</td><td>Uygulama PostgREST üzerinden gider (havuzlu). Sunucu tarafı iş/rapor için Supavisor işlem kipi; compute boyutunu DAU ile birlikte izleyin (panel → Reports → Database).</td></tr>
+<tr><td><b>Realtime</b> (sohbet)</td><td>Eşzamanlı abone sayısı plan sınırına yaklaşınca</td><td>Sohbet ekranı dışında abonelik açmayın; plan sınırını panelden teyit edin (bu testte ölçülmedi).</td></tr>
+<tr><td><b>BO raporları</b> en ağır 2,3 sn (rule_full_report)</td><td>Yalnız yönetici ekranında</td><td>Kabul edilebilir; kural verisiyle büyür, üye sayısıyla değil.</td></tr>
+</tbody></table></div>
+<p class="not">Uygulama tarafı: istemci şelalesi 0 (224 sorgu · 53 paralel dalga) · web paketi 2,0 MB (Hermes'te bayt koda derlenir) · BO 88 sayfa, ilk yük en çok 156 kB.</p>
+
+<h2>Bulgular</h2>
+<p class="alt">B = hata, P = performans. "düzeltildi · SQL n" olanlar Supabase'de o dosya koşulunca canlıya geçer; diğerleri 6.3.3 APK'sında.</p>
+<div class="tablo"><table>
+<thead><tr><th>#</th><th>Bölüm</th><th>Bulgu</th><th>Önem</th><th>Durum</th></tr></thead>
+<tbody>{{BULGULAR}}</tbody></table></div>
+
+<h2>Sayfa sayfa, akış akış</h2>
+<p class="alt">Her satır: beklenen davranış ve gerçekleşen ölçüm. Arayüz akışları gerçek uygulama kodunda (web sahnesi, gerçek RLS'li veritabanı) koşar; "İş kuralları" ve "BO → uygulama" bölümleri her senaryoyu kullanıcı adına tek işlemde koşup geri alır.</p>
+{{E2E}}
+
+<h2>Senden beklenen kararlar</h2>
+<div class="kart karar"><h3>1 · Aynı saatte farklı havalimanında seyahat (B15)</h3><p>Sunucu yalnız aynı havalimanında çakışan seyahati reddediyor; IST 10–12 varken SAW 11–13 kabul ediliyor. Fiziksel olarak mümkün değil — tüm havalimanlarında çakışmayı reddedelim mi?</p></div>
+<div class="kart karar"><h3>2 · Supabase'de SQL 315 → 324</h3><p>Sıra aşağıda ve <code>sql/SQL_SIRA.txt</code>'de. Her dosyanın sonunda doğrulama sorgusu var (tümü <code>tamam = true</code>).</p></div>
+<div class="kart karar"><h3>3 · Önceki açıklar</h3><p>Universal/App Link (Apple Team ID + canlı alan adı) · Firebase google-services.json (Android push) · Supabase Redirect URLs'te <code>loungelink://**</code>.</p></div>
+
+<h2>Supabase SQL sırası</h2>
+<ol class="sira">
+<li><code>315_bo_rapor_fonksiyonlari_kullaniciya_kapali.sql</code> — güvenlik (B6)</li>
+<li><code>316_bayat_istek_supurgede.sql</code> — saati geçen istek 5 dk'da kapanır + süpürge kimseyi bekletmez (B7, P5)</li>
+<li><code>317_kesfet_olcek.sql</code> — Keşfet ve özet ölçeği + doğru sayım (P1, P2)</li>
+<li><code>318_ana_sayfa_akisi_olcek.sql</code> — ana sayfa sayaçları (P3)</li>
+<li><code>319_tanis_gorunurluk_olcek.sql</code> — Tanış · arama · radar · nabız (P4)</li>
+<li><code>320_istek_puani_daraltilmis.sql</code> — istek gönderme + erişim kararı (P6, P7) · 317'den sonra</li>
+<li><code>321_erisim_karari_kart_secimi_belirli.sql</code> — kart seçimi belirli (B10)</li>
+<li><code>322_hesap_silme_calisir_ve_acik_isleri_kapatir.sql</code> — hesap silme + yasak/silme sonrası açık işler (B14, B19)</li>
+<li><code>323_ilan_ac_saat_ve_kontenjan_kapisi.sql</code> — ilan aç Türkçe sebep (B13)</li>
+<li><code>324_tanis_silinmis_yasakli_suzgeci.sql</code> — Tanış'ta yasaklı/silinmiş görünmez (B16) · 319'dan sonra</li>
+</ol>
+
+<h2>Yöntem</h2>
+<p>Arayüz: gerçek <code>App.js</code> web'e derlenir, sahte Supabase istemcisi her <code>rpc()</code>/<code>from()</code>'u yerel Postgres'te <i>authenticated</i> rolüyle ve kullanıcının JWT iddialarıyla koşar (RLS gerçek). Kişiler SEED8/SEED9 test dünyasından; her koşu dünyayı yeniden kurar. Eşdeğerlik: performans için değiştirilen her fonksiyon eski gövdeyle karşılaştırıldı (Keşfet 246+164, Tanış/arama/radar 656, nabız 246, istek puanı 1.673, prerank 248 karşılaştırma — fark 0). Sunucu taramaları: yetki (88 BO + 170 uygulama fonksiyonu, açık 0) ve hata kodu çevirisi (150 kod, eksik 0) — <code>npm run be</code>.</p>
+</main>

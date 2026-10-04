@@ -1,0 +1,6 @@
+Aggregate  (cost=12.75..12.76 rows=1 width=8) (actual time=3437.864..3437.865 rows=1 loops=1)
+  Buffers: shared hit=1471006
+  ->  Function Scan on kisi_ara  (cost=0.25..10.25 rows=1000 width=0) (actual time=3437.858..3437.859 rows=20 loops=1)
+        Buffers: shared hit=1471006
+Planning Time: 0.032 ms
+Execution Time: 3437.882 ms

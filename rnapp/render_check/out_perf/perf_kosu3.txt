@@ -1,0 +1,27 @@
+Veritabanı: ll_yuk · çağrı/fonksiyon: 8 · eşik p95 150 ms
+  ana_sayfa_akisi                    guest   p50=   12.3 p95=   15.2 maks=  108.5 
+  discover_availabilities(tümü)      guest   p50= 1171.9 p95= 1300.6 maks= 2867.3 ⚠ eşik üstü
+  discover_availabilities(SAW)       guest   p50=  218.1 p95=  224.4 maks=  227.0 ⚠ eşik üstü
+  kesfet_ozeti                       guest   p50=  483.2 p95=  511.0 maks=  601.8 ⚠ eşik üstü
+  home_connections                   guest   p50=    1.7 p95=    2.4 maks=    3.1 
+  my_sent_requests                   guest   p50=    3.5 p95=    5.2 maks=    5.9 
+  pending_actions                    guest   p50=    0.2 p95=    0.4 maks=    0.5 
+  discover_people(SAW)               guest   p50=  686.8 p95=  779.2 maks=  806.6 ⚠ eşik üstü
+  kisi_ara('Yük')                    guest   p50= 3174.5 p95= 3280.1 maks= 3572.7 ⚠ eşik üstü
+  sorularim                          guest   p50=    0.4 p95=    0.5 maks=    0.6 
+  taleplerim                         guest   p50=    0.4 p95=    0.5 maks=    2.9 
+  pending_ratings                    guest   p50=    1.4 p95=    2.8 maks=    4.6 
+  my_connections                     guest   p50=    0.8 p95=    1.1 maks=    1.6 
+  baglanti_istekleri                 guest   p50=    1.2 p95=    1.4 maks=    2.0 
+  bildirim listesi (son 50)          guest   p50=    0.6 p95=    0.7 maks=    2.4 
+  okunmamış bildirim sayısı          guest   p50=    0.5 p95=    0.8 maks=    0.9 
+  havalimani_nabzi                   guest   p50=  141.0 p95=  146.7 maks=  147.9 
+  lounge_radar_count                 guest   p50=    0.8 p95=    1.0 maks=    3.3 
+  plan_kredisi_yerlestir             guest   p50=    1.0 p95=    1.1 maks=   11.2 
+  expire_stale_sessions              guest   p50=  255.7 p95=  356.8 maks=  453.4 ⚠ eşik üstü
+  host_requests                      host    p50=    9.0 p95=    9.5 maks=   28.4 
+  my_availabilities                  host    p50=    1.4 p95=    2.7 maks=    8.1 
+  host_wallet                        host    p50=    1.9 p95=    2.6 maks=    9.6 
+  host_standing                      host    p50=    2.0 p95=    2.8 maks=    9.3 
+  host_missed_value                  host    p50=    2.6 p95=    3.3 maks=    9.2 
+  ana_sayfa_akisi (host)             host    p50=    6.2 p95=    8.6 maks=   22.6 

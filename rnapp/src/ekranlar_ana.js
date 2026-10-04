@@ -343,7 +343,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     // Doğru ders yazılmış, YAYILMAMIŞTI.
     // 🆕 SINIF: "BİR DERSİN YAZILMIŞ OLMASI, UYGULANMIŞ OLMASI DEĞİLDİR —
     // DERSLER SINIFA DEĞİL ÖRNEĞE UYGULANIR VE ORADA KALIR."
-    const [{ data, error: eDisc }, { data: reqs }, { data: allData }] = await Promise.all([
+    const [{ data, error: eDisc }, { data: reqs }, { data: allHam, ayni: allAyni }] = await Promise.all([
       supabase.rpc("discover_availabilities", { p_airport: apFilter ? apFilter.key : null, p_sector: sector || null, p_flight: flight || null, p_date: dateF || null }),
       // 🔴 v2.23 — "GERISI NEREDE?" SORUSUNU CEVAPLA.
       // Ana sayfadan IST baglamiyla girilince filtre IST'e ayarlaniyor ve
@@ -365,7 +365,12 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       // gizliyorsa KAC TANE gizledigini soyle; yoksa kullanici urunun bos
       // oldugunu sanir. Sirasi dizinin SONUNDA — Promise.all'da isim yok,
       // yalniz sira var (BO'da bu hatayi bir kez yapmistim).
-      supabase.rpc("discover_availabilities", { p_airport: null, p_sector: null, p_flight: null, p_date: null }),
+      // 4 Ekim (yük testi) — sunucu filtresi YOKSA bu çağrı birinciyle BİREBİR aynı
+      // sonucu döndürüyordu: Keşfet her açılışta en pahalı sorguyu iki kez koşuyordu
+      // (ölçek dünyasında çağrı başı ~1,3 sn). Filtre yoksa birincinin sonucu kullanılır.
+      (apFilter || sector || flight || dateF)
+        ? supabase.rpc("discover_availabilities", { p_airport: null, p_sector: null, p_flight: null, p_date: null })
+        : Promise.resolve({ data: null, ayni: true }),
     ]);
     if (eDisc) {
       logError("discover_availabilities", eDisc);
@@ -485,6 +490,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       }
     }
     setBadges(bmap);
+    const allData = allAyni ? data : allHam;
     const allCount = (allData || []).filter(r => r.host_id !== uid).length;
     setHiddenCount(Math.max(0, allCount - list.length));
 
@@ -670,7 +676,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
         // kodu ve `headline` BOŞ gelir — metni burada TR/EN sözlükten çeviriyoruz.
         // Eskiden bu kapılar "İstek gönder"e basınca, sayfa kapanırken çıkıyordu.
         if (data && data.can_request === false && !data.headline && data.gate) {
-          data = { ...data, headline: mapErr(t, data.gate) };
+          // 4 Ekim (uçtan uca test) — Gönder yolu `t["e_"+kod]` ayrıntılı cümlesini (çıkış yolu
+          // dahil: "Cüzdan'dan talep edebilirsin…") kullanıyordu, bu yol kısa errMap'i
+          // ("Yetersiz kredi."). Aynı durum iki ayrı cümle; ayrıntılı olan kazanır.
+          const kod = String(data.gate).split(" ")[0].replace(/[^a-z_]/g, "");
+          data = { ...data, headline: t["e_" + kod] || mapErr(t, data.gate) };
         }
         if (alive) { setPre(data || null); setAckOk(false); setAlts(null); }
         if (alive) {
@@ -2234,6 +2244,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     toplanıyor; burada tekrar etmiyoruz. */}
                 {pre.needs_ack && pre.can_request !== false && (
                   <TouchableOpacity hitSlop={TAP.slop} onPress={() => setAckOk(v => !v)}
+                    // 4 Ekim (uçtan uca test) — onay kutusu ekran okuyucuda "düğme" diye okunuyor,
+                    // işaretli olup olmadığı söylenmiyordu; oysa Gönder'in önündeki tek kapı bu.
+                    accessibilityRole="checkbox" accessibilityState={{ checked: ackOk }}
+                    accessibilityLabel={t.ruleAckLabel}
                     style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[10] }}>
                     <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
                                    borderColor: ackOk ? C.teal : C.line, marginRight: SP[2],
@@ -2757,7 +2771,11 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             {(() => {
               const q = ara.trim();
               if (q.length < 2) return null;
-              const listede = new Set((people || []).map(x => x.user_id));
+              // 4 Ekim (uçtan uca test) — eskiden TÜM keşif listesi (`people`) dışlanıyordu. Aranan kişi
+              // listede olup etkin sekme/süzgeç yüzünden GÖRÜNMÜYORSA iki yerde de çıkmıyor, ekran
+              // "Bu isimle kimseyi bulamadık" diyordu (ölçüldü: sunucu Nehir'i döndürüyor, ekran boş).
+              // Yalnız EKRANDA görünenler dışlanır.
+              const listede = new Set((shownPeople || []).map(x => x.user_id));
               const diger = araSonuc.filter(x => !listede.has(x.user_id));
               if (araBusy && !diger.length) return <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: ARA[10] }}>{t.meetSearching}</Text>;
               if (!diger.length && shownPeople.length === 0) return (
@@ -2803,7 +2821,9 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
                 ekran ötede DOĞRU yapıyor.
                 🆕 SINIF: "EYLEME ÇAĞIRAN BİR BOŞ DURUM, O EYLEMİN DÜĞMESİNİ
                 VERMİYORSA ÇAĞRI DEĞİL SİTEMDİR." */}
-            {shownPeople.length === 0 ? (
+            {shownPeople.length === 0 ? (ara.trim().length >= 2 ? null : (
+              // 4 Ekim — arama sürerken bu kart "Seyahatini ekle" diyordu (seyahati olana da):
+              // aramanın sonucu yukarıda söyleniyor; boş-ağ çağrısı yalnız arama yokken.
               <View style={S.empty}>
                 <Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.base, textAlign: "center" }}>{t.networkTitle}</Text>
                 <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", marginTop: SP[1], lineHeight: 18 }}>{t.networkDesc}</Text>
@@ -2812,7 +2832,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
                   <Btn label={t.addTrip} onPress={() => onAddTrip(null)} a11yLabel={t.addTrip} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
                 )}
               </View>
-            )
+            ))
             : shownPeople.map(p => {
               // Tasarım 05: karta dokunmak = kişiye giden tek yol (ok).
               //   bağlı → sohbet · gelen istek → yanıtla · bekliyor → profil ·
@@ -6762,17 +6782,21 @@ export function Campaigns({ t, onBack }) {   // v2.65: ölü `session` kaldırı
 // Ve boş bir ağda çalışan TEK ekran Salon Rehberi'dir: arz gerektirmez,
 // tek başına bir soruya cevap verir. Bu yüzden sakin günün çıkışları
 // arasına girdi.
+// 4 Ekim (yük testi) — kesfet_ozeti ölçek dünyasında ~0,5 sn ve yük altında sunucuyu en çok
+// yoran çağrı. Ana sayfa her açılışta yeniden soruyordu; 60 sn bellek önbelleği (kişiye bağlı).
+const OZET_ONBELLEK = { uid: null, t: 0, data: null };
 export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, onHostOl, onMeet, onGuide }) {
   const [nabiz, setNabiz] = useState(null);
   const [yakin, setYakin] = useState(null);
 
   useEffect(() => {
     let iptal = false;
+    // 4 Ekim — bekleyen iş varken bu kart HİÇ çizilmiyor (aşağıda `return null`), ama
+    // iki sorgu yine de koşuyordu. Çizilmeyecek kartın verisi istenmez.
+    if (bekleyenVar) return () => { iptal = true; };
     (async () => {
       const uid = session?.user?.id;
-      if (uid) {
-        // (aşağıdaki dalgada okunuyor)
-      }
+      const taze = OZET_ONBELLEK.uid === (uid || null) && Date.now() - OZET_ONBELLEK.t < 60000;
       // 🔴 v3.9 — İKİ TUR TEK DALGADA. Kullanıcının yaklaşan seyahati ile
       // havalimanı nabzı birbirinden bağımsız; kart ikisini de bekliyordu.
       // `uid` yoksa seyahat sorgusu HİÇ AÇILMIYOR — dalgaya `null` giriyor,
@@ -6787,15 +6811,16 @@ export function SakinGun({ t, session, role, bekleyenVar, onDiscover, onPlan, on
         // 🔴 1 Ekim (Gökberk) — "ana sayfada IST 11 host, Keşfet'te 3 ilan". `havalimani_nabzi`
         // bir BO panosu; Keşfet'in görünürlük kurallarının hiçbirini uygulamıyor. Sayı artık
         // Keşfet'in KENDİ listesinden (SQL 311): saati geçmemiş, boş yeri olan, başkasının ilanı.
-        supabase.rpc("kesfet_ozeti", { p_gun: 14 }),
+        taze ? Promise.resolve({ data: OZET_ONBELLEK.data, error: null }) : supabase.rpc("kesfet_ozeti", { p_gun: 14 }),
       ]);
       if (vRes.error) logError("sakin_gun_visit", vRes.error);
       if (!iptal) setYakin((vRes.data && vRes.data[0]) || null);
       if (error) { logError("kesfet_ozeti", error); return; }
+      if (!taze) Object.assign(OZET_ONBELLEK, { uid: uid || null, t: Date.now(), data });
       if (!iptal) setNabiz(Array.isArray(data) ? data : []);
     })();
     return () => { iptal = true; };
-  }, [session]);
+  }, [session, bekleyenVar]);
 
   // Bekleyen iş varsa bu kart HİÇ çizilmez: sakin gün değil.
   if (bekleyenVar) return null;

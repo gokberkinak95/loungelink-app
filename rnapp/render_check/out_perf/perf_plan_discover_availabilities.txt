@@ -1,0 +1,6 @@
+Aggregate  (cost=12.75..12.76 rows=1 width=8) (actual time=219.108..219.109 rows=1 loops=1)
+  Buffers: shared hit=296658
+  ->  Function Scan on discover_availabilities  (cost=0.25..10.25 rows=1000 width=0) (actual time=219.093..219.098 rows=100 loops=1)
+        Buffers: shared hit=296658
+Planning Time: 0.037 ms
+Execution Time: 219.169 ms

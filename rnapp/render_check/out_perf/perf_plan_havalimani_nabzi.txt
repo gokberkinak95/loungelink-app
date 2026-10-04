@@ -1,0 +1,6 @@
+Aggregate  (cost=12.75..12.76 rows=1 width=8) (actual time=1690.647..1690.647 rows=1 loops=1)
+  Buffers: shared hit=188899
+  ->  Function Scan on havalimani_nabzi  (cost=0.25..10.25 rows=1000 width=0) (actual time=1690.634..1690.638 rows=43 loops=1)
+        Buffers: shared hit=188899
+Planning Time: 0.419 ms
+Execution Time: 1690.989 ms
