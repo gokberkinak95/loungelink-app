@@ -730,7 +730,7 @@ export function FieldReportPrompt({ t, session }) {
           {[["admitted_free", t.frFree, C.green],
             ["admitted_paid", t.frPaid, C.gold],
             ["refused", t.frRefused, C.red]].map(([code, label, col]) => (
-            <TouchableOpacity hitSlop={TAP.slop} key={code} disabled={busy === r.session_id}
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={code} disabled={busy === r.session_id}
               onPress={() => code === "admitted_paid"
                 ? setOpenFee(r.session_id) : send(r.session_id, code, null)}
               style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs,
@@ -829,7 +829,7 @@ export function LegalDoc({ docKey, onBack, onOpen, t }) {
         <View style={{ height: 1, backgroundColor: C.line, marginVertical: ARA[18] }} />
         <Text style={{ color: C.dimAA, fontSize: FS.xs, marginBottom: SP[2] }}>{t ? t.legalOtherDocs : "Diğer metinler"}</Text>
         {LEGAL_ORDER.filter(k => k !== docKey).map(k => (
-          <TouchableOpacity hitSlop={TAP.slop} key={k} onPress={() => onOpen && onOpen(k)} style={{ paddingVertical: SP[2] }}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} onPress={() => onOpen && onOpen(k)} style={{ paddingVertical: SP[2] }}>
             <IkonMetin sag ad="sag" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.sm, fontWeight: "600" }} metin={LEGAL_DOCS[k].title} />
           </TouchableOpacity>
         ))}
@@ -1361,7 +1361,7 @@ export function UlasilabilirlikKarti({ t, tazele, goster }) {
           {BUYUK(izinAcik ? (t.pushInfraEyebrow || "") : d.siddet === "kritik" ? (t.pushCritEyebrow || "") : (t.pushEyebrow || ""))}
         </Text>
         {kapanabilir && (
-          <TouchableOpacity onPress={() => setKapali(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <TouchableOpacity accessibilityRole="button" onPress={() => setKapali(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Text style={{ color: C.dim, fontSize: FS.base }}>×</Text>
           </TouchableOpacity>
         )}

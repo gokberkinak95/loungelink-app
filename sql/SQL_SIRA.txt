@@ -1,3 +1,13 @@
+SQL SIRASI - 5 Ekim 2026 (5. tur) - YENI: 331 - 330'dan SONRA (330 kosulmadiysa once onu kos)
+
+  1) 331_soru_kendi_kaydinda.sql  -> Ilan kurali sorulari artik kendi tablosunda (kural_sorulari).
+       Ilk temas: baglanti istegi + soru. Bekleyen istek varsa: yalniz soru. Zaten bagliysan:
+       yalniz soru (yeni istek yok, soru sohbete de duser). Soru her durumda "Gonderdigim sorular"
+       ve host'un "Gelen sorular" listesinde gorunur. Eski sorular ayni kimlikle tasinir.
+       Uygulama 6.3.5 bunu bekler (eski surum de calisir; donus alanlari ayni).
+       Dogrulama: iki satir tamam = true.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 4 Ekim 2026 (4. tur) - YENI: 330 - 325..329'dan SONRA (onlar kosuldu)
 
   1) 330_bo_hesabi_geri_al.sql  -> BO kullanici sayfasinda "Hesabi geri al" (silme talebinin 14 gunu icinde).

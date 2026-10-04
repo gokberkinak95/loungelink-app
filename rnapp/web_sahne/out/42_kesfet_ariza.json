@@ -40,18 +40,6 @@
    "error": "Network request failed"
   },
   {
-   "kind": "rpc",
-   "fn": "discover_availabilities",
-   "table": null,
-   "error": "Network request failed"
-  },
-  {
-   "kind": "rpc",
-   "fn": "discover_availabilities",
-   "table": null,
-   "error": "Network request failed"
-  },
-  {
    "kind": "logError",
    "screen": "discover_availabilities",
    "err": "Network request failed",
@@ -81,7 +69,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Seyahatine göre sıralandı: IST · 3 Ekim",
+  "Seyahatine göre sıralandı: IST · 4 Ekim",
   "İstanbul",
   "",
   "",

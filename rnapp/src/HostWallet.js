@@ -135,12 +135,10 @@ export function useReciprocityMoment(uid) {
       }
       if (gorulen === null) return;   // ilk kurulum: geçmişi kutlamayız
       if (!iptal) {
-        setAn({
-          kind: "reciprocity",
-          title: "Sıra sende.",
-          subtitle: `Ağırladığın için ${son.delta} kredi kazandın. Artık hakkın olmayan bir salonda sen misafir olabilirsin.`,
-          meta: "KARŞILIK",
-        });
+        // 5 Ekim (Gökberk md.2) — metinler TR'ye sabit yazılmıştı (EN kullanıcı Türkçe görüyordu) ve
+        // altta tek başına "KARŞILIK" etiketi duruyordu (altında hiçbir şey yok → anlamsız).
+        // Metin artık çağıran yerde i18n'den kuruluyor; etiket kalktı.
+        setAn({ kind: "reciprocity", kredi: son.delta });
       }
     })();
     return () => { iptal = true; };
@@ -337,7 +335,7 @@ export function HostWallet({ onAddCard, t = {} }) {
               Şimdi: kutuya dokunmak hızlı bakış için açıp kapatıyor,
               buradaki bağlantı ise kart ekranına GİDİYOR. */}
           {!!onAddCard && (
-            <TouchableOpacity hitSlop={TAP.slop} onPress={onAddCard}
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onAddCard}
               style={{ marginTop: SP[3], minHeight: 44, justifyContent: "center" }}>
               <Text style={[T.sm, { color: C.gold, fontWeight: "700" }]}>
                 {t.hwEditCards || "Kart hakkımı düzenle"}

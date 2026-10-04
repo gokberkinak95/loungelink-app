@@ -471,7 +471,7 @@ function AppInner() {
                        backgroundColor: C.hataBg, borderRadius: R.xs, padding: SP[3],
                        borderWidth: 1, borderColor: C.hataLine }}>
           <Text style={{ color: C.redInk, fontSize: FS.sm, lineHeight: 19 }}>{dlErr}</Text>
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setDlErr("")} style={{ marginTop: ARA[6] }}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setDlErr("")} style={{ marginTop: ARA[6] }}>
             <Text style={{ color: C.redInk, fontWeight: "700", fontSize: FS.sm }}>{t.close || "Kapat"}</Text>
           </TouchableOpacity>
         </View>
@@ -585,7 +585,7 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
 
         <Text style={st.label}>{t.consentTitle}</Text>
         {[t.c1, t.c2, t.c3, t.c4, t.c5, t.c6Age].map((txt, i) => (
-          <TouchableOpacity hitSlop={TAP.slop} key={i} onPress={() => setConsents(c => c.map((v, j) => j === i ? !v : v))}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={i} onPress={() => setConsents(c => c.map((v, j) => j === i ? !v : v))}
             style={{ flexDirection: "row", alignItems: "flex-start", gap: SP[2], backgroundColor: C.card, borderWidth: 1,
                      borderColor: consents[i] ? C.gold : C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[2] , ...ELEV.card }}>
             <Ikon ad={consents[i] ? "kutuDolu" : "kutuBos"} boy={18} renk={consents[i] ? C.gold : C.mut} />
@@ -595,7 +595,7 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
 
         {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
         <Btn label={t.onbCompleteBtn} onPress={submit} disabled={!role || !all || busy} busy={busy} style={{ marginTop: SP[3], opacity: (role && all) ? 1 : 0.45 }} />
-        <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: SP[4], alignItems: "center" }} onPress={onLogout}>
+        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ marginTop: SP[4], alignItems: "center" }} onPress={onLogout}>
           <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.logout}</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -1595,7 +1595,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           </Text>
           <Btn v="gold" sm label={t.tripReadyApply} onPress={() => { const av = askApply; setAskApply(null); setPendingReqAvail(null);
                              setShowDisc({ airport: av.airport_code, focusAvail: av.id }); }} style={{ marginTop: SP[4] }} />
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setAskApply(null); setPendingReqAvail(null); }}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { setAskApply(null); setPendingReqAvail(null); }}
             style={{ alignItems: "center", marginTop: SP[3] }}>
             <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.tripReadyLater}</Text>
           </TouchableOpacity>
@@ -2060,7 +2060,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             </TouchableOpacity>
           );
                     return (
-            <TouchableOpacity hitSlop={TAP.slop} key={k} style={{ flex: 1, alignItems: "center", paddingVertical: ARA[2] }}
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} style={{ flex: 1, alignItems: "center", paddingVertical: ARA[2] }}
               onPress={() => {
                 // Çubuğu gösteren katman (Keşfet/Bildirimler) açıkken sekmeye
                 // dokunmak önce o katmanı kapatır — yoksa dokunuş sessiz kalır
@@ -2398,7 +2398,7 @@ function IconField({ icon, children }) {
 
 function LangBtn({ lang, toggleLang }) {
   return (
-    <TouchableOpacity hitSlop={TAP.slop} onPress={toggleLang} style={{ borderColor: GECE_ALTIN(), borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
+    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={toggleLang} style={{ borderColor: GECE_ALTIN(), borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
       <Text style={{ color: temaModu() === "v7" ? C.goldBtn : C.goldInk, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "EN" : "TR"}</Text>
     </TouchableOpacity>
   );
@@ -2442,7 +2442,7 @@ function OfflineBanner({ t, onRetry, busy, kuyruk = 0 }) {
           EDER — VE SIFIR GENİŞLİKTEKİ METİN HATA VERMEZ, SADECE YOK
           OLUR." */}
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}><Ikon ad="radar" boy={15} renk={C.gold} stil={{ marginRight: SP[1] }} /><Text style={{ flex: 1, color: C.ink, fontSize: FS.sm, fontWeight: "600" }}>{t.offlineTitle}</Text></View>
-      <TouchableOpacity hitSlop={TAP.slop} onPress={onRetry} disabled={busy} style={{ paddingHorizontal: ARA[10] }}>
+      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onRetry} disabled={busy} style={{ paddingHorizontal: ARA[10] }}>
         {busy ? <ActivityIndicator color={C.gold} size="small" />
           : <Text style={{ color: C.goldInk, fontSize: FS.sm, fontWeight: "700" }}>{t.offlineRetry}</Text>}
       </TouchableOpacity>
@@ -3185,7 +3185,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
           {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
           <Btn label={t.verifyDone} busy={busy} disabled={busy} onPress={dogruladimDene} style={{ marginTop: ARA[20] }} />
           <Btn v="ghost" label={t.verifyGoLogin} onPress={() => { setVerifyWait(false); setErr(""); go("login"); }} style={{ marginTop: SP[2] }} />
-          <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: SP[4], alignItems: "center" }}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ marginTop: SP[4], alignItems: "center" }}
             onPress={resendVerify}>
             <Text style={{ color: C.gold, fontSize: FS.sm, fontWeight: "600" }}>{t.verifyResend}</Text>
           </TouchableOpacity>
@@ -3216,7 +3216,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
                       {t.forgotSentBody.replace("{email}", email.trim())}
                     </Text>
                   </View>
-                  <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: ARA[20], alignItems: "center" }}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ marginTop: ARA[20], alignItems: "center" }}
                     onPress={() => { setForgot(false); setFSent(false); setErr(""); }}>
                     <IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.sm, fontWeight: "600" }} metin={t.backToLogin} />
                   </TouchableOpacity>
@@ -3231,7 +3231,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
                     autoComplete="email" textContentType="emailAddress" />
                   <Btn label={t.forgotSend} onPress={sendReset} disabled={busy} busy={busy} style={{ marginTop: ARA[22] }} />
                   {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
-                  <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: ARA[18], alignItems: "center" }}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ marginTop: ARA[18], alignItems: "center" }}
                     onPress={() => { setForgot(false); setErr(""); }}>
                     <IkonMetin ad="sol" renk={C.mut} stilMetin={{ color: C.mut, fontSize: FS.sm }} metin={t.backToLogin} />
                   </TouchableOpacity>
@@ -3277,7 +3277,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
               </IconField>
               <Btn label={t.doLogin} onPress={submit} disabled={busy} busy={busy} a11yLabel={t.doLogin} style={{ marginTop: ARA[22] }} />
               {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
-              <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: ARA[14], alignItems: "center" }}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ marginTop: ARA[14], alignItems: "center" }}
                 onPress={() => { setForgot(true); setErr(""); }}>
                 <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "600" }}>{t.forgotLink}</Text>
               </TouchableOpacity>
@@ -3360,7 +3360,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
                     metindi. İkinci alan eklemek yerine GÖSTER/GİZLE koyduk:
                     yazım hatasını aynı şekilde önler, bir alan daha
                     doldurtmaz. Ölü state aşağıda silindi. */}
-                <TouchableOpacity hitSlop={TAP.slop} onPress={() => setShowPw(v => !v)}>
+                <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setShowPw(v => !v)}>
                   <Text style={{ color: C.gold, fontSize: FS.sm, fontWeight: "600" }}>
                     {showPw ? t.pwHide : t.pwShow}
                   </Text>
@@ -3370,7 +3370,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
             <Text style={st.label}>{t.gender}</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2] }}>
               {t.genders.map(([val, lab]) => (
-                <TouchableOpacity hitSlop={TAP.slop} key={val} onPress={() => setGender(gender === val ? null : val)}
+                <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={val} onPress={() => setGender(gender === val ? null : val)}
                   style={[st.chip, gender === val && st.chipOn]}>
                   <Text style={[st.chipText, gender === val && st.chipTextOn]}>{lab}</Text>
                 </TouchableOpacity>
@@ -3498,7 +3498,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         )}
 
         {step === 1 && (
-          <TouchableOpacity hitSlop={TAP.slop} style={{ marginTop: ARA[18], alignItems: "center" }} onPress={() => go("login")}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ marginTop: ARA[18], alignItems: "center" }} onPress={() => go("login")}>
             <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.yesAcc} <Text style={{ color: C.gold, fontWeight: "600" }}>{t.login}</Text></Text>
           </TouchableOpacity>
         )}
@@ -3788,7 +3788,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
             </CamSerit>
           </TouchableOpacity>
         ) : (
-        <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onVerify} style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start", flex: 1, minWidth: 0 }}><Ikon ad="telefon" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1], marginTop: ARA[2] }} /><Text style={{ color: C.amberInk, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: 18 }}>{t.phoneWhy}</Text></View>
           <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: SP[2] }}>{t.goVerify}</Text>
         </TouchableOpacity>
@@ -4020,7 +4020,7 @@ function Stat({ label, value, onPress }) {
       <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: ARA[2] }}>{label}</Text>
     </View>
   );
-  return onPress ? <TouchableOpacity hitSlop={TAP.slop} style={{ flex: 1 }} onPress={onPress} activeOpacity={0.7}>{body}</TouchableOpacity> : body;
+  return onPress ? <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ flex: 1 }} onPress={onPress} activeOpacity={0.7}>{body}</TouchableOpacity> : body;
 }
 
 // 🔴 AYNI TUZAK, İKİNCİ YER: `StyleSheet.create` DEĞERLERİ ANINDA

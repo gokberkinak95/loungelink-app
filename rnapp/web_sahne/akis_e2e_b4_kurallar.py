@@ -6,7 +6,7 @@
 # görünürlük) cevaplar. Hata kodlarının Türkçe karşılığı da burada sınanır.
 import json as _json, re as _re, io as _io, os as _os, datetime as _dt
 import psycopg2
-from akis_e2e import bolum, KIM, DSN
+from akis_e2e import bolum, KIM, DSN, db
 from akis_e2e_bolumler import _dene
 
 _I18N = _io.open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "src", "i18n.js"), encoding="utf-8").read()
@@ -385,3 +385,87 @@ def kurallar(b, port, k):
             s.bitir()
     _dene(k, B, "Yasaklanan kullanıcı Tanış · Keşfet · aramada görünmez (BO ban → uygulama)", "BO→misafir", "negative",
           "Üç yüzeyden de düşer", yasak)
+
+
+# ── 12 · SORU AKIŞI (SQL 331 · Gökberk md.4-5): ilk temas · bekleyen istek · bağlı ──────────
+@bolum("sorular")
+def sorular(b, port, k):
+    B = "İş kuralları (BE)"
+    # İlan kimlikleri tohum her tazelendiğinde DEĞİŞİR (sabit uuid yazmak testi bir gün sonra kırdı) →
+    # rolüne göre sorguyla bulunur: host2 = Arda'nın hiç teması olmayan host · nehir1/2 = Nehir'in iki
+    # gelecek ilanı (Duru→Nehir bekleyen istek tohumda) · selen = Selen'in gelecek ilanı (Arda bağlı).
+    def _ilanlar(kim, n):
+        return [r[0] for r in db("""select id from availabilities where host_id=%s and active
+                                     and avail_date > current_date and public.kural_sorusu_durumu(id) <> 'gerek_yok'
+                                     order by avail_date, time_from limit %s""", (KIM[kim], n))]
+    _h2 = db("select id from availabilities where id='028d6172-cb7e-42bf-92c3-2a0006714cd7' and active", ())
+    _ne = _ilanlar("nehir", 2)
+    ILAN = {"host2": _h2[0][0] if _h2 else None, "nehir1": _ne[0] if _ne else None,
+            "nehir2": _ne[1] if len(_ne) > 1 else "kopya", "selen": (_ilanlar("selen", 1) or [None])[0]}
+
+    def akis():
+        eksik = [k_ for k_, v in ILAN.items() if not v]
+        if eksik:
+            return False, "tohumda ilan bulunamadı: " + ", ".join(eksik)
+        s = Is(); iz = []
+        try:
+            if ILAN["nehir2"] == "kopya":   # tohumda sorulabilir 2. ilan yoksa: işlem içinde kopya (geri alınır)
+                ILAN["nehir2"] = s.q("""insert into availabilities select (jsonb_populate_record(null::availabilities,
+                                          to_jsonb(a) || jsonb_build_object('id', gen_random_uuid(), 'avail_date', a.avail_date + 1, 'filled', 0))).*
+                                        from availabilities a where a.id=%s returning id""", (ILAN["nehir1"],))
+            # Tohumun BUGÜN yazdığı eski sorular günlük sınırı doldurmasın (ölçülen: Arda 4 soru) — geri alınır
+            s.q("update kural_sorulari set created_at = created_at - interval '2 days' where soran_id in (%s,%s) returning 1",
+                (KIM["arda"], KIM["duru"]))
+            for kim in ("arda", "duru"):
+                s.q("update verifications set phone_verified = true where user_id=%s returning 1", (KIM[kim],))
+            def listeler(soran, host_kim, ilan):
+                s.ol(soran); g = s.cagir("select count(*) from sorularim() x where x.avail_id=%s", (ilan,))[0]
+                s.ol(host_kim); h = s.cagir("select count(*) from bana_gelen_sorular() x where x.avail_id=%s", (ilan,))[0]
+                return g, h
+            cr_say = lambda a, b_: s.q("select count(*) from connection_requests where (from_id=%s and to_id=%s) or (from_id=%s and to_id=%s)",
+                                         (KIM[a], b_, b_, KIM[a]))
+            host2 = s.q("select host_id from availabilities where id=%s", (ILAN["host2"],))
+            # A · ilk temas: bağlantı isteği + soru
+            c0 = cr_say("arda", host2)
+            s.ol("arda"); r, h = s.cagir("select ilan_kurali_sor(%s)::text", (ILAN["host2"],))
+            dA = (_json.loads(r) if r else {}).get("durum"); gA = listeler("arda", "arda", ILAN["host2"])[0]
+            s.cur.execute("reset role")
+            hA = s.q("select count(*) from kural_sorulari where host_id=%s and avail_id=%s", (host2, ILAN["host2"]))
+            iz.append("A ilk temas → %s (hata=%s) · bağlantı satırı %s→%s · Gönderdiğim=%s Gelen=%s" % (dA, h, c0, cr_say("arda", host2), gA, hA))
+            okA = dA == "soruldu" and cr_say("arda", host2) == c0 + 1 and gA == 1 and hA == 1
+            # B · bekleyen bağlantı isteği: YALNIZ soru
+            c0 = cr_say("duru", KIM["nehir"])
+            gB0, hB0 = listeler("duru", "nehir", ILAN["nehir1"])   # ilanda başkalarının sorusu olabilir → fark ölçülür
+            s.ol("duru"); r, h = s.cagir("select ilan_kurali_sor(%s)::text", (ILAN["nehir1"],))
+            dB = (_json.loads(r) if r else {}).get("durum"); gB, hB = listeler("duru", "nehir", ILAN["nehir1"])
+            iz.append("B bekleyen istek → %s (hata=%s) · bağlantı satırı %s→%s · Gönderdiğim=%s Gelen=%s" % (dB, h, c0, cr_say("duru", KIM["nehir"]), gB, hB))
+            okB = dB == "soruldu" and cr_say("duru", KIM["nehir"]) == c0 and gB == gB0 + 1 and hB == hB0 + 1
+            # C · zaten bağlı: YALNIZ soru (+ sohbete mesaj)
+            c0 = cr_say("arda", KIM["selen"])
+            gC0, hC0 = listeler("arda", "selen", ILAN["selen"])   # tohumda bu ilana YANITLANMIŞ eski soru var → yeniden sorulabilir
+            m0 = s.q("select count(*) from messages where from_id=%s", (KIM["arda"],))
+            s.ol("arda"); r, h = s.cagir("select ilan_kurali_sor(%s)::text", (ILAN["selen"],))
+            dC = (_json.loads(r) if r else {}).get("durum"); gC, hC = listeler("arda", "selen", ILAN["selen"])
+            m1 = s.q("select count(*) from messages where from_id=%s", (KIM["arda"],))
+            iz.append("C bağlı → %s (hata=%s) · bağlantı satırı %s→%s · sohbete mesaj +%s · Gönderdiğim=%s Gelen=%s" % (
+                dC, h, c0, cr_say("arda", KIM["selen"]), m1 - m0, gC, hC))
+            okC = dC == "sohbete_eklendi" and cr_say("arda", KIM["selen"]) == c0 and m1 == m0 + 1 and gC == gC0 + 1 and hC == hC0 + 1
+            # D · aynı ilan tekrar → zaten_soruldu · aynı host başka ilan → yeni soru
+            s.ol("duru"); r1, _ = s.cagir("select ilan_kurali_sor(%s)::text", (ILAN["nehir1"],))
+            r2, h2 = s.cagir("select ilan_kurali_sor(%s)::text", (ILAN["nehir2"],))
+            d1 = (_json.loads(r1) if r1 else {}).get("durum"); d2 = (_json.loads(r2) if r2 else {}).get("durum")
+            iz.append("D aynı ilan → %s · başka ilan → %s" % (d1, d2 or h2))
+            okD = d1 == "zaten_soruldu" and d2 == "soruldu"
+            # E · host yanıtlar → soran 'yanitlandi' · F · ana sayfa soru sayacı
+            s.ol("nehir"); n0 = _json.loads(s.cagir("select ana_sayfa_akisi()::text")[0])["soru"]
+            qid = s.cagir("select x.id from bana_gelen_sorular() x where x.avail_id=%s", (ILAN["nehir1"],))[0]
+            _, he = s.cagir("select soruya_cevap_yaz(%s, 'Evet, 1 misafir hakkım var.')::text", (qid,))
+            n1 = _json.loads(s.cagir("select ana_sayfa_akisi()::text")[0])["soru"]
+            s.ol("duru"); cd = s.cagir("select x.cevap_durumu from sorularim() x where x.avail_id=%s", (ILAN["nehir1"],))[0]
+            iz.append("E yanıt=%s → soran durumu=%s · host soru sayacı %s→%s" % (he or "OK", cd, n0, n1))
+            okE = not he and cd == "yanitlandi" and n1 == n0 - 1
+            return okA and okB and okC and okD and okE, " · ".join(iz)
+        finally:
+            s.bitir()
+    _dene(k, B, "Soru: ilk temas → istek + soru · bekleyen istek varken YALNIZ soru · bağlıyken YALNIZ soru (sohbete de) · iki listede de görünür · aynı ilan tekrar yok, başka ilan olur · yanıt + sayaç",
+          "misafir+host", "happy", "Gökberk md.4-5", akis)

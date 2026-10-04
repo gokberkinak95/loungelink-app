@@ -177,6 +177,8 @@ def main():
             d = json.load(open(f, encoding="utf-8"))
         except Exception:
             continue
+        if not isinstance(d, dict):   # akis_e2e.json (sonuç listesi) sahne değil
+            continue
         sahne += 1
         metin = d.get("metin")
         s = metin if isinstance(metin, str) else json.dumps(metin, ensure_ascii=False)

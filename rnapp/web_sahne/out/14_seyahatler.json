@@ -11,6 +11,10 @@
   {
    "t": "error",
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -20,7 +24,7 @@
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
   "Seyahatlerim",
   "Seyahatlerim",
-  "BUGÜN · AKTARMA",
+  "5 EKİM · AKTARMA",
   "IST",
   "LHR",
   "",
@@ -28,13 +32,13 @@
   "UÇUŞ",
   "TK1979",
   "SALON",
-  "17:19–21:19",
+  "14:00–18:00",
   "KİŞİ",
   "1 + 1",
-  "Keşfet'te 7 uyumlu ilan →",
+  "Keşfet'te 10 uyumlu ilan →",
   "",
   "Host bul",
-  "11 EKİM · TATİL",
+  "12 EKİM · TATİL",
   "SAW",
   "",
   "PC · Pegasus",
@@ -42,7 +46,7 @@
   "PC2210",
   "SALON",
   "09:00–11:00",
-  "Keşfet'te 1 uyumlu ilan →",
+  "Bu güne uyumlu ilan yok",
   "",
   "Host bul",
   "Seyahat Ekle",

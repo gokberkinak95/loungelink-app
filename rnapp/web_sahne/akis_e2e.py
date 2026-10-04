@@ -178,7 +178,8 @@ class Ekran:
         try:
             return self.pg.evaluate(r"""() => {
               const bul = [];
-              const desen = /\{[a-zA-Z_]+\}|\b[a-z]+_[a-z_]+\b/;
+              // 5 Ekim — BÜYÜK HARFLİ kodlar da (PRIORITY_PASS, TK_MS): Keşfet kartında ham program kodu kaçmıştı.
+              const desen = /\{[a-zA-Z_]+\}|\b[a-z]+_[a-z_]+\b|\b[A-Z]{2,}_[A-Z_]{2,}\b/;
               const izin = /@|https?:|\.test|loungelink/;
               document.querySelectorAll('[aria-label]').forEach(e => {
                 const v = e.getAttribute('aria-label') || '';

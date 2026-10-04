@@ -1,22 +1,7 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [
-  {
-   "kind": "from",
-   "fn": null,
-   "table": "credit_ledger",
-   "error": "Network request failed"
-  },
   {
    "kind": "from",
    "fn": null,
@@ -38,7 +23,7 @@
   "YILDIZ",
   "360",
   "LOUNGEPUAN",
-  "0",
+  "6",
   "KREDİ",
   "Profil",
   "",

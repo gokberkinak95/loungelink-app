@@ -88,6 +88,8 @@ def sahne_metinleri():
             j = json.load(open(p, encoding="utf-8"))
         except Exception:
             continue
+        if not isinstance(j, dict):   # akis_e2e.json (sonuç listesi) sahne değil
+            continue
         d[os.path.basename(p)[:-5]] = "\n".join(j.get("metin", []))
     return d
 

@@ -1,27 +1,59 @@
 {
- "console": [],
- "errors": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
+ "errors": [
+  "adım ('yaz', 'email@example.com', 'gokberk@ornek.com'): Locator.fill: Timeout 4000ms exceeded.",
+  "adım ('dokun_a11y', \"Lounge'a girmek istiyorum\"): Locator.click: Timeout 4000ms exceeded.",
+  "adım ('dokun_a11y', 'Kabul ediyorum: Kullanım'): Locator.click: Timeout 4000ms exceeded.",
+  "adım ('dokun_a11y', 'Kabul ediyorum: Topluluk'): Locator.click: Timeout 4000ms exceeded.",
+  "adım ('dokun_a11y', 'Kabul ediyorum: Bu uygulama'): Locator.click: Timeout 4000ms exceeded.",
+  "adım ('dokun_a11y', 'Kabul ediyorum: Havalimanı'): Locator.click: Timeout 4000ms exceeded.",
+  "adım ('dokun_a11y', 'Kabul ediyorum: Platform'): Locator.click: Timeout 4000ms exceeded."
+ ],
  "calls": [],
  "metin": [
   "",
   "LOUNGELINK",
-  "SÖZLEŞMELER",
-  "Şartlar ve Sözleşmeler",
-  "",
-  "Tümünü kabul et",
-  "",
-  "Kabul ediyorum: Kullanım Koşulları ve Gizlilik Politikası",
-  "",
-  "Kabul ediyorum: Topluluk Kuralları",
-  "",
-  "Kabul ediyorum: Bu uygulama lounge erişimi satmaz",
-  "",
-  "Kabul ediyorum: Havalimanı, havayolu ve lounge kuralları geçerlidir",
-  "",
-  "Kabul ediyorum: Platform dışı ödemeler kesinlikle yasaktır",
-  "",
-  "18 yaşımı doldurdum. LoungeLink yalnızca yetişkinler içindir.",
-  "Hesap Oluştur"
+  "ADIM 1/3",
+  "Hesap Oluştur",
+  "BİLGİLERİN",
+  "Google ile devam et",
+  "veya",
+  "AD SOYAD",
+  "",
+  "E-POSTA",
+  "",
+  "TELEFON",
+  "",
+  "İsteğe bağlı — sonra doğrulaman istenecek.",
+  "ŞİFRE",
+  "",
+  "Göster",
+  "CİNSİYET — kadınlara özel gizlilik özelliklerini açar",
+  "Erkek",
+  "Kadın",
+  "Diğer",
+  "Belirtmek istemiyorum",
+  "REFERANS KODU (İSTEĞE BAĞLI)",
+  "",
+  "Seni davet eden birinin kodu varsa şimdi yaz — ikiniz de 500 LoungePuan kazanın.",
+  "",
+  "Bu uygulama lounge erişimi satmaz. Platform dışı ödemelere izin verilmez.",
+  "Lütfen tüm alanları doldur.",
+  "Devam Et →",
+  "Hesabın var mı? Giriş Yap"
  ],
  "tasan": [],
  "bitisik": []

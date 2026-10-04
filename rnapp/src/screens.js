@@ -371,7 +371,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
           <CarrierPicker t={t} carriers={carriers} value={carrier}
             onSelect={setCarrier} label={t.carrierQ} hint={t.carrierWhy} />
 
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setVCharter(v => !v)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setVCharter(v => !v)}
             style={{ flexDirection: "row", alignItems: "center", marginTop: SP[3] }}>
             <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
                            borderColor: vCharter ? C.amber : C.line, marginRight: SP[2],
@@ -412,7 +412,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
 
           {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
           <Btn label={t.saveTrip} onPress={save} disabled={busy} busy={busy} />
-          <TouchableOpacity hitSlop={TAP.slop} style={{ alignItems: "center", marginTop: SP[3] }} onPress={() => setAdding(false)}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ alignItems: "center", marginTop: SP[3] }} onPress={() => setAdding(false)}>
             <Text style={{ color: C.mut }}>{t.cancel}</Text>
           </TouchableOpacity>
         </>
@@ -741,9 +741,8 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
       <View style={{ flex: 1 }}>
         <MomentScreen t={t}
           kind={karsilik.kind}
-          title={karsilik.title}
-          subtitle={karsilik.subtitle}
-          meta={karsilik.meta}
+          title={t.momentReciprocityTitle}
+          subtitle={String(t.momentReciprocityBody || "").replace("{n}", String(karsilik.kredi || 1))}
           primary={{ label: t.momentReciprocityCta, onPress: karsilikKapat }}
           /* v2.87 — madde 1 ile aynı sınıf hata: bu an Yayın sekmesinde
              yaşanıyor, bir sohbetten gelmiyor. "Sohbete dön" var olmayan
@@ -931,7 +930,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                 const openThis = !!openReqs[r.id];
                 return (
                   <View style={{ marginTop: SP[2] }}>
-                    <TouchableOpacity hitSlop={TAP.slop}
+                    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop}
                       onPress={() => setOpenReqs(o => ({ ...o, [r.id]: !o[r.id] }))}
                       style={{ alignSelf: "flex-start", backgroundColor: pend.length ? C.goldSoft : C.bgAlt,
                                borderWidth: 1, borderColor: pend.length ? C.gold + "50" : C.line,
@@ -1335,7 +1334,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           <Text style={S.label}>{t.slots}</Text>
           <View style={{ flexDirection: "row" }}>
             {[1, 2, 3].map(n => (
-              <TouchableOpacity key={n} style={[S.chip, slots === n && S.chipOn]} onPress={() => setSlots(n)}>
+              <TouchableOpacity accessibilityRole="button" key={n} style={[S.chip, slots === n && S.chipOn]} onPress={() => setSlots(n)}>
                 <Text style={{ color: slots === n ? C.gold : C.ink, fontWeight: slots === n ? "700" : "400" }}>{n}</Text>
               </TouchableOpacity>
             ))}
@@ -1345,7 +1344,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
             {t.accessOpts.map(o => {
               const on = srcs.includes(o);
               return (
-                <TouchableOpacity key={o} style={[S.chip, on && S.chipOn]}
+                <TouchableOpacity accessibilityRole="button" key={o} style={[S.chip, on && S.chipOn]}
                   onPress={() => setSrcs(on ? srcs.filter(x => x !== o) : [...srcs, o])}>
                   <Text style={{ color: on ? C.gold : C.ink, fontSize: FS.sm, fontWeight: on ? "600" : "400" }}>{o}</Text>
                 </TouchableOpacity>
@@ -1354,7 +1353,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           </View>
           {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
           <Btn label={t.publish} onPress={publish} disabled={busy} busy={busy} />
-          <TouchableOpacity hitSlop={TAP.slop} style={{ alignItems: "center", marginTop: SP[3] }} onPress={() => setAdding(false)}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ alignItems: "center", marginTop: SP[3] }} onPress={() => setAdding(false)}>
             <Text style={{ color: C.mut }}>{t.cancel}</Text>
           </TouchableOpacity>
         </>
@@ -1650,7 +1649,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
               ilk cümle. */}
           {/* biyografi kartı yalnız biyografi VARSA (yoksa eksik kartı söylüyor) */}
           {!!p.bio && (
-          <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.8} onPress={onEditProfile}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} activeOpacity={0.8} onPress={onEditProfile}
             style={[S.card, { marginBottom: ARA[10] }]}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
               <Text style={{ color: C.ink, fontSize: FS.base, lineHeight: 20, flex: 1, marginRight: SP[2] }}>
@@ -1897,7 +1896,9 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
     ]);
     setAvails(av || []);
     setVerified(v?.phone_verified ?? false);
-    if (av?.length && !sel) setSel(av[0].id);
+    // 5 Ekim — varsayılan seçim DOLU ilan olabiliyordu (soluk, seçilemez ama seçili görünüyor; davet
+    // dolu slota gidiyordu). İlk BOŞ YERİ OLAN ilan seçilir; hepsi doluysa seçim yok.
+    if (av?.length && !sel) { const bos = av.find(x => (x.slots || 0) - (x.filled || 0) > 0); if (bos) setSel(bos.id); }
   }, [uid, sel]);
   useEffect(() => { load(); }, [load]);
 
@@ -1977,30 +1978,56 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
                   tarih, SAAT ARALIĞI ve KALAN SLOT gösteriyor. Dolu ilan
                   seçilemez (davet zaten sunucuda 'fully_booked' ile reddedilir;
                   kullanıcı bunu göndermeden ÖNCE görsün). */}
+              {/* 5 Ekim (Gökberk md.10) — "hangi ilan için alanı basit kalmış": düz bej hap yerine
+                  uygulamanın kart dili. Solda havalimanı kodu (altın mono) + ince ayraç, ortada salon
+                  (serif) ve tarih·saat (mono), altında kalan yer kapsülü; sağda şampanya seçim işareti.
+                  Seçili: şampanya kenar + dolu işaret. Dolu ilan soluk ve seçilemez (sunucu da reddeder). */}
               {avails.map(a => {
                 const left = Math.max(0, (a.slots || 0) - (a.filled || 0));
                 const full = left === 0;
                 const on = sel === a.id;
+                const v7 = temaModu() === "v7";
                 return (
-                <TouchableOpacity key={a.id} disabled={full} onPress={() => setSel(a.id)}
+                <TouchableOpacity hitSlop={TAP.slop} key={a.id} disabled={full} onPress={() => setSel(a.id)} activeOpacity={0.85}
                   accessibilityRole="radio" accessibilityState={{ selected: on, disabled: full }}
-                  style={[S.chip, { width: "100%", marginBottom: SP[2], opacity: full ? 0.5 : 1,
-                    borderTopColor: on ? C.parlamaGuc : C.parlama, backgroundColor: on ? C.goldSoft : C.card }]}>
-                  {/* v6 — seçim çizgiyle değil: altın nokta (konum kanalı) + aydınlık kadife (ışık kanalı) */}
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <View style={{ width: 6, height: 6, borderRadius: R.full, marginRight: ARA[8],
-                                   backgroundColor: on ? C.gold : "transparent" }} />
-                    <Text style={{ color: on ? C.gold : C.ink, fontSize: FS.sm, fontWeight: "600", letterSpacing: 0.2 }}>
-                      {a.lounge_name || a.airport_code} · {a.airport_code}
-                    </Text>
+                  accessibilityLabel={`${a.lounge_name || a.airport_code} · ${fmtLongDate(a.avail_date, lang)}`}
+                  style={{ width: "100%", flexDirection: "row", alignItems: "center", marginBottom: ARA[10],
+                           paddingVertical: ARA[14], paddingHorizontal: ARA[14], borderRadius: R.lg,
+                           backgroundColor: on ? (C.goldSoft || C.card) : C.card, opacity: full ? 0.5 : 1,
+                           borderWidth: 1.5, borderColor: on ? C.goldText : (v7 ? C.line : (C.line || "transparent")),
+                           ...(v7 ? { shadowColor: C.golgeRenk, shadowOpacity: on ? 0.10 : 0.05, shadowRadius: 14,
+                                      shadowOffset: { width: 0, height: 5 }, elevation: on ? 3 : 1 } : null) }}>
+                  <View style={{ alignItems: "center", paddingRight: ARA[12], marginRight: ARA[12],
+                                 borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: C.line2 || C.line, minWidth: 52 }}>
+                    <Text style={{ fontFamily: MONO[600], fontSize: FS.lg, color: C.goldText, letterSpacing: 1 }}>{a.airport_code}</Text>
+                    {a.time_from ? (
+                      <Text style={{ fontFamily: MONO[500], fontSize: FS.micro, color: C.mut, marginTop: ARA[2] }}>{String(a.time_from).slice(0, 5)}</Text>
+                    ) : null}
                   </View>
-                  <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[2] }}>
-                    {fmtLongDate(a.avail_date, lang)}
-                    {a.time_from ? ` · ${String(a.time_from).slice(0,5)}–${String(a.time_to).slice(0,5)}` : ""}
-                  </Text>
-                  <Text style={{ color: full ? C.red : C.green, fontSize: FS.xs, fontWeight: "600", marginTop: ARA[2] }}>
-                    {full ? t.slotFull : `${left} ${t.slotsOpen}`} · {a.filled}/{a.slots}
-                  </Text>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text numberOfLines={2} style={{ fontFamily: F.serifGosterim, fontSize: FS.title, lineHeight: Math.ceil(FS.title * 1.25), color: C.ink }}>
+                      {a.lounge_name || a.airport_code}
+                    </Text>
+                    <Text numberOfLines={1} style={{ fontFamily: MONO[500], fontSize: FS.xs, color: C.mut, marginTop: ARA[2] }}>
+                      {fmtLongDate(a.avail_date, lang)}
+                      {a.time_from ? ` · ${String(a.time_from).slice(0, 5)}–${String(a.time_to).slice(0, 5)}` : ""}
+                    </Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", alignSelf: "flex-start", marginTop: ARA[8],
+                                   paddingVertical: ARA[4], paddingHorizontal: ARA[8], borderRadius: R.full,
+                                   backgroundColor: full ? (C.redBg || "transparent") : (C.greenBg || "transparent") }}>
+                      <View style={{ width: 5, height: 5, borderRadius: R.full, marginRight: ARA[6],
+                                     backgroundColor: full ? C.red : C.green }} />
+                      <Text style={{ color: full ? (C.redInk || C.red) : (C.greenInk || C.green), fontSize: FS.micro, fontWeight: "600" }}>
+                        {full ? t.slotFull : `${left} ${t.slotsOpen}`} · {a.filled}/{a.slots}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={{ width: 22, height: 22, borderRadius: R.full, marginLeft: ARA[10],
+                                 alignItems: "center", justifyContent: "center",
+                                 borderWidth: 1.5, borderColor: on ? C.goldText : (C.line2 || C.line),
+                                 backgroundColor: on ? C.goldText : "transparent" }}>
+                    {on ? <Ikon ad="tamam" boy={12} renk={C.onAccent} /> : null}
+                  </View>
                 </TouchableOpacity>
                 );
               })}
@@ -2010,7 +2037,7 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
             <Text style={S.label}>{t.bcNoteLabel}</Text>
             <TextInput style={S.input} value={note} onChangeText={x => setNote(x.slice(0, 140))}
               placeholder={t.bcNote} placeholderTextColor={C.mut} maxLength={140} multiline />
-            <Text style={{ color: C.mut, fontSize: FS.xs, textAlign: "right", marginTop: -6, marginBottom: SP[1] }}>{note.length}/140</Text>
+            <Text style={{ color: C.mut, fontSize: FS.xs, textAlign: "right", marginTop: ARA[6], marginBottom: SP[1] }}>{note.length}/140</Text>
             {!!cur && (
               <IkonMetin ad="ucus" renk={C.mut} stilMetin={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[2] }} metin={`${t.bcSlotLine}: ${cur.lounge_name || cur.airport_code} · ${cur.airport_code} · ${fmtLongDate(cur.avail_date, lang)}`} />
             )}
@@ -2048,7 +2075,7 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
                   {st === "pending" ? <Text style={{ color: C.gold, fontSize: FS.sm, fontWeight: "700" }}>{t.bcInvited}</Text>
                     : st === "accepted" ? <Text style={{ color: C.green, fontSize: FS.sm, fontWeight: "700" }}>{t.bcAccepted}</Text>
                     : st === "declined" ? <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.bcDeclined}</Text>
-                    : <TouchableOpacity hitSlop={TAP.slop} disabled={!verified || busy === g.guest_id} onPress={() => invite(g.guest_id)}
+                    : <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} disabled={!verified || busy === g.guest_id} onPress={() => invite(g.guest_id)}
                         style={{ backgroundColor: verified ? C.gold : C.line, borderRadius: R.xs, paddingHorizontal: ARA[14], paddingVertical: SP[2] }}>
                         {busy === g.guest_id ? <ActivityIndicator color="#fff" size="small" />
                           : <Text style={{ color: C.onAccent, fontWeight: "700", fontSize: FS.sm }}>{t.bcInvite}</Text>}
@@ -2430,11 +2457,11 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
       {/* Editor modal — MVP'deki gibi */}
       {editor && (
-        <TouchableOpacity activeOpacity={1} onPress={() => setEditor(null)}
+        <TouchableOpacity accessibilityRole="button" activeOpacity={1} onPress={() => setEditor(null)}
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center", padding: ARA[20] }}>
           {/* v6.1 (md.4) — Ayarlar editörü de bulanık perde + ışık kenarlı popup. */}
           <PerdeBulanik />
-          <TouchableOpacity activeOpacity={1} onPress={() => {}}
+          <TouchableOpacity accessibilityRole="button" activeOpacity={1} onPress={() => {}}
             style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[18], width: "100%", maxWidth: 340 }}>
             {editor === "password" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[3] }}>{t.stChangePw}</Text>
@@ -2765,7 +2792,9 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
           <View style={[S.input, { justifyContent: "center", opacity: 0.6, minHeight: TAP.minHeight }]}>
             <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "700" }}>{avail?.airport_code || "—"}</Text>
           </View>
-          <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: -6, marginBottom: ARA[10], lineHeight: 16 }}>
+          {/* 5 Ekim (Gökberk md.6) — `marginTop: -6` yazıyı kutunun içine çekiyordu (S.input'un alt
+              boşluğu yok); kilitli havalimanı notu kutuyla iç içe görünüyordu. */}
+          <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[6], marginBottom: ARA[12], lineHeight: 16 }}>
             {t.editAirportLocked}
           </Text>
 
@@ -2858,7 +2887,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
             })}
           </View>
           {cap && cap < 3 ? (
-            <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: -6, marginBottom: ARA[14] }}>
+            <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: ARA[6], marginBottom: ARA[14] }}>
               {t.haCapDeclared} {cap}{t.haCapMore}
             </Text>
           ) : null}
@@ -3441,7 +3470,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: ARA[6] }}>
             {[["economy", t.cabinEconomy], ["business", t.cabinBusiness],
               ["first", t.cabinFirst], [null, t.cabinSkip]].map(([v, lb]) => (
-              <TouchableOpacity key={String(v)} onPress={() => setCabin(v)}
+              <TouchableOpacity accessibilityRole="button" key={String(v)} onPress={() => setCabin(v)}
                 style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center",
                                   borderColor: cabin === v ? C.gold : C.line,
                                   backgroundColor: cabin === v ? C.goldSoft : C.card }]}>
@@ -3461,7 +3490,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
           </>)}
 
           {/* v2.01 — CHARTER SORUSU. Tek kutu, varsayılan "tarifeli". */}
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setCharter(v => !v)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setCharter(v => !v)}
             style={{ flexDirection: "row", alignItems: "center", marginBottom: ARA[14] }}>
             <View style={{ width: 19, height: 19, borderRadius: R.onay, borderWidth: 1.5,
                            borderColor: charter ? C.amber : C.line, marginRight: SP[2],
@@ -3531,7 +3560,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
             })}
           </View>
           {cap && cap < 3 ? (
-            <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: -6, marginBottom: ARA[14] }}>
+            <Text style={{ fontSize: FS.xs, color: C.dimAA, marginTop: ARA[6], marginBottom: ARA[14] }}>
               {t.haCapDeclared} {cap}{t.haCapMore}
             </Text>
           ) : null}

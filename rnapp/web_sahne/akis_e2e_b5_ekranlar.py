@@ -89,6 +89,16 @@ def ekranlar(b, port, k):
                    and not exists (select 1 from requests r where r.visit_id = v.id)
                    order by v.visit_date desc limit 1""", (A,))
         if not v:
+            # Tohum tazelenince Arda'nın isteksiz gelecek seyahati kalmayabiliyor (ölçüldü: 1 seyahat · 7 istek) →
+            # var olanın 20 gün sonrasına bir kopyası açılır (tohum bir sonraki koşuda yine tazelenir).
+            db("""insert into visits select (jsonb_populate_record(null::visits, to_jsonb(x) ||
+                    jsonb_build_object('id', gen_random_uuid(), 'visit_date', current_date + 20))).*
+                  from visits x where x.user_id=%s order by x.visit_date desc limit 1""", (A,))
+            e.pg.reload(); e.bekle(2500); e.dokun("Planım"); e.bekle(1500)
+            v = db("""select v.id, to_char(v.visit_date,'FMDD') from visits v where v.user_id=%s and v.visit_date >= current_date
+                       and not exists (select 1 from requests r where r.visit_id = v.id)
+                       order by v.visit_date desc limit 1""", (A,))
+        if not v:
             return False, "isteği olmayan seyahat yok"
         vid, gun = v[0]
         kart = [x for x in e.metin().split("\n") if _re.match(r"^%s (EKİM|KASIM|ARALIK)" % gun, x.strip())]

@@ -1,24 +1,11 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Selin B.",
   "• Güvenilir Host",
   "6",
@@ -53,9 +40,9 @@
   "YAYINDA · DOLU",
   "SAW",
   "Comfort Lounge",
-  "4 EKİM · 09:00–11:30",
-  "",
-  "Yalnız kart sahibini alıyor",
+  "5 EKİM · 09:00–11:30",
+  "",
+  "Misafir ücretsiz",
   "İlanı yönet",
   "",
   "İSTEKLER",
@@ -67,7 +54,7 @@
   "AKADEMİSYEN",
   "%52",
   "UYUM",
-  "3 Ekim · 14:20–16:40 · TAV Primeclass",
+  "4 Ekim · 14:20–16:40 · TAV Primeclass",
   "TELEFON",
   "AYNI UÇUŞ",
   "1 OTURUM",
@@ -75,12 +62,8 @@
   "“Uçuştan önce kahve?”",
   "Misafiri kabul et",
   "Reddet",
-  "",
-  "Radar kapalı",
-  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
-  "Radarı aç",
   "⭐ Son oturumunu puanla",
-  "TAV Primeclass · 3 Ekim",
+  "TAV Primeclass · 4 Ekim",
   "",
   "Kaan T. ile · TK1979 · 14:20–16:40",
   "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",

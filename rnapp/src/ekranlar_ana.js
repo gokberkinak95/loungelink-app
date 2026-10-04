@@ -597,7 +597,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
         const k = {};
         cift.forEach(([id, d]) => {
           if (!d || !d.program) return;
-          const prog = String(d.program_name || d.program).replace(/\s*\(.*\)\s*$/, "").trim();
+          // 5 Ekim — salon kaynaklı kararda (`source: venue`) `program_name` gelmiyor; ham kod
+          // ("PRIORITY_PASS") kartta görünüyordu. Ad yoksa koddan okunur ad üretilir.
+          const progHam = d.program_name || String(d.program).split("_").map(w => w ? w[0] + w.slice(1).toLowerCase() : w).join(" ");
+          const prog = String(progHam).replace(/\s*\(.*\)\s*$/, "").trim();
           const tl = d.tier && tierEtiket[d.program] && tierEtiket[d.program][d.tier];
           k[id] = tl ? `${prog} · ${tl}` : prog;
         });
@@ -1138,7 +1141,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           <Text style={{ fontSize: FS.sm, color: C.body, marginBottom: ARA[6] }}>{t.filterSector}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[10] }}>
             {SECTOR_OPTS.map(sc => (
-              <TouchableOpacity key={sc} style={[S.chip, sector === sc && S.chipOn]} onPress={() => setSector(sector === sc ? "" : sc)}>
+              <TouchableOpacity accessibilityRole="button" key={sc} style={[S.chip, sector === sc && S.chipOn]} onPress={() => setSector(sector === sc ? "" : sc)}>
                 <Text style={{ color: sector === sc ? C.gold : C.ink, fontSize: FS.sm }}>{gorunur(sc)}</Text>
               </TouchableOpacity>
             ))}
@@ -1147,7 +1150,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           <Text style={{ fontSize: FS.sm, color: C.body, marginBottom: ARA[6] }}>{t.filterLang}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[10] }}>
             {LANG_OPTS.map(lg => (
-              <TouchableOpacity key={lg} style={[S.chip, langF === lg && S.chipOn]} onPress={() => setLangF(langF === lg ? null : lg)}>
+              <TouchableOpacity accessibilityRole="button" key={lg} style={[S.chip, langF === lg && S.chipOn]} onPress={() => setLangF(langF === lg ? null : lg)}>
                 <Text style={{ color: langF === lg ? C.gold : C.ink, fontSize: FS.sm }}>{gorunur(lg)}</Text>
               </TouchableOpacity>
             ))}
@@ -1156,11 +1159,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           {/* MVP: TARİH — canlıda hiç yoktu */}
           <Text style={{ fontSize: FS.sm, color: C.body, marginBottom: ARA[6] }}>{t.filterDate}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[10] }}>
-            <TouchableOpacity style={[S.chip, !dateF && S.chipOn]} onPress={() => setDateF(null)}>
+            <TouchableOpacity accessibilityRole="button" style={[S.chip, !dateF && S.chipOn]} onPress={() => setDateF(null)}>
               <Text style={{ color: !dateF ? C.gold : C.ink, fontSize: FS.sm }}>{t.allDates}</Text>
             </TouchableOpacity>
             {[...new Set((rows || []).map(r => r.avail_date))].filter(Boolean).sort().slice(0, 6).map(d => (
-              <TouchableOpacity key={d} style={[S.chip, dateF === d && S.chipOn]} onPress={() => setDateF(d)}>
+              <TouchableOpacity accessibilityRole="button" key={d} style={[S.chip, dateF === d && S.chipOn]} onPress={() => setDateF(d)}>
                 <Text style={{ color: dateF === d ? C.gold : C.ink, fontSize: FS.sm }}>{String(d).slice(5)}</Text>
               </TouchableOpacity>
             ))}
@@ -1179,7 +1182,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           </View>
 
           {/* MVP: Yalnızca kadın host'lar (kadın güvenlik akışının parçası) */}
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setWomenOnly(v => !v)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setWomenOnly(v => !v)}
             style={{ flexDirection: "row", alignItems: "center", paddingVertical: ARA[6] }}>
             <View style={{ width: 20, height: 20, borderRadius: R.onay, borderWidth: 1.5, marginRight: SP[2],
                            borderColor: womenOnly ? C.purple : C.line, backgroundColor: womenOnly ? C.purple : "transparent",
@@ -1252,6 +1255,8 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       {!!gonderildi && (
         <View accessibilityLiveRegion="polite"
           style={{ backgroundColor: C.greenBg, borderRadius: R.sm, padding: SP[3], marginTop: ARA[10],
+                   // 5 Ekim (Gökberk md.3) — alt boşluk yoktu: not, altındaki ilan kartına yapışıyordu.
+                   marginBottom: ARA[14],
                    flexDirection: "row", alignItems: "flex-start", gap: SP[2] }}>
           <Ikon ad="tamam" boy={FS.base} renk={C.greenInk} />
           <Text style={{ flex: 1, color: C.greenInk, fontSize: FS.sm, lineHeight: 19 }}>
@@ -1735,7 +1740,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     // degil SEBEBI soylemek gerekiyordu — ve sebep zaten
                     // elimizde: rozetin kendi aciklamasi. Dokunmayi
                     // beklemeden gosteriyoruz.
-                    <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.8}
+                    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} activeOpacity={0.8}
                       onPress={() => badges[r.id]?.info && setBadgeInfo(
                         badgeInfo && badgeInfo.id === r.id ? null
                           : { id: r.id, label: badges[r.id].label, info: badges[r.id].info,
@@ -1765,7 +1770,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     // Gorsel olarak soluk ama dokunulabilir bir buton,
                     // kullaniciya "calismiyor mu, ben mi beceremiyorum"
                     // dedirtir. Gorunum ile davranis ayni seyi soylemeli.
-                    <TouchableOpacity hitSlop={TAP.slop}
+                    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop}
                       disabled={!phoneOk && !onVerify}
                       // 🔴 v2.89 (Gökberk md.11) — İLANIN VERİSİ ARTIK TAŞINIYOR.
                       // `AddVisit` zaten bir `suggest` prop'u kabul ediyor ve
@@ -2142,7 +2147,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                   </View>
                 )}
                 {!!alts && (
-                  <TouchableOpacity hitSlop={TAP.slop}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop}
                     onPress={() => { if (alts.count > 0) { setTarget(null); setApFilter(null); setDateF(alts.date || ""); } }}
                     disabled={!alts.count}
                     style={{ backgroundColor: C.card, borderWidth: 1,
@@ -2169,7 +2174,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     Satis degil BILGI: komisyon almiyoruz, dogrulanmamisi
                     dogrulanmamis diye veriyoruz. */}
                 {!!alts && alts.count === 0 && (
-                  <TouchableOpacity hitSlop={TAP.slop} onPress={() => loadAdvice(target.lounge_id)}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => loadAdvice(target.lounge_id)}
                     style={{ marginTop: SP[2], borderTopWidth: 1, borderTopColor: C.line, paddingTop: ARA[10] }}>
                     <Text style={{ fontSize: FS.sm, fontWeight: "700", color: C.gold }}>
                       {advice ? t.adviceHide : t.adviceShow}
@@ -2205,7 +2210,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                   </View>
                 )}
                 {!!pre.more && pre.more !== pre.detail && (
-                  <TouchableOpacity hitSlop={TAP.slop} onPress={() => setMoreOpen(v => !v)} style={{ marginTop: ARA[6] }}>
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setMoreOpen(v => !v)} style={{ marginTop: ARA[6] }}>
                     <Text style={{ fontSize: FS.sm, fontWeight: "700",
                                    color: pre.severity === "block" ? C.red : C.gold }}>
                       {moreOpen ? t.hideDetails : t.showDetails}
@@ -2684,7 +2689,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
               {radarFilter.airport} · {String(radarFilter.time_from || "").slice(0, 5)}–{String(radarFilter.time_to || "").slice(0, 5)}
             </Text>
           </View>
-          <TouchableOpacity hitSlop={TAP.slop} onPress={onClearRadar}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onClearRadar}
             style={{ borderWidth: 1, borderColor: C.purple, borderRadius: R.xs, paddingVertical: ARA[6], paddingHorizontal: SP[3] }}>
             <Text style={{ color: C.purpleUst, fontSize: FS.sm, fontWeight: "600" }}>{t.radarClear}</Text>
           </TouchableOpacity>
@@ -3010,7 +3015,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
                 {!!target?.profession && <Text style={{ color: C.mut, fontSize: FS.sm }}>{target.profession}</Text>}
               </View>
               {onOpenProfile && target?.user_id && (
-                <TouchableOpacity hitSlop={TAP.slop} onPress={() => { const id = target.user_id; setTarget(null); onOpenProfile(id); }}>
+                <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { const id = target.user_id; setTarget(null); onOpenProfile(id); }}>
                   <IkonMetin sag ad="sag" renk={C.purple} stilMetin={{ color: C.purple, fontWeight: "700", fontSize: FS.sm }} metin={t.viewProfile} />
                 </TouchableOpacity>
               )}
@@ -3317,7 +3322,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
               {[["coffee", t.ciCoffee], ["networking", t.ciWork], ["route", t.ciRoute], ["hello", t.ciHello], ["other", t.intOther]].map(([k, lab]) => {
                 const sel = connIntent === k;
                 return (
-                  <TouchableOpacity hitSlop={TAP.slop} key={k} onPress={() => setConnIntent(k)}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} onPress={() => setConnIntent(k)}
                     style={{ paddingVertical: SP[3], paddingHorizontal: SP[3], borderRadius: R.xs, borderWidth: 1.5, marginBottom: SP[2],
                              borderColor: sel ? C.purple : C.line, backgroundColor: sel ? C.purpleBg : C.bgAlt }}>
                     <Text style={{ fontSize: FS.sm, color: sel ? C.purple : C.body, fontWeight: sel ? "700" : "400" }}>{lab}</Text>
@@ -3330,14 +3335,14 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
                 placeholder={t.connPh} placeholderTextColor={C.dim} />
               <Text style={{ color: C.dim, fontSize: FS.xs, textAlign: "right", marginTop: SP[1] }}>{connIntro.length}/140</Text>
               <Btn label={`${t.connSend}`} sagAd="sag" onPress={doConnect} disabled={connBusy} busy={connBusy} style={{ marginTop: ARA[10] }} />
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => setConnOpen(false)} style={{ alignItems: "center", paddingVertical: SP[3] }}>
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setConnOpen(false)} style={{ alignItems: "center", paddingVertical: SP[3] }}>
                 <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.cancel}</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
         {targetId !== uid && onReport && (
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => onReport(targetId, d.name)} style={{ alignSelf: "center", marginTop: SP[4], padding: SP[2] }}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onReport(targetId, d.name)} style={{ alignSelf: "center", marginTop: SP[4], padding: SP[2] }}>
             <Text style={{ color: C.mut, fontSize: FS.sm, textDecorationLine: "underline" }}>{t.ppReport}</Text>
           </TouchableOpacity>
         )}
@@ -3449,7 +3454,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
         ) : null
       } />
       {onOpenProfile && peerId && (
-        <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpenProfile(peerId)}
+        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onOpenProfile(peerId)}
           style={{ backgroundColor: C.card, paddingVertical: SP[2], paddingHorizontal: ARA[14], borderBottomWidth: 1, borderColor: C.line }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Ikon ad="kisi" boy={14} renk={C.purple} stil={{ marginRight: SP[1] }} />
@@ -3604,7 +3609,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
   }
 
   const Row = ({ icon, title, body, onPress, accent }) => (
-    <TouchableOpacity hitSlop={TAP.slop} disabled={!onPress} onPress={onPress}
+    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} disabled={!onPress} onPress={onPress}
       style={[S.card, onPress ? { borderColor: (accent || C.line) } : null]}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Ikon ad={icon} boy={15} renk={accent || C.muted} stil={{ marginRight: SP[2] }} kutu={18} />
@@ -3623,7 +3628,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
       <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[3] }}>{t.safetySub}</Text>
 
-        <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setSosDone(null); setNote(""); setSos(true); }}
+        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { setSosDone(null); setNote(""); setSos(true); }}
           style={{ backgroundColor: C.redBg, borderWidth: 1.5, borderColor: "transparent", borderRadius: R.sm, padding: SP[4], marginBottom: SP[3] }}>
           <Text style={{ color: C.redInk, fontWeight: "700", fontSize: FS.lg }}>{t.safetySOS}</Text>
           <Text style={{ color: C.redInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 17 }}>{t.safetySOSBody}</Text>
@@ -3678,7 +3683,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
           const open = openItem === title;
           return (
             <View key={title} style={[S.card, { padding: 0, overflow: "hidden", marginBottom: SP[2] }]}>
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => { if (go) { go(); return; } if (!open && title === t.safeBlockedT) { setEngelli(null); engelYukle(); } setOpenItem(open ? null : title); }}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { if (go) { go(); return; } if (!open && title === t.safeBlockedT) { setEngelli(null); engelYukle(); } setOpenItem(open ? null : title); }}
                 style={{ flexDirection: "row", alignItems: "center", padding: SP[3] }}>
                 <View style={{ width: 38, height: 38, borderRadius: R.xs, backgroundColor: c + "1F", alignItems: "center", justifyContent: "center", marginRight: SP[3] }}>
                   <Ikon ad={ic} boy={18} renk={c} />
@@ -3765,7 +3770,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
               <Text style={{ fontSize: FS.sm, color: C.amberInk, lineHeight: 17 }}>{t.sos112}</Text>
             </View>
 
-            <TouchableOpacity hitSlop={TAP.slop} onPress={() => setSos(false)} style={{ marginTop: SP[3], padding: SP[2], alignItems: "center" }}>
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setSos(false)} style={{ marginTop: SP[3], padding: SP[2], alignItems: "center" }}>
               <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.close}</Text>
             </TouchableOpacity>
           </View>
@@ -4035,6 +4040,7 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
       <View style={{ flexDirection: "row", borderBottomWidth: 1, borderBottomColor: C.line }}>
         {tabs.map(([id, lb, n]) => (
           <TouchableOpacity hitSlop={TAP.slop} key={id} onPress={() => setTab(id)}
+            accessibilityRole="tab" accessibilityState={{ selected: tab === id }} accessibilityLabel={lb}
             style={{ flex: 1, paddingVertical: ARA[10], alignItems: "center", borderBottomWidth: 2, borderBottomColor: tab === id ? C.gold : "transparent" }}>
             <Text style={{ fontSize: FS.xs, fontWeight: "600", color: tab === id ? C.gold : C.dim }}>{lb}{n > 0 ? ` (${n})` : ""}</Text>
           </TouchableOpacity>
@@ -4067,10 +4073,11 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
                 )}
                 <View style={{ flexDirection: "row", gap: SP[2] }}>
                   <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpenChat && onOpenChat({ req: { id: s.request_id }, name: o.name })}
+                    accessibilityRole="button" accessibilityLabel={t.chatBtn}
                     style={{ flex: 1, backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[2], alignItems: "center" }}>
                     <Text style={{ fontSize: FS.xs, color: C.body }}>{t.chatBtn}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpenProfile && onOpenProfile(other(s).id || (s.requests?.host_id === uid ? s.requests?.guest_id : s.requests?.host_id))}
+                  <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.profileBtn} onPress={() => onOpenProfile && onOpenProfile(other(s).id || (s.requests?.host_id === uid ? s.requests?.guest_id : s.requests?.host_id))}
                     style={{ flex: 1, backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[2], alignItems: "center" }}>
                     <Text style={{ fontSize: FS.xs, color: C.body }}>{t.profileBtn}</Text>
                   </TouchableOpacity>
@@ -4116,11 +4123,11 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
               </View>
               {/* MVP: bağlantılar sekmesinde PROFİL + MESAJ (mesaj butonu YOKTU) */}
               <View style={{ flexDirection: "row", gap: SP[2] }}>
-                <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpenProfile && onOpenProfile(u.id)}
+                <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.profileBtn} onPress={() => onOpenProfile && onOpenProfile(u.id)}
                   style={{ flex: 1, backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[2], alignItems: "center" }}>
                   <Text style={{ fontSize: FS.xs, color: C.body }}>{t.profileBtn}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpenCompanion && onOpenCompanion(u.id, u.name)}
+                <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.ppMessage} onPress={() => onOpenCompanion && onOpenCompanion(u.id, u.name)}
                   style={{ flex: 1, backgroundColor: C.goldBg, borderWidth: 1, borderColor: C.goldLine, borderRadius: R.xs, paddingVertical: SP[2], alignItems: "center" }}>
                   <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>{t.ppMessage}</Text>
                 </TouchableOpacity>
@@ -4517,7 +4524,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
             ogenin tasmasini cozmez — ogenin kendisi de sinirlanmali. */}
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], width: "100%" }}>
           {ACCESS_SOURCES.map(a => { const on = srcs.includes(a); return (
-            <TouchableOpacity key={a} onPress={async () => {
+            <TouchableOpacity accessibilityRole="button" key={a} onPress={async () => {
                 const next = on ? srcs.filter(x => x !== a) : [...srcs, a];
                 setSrcs(next);
                 // Kaynak secilir secilmez kuralini ozetle. Banka karti ve
@@ -4571,7 +4578,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
         </View>
         <View style={{ flexDirection: "row", gap: SP[2] }}>
           {[[1, t.cap1], [2, t.cap2], [0, t.capNone]].map(([v, lb]) => (
-            <TouchableOpacity hitSlop={TAP.slop} key={v} onPress={() => setCap(v)}
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={v} onPress={() => setCap(v)}
               style={{ flex: 1, borderWidth: 1.5, borderColor: cap === v ? C.gold : C.line, backgroundColor: cap === v ? C.goldSoft : C.card, borderRadius: R.sm, paddingVertical: SP[3], alignItems: "center" }}>
               <Text style={{ color: cap === v ? C.gold : C.ink, fontWeight: "700", fontSize: FS.sm }}>{lb}</Text>
             </TouchableOpacity>
@@ -4591,7 +4598,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
           <View style={{ marginTop: SP[4] }}>
             <Text style={S.label}>{t.feeQ}</Text>
             {[[false, t.feeFree], [true, t.feePaidOpt]].map(([v, lb]) => (
-              <TouchableOpacity hitSlop={TAP.slop} key={String(v)} onPress={() => setFeePaid(v)}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={String(v)} onPress={() => setFeePaid(v)}
                 style={{ flexDirection: "row", alignItems: "center", borderWidth: 1.5,
                          borderColor: feePaid === v ? C.gold : C.line,
                          backgroundColor: feePaid === v ? C.goldSoft : C.card,
@@ -4623,7 +4630,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
           <View style={{ marginTop: SP[4] }}>
             <Text style={S.label}>{t.tierQ}</Text>
             <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 17, marginBottom: SP[2] }}>{t.tierSub}</Text>
-            <TouchableOpacity onPress={() => setTierOpen(v => !v)} style={S.pickBtn}>
+            <TouchableOpacity accessibilityRole="button" onPress={() => setTierOpen(v => !v)} style={S.pickBtn}>
               <Text style={{ color: tier ? C.ink : C.dim, fontSize: FS.base }}>
                 {tier ? (tiers.find(x => x.tier === tier)?.label || tier) : t.tierNone}
               </Text>
@@ -4631,7 +4638,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
             {tierOpen && (
               <View style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs, marginTop: ARA[6], overflow: "hidden" }}>
                 {tiers.map(x => (
-                  <TouchableOpacity hitSlop={TAP.slop} key={x.tier}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={x.tier}
                     onPress={() => { setTier(x.tier); setTierOpen(false); }}
                     style={{ padding: SP[3], borderBottomWidth: 1, borderBottomColor: C.line,
                              backgroundColor: tier === x.tier ? C.goldSoft : "transparent" }}>
@@ -4696,7 +4703,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
           <View style={{ marginTop: SP[4] }}>
             <Text style={S.label}>{t.cardQ}</Text>
             <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 17, marginBottom: SP[2] }}>{t.cardSub}</Text>
-            <TouchableOpacity onPress={() => setCardOpen(v => !v)} style={S.pickBtn}>
+            <TouchableOpacity accessibilityRole="button" onPress={() => setCardOpen(v => !v)} style={S.pickBtn}>
               <Text style={{ color: cardId ? C.ink : C.dim, fontSize: FS.base }}>
                 {cardId ? (cards.find(c => c.id === cardId)?.label || "—") : t.cardNone}
               </Text>
@@ -4712,12 +4719,12 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
               <View style={{ borderWidth: 1, borderColor: C.line, borderRadius: R.xs,
                              marginTop: ARA[6], maxHeight: 240, overflow: "hidden" }}>
                 <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
-                  <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setCardId(null); setCardOpen(false); }}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { setCardId(null); setCardOpen(false); }}
                     style={{ padding: SP[3], borderBottomWidth: 1, borderBottomColor: C.line }}>
                     <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.cardNone}</Text>
                   </TouchableOpacity>
                   {cards.map(c => (
-                    <TouchableOpacity hitSlop={TAP.slop} key={c.id}
+                    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={c.id}
                       onPress={() => { setCardId(c.id); setCardOpen(false); }}
                       style={{ padding: SP[3], borderBottomWidth: 1, borderBottomColor: C.line,
                                backgroundColor: cardId === c.id ? C.goldSoft : "transparent" }}>
@@ -4921,7 +4928,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                 ) : null}
 
                 <View style={{ flexDirection: "row", gap: ARA[14], marginTop: SP[1] }}>
-                  <TouchableOpacity
+                  <TouchableOpacity accessibilityRole="button"
                     disabled={cardBusy != null}
                     onPress={() => { setDraft({ program: c.program_code, label: "", cap: 1 }); setDraftOpen(true); }}
                     style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
@@ -4975,7 +4982,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                 {progAcik && (
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: SP[2], marginBottom: SP[1] }}>
                   {progs.map(p => (
-                    <TouchableOpacity key={p.code}
+                    <TouchableOpacity accessibilityRole="button" key={p.code}
                       onPress={() => { setDraft(d => ({ ...d, program: p.code })); setProgAcik(false); }}
                       style={[S.chip, { minHeight: TAP.minHeight, justifyContent: "center",
                                         maxWidth: "100%", flexShrink: 1,
@@ -4999,7 +5006,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
 
                 <View style={{ flexDirection: "row", gap: SP[2], marginTop: SP[2] }}>
                   {[[1, t.cap1], [2, t.cap2], [0, t.capNone]].map(([v, lb]) => (
-                    <TouchableOpacity key={v} onPress={() => setDraft(d => ({ ...d, cap: v }))}
+                    <TouchableOpacity accessibilityRole="button" key={v} onPress={() => setDraft(d => ({ ...d, cap: v }))}
                       style={{ flex: 1, minHeight: TAP.minHeight, justifyContent: "center",
                                borderWidth: 1.5, borderRadius: R.xs, alignItems: "center",
                                borderColor: draft.cap === v ? C.gold : C.line,
@@ -5011,7 +5018,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                 </View>
 
                 <View style={{ flexDirection: "row", gap: ARA[14], marginTop: SP[2] }}>
-                  <TouchableOpacity
+                  <TouchableOpacity accessibilityRole="button"
                     disabled={!draft.program || cardBusy != null}
                     onPress={async () => {
                       const ok = await saveCard(draft.program, draft.label, draft.cap, null, null, null);
@@ -5021,14 +5028,14 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
                              opacity: draft.program ? 1 : 0.45 }}>
                     <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>{t.cardSaveBtn}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { setDraft(null); setDraftOpen(false); }}
+                  <TouchableOpacity accessibilityRole="button" onPress={() => { setDraft(null); setDraftOpen(false); }}
                     style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
                     <Text style={{ color: C.mut, fontSize: FS.sm, fontWeight: "700" }}>{t.cardCancelBtn}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             ) : (
-              <TouchableOpacity
+              <TouchableOpacity accessibilityRole="button"
                 onPress={() => { setDraft({ program: null, label: "", cap: 1 }); setDraftOpen(true); }}
                 style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
                 <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>+ {t.cardAddBtn}</Text>
@@ -5076,7 +5083,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
             </View>
             <View style={{ flexDirection: "row", gap: SP[2] }}>
               {[["year", t.quotaYear], ["month", t.quotaMonth], ["unlimited", t.quotaUnlimited]].map(([v, lb]) => (
-                <TouchableOpacity key={v} onPress={() => setQPeriod(v)}
+                <TouchableOpacity accessibilityRole="button" key={v} onPress={() => setQPeriod(v)}
                   style={[S.chip, { borderColor: qPeriod === v ? C.teal : C.line,
                                     backgroundColor: qPeriod === v ? C.tealBg : C.card }]}>
                   <Text style={{ fontSize: FS.sm, color: qPeriod === v ? C.teal : C.muted,
@@ -5915,7 +5922,7 @@ export function LoungePicker({ lounges, value, onSelect, emptyNote, t = {} }) {
   return (
     <View style={{ marginBottom: ARA[14] }}>
       <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, marginBottom: SP[1], letterSpacing: 1 }}>LOUNGE</Text>
-      <TouchableOpacity hitSlop={TAP.slop} onPress={() => setOpen(!open)}
+      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setOpen(!open)}
         style={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: open ? C.teal : C.line, borderRadius: R.xs,
                  paddingVertical: SP[3], paddingHorizontal: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text style={{ fontSize: FS.sm, color: sel ? C.body : C.dim }}>{sel ? labelOf(sel) : gorunur("Lounge seç…")}</Text>
@@ -5942,7 +5949,7 @@ export function LoungePicker({ lounges, value, onSelect, emptyNote, t = {} }) {
             return (
               <View style={{ flexDirection: "row", borderBottomWidth: 1, borderBottomColor: C.line }}>
                 {tabs.map(([k, label, n]) => (
-                  <TouchableOpacity hitSlop={TAP.slop} key={k} disabled={n === 0}
+                  <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} disabled={n === 0}
                     onPress={() => setTerm(k)}
                     style={{ flex: 1, paddingVertical: SP[2], alignItems: "center",
                              borderBottomWidth: 2,
@@ -5958,7 +5965,7 @@ export function LoungePicker({ lounges, value, onSelect, emptyNote, t = {} }) {
           })()}
           <ScrollView nestedScrollEnabled>
             {lounges.filter(l => inTab(l, term)).map(l => (
-              <TouchableOpacity hitSlop={TAP.slop} key={l.id} onPress={() => { onSelect(l.id); setOpen(false); }}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={l.id} onPress={() => { onSelect(l.id); setOpen(false); }}
                 style={{ paddingVertical: SP[3], paddingHorizontal: SP[3], borderBottomWidth: 1, borderBottomColor: C.line,
                          backgroundColor: l.id === value ? C.tealBg : "transparent" }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: SP[2] }}>
@@ -6036,7 +6043,7 @@ export function TimeInput({ label, value, onChange }) {
       <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, marginBottom: SP[1], letterSpacing: 1 }}>{label}</Text>
       {_DTP ? (
         <>
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setOpen(true)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setOpen(true)}
             style={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: ok ? C.teal : C.line,
                      borderRadius: R.xs, padding: SP[3], flexDirection: "row",
                      justifyContent: "space-between", alignItems: "center" }}>
@@ -6703,7 +6710,7 @@ export function Campaigns({ t, onBack }) {   // v2.65: ölü `session` kaldırı
       {/* #23: iki sekme */}
       <View style={{ flexDirection: "row", backgroundColor: C.card, borderBottomWidth: 1, borderBottomColor: C.line }}>
         {[["camps", t.campTabActive], ["code", t.campTabCode]].map(([k, lb]) => (
-          <TouchableOpacity hitSlop={TAP.slop} key={k} onPress={() => setTab(k)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} onPress={() => setTab(k)}
             style={{ flex: 1, paddingVertical: SP[3], alignItems: "center", borderBottomWidth: 2, borderBottomColor: tab === k ? C.gold : "transparent" }}>
             <Text style={{ color: tab === k ? C.gold : C.mut, fontWeight: "700", fontSize: FS.sm }}>{lb}</Text>
           </TouchableOpacity>
@@ -6729,7 +6736,7 @@ export function Campaigns({ t, onBack }) {   // v2.65: ölü `session` kaldırı
           : rows === null ? <Load icerik /> : rows.length === 0 ? (
           <BosDurum ikon="kampanya" metin={t.campEmpty} />
         ) : rows.map(c => (
-          <TouchableOpacity hitSlop={TAP.slop} key={c.id} onPress={() => setDetail(c)} activeOpacity={0.75}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={c.id} onPress={() => setDetail(c)} activeOpacity={0.75}
             style={[S.card, c.joined && { borderColor: C.green }]}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
               <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.lg, flex: 1 }}>{c.title}</Text>
@@ -7831,6 +7838,12 @@ export function AkisSeridi({ t, tazele, rol, onSohbetler, onIstekler, onDavetler
       {/* v6.3 · PANO H1 (Gökberk onayı) — DÖRT KUTU TEK CAM ŞERİT. Kutular
           iç içe yüzey açıyordu; artık tek cam, hücreler 1 px ışık çizgisiyle
           ayrılıyor. Dolu hücre: fildişi sayı + altın etiket; boş: sessiz. */}
+      {/* 5 Ekim (Gökberk md.7) — şerit açık zeminde kayboluyordu: gölge YOKTU. Dış katman gölgeyi
+          taşır (overflow:hidden iOS'ta gölgeyi kırpar), iç katman köşeleri kırpar. */}
+      <View style={temaModu() === "v7" ? { borderRadius: R.lg + 2, backgroundColor: C.camYuzey || C.surface,
+                     shadowColor: C.golgeRenk, shadowOpacity: 0.10, shadowRadius: 18,
+                     shadowOffset: { width: 0, height: 6 }, elevation: 4,
+                     borderWidth: 1, borderColor: C.line } : null}>
       <View style={{ flexDirection: "row", alignItems: "stretch", borderRadius: R.lg + 2, overflow: "hidden",
                      backgroundColor: C.camYuzey || C.surface, ...ustIsik(C.parlama || C.line) }}>
         {satir.map(([k, lb, ik, git, renk, ozelSayi], i) => {
@@ -7899,6 +7912,7 @@ export function AkisSeridi({ t, tazele, rol, onSohbetler, onIstekler, onDavetler
             </TouchableOpacity>
           );
         })}
+      </View>
       </View>
     </View>
   );

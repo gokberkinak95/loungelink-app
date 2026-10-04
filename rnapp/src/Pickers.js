@@ -133,7 +133,7 @@ export function CarrierPicker({
           {label}
         </Text>
       )}
-      <TouchableOpacity
+      <TouchableOpacity accessibilityRole="button"
         hitSlop={TAP.slop}
         onPress={() => { setOpen(v => !v); setQ(""); }}
         style={{
@@ -181,7 +181,7 @@ export function CarrierPicker({
             placeholder={t?.searchCarrier || "Havayolu ara…"} />
           <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
             {gorunen.map((c, i) => (
-              <TouchableOpacity hitSlop={TAP.slop} key={c.code || i}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={c.code || i}
                 onPress={() => { onSelect(c.code); setOpen(false); setQ(""); }}
                 style={{ paddingVertical: SP[3], paddingHorizontal: SP[3], minHeight: 46,
                          borderBottomWidth: 1, borderBottomColor: C.line,

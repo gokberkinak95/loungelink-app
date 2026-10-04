@@ -34,6 +34,7 @@ import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
 import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
@@ -56,7 +57,7 @@ export function Picker({ label, value, options, onPick, t }) {
   return (
     <>
       <Text style={S.label}>{label}</Text>
-      <TouchableOpacity style={S.pickBtn} onPress={() => { setOpen(true); setQ(""); }}>
+      <TouchableOpacity accessibilityRole="button" style={S.pickBtn} onPress={() => { setOpen(true); setQ(""); }}>
         <Text style={{ color: value ? C.ink : C.mut, fontSize: FS.lg }}>{value ? value.label : t.select}</Text>
       </TouchableOpacity>
       <Modal visible={open} transparent animationType="slide">
@@ -68,12 +69,12 @@ export function Picker({ label, value, options, onPick, t }) {
             <FlatList data={gorunen} keyExtractor={i => i.key}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => (
-                <TouchableOpacity hitSlop={TAP.slop} style={[S.card, { marginBottom: SP[2] }]} onPress={() => { onPick(item); setOpen(false); setQ(""); }}>
+                <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={[S.card, { marginBottom: SP[2] }]} onPress={() => { onPick(item); setOpen(false); setQ(""); }}>
                   <Text style={{ fontSize: FS.lg, color: C.ink }}>{item.label}</Text>
                   {item.sub ? <Text style={{ fontSize: FS.sm, color: C.mut, marginTop: ARA[2] }}>{item.sub}</Text> : null}
                 </TouchableOpacity>
               )} />
-            <TouchableOpacity hitSlop={TAP.slop} style={{ alignItems: "center", padding: SP[3] }} onPress={() => setOpen(false)}>
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} style={{ alignItems: "center", padding: SP[3] }} onPress={() => setOpen(false)}>
               <Text style={{ color: C.mut }}>{t.cancel}</Text>
             </TouchableOpacity>
           </View>
@@ -422,7 +423,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
             )}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {/* #41: avatar tiklanir — misafirin profili acilir */}
-              <TouchableOpacity hitSlop={TAP.slop} disabled={!onOpenProfile} onPress={() => onOpenProfile && onOpenProfile(r.guest_id)} activeOpacity={0.7}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} disabled={!onOpenProfile} onPress={() => onOpenProfile && onOpenProfile(r.guest_id)} activeOpacity={0.7}
                 style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0 }}>
               <View style={{ width: 46, height: 46, borderRadius: R.full, backgroundColor: C.surfaceAlt,
                              ...ustIsik(C.parlama || C.line),
@@ -780,7 +781,10 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     setPanelOpen(false);
   };
   panelKapatRef.current = panelKapat;
-  const [rated, setRated] = useState(false);
+  // 5 Ekim (Gökberk md.1) — `null` = henüz bilinmiyor (yükleniyor). Eskiden `false` başlıyordu:
+  // puanlanmış oturumda da "Oturum tamamlandı · Şimdi puanla" anı ilk çizimde açılıyordu.
+  const [rated, setRated] = useState(null);
+  const [rateBusy, setRateBusy] = useState(false);
   // 🔵 v2.100 (SQL 256) — KAPIDA ALINMADIM.
   // Kredi para karşılığı satılacaksa, satılan şeyin "erişim" değil "istek
   // hakkı" olduğu iddiası ancak buluşma gerçekleşmediğinde paranın geri
@@ -1029,6 +1033,23 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   // duygusal ekran, akışı KİLİTLEMEZ.
   const [momentSeen, setMomentSeen] = useState(false);
   const [sessJustStarted, setSessJustStarted] = useState(false);
+  // 5 Ekim (Gökberk md.1) — "Oturum tamamlandı" anı her sohbet açılışında yeniden çıkıyordu
+  // (momentSeen yalnız bellek). Artık oturum başına cihazda tutuluyor ve yalnız PUANLANMAMIŞ
+  // oturumda gösteriliyor. `null` = depo henüz okunmadı → an çizilmez (yanıp sönme yok).
+  const [tamamAnGoruldu, setTamamAnGoruldu] = useState(null);
+  useEffect(() => {
+    let iptal = false;
+    const sid = sess && sess.status === "completed" ? sess.id : null;
+    if (!sid) { setTamamAnGoruldu(null); return undefined; }
+    AsyncStorage.getItem("ll_an_tamam_" + sid)
+      .then(v => { if (!iptal) setTamamAnGoruldu(v === "1"); })
+      .catch(() => { if (!iptal) setTamamAnGoruldu(true); });   // okunamazsa gösterme
+    return () => { iptal = true; };
+  }, [sess && sess.id, sess && sess.status]);
+  const tamamAniKapat = () => {
+    setMomentSeen(true); setTamamAnGoruldu(true);
+    if (sess && sess.id) AsyncStorage.setItem("ll_an_tamam_" + sess.id, "1").catch(() => {});
+  };
 
   // 🔴 v1.75 + SQL 080: OTURUM ÇİFT ONAYLA BAŞLAR. Kabul, buluşmadan günler
   // önce olabildiği için artık kabulde otomatik başlamıyor; iki taraf da
@@ -1130,11 +1151,21 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   }
   async function doRate() {
     setErr("");
-    if (!stars) return;
+    // 5 Ekim (Gökberk md.9) — "Puanı gönder geç tepki verdi / ilk denemede olmadı": bekleme
+    // durumu yoktu (tepkisiz düğme → ikinci dokunuş → çift istek) ve yıldız seçilmemişse
+    // SESSİZCE dönüyordu. Artık meşgulken düğme bekleme gösterir, ikinci dokunuş yok sayılır.
+    if (rateBusy || rated) return;
+    if (!stars) { setErr(t.ratePickStars || t.ratePrompt || ""); return; }
+    setRateBusy(true);
     const { data, error } = await supabase.rpc("rate_session", {
       p_session_id: sess.id, p_score: stars, p_comment: comment.trim() || null,
     });
-    if (error) return setErr(mapErr(t, error.message));
+    setRateBusy(false);
+    if (error) {
+      // zaten puanlanmışsa (başka cihaz / çift dokunuş) hata değil: puanlandı say
+      if (/already_rated|duplicate/i.test(String(error.message || ""))) { setRated(true); return; }
+      return setErr(mapErr(t, error.message));
+    }
     // v1.73 / SQL 078: puan artık OTURUM TAMAMLANINCA veriliyor, puanlamada
     // değil. rate_session points_earned döndürmez; kazanç kartı zaten
     // tamamlanma anında doğru rakamı gösteriyor.
@@ -1320,7 +1351,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     );
   }
 
-  if (sess && sess.status === "completed" && !momentSeen) {
+  if (sess && sess.status === "completed" && !momentSeen && rated === false && tamamAnGoruldu === false) {
     return (
       <MomentScreen t={t}
         kind="completed"
@@ -1330,10 +1361,10 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
         // "Lounge oturumu" yazıyordu ve altı boştu; ekranın en alt
         // satırı bir başlık gibi durup hiçbir şey anlatmıyordu.
         meta={`${ctx} · ${t.momentDoneMeta ? t.momentDoneMeta.split("·").pop().trim() : ""}`.replace(/ · $/, "")}
-        primary={{ label: t.rateNow, onPress: () => { setMomentSeen(true); setPanelOpenState(true); } }}
+        primary={{ label: t.rateNow, onPress: () => { tamamAniKapat(); setPanelOpenState(true); } }}
         // v6.1 (md.3) — "Sohbete dön" SOHBETE döner: "Şimdi puanla" ile gelindiyse
         // puanlama paneli açık başlıyordu ve bu düğme onu kapatmıyordu.
-        secondary={{ label: t.momentClose, onPress: () => { setMomentSeen(true); setPanelOpen(false); } }}
+        secondary={{ label: t.momentClose, onPress: () => { tamamAniKapat(); setPanelOpen(false); } }}
       />
     );
   }
@@ -1648,7 +1679,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           sohbetin altında sabit bir şerit olarak duruyor — hem son paylaşılan
           durum, hem de kendi durumunu paylaşmaya kısayol. */}
       {sess && sess.status === "active" && (isHost ? sess.guest_status : sess.host_status) ? (
-        <TouchableOpacity hitSlop={TAP.slop} onPress={() => onLiveStatus && onLiveStatus(sess.id)}
+        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onLiveStatus && onLiveStatus(sess.id)}
           style={{ flexDirection: "row", alignItems: "center", gap: SP[2], backgroundColor: C.greenBg,
                    borderTopWidth: 1, borderColor: "transparent", paddingVertical: SP[2], paddingHorizontal: SP[3] }}>
           <Ikon ad="konum" boy={22} renk={C.mutedAA} />
@@ -1964,7 +1995,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             {!iStarted && (
               <Btn v="teal" sm label={`${t.startSessionBtn}`} solAd="saat" onPress={baslatIstegi} />
             )}
-            <TouchableOpacity hitSlop={TAP.slop} onPress={() => setConfirmCancel(true)}
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setConfirmCancel(true)}
               style={{ marginTop: ARA[10], paddingVertical: SP[3], alignItems: "center", borderRadius: R.xs, borderWidth: 1, borderColor: C.line }}>
               <Text style={{ color: C.red, fontSize: FS.sm, fontWeight: "600" }}>{t.cancelFreeNote}</Text>
             </TouchableOpacity>
@@ -2235,7 +2266,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 </GeceKarti>
                 <Text style={[S.label, { marginTop: ARA[18] }]}>{t.comment}</Text>
                 <TextInput style={S.input} value={comment} onChangeText={setComment} placeholder={t.commentPh} placeholderTextColor={C.dim} />
-                <Btn full label={t.submitRating} onPress={doRate} disabled={!stars} style={{ marginTop: ARA[14], opacity: stars ? 1 : 0.5 }} />
+                <Btn full label={t.submitRating} onPress={doRate} disabled={!stars} busy={rateBusy} style={{ marginTop: ARA[14], opacity: stars ? 1 : 0.5 }} />
                 <View style={{ paddingVertical: SP[3], marginTop: SP[1], flexDirection: "row", alignItems: "center" }}>
                   <Ikon ad="uyari" boy={FS.sm} renk={C.goldText} stil={{ marginRight: ARA[8] }} />
                   <Text style={{ color: C.goldText, fontSize: FS.sm, lineHeight: 17, flex: 1, minWidth: 0 }}>{t.ratePrompt}</Text>
@@ -2315,7 +2346,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                 {/* MVP: "YORUM (İSTEĞE BAĞLI)" etiketi + "Deneyimini paylaş..." placeholder */}
                 <Text style={S.label}>{t.comment}</Text>
                 <TextInput style={S.input} value={comment} onChangeText={setComment} placeholder={t.commentPh} placeholderTextColor={C.dim} />
-                <Btn label={t.submitRating} onPress={doRate} disabled={!stars} style={{ marginTop: ARA[10], opacity: stars ? 1 : 0.5 }} />
+                <Btn label={t.submitRating} onPress={doRate} disabled={!stars} busy={rateBusy} style={{ marginTop: ARA[10], opacity: stars ? 1 : 0.5 }} />
               </DumanliCam>
             ) : (
               /* v1.81: puanlama bitince ikinci bir "Kazandın" kartı GÖSTERİLMEZ —
@@ -2371,7 +2402,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             )}
             {/* #6: oturum sonrası davet CTA — kullanıcı en mutlu anında viral döngü */}
             {rated && onReferral && (
-              <TouchableOpacity hitSlop={TAP.slop} onPress={onReferral}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onReferral}
                 style={{ flexDirection: "row", alignItems: "center", gap: ARA[12], backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.parlama, borderRadius: R.lg, padding: SP[4], marginTop: SP[3] }}>
                 <Ikon ad="davet" boy={22} renk={C.mutedAA} />
                 <View style={{ flex: 1 }}>
@@ -2783,8 +2814,8 @@ export function VerifyPhone({ t, session, onDone, onBack }) {
           {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
           <Btn label={t.verifyBtn} onPress={verify} disabled={busy || code.length !== 6} busy={busy} />
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: ARA[14] }}>
-            <TouchableOpacity hitSlop={TAP.slop} onPress={sendCode}><Text style={{ color: C.gold, fontSize: FS.sm }}>{t.resend}</Text></TouchableOpacity>
-            <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setStage("phone"); setCode(""); setErr(""); }}>
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={sendCode}><Text style={{ color: C.gold, fontSize: FS.sm }}>{t.resend}</Text></TouchableOpacity>
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { setStage("phone"); setCode(""); setErr(""); }}>
               <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.changeNum}</Text></TouchableOpacity>
           </View>
         </>
@@ -2801,8 +2832,8 @@ export function VerifyPhone({ t, session, onDone, onBack }) {
           {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
           <Btn label={t.verifyBtn} onPress={verifyEmailCode} disabled={busy || code.length !== 6} busy={busy} />
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: ARA[14] }}>
-            <TouchableOpacity hitSlop={TAP.slop} onPress={sendEmailCode}><Text style={{ color: C.gold, fontSize: FS.sm }}>{t.resend}</Text></TouchableOpacity>
-            <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setStage("phone"); setCode(""); setErr(""); }}>
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={sendEmailCode}><Text style={{ color: C.gold, fontSize: FS.sm }}>{t.resend}</Text></TouchableOpacity>
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { setStage("phone"); setCode(""); setErr(""); }}>
               <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.backToPhone}</Text></TouchableOpacity>
           </View>
         </>
@@ -3148,7 +3179,7 @@ export function Marketplace({ t, session, onBack }) {
           <View style={{ backgroundColor: C.hataBg, borderRadius: R.md, padding: SP[3], marginHorizontal: ARA[14], marginTop: ARA[10] }}>
             <Text style={{ color: C.redInk, fontSize: FS.sm }}>{err || yukErr}</Text>
             {!!yukErr && (
-              <TouchableOpacity onPress={load} hitSlop={TAP.slop} style={{ minHeight: 44, justifyContent: "center" }}>
+              <TouchableOpacity accessibilityRole="button" onPress={load} hitSlop={TAP.slop} style={{ minHeight: 44, justifyContent: "center" }}>
                 <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>{t.retry || "Yeniden dene"}</Text>
               </TouchableOpacity>
             )}
@@ -3175,7 +3206,7 @@ export function Marketplace({ t, session, onBack }) {
         <View style={{ backgroundColor: C.hataBg, borderRadius: R.xs, padding: SP[3], marginHorizontal: ARA[14], marginBottom: SP[2] }}>
           <Text style={{ color: C.redInk, fontSize: FS.sm }}>{err || yukErr}</Text>
           {!!yukErr && (
-            <TouchableOpacity onPress={load} hitSlop={TAP.slop}
+            <TouchableOpacity accessibilityRole="button" onPress={load} hitSlop={TAP.slop}
               style={{ minHeight: 44, justifyContent: "center" }}>
               <Text style={{ color: C.goldText, fontSize: FS.sm, fontWeight: "700" }}>{t.retry || "Yeniden dene"}</Text>
             </TouchableOpacity>
@@ -3184,7 +3215,7 @@ export function Marketplace({ t, session, onBack }) {
       )}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: ARA[14] }}>
         {[["all", t.catAll], ["lounge", "Lounge"], ["hotel", t.catHotel], ["miles", t.catMiles], ["esim", "eSIM"], ["insurance", t.catInsurance]].map(([k, lb]) => (
-          <TouchableOpacity hitSlop={TAP.slop} key={k} onPress={() => setCat(k)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} onPress={() => setCat(k)}
             style={{ paddingVertical: SP[2], paddingHorizontal: SP[3], borderBottomWidth: 2.5, borderBottomColor: cat === k ? C.gold : "transparent" }}>
             <Text style={{ fontSize: FS.sm, color: cat === k ? C.gold : C.mut, fontWeight: cat === k ? "700" : "400" }}>{lb}</Text>
           </TouchableOpacity>
@@ -3207,7 +3238,7 @@ export function Marketplace({ t, session, onBack }) {
         const owned = mine[hero.id];
         const short = Math.max(0, (hero.cost_points || 0) - bal);
         return (
-          <TouchableOpacity hitSlop={TAP.slop} activeOpacity={0.85} disabled={!!owned || short > 0}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} activeOpacity={0.85} disabled={!!owned || short > 0}
             onPress={() => redeem(hero)}
             style={{ backgroundColor: C.gece, borderRadius: R.sm, padding: ARA[18], marginBottom: SP[4], ...ELEV.raised }}>
             <Text style={{ ...T.label, color: C.gold, marginBottom: ARA[6] }}>{t.shopHeroReward}</Text>
@@ -3976,7 +4007,7 @@ export function HaberVer({ t, lang, airport, date }) {
                     .replace("{i}", String(r.eslesen_ilan ?? 0))}
                 </Text>
               </View>
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => kaldir(r.id)}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => kaldir(r.id)}
                 style={{ minHeight: TAP.minHeight, justifyContent: "center", paddingHorizontal: ARA[10] }}>
                 <Text style={{ color: C.red, fontSize: FS.sm, fontWeight: "700" }}>{t.remove}</Text>
               </TouchableOpacity>
@@ -5103,7 +5134,7 @@ export function LoungeRadarCard({ t, session, onOpen }) {
   }
 
   return (
-    <TouchableOpacity hitSlop={TAP.slop} onPress={() => onOpen(r)} activeOpacity={0.85}
+    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onOpen(r)} activeOpacity={0.85}
       style={{ backgroundColor: C.gece, borderRadius: R.sm, padding: SP[4], marginBottom: SP[3], flexDirection: "row", alignItems: "center" }}>
       <Ikon ad="radar" boy={22} renk={C.mutedAA} />
       <View style={{ flex: 1 }}>
@@ -5235,7 +5266,7 @@ export function HostApplyForm({ t, src, setSrc, cap, setCap, note, setNote, subm
       <Text style={S.label}>{t.accessSrcQ}</Text>
       <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: ARA[6] }}>
         {ACCESS_SOURCES.map(a => (
-          <TouchableOpacity key={a} onPress={() => setSrc(a)}
+          <TouchableOpacity accessibilityRole="button" key={a} onPress={() => setSrc(a)}
             style={[S.chip, src === a && S.chipOn, { marginBottom: SP[2] }]}>
             <Text style={{ color: src === a ? C.gold : C.ink, fontSize: FS.sm }}>{erisimEtiketi(t, a)}</Text>
           </TouchableOpacity>
@@ -5245,7 +5276,7 @@ export function HostApplyForm({ t, src, setSrc, cap, setCap, note, setNote, subm
       <Text style={[S.label, { marginTop: SP[3] }]}>{t.capQ}</Text>
       <View style={{ flexDirection: "row", marginBottom: ARA[6] }}>
         {[1, 2, 3].map(n => (
-          <TouchableOpacity key={n} onPress={() => setCap(n)}
+          <TouchableOpacity accessibilityRole="button" key={n} onPress={() => setCap(n)}
             style={[S.chip, cap === n && S.chipOn]}>
             <Text style={{ color: cap === n ? C.gold : C.ink, fontSize: FS.sm }}>
               {n === 3 ? "3+" : n} {t.hostApplyGuestUnit}
@@ -5415,14 +5446,14 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
 
   return (
     <ScrollView contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
-      <TouchableOpacity hitSlop={TAP.slop} onPress={onBack}><IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.base }} metin={t.back} /></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onBack}><IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.base }} metin={t.back} /></TouchableOpacity>
       <Text style={{ ...S.h1, color: C.ink, marginTop: SP[3] }}>{t.guideTitle}</Text>
       <Text style={{ fontSize: FS.sm, color: C.mut, lineHeight: 19, marginBottom: SP[4] }}>{t.guideSub}</Text>
 
       <Text style={S.label}>{t.guideAirport}</Text>
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginBottom: ARA[14] }}>
         {airports.slice(0, 10).map(a => (
-          <TouchableOpacity key={a.code} onPress={() => setAp(a)}
+          <TouchableOpacity accessibilityRole="button" key={a.code} onPress={() => setAp(a)}
             style={[S.chip, { borderColor: ap?.code === a.code ? C.gold : C.line,
                               backgroundColor: ap?.code === a.code ? C.goldSoft : C.card }]}>
             <Text style={{ fontSize: FS.sm, color: ap?.code === a.code ? C.gold : C.ink,
@@ -5438,7 +5469,7 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
           <Text style={S.label}>{t.guideCard}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginBottom: ARA[10] }}>
             {progs.filter(p => p.popular).map(p => (
-              <TouchableOpacity key={p.code} onPress={() => { setProg(p); setTier(null); }}
+              <TouchableOpacity accessibilityRole="button" key={p.code} onPress={() => { setProg(p); setTier(null); }}
                 style={[S.chip, { borderColor: prog?.code === p.code ? C.gold : C.line,
                                   backgroundColor: prog?.code === p.code ? C.goldSoft : C.card }]}>
                 <Text style={{ fontSize: FS.sm, color: prog?.code === p.code ? C.gold : C.ink }}>{p.name}</Text>
@@ -5450,7 +5481,7 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
               <Text style={S.label}>{t.guideTier}</Text>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[6], marginBottom: ARA[14] }}>
                 {(prog.tiers || []).map(tr => (
-                  <TouchableOpacity key={tr.code} onPress={() => setTier(tr)}
+                  <TouchableOpacity accessibilityRole="button" key={tr.code} onPress={() => setTier(tr)}
                     style={[S.chip, { borderColor: tier?.code === tr.code ? C.gold : C.line,
                                       backgroundColor: tier?.code === tr.code ? C.goldSoft : C.card }]}>
                     <Text style={{ fontSize: FS.sm, color: tier?.code === tr.code ? C.gold : C.ink }}>{tr.label}</Text>
@@ -5489,7 +5520,7 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
       ))}
 
       {!!hosts && hosts.count > 0 && (
-        <TouchableOpacity hitSlop={TAP.slop}
+        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop}
           onPress={() => (girisYok ? (onKayit && onKayit()) : (onDiscover && onDiscover({ airport: ap.code })))}
           style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                    borderRadius: R.sm, padding: ARA[14], marginTop: ARA[6] }}>
@@ -5555,7 +5586,7 @@ export function DateInput({ label = "TARİH", value, onChange }) {
 
       {_DTP ? (
         <>
-          <TouchableOpacity hitSlop={TAP.slop} onPress={() => setOpen(true)}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setOpen(true)}
             style={{ backgroundColor: C.bgAlt, borderWidth: 1, borderColor: human ? C.teal : C.line,
                      borderRadius: R.xs, padding: SP[3], flexDirection: "row",
                      justifyContent: "space-between", alignItems: "center" }}>
@@ -5695,7 +5726,7 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginTop: ARA[2] }}>{pick.name || "—"}</Text>
             </View>
             {!targetId && (
-              <TouchableOpacity hitSlop={TAP.slop} onPress={() => setPick({ id: null, name: null })}>
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setPick({ id: null, name: null })}>
                 <Text style={{ color: C.goldInk, fontSize: FS.sm, fontWeight: "600" }}>{t.repChange}</Text>
               </TouchableOpacity>
             )}
@@ -5709,7 +5740,7 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
                   <Text style={{ fontSize: FS.sm, color: C.mutedAA, lineHeight: 18 }}>{t.repNoContacts}</Text>
                 </View>
               ) : contacts.map(c => (
-                <TouchableOpacity hitSlop={TAP.slop} key={c.user_id} onPress={() => setPick({ id: c.user_id, name: c.name })}
+                <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={c.user_id} onPress={() => setPick({ id: c.user_id, name: c.name })}
                   style={{ flexDirection: "row", alignItems: "center", backgroundColor: C.card, borderWidth: 1,
                            borderColor: C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[2] , ...ELEV.card }}>
                   <View style={{ width: 32, height: 32, borderRadius: R.full, backgroundColor: C.bgAlt,
@@ -6040,7 +6071,7 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
     return (
       <View key={r.id} style={katli ? { paddingVertical: SP[3], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.kenarIsik || C.line } : [S.card, { padding: SP[3] }]}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity hitSlop={TAP.slop} disabled={!onOpenProfile}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} disabled={!onOpenProfile}
             onPress={() => onOpenProfile && onOpenProfile(r.peer_id)} activeOpacity={0.7}
             style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0 }}>
             <View style={{ width: 40, height: 40, borderRadius: R.md, backgroundColor: C.purpleBg,

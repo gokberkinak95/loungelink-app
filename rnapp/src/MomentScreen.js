@@ -324,8 +324,14 @@ export default function MomentScreen({
           <Btn v="gold" sm full label={primary.label} onPress={primary.onPress} />
         )}
         {!!secondary && (
+          // 5 Ekim (Gökberk md.2 · md.8) — ikinci düğme GÖRÜNMÜYORDU: `ust` varyantının metni fildişi,
+          // zemini ise `C.camKart` — Android'de DÜZ BEYAZ (#FFF) → beyaz üstüne fildişi. Ekran her
+          // zaman gece fotoğrafı: zemin koyu cam, kenar fildişi ışık, metin fildişi. Tüm anlar
+          // (Sıra sende · Oturum tamamlandı · Eşleştiniz · Oturum başladı) bu bileşeni kullanır.
           <Btn v={temaModu() === "v7" ? "ust" : "ghost"} sm full label={secondary.label} onPress={secondary.onPress}
-            style={{ marginTop: ARA[12], backgroundColor: C.camKart }} />
+            style={{ marginTop: ARA[12],
+                     backgroundColor: temaModu() === "v7" ? "rgba(249,248,246,0.10)" : C.camKart,
+                     borderColor: temaModu() === "v7" ? "rgba(249,248,246,0.38)" : undefined }} />
         )}
       </View>
     </View>

@@ -1,14 +1,6 @@
 {
  "console": [
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] ortak.js:320 Network request failed "
   },

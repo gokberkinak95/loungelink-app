@@ -109,7 +109,7 @@ export class ErrorBoundary extends React.Component {
         </Text>
 
         {!stuck && (
-          <TouchableOpacity hitSlop={TAP.slop} onPress={this.reset}
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={this.reset}
             style={{ backgroundColor: C.goldBtn, borderRadius: R.md, paddingVertical: ARA[14], alignItems: "center" }}>
             <Text style={{ color: C.onAccent, fontWeight: "700", fontSize: FS.base }}>
               {t.crashRetry || "Tekrar dene"}

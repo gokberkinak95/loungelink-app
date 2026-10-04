@@ -2941,13 +2941,13 @@ export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, 
               olduğunu düşünür. Etiketi olmayan yol, yol değildir. */}
           <View style={{ flexDirection: "row", gap: ARA[10] }}>
             {!!cancelLabel && (
-              <TouchableOpacity hitSlop={TAP.slop} onPress={onCancel} disabled={busy}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onCancel} disabled={busy}
                 style={{ flex: 1, backgroundColor: C.card, borderWidth: 1, borderColor: C.line, borderRadius: R.sm, paddingVertical: SP[3], alignItems: "center" }}>
                 <Text style={{ color: C.ink, fontWeight: "600", fontSize: FS.base }}>{cancelLabel}</Text>
               </TouchableOpacity>
             )}
             {!!confirmLabel && (
-              <TouchableOpacity hitSlop={TAP.slop} onPress={onConfirm} disabled={busy}
+              <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onConfirm} disabled={busy}
                 style={{ flex: 1, backgroundColor: danger ? C.dangerBtn : C.teal, borderRadius: R.sm, paddingVertical: SP[3], alignItems: "center" }}>
                 {/* 🔴 23 Eylül — tehlike onayı `C.red` (koyu temada açık pembe
                     #F2607F) üstüne `onAccent` yazıyordu: ölçülen 3.11:1, AA (4.5) altı.
@@ -3363,7 +3363,7 @@ export function useSikkeBasma() {
 export function SikkeDugme({ boy = 60, onPress, children, stil }) {
   const bas = useSikkeBasma();
   return (
-    <TouchableOpacity activeOpacity={1} hitSlop={TAP.slop} onPressIn={bas.basla} onPressOut={bas.birak}
+    <TouchableOpacity accessibilityRole="button" activeOpacity={1} hitSlop={TAP.slop} onPressIn={bas.basla} onPressOut={bas.birak}
       onPress={() => { dokunHafif(); onPress && onPress(); }} accessible={false}>
       <Animated.View style={[{ width: boy, height: boy, borderRadius: boy / 2, ...SIKKE_GOLGE,
                                transform: [{ scale: bas.olcek }] }, stil]}>
