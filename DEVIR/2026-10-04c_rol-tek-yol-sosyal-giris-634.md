@@ -2,6 +2,10 @@
 
 Önceki: DEVIR/2026-10-04b_uctan-uca-ve-yuk-testi-633.md
 
+## APK (EAS preview 6.3.4 · FINISHED)
+https://expo.dev/artifacts/eas/ucdAwsxb6L3-vDjavAHOKmOwud-DWgyLzLv85HoYRO0.apk
+Commit: loungelink-app v7-tema 4759762 (push) · rapor https://claude.ai/artifact/1WEz5xZPBbfxVc3hF7CaXS (v2)
+
 ## Sürümler (dosyadan)
 - app 6.3.4 · versionCode 283 · buildNumber 277
 - backoffice 1.96.3 (değişmedi) · website 0.70.0 (değişmedi)
