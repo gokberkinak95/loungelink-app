@@ -63,7 +63,14 @@ class Kayit:
                                   gerceklesen=gerceklesen, durum="GECTI" if ok else "KALDI", kanit=kanit))
         print("  %s [%s·%s·%s] %s%s" % ("✓" if ok else "✗", bolum, rol, tur, akis, "" if ok else "  — " + str(gerceklesen)[:160]))
     def yaz(self):
-        json.dump(self.satirlar, open(os.path.join(OUT, "akis_e2e.json"), "w", encoding="utf-8"),
+        # Bölüm bazında BİRLEŞTİR: tek bölüm yeniden koşulunca diğer bölümlerin son sonuçları korunur.
+        yol = os.path.join(OUT, "akis_e2e.json")
+        try:
+            eski = json.load(open(yol, encoding="utf-8"))
+        except Exception:
+            eski = []
+        simdi = {s["bolum"] for s in self.satirlar}
+        json.dump([s for s in eski if s["bolum"] not in simdi] + self.satirlar, open(yol, "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
         g = sum(1 for s in self.satirlar if s["durum"] == "GECTI")
         print("\n%d/%d akış kontrolü geçti" % (g, len(self.satirlar)))

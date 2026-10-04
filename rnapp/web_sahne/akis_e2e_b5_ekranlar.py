@@ -47,7 +47,9 @@ def ekranlar(b, port, k):
         return n == okunmamis, "sekme '%s' · DB okunmamış=%s" % (tumu, okunmamis)
     _dene(k, B, "Bildirim sekmesi sayacı = okunmamış bildirim sayısı", "misafir", "happy", "Aynı sayı", bildirim_liste)
     def bildirim_dokun():
-        ilk = db("""select id, title from notifications where user_id=%s and not read order by created_at desc, id desc limit 1""", (A,))
+        # Başlığı TEKİL olan okunmamış bildirim (aynı başlıklı iki satırda etiketle dokunuş belirsiz kalır)
+        ilk = db("""select max(id::text)::uuid, title from notifications where user_id=%s and not read
+                     group by title having count(*) = 1 order by max(created_at) desc limit 1""", (A,))
         if not ilk:
             return False, "okunmamış bildirim yok"
         nid, baslik = ilk[0]
