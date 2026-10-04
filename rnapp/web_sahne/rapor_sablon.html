@@ -68,12 +68,12 @@ ol.sira{padding-left:22px} ol.sira li{margin:6px 0} code{font:13px var(--mono); 
 </style>
 
 <header class="ust"><div class="ic">
-  <p class="kas">LoungeLink · 4 Ekim 2026 · app 6.3.3 · BO 1.96.3</p>
+  <p class="kas">LoungeLink · 4 Ekim 2026 · app 6.3.4 · BO 1.96.3</p>
   <h1>Uçtan uca test, yük testi ve sınırlarımız</h1>
   <p>Uygulama, BO ve sunucu (BE) — misafir ve host gözüyle, mutlu yol · uç durum · alternatif · olumsuz akışlar. Her satır ölçüme dayanır: ekranda görülen, veritabanında oluşan ve yan etkileri (kredi, slot, bildirim, görünürlük).</p>
   <div class="rakamlar">
     <div class="rakam"><b>{{GECEN}}/{{TOPLAM}}</b><span>akış kontrolü geçti · {{BOLUM_SAYISI}} bölüm</span></div>
-    <div class="rakam"><b>{{BULGU_SAYISI}}</b><span>bulgu (hata + performans) — biri hariç hepsi düzeltildi</span></div>
+    <div class="rakam"><b>{{BULGU_SAYISI}}</b><span>bulgu (hata + performans) — hepsi düzeltildi</span></div>
     <div class="rakam"><b>39,6 sn → 1,3 sn</b><span>Keşfet · ölçek dünyasında (50 bin üye)</span></div>
     <div class="rakam"><b>22,8 sn → 11 ms</b><span>ana sayfa p50 · 80 eşzamanlı kullanıcı</span></div>
   </div>
@@ -98,8 +98,8 @@ ol.sira{padding-left:22px} ol.sira li{margin:6px 0} code{font:13px var(--mono); 
 <tbody>
 <tr><td>Keşfet · discover_availabilities (filtresiz)</td><td class="sayi kotu">39.650 ms</td><td class="sayi iyi">1.170 ms</td><td>ilan başına is_visible → test_hesabi_gizli_mi (satır içine alınamayan çağrı, 30 bin kez)</td><td class="kod">317</td></tr>
 <tr><td>Ana sayfa · kesfet_ozeti</td><td class="sayi kotu">37.270 ms</td><td class="sayi iyi">483 ms</td><td>aynı kök + 100 ilan sınırlı listeden sayım (sayılar eksik çıkıyordu)</td><td class="kod">317</td></tr>
-<tr><td>Tanış · discover_people</td><td class="sayi kotu">15.500 ms</td><td class="sayi iyi">687 ms</td><td>aynı kök, 50 bin profil</td><td class="kod">319</td></tr>
-<tr><td>Tanış · kisi_ara (herkesle eşleşen arama)</td><td class="sayi kotu">19.190 ms</td><td class="sayi">3.170 ms</td><td>aynı kök; kalan süre her eşleşmede profil görünürlük kararı (aşırı uç: 50 bin eşleşme)</td><td class="kod">319</td></tr>
+<tr><td>Tanış · discover_people</td><td class="sayi kotu">15.500 ms</td><td class="sayi iyi">154 ms</td><td>aynı kök, 50 bin profil; 327 gizlilik süzgeci erken eler</td><td class="kod">319 · 327</td></tr>
+<tr><td>Tanış · kisi_ara (herkesle eşleşen arama)</td><td class="sayi kotu">19.190 ms</td><td class="sayi iyi">~200 ms</td><td>aynı kök + her eşleşmede görünürlük kararı → ilk 200 adayda (sonuç aynı, 820 karşılaştırma)</td><td class="kod">319 · 326</td></tr>
 <tr><td>Ana sayfa · ana_sayfa_akisi</td><td class="sayi kotu">367 ms</td><td class="sayi iyi">12 ms</td><td>"yeni sohbet" noktası bütün okunmamış mesajları tarıyordu</td><td class="kod">318</td></tr>
 <tr><td>İstek gönder · create_request</td><td class="sayi kotu">~430 ms</td><td class="sayi iyi">~150 ms</td><td>kayıt için havalimanının tüm keşif listesi kuruluyordu</td><td class="kod">320</td></tr>
 <tr><td>Keşfet (havalimanı) · erişim kararı</td><td class="sayi kotu">800 karar / 100 ilan</td><td class="sayi iyi">100</td><td>satır içine alınan CTE kararı 8 kez koşturuyordu</td><td class="kod">320</td></tr>
@@ -123,7 +123,7 @@ ol.sira{padding-left:22px} ol.sira li{margin:6px 0} code{font:13px var(--mono); 
 <tbody>
 <tr><td><b>Keşfet havalimanı listesi</b> ~150–220 ms tek başına, yükte ~1–1,7 sn</td><td>Bir havalimanında yüzlerce canlı ilan + yoğun saat</td><td>Kısa vadede yeterli. Büyümede: ilan kartı ön-hesaplaması (puan girdileri tabloya) ve sayfalama; şu an genel "havalimanı boşsa tümü" filtresi indeks kullanamıyor ve 50 bin satırlık üye/profil tablosunu karma ediyor.</td></tr>
 <tr><td><b>kesfet_ozeti</b> yükte en çok CPU yiyen çağrı</td><td>Aynı anda çok ana sayfa açılışı</td><td>Uygulamada düzeltildi: kart çizilmeyecekse sorulmuyor + 60 sn önbellek. Sonraki adım: sunucuda dakikalık özet tablosu (pg_cron).</td></tr>
-<tr><td><b>Kişi arama</b> geniş eşleşmede saniyeler</td><td>"Ay", "Me" gibi 2 harfli aramalar, 50 bin+ üye</td><td>Aday kümesini önce sınırla (ilk 200 isim), sonra görünürlük kararı; isim için trigram indeksi.</td></tr>
+<tr><td><b>Kişi arama</b> — çözüldü (326)</td><td>—</td><td>Aday sınırı uygulandı (~0,2 sn). İleride: isim için trigram indeksi (yerelde pg_trgm yok, ölçülemedi).</td></tr>
 <tr><td><b>Süpürge</b> (expire_stale_sessions) koşunca 150–450 ms</td><td>5 dakikada bir, veri büyüdükçe uzar</td><td>Artık kimseyi bekletmiyor (skip locked). Supabase'de pg_cron işi açık olmalı (ll-supurge, 5 dk) — uygulama tetiği yedek.</td></tr>
 <tr><td><b>Bağlantı havuzu</b></td><td>Yerel testte 100 bağlantıda tavan; Supabase'de doğrudan bağlantı sınırı plana bağlı</td><td>Uygulama PostgREST üzerinden gider (havuzlu). Sunucu tarafı iş/rapor için Supavisor işlem kipi; compute boyutunu DAU ile birlikte izleyin (panel → Reports → Database).</td></tr>
 <tr><td><b>Realtime</b> (sohbet)</td><td>Eşzamanlı abone sayısı plan sınırına yaklaşınca</td><td>Sohbet ekranı dışında abonelik açmayın; plan sınırını panelden teyit edin (bu testte ölçülmedi).</td></tr>
@@ -142,8 +142,9 @@ ol.sira{padding-left:22px} ol.sira li{margin:6px 0} code{font:13px var(--mono); 
 {{E2E}}
 
 <h2>Senden beklenen kararlar</h2>
-<div class="kart karar"><h3>1 · Aynı saatte farklı havalimanında seyahat (B15)</h3><p>Sunucu yalnız aynı havalimanında çakışan seyahati reddediyor; IST 10–12 varken SAW 11–13 kabul ediliyor. Fiziksel olarak mümkün değil — tüm havalimanlarında çakışmayı reddedelim mi?</p></div>
-<div class="kart karar"><h3>2 · Supabase'de SQL 315 → 324</h3><p>Sıra aşağıda ve <code>sql/SQL_SIRA.txt</code>'de. Her dosyanın sonunda doğrulama sorgusu var (tümü <code>tamam = true</code>).</p></div>
+<div class="kart karar"><h3>1 · Supabase'de SQL 325 → 329</h3><p>315–324 koşuldu. Kalan beşi <code>sql/SQL_SIRA.txt</code>'nin en üstünde; her dosyanın sonunda doğrulama sorgusu var (tümü <code>tamam = true</code>). 329'dan sonra Cron'da <code>ll-silinen-hesap-anonim</code> görünmeli.</p></div>
+<div class="kart karar"><h3>2 · BO onayı olmadan host olmuş mevcut hesaplar</h3><p>Tek yol kuralı (328) yeni hesaplara uygulanır; daha önce "Kartındaki yeri değerlendir" ile anında host olanlar host kalır. Listesi 328'in sonundaki sorguda — gözden geçirip gerekirse BO'dan başvuru isteyebilirsin.</p></div>
+<div class="kart karar"><h3>3 · Silinen hesap için 14 gün</h3><p>Seçtiğim süre 14 gün (anında serbest bırakmak puan/yasak sıfırlamaya kapı açar). Bu sürede destek talebiyle geri alma şu an BO'da elle (deleted_at + giriş kilidini kaldırmak); istersen BO'ya "Hesabı geri al" düğmesi eklerim.</p></div>
 <div class="kart karar"><h3>3 · Önceki açıklar</h3><p>Universal/App Link (Apple Team ID + canlı alan adı) · Firebase google-services.json (Android push) · Supabase Redirect URLs'te <code>loungelink://**</code>.</p></div>
 
 <h2>Supabase SQL sırası</h2>
@@ -158,6 +159,11 @@ ol.sira{padding-left:22px} ol.sira li{margin:6px 0} code{font:13px var(--mono); 
 <li><code>322_hesap_silme_calisir_ve_acik_isleri_kapatir.sql</code> — hesap silme + yasak/silme sonrası açık işler (B14, B19)</li>
 <li><code>323_ilan_ac_saat_ve_kontenjan_kapisi.sql</code> — ilan aç Türkçe sebep (B13)</li>
 <li><code>324_tanis_silinmis_yasakli_suzgeci.sql</code> — Tanış'ta yasaklı/silinmiş görünmez (B16) · 319'dan sonra</li>
+<li><code>325_seyahat_cakismasi_farkli_havalimani.sql</code> — aynı anda iki havalimanı yok; düzenlemede de çakışma kapısı (B15)</li>
+<li><code>326_kisi_ara_aday_siniri.sql</code> — geniş kişi araması 3,2 sn → ~0,2 sn (P10)</li>
+<li><code>327_tanis_profil_gorunurlugu.sql</code> — Tanış gizlilik tercihini okur (B21)</li>
+<li><code>328_host_tek_yol_bo_onayli_basvuru.sql</code> — host olmanın tek yolu BO onaylı başvuru (B23)</li>
+<li><code>329_silinen_hesap_14_gun_anonim.sql</code> — 14 gün sonra otomatik anonim · BO Anonimleştir düzeltmesi · silme sürecinde giriş kapalı (B22, B26)</li>
 </ol>
 
 <h2>Yöntem</h2>

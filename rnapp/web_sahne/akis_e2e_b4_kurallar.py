@@ -182,12 +182,21 @@ def kurallar(b, port, k):
             s.ol("arda"); _, hs = s.cagir("select seyahat_sil(%s)::text", (vid,))
             kaldi = s.q("select count(*) from visits where id=%s", (vid,))
             sonuc.append("düzenle→%s(%s) sil→%s" % (yeni, hu or "OK", "silindi" if kaldi == 0 else "DURUYOR %s" % hs))
-            s.ol("arda"); _, hx = s.cagir("select seyahat_ekle('SAW',%s,'11:00','13:00')", (g,))
-            sonuc.append("[KARAR] başka havalimanında aynı saat→%s" % ("KABUL EDİLİYOR" if not hx else hx))
-            return ok and yeni == "10:30:00" and kaldi == 0, " · ".join(sonuc)
+            # B15 · SQL 325: başka havalimanında aynı saat REDDEDİLİR; aktarmalı (örtüşmeyen) aynı gün kabul
+            s.ol("arda"); g2 = g + _dt.timedelta(days=3)
+            s.cagir("select seyahat_ekle('IST',%s,'10:00','12:00')", (g2,))
+            _, hx = s.cagir("select seyahat_ekle('SAW',%s,'11:00','13:00')", (g2,))
+            _, hy = s.cagir("select seyahat_ekle('ESB',%s,'15:00','17:00')", (g2,))
+            vy = s.q("select id from visits where user_id=%s and visit_date=%s and airport_code='ESB'", (KIM["arda"], g2))
+            s.ol("arda"); _, hz = s.cagir("select update_visit(%s, null, null, null, '11:00', '13:00')::text", (vy,))
+            kx = (hx or "").split(":")[-1].strip().split(" ")[0]; kz = (hz or "").split(":")[-1].strip().split(" ")[0]
+            sonuc.append("başka havalimanı aynı saat→%s%s · aktarmalı ESB 15–17→%s · düzenleyip çakıştır→%s%s" % (
+                kx or "KABUL!", "✓TR/EN" if kx and _cevirisi_var(kx) else "", hy or "OK", kz or "KABUL!", "✓TR/EN" if kz and _cevirisi_var(kz) else ""))
+            b15 = bool(hx) and _cevirisi_var(kx) and not hy and bool(hz) and _cevirisi_var(kz)
+            return ok and yeni == "10:30:00" and kaldi == 0 and b15, " · ".join(sonuc)
         finally:
             s.bitir()
-    _dene(k, B, "Seyahat: ekle / düzenle / sil + geçmiş tarih · ters saat · bilinmeyen havalimanı · çakışan saat reddedilir",
+    _dene(k, B, "Seyahat: ekle / düzenle / sil + geçmiş tarih · ters saat · bilinmeyen havalimanı · çakışan saat (aynı ve FARKLI havalimanı, düzenlemede de · B15) reddedilir · aktarmalı gün kabul",
           "misafir", "edge", "Kurallar sunucuda", seyahat_negatif)
 
     # ── 4 · host ilanı kaldırır: bekleyen + kabul edilmiş misafir ─────────

@@ -2506,10 +2506,9 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     // Gorsel-4: gelen istek sahipleri de kesif listesinde "Yanitla" ile gorunur
     const gorunen = all.filter(p => p.rel === "none" || p.rel === "incoming");
     setPeople(gorunen);
-    // 4 Eylül — tasarım 05'te "Uçuş" çipi SEÇİLİ açılıyor: aynı uçuştaki
-    // insan varsa liste onlarla başlar (en yakın eşleşme); yoksa süzgeç boş
-    // bir ekran üretmesin diye seçilmez. Kullanıcı elle değiştirince dokunulmaz.
-    setCipF(f => (f === null && gorunen.some(p => p.same_flight) ? "ucus" : f));
+    // 4 Ekim (Gökberk) — ekran artık "Tümü" ile açılıyor (uygulamayı kullanan, görünür herkes);
+    // eskiden aynı uçuşta biri varsa "Uçuş" kendiliğinden seçiliyor ve liste ona daralıyordu.
+    // Uçuş/Salon/Rota birer dokunuşla daraltır.
     // 🔴 #33 KOK COZUM: Baglantilarim ARTIK discover_people'dan DEGIL —
     // kesif filtreleri (seyahat penceresi/gorunurluk/kadin-guvenlik) kabul
     // edilmis baglantiyi gizleyebiliyordu. Kalici iliski kalici sorgudan gelir:
@@ -2703,6 +2702,10 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
           ok banttadır (App.js). */}
       {sub === "discover" ? (
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginBottom: ARA[14] }}>
+          {/* 4 Ekim (Gökberk) — "Tümü" çipi EN BAŞTA: süzgeçsiz liste (uygulamayı kullanan, görünür
+              herkes) artık bir dokunuşla seçilebiliyor. Eskiden ancak seçili çipe tekrar dokunup
+              kaldırarak açılıyordu; kimse bilmiyordu. Tümü seçiliyken cipF = null. */}
+          <Cip key="hepsi" etiket={t.meetChipAll} secili={cipF === null} onPress={() => setCipF(null)} />
           {[["ucus", t.meetChipFlight], ["salon", t.meetChipLounge], ["rota", t.meetChipRoute]].map(([k, lb]) => (
             <Cip key={k} etiket={lb} secili={cipF === k} onPress={() => setCipF(cipF === k ? null : k)} />
           ))}

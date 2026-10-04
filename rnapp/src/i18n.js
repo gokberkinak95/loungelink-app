@@ -370,6 +370,7 @@ export const D = {
     e_gecersiz_adet: "Bir seferde en fazla 3 hak hediye edebilirsin.",
     e_airport_required: "Havalimanı seçmen gerekiyor.",
     e_ayni_saatte_seyahatin_var: "Aynı gün ve saatte bu havalimanında zaten bir seyahatin var.",
+    e_baska_havalimaninda_seyahatin_var: "Bu saatlerde başka bir havalimanında seyahatin var — aynı anda iki havalimanında olamazsın. Saatleri ayır ya da diğer seyahati düzenle.",
     e_unknown_airport: "Bu havalimanını tanımıyoruz.",
 
     // ───────── v2.95 · "LoungeLink sona doğru" listesi ─────────
@@ -642,6 +643,7 @@ export const D = {
       "availability_expired": "Bu ilan süresi doldu.",
       "availability_not_found": "İlan bulunamadı.",
       "not_your_connection": "Bu bağlantı senin değil; işlem yapılamadı.",
+      "host_basvurusu_gerekli": "Host olmak için başvurun onaylanmalı. Profil › Kartımda bir kişilik yer var adımından başvurabilirsin.",
       "active_session_exists": "Bu kişiyle süren ya da yaklaşan bir buluşman var. Bağlantıyı kaldırmadan önce buluşmayı tamamla ya da iptal et.",
       "cuzdan_sahibi_degil": "Bu cüzdanı yalnız sahibi görebilir.",
       "program_not_found": "Bu erişim kaynağını tanıyamadık. Listeden yeniden seç.",
@@ -1492,7 +1494,8 @@ export const D = {
     confirmDelete: "Hesabını silmek istediğine emin misin? Bu işlem geri alınamaz.",
     confirmYes: "Evet, eminim",
     confirmNo: "Vazgeç",
-    emailInUse: "Bu e-posta ile zaten bir hesap var — Giriş Yap'ı dene",
+    emailInUse: "Bu e-posta ile zaten bir hesap var. Giriş Yap'ı dene — hesabı Google ya da Apple ile açtıysan aynı düğmeyle devam et.",
+    e_hesap_kapali: "Bu hesap kapatıldı. Silme talebinden sonraki 14 gün içinde destekle iletişime geçersen geri alabiliriz; 14 gün sonra bu e-postayla yeniden kayıt olabilirsin.",
     settingsTitle: "Ayarlar",
     editProfTitle: "Profili Düzenle",
     addVisitTitle: "Havalimanı Ziyareti Ekle",
@@ -2116,6 +2119,7 @@ export const D = {
     meetSub: "Aynı lounge'daki yolcularla bağlan",
     // 3 Eylül — tasarım 05 çipleri (Tanış filtreleri)
     connBandEyebrow: "Kısa bir not ekle — karşılıklı onayla",
+    meetChipAll: "Tümü",
     meetChipFlight: "Uçuş",
     meetChipLounge: "Salon",
     meetChipRoute: "Rota",
@@ -2640,6 +2644,7 @@ export const D = {
     e_gecersiz_adet: "You can gift at most 3 slots at a time.",
     e_airport_required: "Please pick an airport.",
     e_ayni_saatte_seyahatin_var: "You already have a trip at this airport at that time.",
+    e_baska_havalimaninda_seyahatin_var: "You have a trip at another airport during these hours — you can't be at two airports at once. Adjust the times or edit the other trip.",
     e_unknown_airport: "We do not know this airport.",
 
     // ───────── v2.95 ─────────
@@ -2871,6 +2876,7 @@ export const D = {
       "availability_expired": "This listing has expired.",
       "availability_not_found": "Listing not found.",
       "not_your_connection": "This connection isn't yours; the action could not be completed.",
+      "host_basvurusu_gerekli": "To become a host, your application needs to be approved. You can apply from Profile › I have a spare seat on my card.",
       "active_session_exists": "You have an ongoing or upcoming meetup with this person. Complete or cancel it before removing the connection.",
       "cuzdan_sahibi_degil": "Only the owner can view this wallet.",
       "program_not_found": "We couldn't recognise this access source. Pick it again from the list.",
@@ -3576,7 +3582,8 @@ export const D = {
     confirmDelete: "Are you sure you want to delete your account? This cannot be undone.",
     confirmYes: "Yes, I am sure",
     confirmNo: "Cancel",
-    emailInUse: "An account with this email already exists — try Log In",
+    emailInUse: "An account with this email already exists. Try Log In — if you created it with Google or Apple, continue with that button.",
+    e_hesap_kapali: "This account has been closed. Contact support within 14 days of the deletion request to restore it; after 14 days you can sign up again with this email.",
     settingsTitle: "Settings",
     editProfTitle: "Edit Profile",
     addVisitTitle: "Add Airport Visit",
@@ -4040,6 +4047,7 @@ export const D = {
     meetTitle: "Meet",
     meetSub: "Connect with travellers in the same lounge",
     connBandEyebrow: "Add a short note — mutual approval",
+    meetChipAll: "All",
     meetChipFlight: "Flight",
     meetChipLounge: "Lounge",
     meetChipRoute: "Route",

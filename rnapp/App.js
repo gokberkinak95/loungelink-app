@@ -535,11 +535,15 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
       // ENGELLEMİYOR (ürün tasarımı "ilan açan host olur" diyor) ama
       // kaynağını kaydediyor ve audit_log'a düşürüyor — BO artık kimin
       // nasıl host olduğunu görebiliyor.
+      // 🔴 4 Ekim 2026 (SQL 328 · Gökberk kararı) — HOST OLMANIN TEK YOLU BO ONAYLI BAŞVURU.
+      // Burada "host" seçen kişi misafir açılır; niyeti saklanır ve kabuk onu başvuru
+      // formuna götürür (Main · rol efekti). Sunucu da rolumu_sec('host')'u reddeder.
       const { error } = await supabase.rpc("rolumu_sec", {
-        p_role: role,
+        p_role: role === "host" ? "guest" : role,
         p_gender: gender || null,
       });
       if (error) throw error;
+      if (role === "host") { try { await AsyncStorage.setItem("ll_host_niyeti", "1"); } catch (e) { /* niyet kaybolursa form Profil'den açılır */ } }
       const { error: eOnay } = await supabase.rpc("grant_consents", {
         // 🔴 v2.99 — "18 yaşındayım" AYRI BİR ONAY OLARAK EKLENDİ.
         // Platform sözleşmesi 18 yaş sınırı koyuyordu ama uygulama bunu
@@ -958,6 +962,23 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         if (!canli) return;
         if (!error) {
           if (data?.role === "host" || data?.role === "guest") setRoleState(data.role);
+          // 4 Ekim 2026 (SQL 328) — kayıtta ya da tamamlama ekranında "host" seçen kişi misafir
+          // açılır; host rolü BO onaylı başvuruyla gelir. Niyeti varsa ve başvurusu yoksa formu
+          // BİR KEZ açıyoruz (sorulduysa tekrar sorulmaz; Profil › Kartımda yer var hep açık).
+          if (data?.role === "guest") {
+            try {
+              const niyet = session?.user?.user_metadata?.role === "host"
+                || (await AsyncStorage.getItem("ll_host_niyeti")) === "1";
+              const soruldu = (await AsyncStorage.getItem("ll_host_basvuru_soruldu")) === "1";
+              if (niyet && !soruldu) {
+                const { data: ba, error: baErr } = await supabase.rpc("my_host_application");
+                if (baErr) logError("host_niyeti", baErr);
+                // my_host_application başvuru yoksa {status:"none"} döner (boş değil)
+                else if (!ba || (!ba.is_host && (ba.status === "none" || !ba.status))) setShowHostApply(true);
+                await AsyncStorage.setItem("ll_host_basvuru_soruldu", "1");
+              }
+            } catch (e) { logError("host_niyeti", e); }
+          }
           return;
         }
         logError("kabuk_rol", error);
@@ -1036,6 +1057,12 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         // Uçuşu zaten varsa hiçbir şey sorulmaz: iş bitmiş demektir.
         if (u?.role === "guest") {
           await AsyncStorage.setItem("ll_access_asked", "1");
+          // 4 Ekim 2026 (SQL 328) — kayıtta "host" seçen kişiye ilk açılışta HOST BAŞVURU FORMU
+          // gelir (Main · rol efekti); seyahat sihirbazı onun ÜSTÜNE açılıp formu örtüyordu.
+          // Bu kişi için sihirbaz kendiliğinden açılmaz (seyahatini istediği an ekler).
+          const hostNiyeti = session?.user?.user_metadata?.role === "host"
+            || (await AsyncStorage.getItem("ll_host_niyeti")) === "1";
+          if (hostNiyeti) return;
           const today = yerelGun();
           // Hata YUTULMAZ: sorgu düşerse var olan uçuşu "yok" sanıp
           // kullanıcıyı zorla forma sokmayız.
@@ -1392,16 +1419,11 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
       onDone={async () => { try { await AsyncStorage.setItem("ll_access_asked","1"); } catch (e) {} setFirstRunAccess(false); setTaninmaTetik(x => x + 1); }}
       onBack={async () => { try { await AsyncStorage.setItem("ll_access_asked","1"); } catch (e) {} setFirstRunAccess(false); }} />),
     access: () => (<HostAccessSource t={t} session={session} role={role}
-      onBecomeHost={async () => {
-        // 🔴 v2.89 — "Host'a geç" TEK KAPIDAN (SQL 232). Doğrudan
-        // users.update yerine rolumu_sec: kaynak yazılıyor, audit_log'a
-        // düşüyor, ve istemcinin role kolonuna yazma yetkisi yok.
-        const { error } = await supabase.rpc("rolumu_sec", { p_role: "host" });
-        // ⚠️ `logError` App.js'te import edilmemiş (denetim yakaladı);
-        // burada sessiz yutmuyoruz — hata konsola düşüyor ve rol
-        // değişmediği için ekran misafir kapısında kalıyor.
-        if (error) { console.warn("rolumu_sec", error.message); return; }
-        setRoleState("host");
+      onBecomeHost={() => {
+        // 🔴 4 Ekim 2026 (SQL 328 · Gökberk kararı) — eskiden burada rolumu_sec('host') vardı:
+        // misafir tek dokunuşla, kart beyanından bile ÖNCE host oluyordu (ölçüldü). Host rolü
+        // artık yalnız BO onaylı başvuruyla: kişi başvuru formuna gider.
+        setShowAccess(false); setShowHostApply(true);
       }}
       onDone={() => setShowAccess(false)} onBack={() => setShowAccess(false)} />),
     bc: () => (<HostBroadcast t={t} lang={lang} session={session} onBack={() => setShowBc(false)} onVerify={() => setShowVerify(true)} />),
@@ -1536,7 +1558,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
     // DEĞİLDİR — KAPIYI EKRANIN ÖNÜNE KOY, DÜĞMENİN ARKASINA DEĞİL."
     addAvail: () => (role === "host"
       ? (<HostAvailability t={t} session={session} onBack={() => setShowAddAvail(false)} onDone={() => { setShowAddAvail(false); setReload(x => x + 1); }} onVerify={() => { setShowAddAvail(false); setShowVerify(true); }} />)
-      : (<HostDaveti t={t} onBecomeHost={() => { setShowAddAvail(false); setShowAccess(true); }} onBack={() => setShowAddAvail(false)} />)),
+      : (<HostDaveti t={t} onBecomeHost={() => { setShowAddAvail(false); setShowHostApply(true); }} onBack={() => setShowAddAvail(false)} />)),
     guide: () => (<LoungeGuide t={t} onBack={() => setShowGuide(false)}
       onDiscover={(sc) => { setShowGuide(false); setShowDisc(sc || {}); }} />),
     disc: () => (<Discovery t={t} lang={lang} session={session} scope={showDisc} onOpenProfile={setPubProfile} onBack={() => setShowDisc(null)} onMeet={() => { setShowDisc(null); setTab("meet"); }} onAddTrip={(av) => { setShowDisc(null); setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} onVerify={() => { setShowDisc(null); setShowVerify(true); }} />),
@@ -1893,7 +1915,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
                  üst plan) ama hiçbiri host OLMAYAN kişiye görünmüyordu.
                  🆕 SINIF: "BİR MERDİVENİ YALNIZCA ÜZERİNDE DURANLARA
                  GÖSTERİRSEN, KİMSE İLK BASAMAĞA ÇIKMAZ." */
-              : <HostDaveti t={t} onBecomeHost={() => setShowAccess(true)} />)
+              : <HostDaveti t={t} onBecomeHost={() => setShowHostApply(true)} />)
           /* 🔴 v2.65 · PROP-DROP: burada onAddVisit geçiliyordu ama Trips'in
              imzasında öyle bir prop YOK — o yüzden misafir tarafında
              "+ Seyahat ekle" eski SATIR-İÇİ formu açıyordu, host tarafında
@@ -2737,7 +2759,9 @@ function SocialAuthButtons({ t, onBusyChange, onError }) {
       // Sağlayıcı Supabase'de açılmadıysa bu hata gelir — kullanıcıya
       // teknik mesaj değil, anlaşılır bir açıklama göster.
       const provNotSet = /provider is not enabled|unsupported provider|oauth_no_url/i.test(res.code || "");
-      onError(provNotSet ? t.socialNotReady : (t.socialFailed || res.code));
+      onError(provNotSet ? t.socialNotReady
+        : /banned/i.test(res.code || "") ? t.e_hesap_kapali   // 4 Ekim (SQL 329): silme sürecindeki hesap
+        : (t.socialFailed || res.code));
     }
     // Başarılıysa onAuthStateChange oturumu alır; ekran kendiliğinden geçer.
   }
@@ -2927,6 +2951,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
       const raw = String(e.message || e);
       setErr(/email not confirmed/i.test(raw) ? t.verifyNotYet
         : /invalid login credentials/i.test(raw) ? t.e_bad_credentials
+        : /banned/i.test(raw) ? t.e_hesap_kapali   // 4 Ekim (SQL 329): silme sürecindeki hesap
         : mapErr(t, raw));
       setBusy(false);
     }
@@ -2973,6 +2998,9 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         // `declare_phone` içinde. Kullanıcıya mesaj aşağıda, numara
         // yazılırken veriliyor — anonim bir tarama ucu bırakmadan.
         // ══════════════════════════════════════════════════════════════
+        // 4 Ekim 2026 (SQL 328) — "host" seçen kişi misafir açılır; niyeti cihazda da saklanır ki
+        // kabuk onu başvuru formuna götürsün (yalnız oturumdaki meta veriye güvenmiyoruz).
+        if (role === "host") { try { await AsyncStorage.setItem("ll_host_niyeti", "1"); } catch (e) { /* form Profil'den de açılır */ } }
         const { data: sud, error } = await supabase.auth.signUp({
           email: email.trim(), password: pass,
           // 4 Ekim 2026: onay bağlantısı UYGULAMAYA döner (loungelink://auth-callback →
@@ -2988,6 +3016,13 @@ function Auth({ mode, t, go, lang, toggleLang }) {
             setBusy(false); setErr(t.emailInUse); return;
           }
           throw error;
+        }
+        // 4 Ekim 2026 — E-posta doğrulaması AÇIKKEN Supabase kayıtlı e-postayı hata olarak
+        // DÖNDÜRMEZ (e-posta yoklamasını önlemek için): sahte bir kullanıcı ve BOŞ `identities`
+        // verir, e-posta da göndermez. Eskiden "e-postanı kontrol et" ekranı açılıyor, hiç posta
+        // gelmiyordu. Boş kimlik listesi = bu e-posta zaten kayıtlı (Google/Apple dahil).
+        if (sud?.user && Array.isArray(sud.user.identities) && sud.user.identities.length === 0) {
+          setBusy(false); setErr(t.emailInUse); return;
         }
         // ══════════════════════════════════════════════════════════
         // 🔴 26 AĞUSTOS — E-POSTA DOĞRULAMASI AÇIKSA KAYIT DÖNEN
@@ -3114,6 +3149,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
       // kullanıcının anlayacağı Türkçe karşılık.
       const raw = String(e.message || e);
       const key = /invalid login credentials/i.test(raw) ? "e_bad_credentials"
+        : /banned/i.test(raw) ? "e_hesap_kapali"
         : /email not confirmed/i.test(raw) ? "e_email_not_confirmed"
         : /rate limit|too many/i.test(raw) ? "e_too_many_attempts" : null;
       // 🔴 23 Eylül — tanınmayan hata HAM gösteriliyordu (İngilizce Supabase

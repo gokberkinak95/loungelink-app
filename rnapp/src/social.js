@@ -65,7 +65,11 @@ async function tarayiciOAuth(provider) {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: REDIRECT_URL, skipBrowserRedirect: true },
+      // 4 Ekim 2026 — Google: hesap seçici HER SEFERİNDE. Çıkış yapınca sistem tarayıcısındaki
+      // Google oturumu kalıyordu; "Google ile devam et" sessizce SON hesaba giriyordu — birden
+      // çok Google hesabı olan kişi kayıt olduğu hesabı seçemiyordu.
+      options: { redirectTo: REDIRECT_URL, skipBrowserRedirect: true,
+                 ...(provider === "google" ? { queryParams: { prompt: "select_account" } } : {}) },
     });
     if (error) return { ok: false, code: error.message };
     if (!data?.url) return { ok: false, code: "oauth_no_url" };
@@ -75,6 +79,10 @@ async function tarayiciOAuth(provider) {
 
     // Supabase geri dönüşte ya ?code= (PKCE) ya da #access_token= gönderir.
     const url = res.url;
+    // 4 Ekim 2026 — sunucu girişi REDDETTİYSE (ör. silme sürecindeki / yasaklı hesap: "User is
+    // banned") hata adresin içinde gelir; eskiden "oauth_no_token" diye genel hataya düşüyordu.
+    const hataAciklama = /[?&#]error_description=([^&]+)/.exec(url)?.[1];
+    if (hataAciklama) return { ok: false, code: decodeURIComponent(hataAciklama.replace(/\+/g, " ")) };
     const code = /[?&]code=([^&]+)/.exec(url)?.[1];
     if (code) {
       const { error: e2 } = await supabase.auth.exchangeCodeForSession(decodeURIComponent(code));

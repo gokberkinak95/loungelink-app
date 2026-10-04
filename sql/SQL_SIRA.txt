@@ -1,3 +1,34 @@
+SQL SIRASI - 4 Ekim 2026 (3. tur) - YENI: 325 + 326 + 327 + 328 + 329 - 315..324'ten SONRA (onlar kosuldu)
+
+  1) 325_seyahat_cakismasi_farkli_havalimani.sql
+       -> Ayni saatlerde FARKLI havalimaninda ikinci seyahat reddedilir (mutlak saatle; aktarmali
+          ayni gun yolculuk etkilenmez). Seyahat DUZENLEME de artik cakisma denetliyor.
+          Var olan cakisan kayitlara dokunulmaz.
+  2) 326_kisi_ara_aday_siniri.sql      -> genis kisi aramasi 3,2 sn -> ~0,2 sn (sonuc ayni)
+  3) 327_tanis_profil_gorunurlugu.sql  (319 + 324'ten sonra)
+       -> GIZLILIK: Tanis artik profil gorunurlugu tercihini okur ("Yalniz baglantilarim" /
+          "Guvendiklerim" secen kisi herkese gorunmez). Hiz da artar (0,7 sn -> 0,15 sn).
+
+  4) 328_host_tek_yol_bo_onayli_basvuru.sql
+       -> Host olmanin TEK yolu BO onayli basvuru (Gokberk karari): misafir kendini host yapamaz,
+          kayitta "host" secen misafir acilir (uygulama basvuru formunu acar), ilan arka kapisi
+          (create_availability_base) kullaniciya kapandi. Var olan hostlara dokunulmaz.
+  5) 329_silinen_hesap_14_gun_anonim.sql  (322 + 328'den sonra)
+       -> Silinen hesap 14 gun sonra her gece 03:30 OTOMATIK anonimlesir; e-posta ve Google/Apple
+          kimligi serbest kalir. Yasakli hesabin e-postasi serbest kalmaz. Silme surecinde giris kapali.
+       -> HATA DUZELTMESI: BO'daki "Anonimlestir" auth.users'ta olmayan kolonlara yaziyordu, hic
+          calismiyordu.
+       -> Kosunca Integrations > Cron'da 'll-silinen-hesap-anonim' gorunmeli.
+
+  Hepsi tekrar kosulabilir; sonlarinda dogrulama sorgusu (tamam = true).
+  Canlida var olan cakisan seyahatleri gormek istersen (yalniz okur):
+    select count(*) from visits a join visits b on a.user_id = b.user_id and a.id < b.id
+      and a.airport_code <> b.airport_code and b.visit_date between a.visit_date - 1 and a.visit_date + 1
+      and yerel_an(a.visit_date, a.time_from, a.airport_code) < yerel_an(b.visit_date, b.time_to, b.airport_code)
+      and yerel_an(b.visit_date, b.time_from, b.airport_code) < yerel_an(a.visit_date, a.time_to, a.airport_code)
+     where a.visit_date >= current_date;
+
+---------------------------------------------------------------------------
 SQL SIRASI - 4 Ekim 2026 - YENI: 315..320 (uctan uca test + yuk testi turu) - 313/314ten SONRA
 
   Supabase SQL Editor'de SIRAYLA (her dosyayi ayri, tamamini yapistir). Hepsi tekrar kosulabilir,

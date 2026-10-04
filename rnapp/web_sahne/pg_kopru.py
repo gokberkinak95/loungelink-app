@@ -264,11 +264,13 @@ def kimlik(istek):
             return {"data": {"user": user, "session": {"user": user, "access_token": "sahne"} if onayli else None}, "error": None}
         if op == "signin":
             cur.execute("""select id, email_confirmed_at is not null, encrypted_password = extensions.crypt(%s, encrypted_password),
-                                  coalesce(raw_app_meta_data, '{}'::jsonb)
+                                  coalesce(raw_app_meta_data, '{}'::jsonb), coalesce(banned_until > now(), false)
                              from auth.users where lower(email)=%s""", (str(istek.get("password") or ""), e))
             r = cur.fetchone()
             if not r or not r[2]:
                 return {"data": None, "error": {"message": "Invalid login credentials", "code": "invalid_credentials"}}
+            if r[4]:   # GoTrue gibi: banned_until gelecekteyse giriş reddedilir (SQL 329 · silme süreci)
+                return {"data": None, "error": {"message": "User is banned", "code": "user_banned"}}
             if not r[1]:
                 return {"data": None, "error": {"message": "Email not confirmed", "code": "email_not_confirmed"}}
             user = {"id": str(r[0]), "email": e, "app_metadata": r[3] if isinstance(r[3], dict) else json.loads(r[3])}

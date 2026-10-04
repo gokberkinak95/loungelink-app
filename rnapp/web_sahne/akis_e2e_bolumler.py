@@ -126,10 +126,15 @@ def giris(b, port, k):
             hesap_btn.click(); e.bekle(2500)
             ana = e.var("Ana Sayfa", 6000)
             r = db("select u.role::text, p.name, (select count(*) from consents c where c.user_id=u.id) from users u join profiles p on p.user_id=u.id where u.email=%s", (eposta,))
-            ok = kilit and ana and r and r[0][0] == rol and r[0][2] >= 6
-            return ok, "onaysız kilitli=%s ana_sayfa=%s db=%s" % (kilit, ana, r)
-        _dene(k, B, "Kayıt: onaysız kilitli; onayla → ana sayfa; DB rol=%s + 6 onay + profil" % rol, rol, "happy",
-              "Ana sayfa; users.role doğru; consents≥6", onay_ve_kayit)
+            # SQL 328 (Gökberk kararı): host rolü yalnız BO onaylı başvuruyla → "host" seçen MİSAFİR açılır
+            # ve başvuru formu kendiliğinden gelir.
+            beklenen_rol = "guest"
+            form = (rol != "host") or e.var("Başvuruyu Gönder", 4000)
+            ok = kilit and ana and r and r[0][0] == beklenen_rol and r[0][2] >= 6 and form
+            return ok, "onaysız kilitli=%s ana_sayfa=%s db=%s başvuru_formu=%s" % (kilit, ana, r, form)
+        _dene(k, B, ("Kayıt: onaysız kilitli; onayla → ana sayfa; DB rol=guest + 6 onay + profil" if rol == "guest" else
+                     "Kayıt (host seçildi): misafir açılır · başvuru formu kendiliğinden gelir (host rolü BO onayıyla · SQL 328)"),
+              rol, "happy", "Ana sayfa; users.role doğru; consents≥6", onay_ve_kayit)
         def tanitim_yok():
             return e.yok("Kalkışa iki saat"), "tanıtım metni görünüyor mu"
         _dene(k, B, "Kayıt sonrası tanıtım TEKRAR GELMEZ", rol, "edge", "Ana sayfada kalır", tanitim_yok)
