@@ -127,3 +127,48 @@ def hesap(b, port, k):
             e.kapat()
     _dene(k, B, "Arayüz: Ayarlar › Hesabımı sil → çıkış → aynı bilgilerle giriş → 'Bu hesap kapatıldı…' (yarı silinmiş hesaba girilmez)",
           "misafir", "negative", "Türkçe açıklama, giriş yok", ui_sil_giris)
+
+    # ── BO "Hesabı geri al" (SQL 330) ─────────────────────────────────────
+    def geri_al():
+        c = psycopg2.connect(**DSN); cur = c.cursor(); iz = []
+        try:
+            e = "geri.%s@e2e.test" % _uuid.uuid4().hex[:8]
+            u = _kaydol(cur, e)
+            _sil_ve_bekle(cur, u)
+            cur.execute("update users set deleted_at = now() - interval '5 days' where id = %s", (u,))
+            cur.execute("select banned_until > now() from auth.users where id=%s", (u,)); kilit0 = cur.fetchone()[0]
+            cur.execute("set local role service_role")
+            cur.execute("select admin_hesabi_geri_al(%s, 'e2e@bo', 'destek #1')::text", (u,)); r = cur.fetchone()[0]
+            cur.execute("reset role")
+            cur.execute("""select u.deleted_at is null, coalesce(a.banned_until > now(), false), p.show_on_discovery,
+                                  (select status from deletion_requests d where d.matched_user_id = u.id order by created_at desc limit 1)
+                             from users u join auth.users a on a.id = u.id join profiles p on p.user_id = u.id where u.id = %s""", (u,))
+            acik, kilit1, kesif, talep = cur.fetchone()
+            cur.execute("select silinen_hesaplari_anonimlestir()::text"); cur.fetchone()
+            cur.execute("select anonymized_at is null from users where id=%s", (u,)); anonim_degil = cur.fetchone()[0]
+            iz.append("silinmişken giriş kilidi=%s → geri al → hesap açık=%s kilit=%s keşifte=%s BO talebi=%s · gece işi dokunmadı=%s" % (
+                kilit0, acik, kilit1, kesif, talep, anonim_degil))
+            # anonimleşmiş ve yasaklı hesap geri alınamaz
+            e2 = "geri2.%s@e2e.test" % _uuid.uuid4().hex[:8]; u2 = _kaydol(cur, e2)
+            _sil_ve_bekle(cur, u2); cur.execute("select silinen_hesaplari_anonimlestir()::text"); cur.fetchone()
+            cur.execute("savepoint s"); 
+            try:
+                cur.execute("set local role service_role"); cur.execute("select admin_hesabi_geri_al(%s, 'e2e', null)", (u2,)); h1 = "GEÇTİ!"
+            except Exception as ex:
+                h1 = str(ex).splitlines()[0]
+            cur.execute("rollback to savepoint s"); cur.execute("reset role")
+            e3 = "geri3.%s@e2e.test" % _uuid.uuid4().hex[:8]; u3 = _kaydol(cur, e3)
+            cur.execute("update users set banned_at = now() where id=%s", (u3,)); _sil_ve_bekle(cur, u3)
+            cur.execute("savepoint s2")
+            try:
+                cur.execute("set local role service_role"); cur.execute("select admin_hesabi_geri_al(%s, 'e2e', null)", (u3,)); h2 = "GEÇTİ!"
+            except Exception as ex:
+                h2 = str(ex).splitlines()[0]
+            cur.execute("rollback to savepoint s2"); cur.execute("reset role")
+            iz.append("anonim hesap=%s · yasaklı hesap=%s" % (h1[:40], h2[:50]))
+            return (kilit0 and acik and not kilit1 and kesif and talep == "rejected" and anonim_degil
+                    and "zaten_anonim" in h1 and "yasakli" in h2), " · ".join(iz)
+        finally:
+            c.rollback(); c.close()
+    _dene(k, B, "BO 'Hesabı geri al': silme sürecindeki hesap açılır (giriş kilidi kalkar, keşfe döner, talep 'rejected', gece işi dokunmaz) · anonim/yasaklı hesap geri alınamaz",
+          "BO→misafir", "alternate", "14 gün içinde dönüş", geri_al)

@@ -62,3 +62,13 @@ Commit: loungelink-app v7-tema 4759762 (push) · rapor https://claude.ai/artifac
 4. Supabase Auth ayarları (panelden teyit): Google + Apple sağlayıcıları açık · Redirect URLs loungelink://** ·
    "Confirm email" açık/kapalı hangisi (iki durum da artık doğru davranıyor).
 5. Önceki: Universal/App Link · Firebase.
+
+## EK · BO "Hesabı geri al" (BO 1.96.4)
+- Gökberk: SQL 325-329 koşuldu; geri al düğmesi istendi.
+- SQL 330_bo_hesabi_geri_al.sql (YENİ — Supabase'de koşulmalı): admin_hesabi_geri_al(user, admin, gerekçe), yalnız service_role.
+  Silme sürecindeki hesabı açar (deleted_at + auth giriş kilidi kalkar, keşfe döner, BO talebi 'rejected');
+  kapanan istek/buluşma/bağlantı/ilan geri açılmaz; anonim ve yasaklı hesap açılmaz.
+- BO: app/users/[id] → "Silme süreci" kutusu (talep tarihi, otomatik anonim tarihi, gerekçe + "Hesabı geri al"); denetim kaydı user.restore.
+  node check.js temiz · npm run build OK · commit a81d468 (push → Vercel).
+- Test: web_sahne hesap bölümü 4/4 (yeni: geri al + anonim/yasaklı geri alınamaz).
+- App build gerekmedi (uygulama kodu değişmedi; 6.3.4 APK geçerli).

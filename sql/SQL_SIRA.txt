@@ -1,3 +1,11 @@
+SQL SIRASI - 4 Ekim 2026 (4. tur) - YENI: 330 - 325..329'dan SONRA (onlar kosuldu)
+
+  1) 330_bo_hesabi_geri_al.sql  -> BO kullanici sayfasinda "Hesabi geri al" (silme talebinin 14 gunu icinde).
+       Hesap ve giris acilir, BO talebi 'rejected'; silme aninda kapanan istek/bulusma/baglanti/ilan geri acilmaz.
+       Anonimlesmis ve yasakli hesap bu yoldan acilmaz. BO 1.96.4 bu fonksiyonu kullanir (yoksa dugme hata yazar).
+       Dogrulama: tamam = true.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 4 Ekim 2026 (3. tur) - YENI: 325 + 326 + 327 + 328 + 329 - 315..324'ten SONRA (onlar kosuldu)
 
   1) 325_seyahat_cakismasi_farkli_havalimani.sql
