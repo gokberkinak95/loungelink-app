@@ -35,7 +35,7 @@ Yeni SQL yok. Önceki turdan: 330 (koşulmadıysa) + 331.
   - Yeni yolcularla tanış → Tanış listesi.
 - node check.js temiz · render 39/39.
 - Statik denetimler temiz: tema, satır, düğme, tasarım borcu, dokunma, ham kod, palet, cihaz parite.
-- Tam regresyon (13 bölüm): 190/192. İki kırmızı tarama bölümünde `push_izni_bildir: Failed to fetch` (test köprüsü ağ hatası, bu turda dokunulmadı); tarama ayrıca yeniden koşuldu: TARAMA_BURAYA
+- Tam regresyon (13 bölüm): 190/192. İki kırmızı tarama bölümünde `push_izni_bildir: Failed to fetch` (test köprüsü ağ hatası, bu turda dokunulmadı); tarama yeniden koşuldu: 83/83 (kırmızılar geçici).
 
 ## Notlar
 - Web export bu makinede bellek yetmezliğiyle (OOM) düştü (boş RAM ~260 MB).
