@@ -1438,6 +1438,8 @@ export function FotoSahne({ children, perdeBas = 0.36, perdeGuc = 0.58, odak, od
 // GÖRMEZ, TAKILDIĞINI GÖRÜR."
 // ══════════════════════════════════════════════════════════════════════
 export const BANT_KOMPAKT = 84;
+// Kompakt çubukta 38'lik daire düğme durum çubuğunun ALTINA düşmeden sığar mı (alt pay ARA[14])?
+const KOMPAKT_SAG_SIGAR = BANT_KOMPAKT - 14 - 38 >= TOPPAD;
 
 export function bantYuksekligi() {
   return Math.round(Dimensions.get("window").width * BANT_ORAN);
@@ -1566,7 +1568,12 @@ export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktS
                    color: temaModu() === "v7" ? C.foto.baslik : C.ink, lineHeight: SATIR(FS.title, "serif") }}>
           {kompaktBaslik || ""}
         </Text>
-        {kompaktSag || null}
+        {/* 5 Ekim (Gökberk: "profilde kaydırınca ayarlar düğmesi telefonun başlığının arkasında
+            kalıyor, tıklanamıyor"). `daire` düğmesi alignSelf:flex-start taşıyor → satırın
+            flex-end hizasını ezip çubuğun TEPESİNE, durum çubuğunun altına çıkıyordu (her daralan
+            bantta). Artık başlıkla aynı alt çizgide; durum çubuğu yüksek cihazda (iOS, çentikli
+            Android) sığmıyorsa kompakt hâlde HİÇ çizilmez — yukarı kaydırınca bantta zaten var. */}
+        {kompaktSag && KOMPAKT_SAG_SIGAR ? <View style={{ alignSelf: "flex-end" }}>{kompaktSag}</View> : null}
       </Animated.View>
     </Animated.View>
   );

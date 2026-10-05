@@ -475,7 +475,7 @@ export function ilanlariSirala(liste) {
   });
 }
 
-export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, onEditAvail, focusAvailId, onFocusDone, bnt }) {
+export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, onEditAvail, focusAvailId, onFocusDone, bnt, onDiscover }) {
   const uid = session?.user?.id;
   // Eşleşme anındaki sol avatarın baş harfi. Kayıt sırasında ad
   // `signUp(..., { data: { name } })` ile yazılıyor, yani oturumun
@@ -743,7 +743,9 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
           kind={karsilik.kind}
           title={t.momentReciprocityTitle}
           subtitle={String(t.momentReciprocityBody || "").replace("{n}", String(karsilik.kredi || 1))}
-          primary={{ label: t.momentReciprocityCta, onPress: karsilikKapat }}
+          // 5 Ekim — "Salon ara" yalnız anı KAPATIYORDU (aramıyordu): kazanılan kredi misafir
+          // olarak harcanır → Keşfet açılır.
+          primary={{ label: t.momentReciprocityCta, onPress: () => { karsilikKapat(); onDiscover && onDiscover(); } }}
           /* v2.87 — madde 1 ile aynı sınıf hata: bu an Yayın sekmesinde
              yaşanıyor, bir sohbetten gelmiyor. "Sohbete dön" var olmayan
              bir yeri işaret ediyordu. */

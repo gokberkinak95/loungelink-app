@@ -2406,6 +2406,9 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   // İki kaynaklı bir gerçek, er ya da geç iki farklı cevap verir.
   // 3 Eylül — tasarım 05'in üç çipi: Uçuş · Salon · Rota (istemci filtresi)
   const [cipF, setCipF] = useState(null);           // "ucus" | "salon" | "rota" | null
+  // 5 Ekim (Gökberk) — boş durum çipe ve seyahat durumuna göre konuşur: "seyahat ekle" çağrısı
+  // seyahati olana söylenmez. null = henüz bilinmiyor (yükleniyor).
+  const [seyahatVar, setSeyahatVar] = useState(null);
   const [filtersOpenLocal, setFiltersOpenLocal] = useState(false);
   const filtersOpen = filtersOpenProp !== undefined ? filtersOpenProp : filtersOpenLocal;
   const setFiltersOpen = setFiltersOpenProp || setFiltersOpenLocal;
@@ -2465,10 +2468,13 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
       // havalimani+zamani cikariyor. Once "p_airport: null" geciyorduk ama
       // 024'teki govde parametreyi zaten HIC kullanmiyordu; simdi kullaniyor.
       : supabase.rpc("discover_people", apFilter ? { p_airport: apFilter } : {});
-    const [{ data: ppl }, { data: inc }] = await Promise.all([
+    const bugun = new Date(); const gunStr = `${bugun.getFullYear()}-${String(bugun.getMonth() + 1).padStart(2, "0")}-${String(bugun.getDate()).padStart(2, "0")}`;
+    const [{ data: ppl }, { data: inc }, { count: sayi }] = await Promise.all([
       peopleQuery,
       supabase.from("connection_requests").select("*").eq("to_id", uid).eq("status", "pending"),
+      supabase.from("visits").select("id", { count: "exact", head: true }).eq("user_id", uid).gte("visit_date", gunStr),
     ]);
+    setSeyahatVar(typeof sayi === "number" ? sayi > 0 : null);
     // 🔴 GELEN BAĞLANTI İSTEKLERİ KAYBOLUYORDU (Gökberk madde 1).
     // `inc` yukarıda çekiliyordu ama HİÇ KULLANILMIYORDU: liste yalnız
     // discover_people'dan türetiliyor ve o RPC keşif filtrelerini
@@ -2832,14 +2838,30 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             {shownPeople.length === 0 ? (ara.trim().length >= 2 ? null : (
               // 4 Ekim — arama sürerken bu kart "Seyahatini ekle" diyordu (seyahati olana da):
               // aramanın sonucu yukarıda söyleniyor; boş-ağ çağrısı yalnız arama yokken.
-              <View style={S.empty}>
-                <Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.base, textAlign: "center" }}>{t.networkTitle}</Text>
-                <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", marginTop: SP[1], lineHeight: 18 }}>{t.networkDesc}</Text>
-                <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", marginTop: SP[2] }}>{t.meetEmpty}</Text>
-                {onAddTrip && (
-                  <Btn label={t.addTrip} onPress={() => onAddTrip(null)} a11yLabel={t.addTrip} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
-                )}
-              </View>
+              // 5 Ekim (Gökberk) — BOŞ DURUM SEKMEYE ÖZGÜ: "Uçuş" boşken genel ağ tanıtımı
+              // yazıyordu. Başlık + ne zaman dolacağı + yapılabilecek İKİ şey: seyahat ekle
+              // (yoksa) · öteki çiplere geç (çip seçiliyse).
+              (() => {
+                const bos = {
+                  ucus:  [t.meetEmptyFlightTitle, seyahatVar ? t.meetEmptyFlightHasTrip : t.meetEmptyFlightNoTrip],
+                  salon: [t.meetEmptyLoungeTitle, seyahatVar ? t.meetEmptyLoungeHasTrip : t.meetEmptyLoungeNoTrip],
+                  rota:  [t.meetEmptyRouteTitle, seyahatVar ? t.meetEmptyRouteHasTrip : t.meetEmptyRouteNoTrip],
+                }[cipF] || [t.networkTitle, seyahatVar ? t.meetEmptyAllHasTrip : t.meetEmpty];
+                return (
+                  <View style={S.empty}>
+                    <Text style={{ color: C.ink, fontWeight: "700", fontSize: FS.base, textAlign: "center" }}>{bos[0]}</Text>
+                    {!cipF && <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", marginTop: SP[1], lineHeight: 18 }}>{t.networkDesc}</Text>}
+                    <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center", marginTop: SP[2], lineHeight: 20 }}>{bos[1]}</Text>
+                    {onAddTrip && seyahatVar === false && (
+                      <Btn label={t.addTrip} onPress={() => onAddTrip(null)} a11yLabel={t.addTrip} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
+                    )}
+                    {!!cipF && (
+                      <Btn v="ghost" sm full={false} label={t.meetEmptySeeAll} onPress={() => setCipF(null)} a11yLabel={t.meetEmptySeeAll}
+                        style={{ marginTop: ARA[10], paddingHorizontal: ARA[20] }} />
+                    )}
+                  </View>
+                );
+              })()
             ))
             : shownPeople.map(p => {
               // Tasarım 05: karta dokunmak = kişiye giden tek yol (ok).
@@ -2900,7 +2922,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             <View style={S.empty}>
               <Text style={{ color: C.mut, fontSize: FS.sm, textAlign: "center" }}>{t.connReqEmpty}</Text>
               {setSub ? (
-                <Btn label={t.meetTitle} onPress={() => setSub("discover")} a11yLabel={t.calmFind} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
+                <Btn label={t.connsFindPeople} onPress={() => setSub("discover")} a11yLabel={t.connsFindPeople} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
               ) : null}
             </View>
           ) : (
@@ -2956,7 +2978,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
                 onPress={() => { setIstekSekmesi("giden"); setSub("reqs"); }} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
             ) : null}
             {onRequestListing || setSub ? (
-              <Btn label={t.meetTitle} onPress={() => setSub("discover")} a11yLabel={t.calmFind} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
+              <Btn label={t.connsFindPeople} onPress={() => setSub("discover")} a11yLabel={t.connsFindPeople} style={{ marginTop: SP[3], paddingHorizontal: ARA[20] }} />
             ) : null}
           </View>
         ) : (

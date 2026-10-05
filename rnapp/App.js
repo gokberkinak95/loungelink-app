@@ -1907,7 +1907,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             İÇTEKİ SORUYU ANLAMSIZ, ONA BAĞLI DALI ÖLÜ YAPAR." */}
         {tab === "trips" && (hostTripsSub === "ilan"
           ? (role === "host"
-              ? <Hosting key={"h" + reload} t={t} lang={lang} session={session} onOpenChat={setChat} onAddAvail={() => setShowAddAvail(true)} onAddCard={() => setShowAccess(true)} onEditAvail={(a) => setEditAvail(a)} bnt={bntTrips}
+              ? <Hosting key={"h" + reload} t={t} lang={lang} session={session} onOpenChat={setChat} onDiscover={() => setShowDisc({})} onAddAvail={() => setShowAddAvail(true)} onAddCard={() => setShowAccess(true)} onEditAvail={(a) => setEditAvail(a)} bnt={bntTrips}
                   focusAvailId={odakAvail} onFocusDone={() => setOdakAvail(null)} />
               /* 🔴 v2.96 (eleştiri A1) — HOST OLMAYANA MERDİVENİ GÖSTER.
                  Ölçtüm: host'a verdiğimiz karşılıkların HEPSİ zaten kurulu
@@ -1925,7 +1925,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
         {/* 4 Eylül — Trips artık yalnız tasarım 14'ü çiziyor: host daveti
             (v3.4 merdiveni) "İlanlarım" çipinin arkasında (misafirde Lounge
             erişim kurulumunu açar), rehber Ana Sayfa'da, sohbet İstekler'de. */}
-        {tab === "meet" && <Meet t={t} lang={lang} session={session} rol={role} onOpenProfile={setPubProfile} onOpenChat={(channelId, name) => setCompChat({ channelId, name })} radarFilter={radar} onClearRadar={() => setRadar(null)} onRequestListing={(av) => setShowDisc({ airport: av.airport_code, focusHost: av.host_id, focusAvail: av.id })} onVerify={() => setShowVerify(true)} onAddTrip={(av) => { setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} filtersOpen={meetFilterOpen} setFiltersOpen={setMeetFilterOpen} altSekme={meetSub} setAltSekme={setMeetSub} bnt={bntMeet} />}
+        {tab === "meet" && <Meet key={"m" + reload} t={t} lang={lang} session={session} rol={role} onOpenProfile={setPubProfile} onOpenChat={(channelId, name) => setCompChat({ channelId, name })} radarFilter={radar} onClearRadar={() => setRadar(null)} onRequestListing={(av) => setShowDisc({ airport: av.airport_code, focusHost: av.host_id, focusAvail: av.id })} onVerify={() => setShowVerify(true)} onAddTrip={(av) => { setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} filtersOpen={meetFilterOpen} setFiltersOpen={setMeetFilterOpen} altSekme={meetSub} setAltSekme={setMeetSub} bnt={bntMeet} />}
         {/* 5 Eylül — profil bandı artık Profile'ın kendisinde (kimlik + şerit
             bandın içinde; veri orada). */}
         {tab === "prof" && <Profile t={t} refresh={profRefresh} session={session} onManagePlan={() => setShowPlans(true)} onSafety={() => setShowSafety(true)} onTrust={() => setShowTrust(true)} onHistory={() => setShowHist(true)} onReferral={() => setShowRef(true)} onRatings={() => setShowRatings(true)} onWallet={() => setShowWallet(true)} onLogout={handleLogout} onShop={() => setShowShop(true)} onSettings={() => setShowSettings(true)} onCampaigns={() => setShowCamps(true)} onBroadcast={() => setShowBc(true)} onBell={() => setShowNotif(true)} unread={unread} onEditProfile={() => setShowEditProf(true)} />}
@@ -1968,7 +1968,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
       <View onLayout={(e) => { const h = Math.round(e.nativeEvent.layout.height); if (h > 0 && h !== cubukH) setCubukH(h); }}
             pointerEvents={temaModu() === "v7" ? "box-none" : "auto"}
             style={{ backgroundColor: temaModu() === "v7" ? "transparent" : C.bg, paddingHorizontal: ARA[14],
-                     marginTop: temaModu() === "v7" ? -40 : 0, zIndex: 10,
+                     marginTop: temaModu() === "v7" ? -40 : 0, zIndex: katmanCubuguGoster && topOverlay ? 51 : 10,
                      // Android sırayı zIndex değil elevation ile verir: kartlar (elevation 2) çubuğun
                      // fildişi geçişinin ÜSTÜNE çizilmesin. Zeminsiz kapta gölge çizilmez, yalnız sıra.
                      elevation: temaModu() === "v7" && Platform.OS === "android" ? 12 : undefined, shadowOpacity: 0,
@@ -2118,7 +2118,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
           pointerEvents="box-none"
           style={{
             position: "absolute", left: 0, right: 0, top: 0,
-            bottom: katmanCubuguGoster ? cubukH : 0,
+            // 5 Ekim (Gökberk: "Salon ara'da arkada ana sayfa duruyor") — çubuklu katman çubuğun ÜST
+            // kenarında bitiyordu; v7 çubuğunun üst 40pt'si saydam geçiş → orada ALTTAKİ SEKME
+            // (ana sayfa) görünüyordu. Sekmeler gibi çubuğun 40pt arkasına uzanır; çubuk üstte çizilir.
+            bottom: katmanCubuguGoster ? Math.max(0, cubukH - (temaModu() === "v7" ? 40 : 0)) : 0,
             backgroundColor: C.paper,
             // ══════════════════════════════════════════════════════════
             // 🔴 12 EYLÜL — KATMAN, ALTINDAKİ EKRANIN BANDININ ALTINDA
@@ -2135,7 +2138,11 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             // 🆕 SINIF: "ÜSTE ÇİZİLMESİ GEREKEN KATMANA Z VERMEZSEN, EN
             // ÜSTTE OLAN KATMAN DEĞİL Z'Sİ OLAN HERHANGİ BİR ŞEY OLUR."
             // ══════════════════════════════════════════════════════════
-            zIndex: 20,
+            // 5 Ekim — 20 YETMİYORDU: ana sayfanın durum çubuğu perdesi (zIndex 30) Android'de
+            // görünüm düzleştirmesiyle katmanla KARDEŞ oluyor ve Keşfet'in tepesine soluk bir
+            // şerit çiziyordu (cihazda görüldü). Katman, sekme içindeki her z'den yüksek (≤40);
+            // hata bandı (90) yine üstünde.
+            zIndex: 50,
             // 28 Eylül — çubuğu örten katman, altındaki her yükseltmeli
             // öğeden (kart 1/4/8, kapsül 12) yüksek: Android'de görünen üst
             // ile dokunulan üst aynı olsun. Tam ekran → gölgesi ekran dışında.
