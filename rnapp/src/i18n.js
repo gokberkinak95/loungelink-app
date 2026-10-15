@@ -610,7 +610,7 @@ export const D = {
     cancelTripTitle: "Seyahati iptal et?",
     cancelTripBody: "bu seyahat ve ona bağlı host eşleşmeleri kaldırılacak.",
     cancelTripConfirm: "Seyahati iptal et",
-    deleteAccountBody: "Hesabın hemen kapanır. 14 gün içinde destek@loungelink.co adresine yazarsan geri açılabilir; bu sürenin sonunda verilerin kalıcı olarak silinir ve geri alınamaz. App Store veya Google Play aboneliğin varsa önce mağaza ayarlarından iptal et — hesabı silmek mağaza aboneliğini durdurmaz.",
+    deleteAccountBody: "Hesabın hemen kapanır. 14 gün içinde destek@loungelink.co adresine yazarsan geri açılabilir; bu sürenin sonunda verilerin kalıcı olarak silinir ve geri alınamaz. Uygulama mağazasından alınmış bir aboneliğin varsa önce mağazanın abonelik ayarlarından iptal et — hesabı silmek mağaza aboneliğini durdurmaz.",
     errMap: {
       no_access_source: "Önce lounge erişim kaynağını seç (Priority Pass, Business Class vb.).",
       // 🔴 12 Eylül · gece — DÖRT KOD "BİR ŞEYLER TERS GİTTİ"YE DÜŞÜYORDU.
@@ -2885,7 +2885,7 @@ export const D = {
     cancelTripTitle: "Cancel this trip?",
     cancelTripBody: "this trip and its host matches will be removed.",
     cancelTripConfirm: "Cancel trip",
-    deleteAccountBody: "Your account is closed right away. If you write to destek@loungelink.co within 14 days it can be reopened; after that your data is permanently deleted and this can't be undone. If you have an App Store or Google Play subscription, cancel it in the store settings first — deleting your account does not stop the store subscription.",
+    deleteAccountBody: "Your account is closed right away. If you write to destek@loungelink.co within 14 days it can be reopened; after that your data is permanently deleted and this can't be undone. If you have a subscription from the app store, cancel it in the store's subscription settings first — deleting your account does not stop the store subscription.",
     errMap: {
       no_access_source: "Pick your lounge access source first.",
       active_session_exists: "You have an active session. You can remove this connection once the session is complete.",

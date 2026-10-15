@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -34,7 +47,9 @@
   "N",
   "Nehir A.",
   "Ürün Tasarımcısı",
-  "IST",
+  "TK2125 · ESB · 18 Ekim",
+  "",
+  "İş",
   "İlanı var",
   "",
   "Doğrulanmış · güven 64",
@@ -42,7 +57,7 @@
   "S",
   "Selin B.",
   "Ürün Yönetimi",
-  "TK712 · IST · 21 Şubat 2027",
+  "TK712 · IST · 22 Şubat 2027",
   "",
   "İş",
   "İlanı var",
@@ -90,9 +105,7 @@
   "Temel Doğrulama · güven 50",
   "",
   "S",
-  "Sinan Privia",
-  "Bankacilik",
-  "SAW"
+  "Sinan Privia"
  ],
  "tasan": [],
  "bitisik": []

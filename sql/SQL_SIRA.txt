@@ -1,3 +1,14 @@
+SQL SIRASI - 16 Ekim 2026 (7. tur) - YENI: 334 - 332 ve 333'ten SONRA
+
+  1) 334_ekonomi_ve_icerik_suzgeci.sql
+       -> EKONOMI: Kahya 12 -> 16 kredi (kredi basina en ucuz plan olsun; once Sik Ucan'dan
+          pahaliydi). Yolcu'nun (ucretsiz) aylik kredisi artik BIRIKMEZ (bakiye paya tamamlanir).
+          Kayit hediyesi 5 -> 3 kredi.
+       -> APPLE 1.2: profil, sohbet, baglanti notu, soru-cevap, puan yorumu, istek ve ilan
+          notlarinda kufur/hakaret suzgeci (sozcuk maskelenir; sohbette moderasyona isaretlenir).
+       Dogrulama: uc satir tamam = true.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 15 Ekim 2026 (6. tur) - YENI: 332 + 333 - 330 ve 331'den SONRA (kosulmadilarsa once onlar)
 
   1) 332_revenuecat_satin_alma.sql  -> Magaza satin almalari (RevenueCat): urun eslemesi (iap_urunleri),

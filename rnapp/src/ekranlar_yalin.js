@@ -5079,6 +5079,11 @@ export function Wallet({ t, session, onBack }) {
           kaplıyordu; bakiyesi yeten kullanıcı için okunacak bir şey yok.
           Katlanır: başlık + tek satır özet hep görünür, açıklama ve düğme
           bir dokunuş uzakta. Bakiye 3'ün altındaysa açık başlar. */}
+      {/* 16 Ekim (SQL 334 · ekonomi) — mağaza satışı AÇIKKEN ücretsiz "kredi talep et" gösterilmez:
+          paket satın almanın yanında aynı ekranda bedava kredi istemek satışı doğrudan kemiriyordu.
+          Destek ekibi gerekirse panelden kredi tanımlamaya devam eder. Satış kapalıyken (anahtar yok,
+          mağaza yanıt vermiyor) eski yol açık kalır. */}
+      {!(odemeAcik && rcKredi && Object.keys(rcKredi).length > 0) && (
       <Katlanir buyukBaslik baslik={t.walletRequestTitle} ozet={t.walletRequestOzet}
         acikBasla={bal != null && bal < 3} stil={{ marginBottom: ARA[18] }}
         ikon={<Ikon ad="kredi" boy={16} renk={C.goldText} />}>
@@ -5089,6 +5094,7 @@ export function Wallet({ t, session, onBack }) {
         <Btn label={busy ? "…" : t.walletRequestBtn} onPress={requestCredits} disabled={busy} style={{ marginTop: SP[3], opacity: busy ? 0.6 : 1 }} />
         {!!msg && <Text style={{ color: C.tealInk, fontSize: FS.sm, marginTop: SP[2], textAlign: "center" }}>{msg}</Text>}
       </Katlanir>
+      )}
 
       <Text style={S.label}>{t.walletPacks}</Text>
       {/* Paketin NE OLDUĞUNU önce söylüyoruz: bir abonelik değil, takviye. */}
