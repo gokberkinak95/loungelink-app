@@ -36,7 +36,13 @@ WebBrowser.maybeCompleteAuthSession();
 export const REDIRECT_URL = ExpoLinking.createURL("auth-callback");
 // Şifre sıfırlama maili UYGULAMAYA dönmeli (backoffice'e değil — oraya
 // yalnız admin girebiliyor). Supabase Redirect URLs listesine eklenmeli.
-export const RESET_REDIRECT = ExpoLinking.createURL("reset-password");
+// 15 Ekim (mağaza hazırlığı) — sıfırlama bağlantısı panelin KÖPRÜ sayfasına döner
+// (panel/app/sifre-sifirla): jetonu alır, uygulamayı açar; açılamazsa (bilgisayar,
+// Gmail'in uygulama içi tarayıcısı custom scheme'i yutarsa, uygulama kurulu değilse)
+// "Uygulamada aç" düğmesi ve web'de şifre formu gösterir. Doğrudan `loungelink://`
+// yönlendirmesi bu durumlarda boş sayfada bırakıyordu. Supabase Redirect URLs'te
+// `https://panel.loungelink.co/**` olmalı; yoksa Site URL'e (yine panel) düşer.
+export const RESET_REDIRECT = "https://panel.loungelink.co/sifre-sifirla";
 
 // 4 Eylül — onaylanan tasarım 16'da Apple düğmesi VAR ve tasarım tek
 // (platforma göre ayrılmıyor). Android'de Apple hesabı beklentisi düşük

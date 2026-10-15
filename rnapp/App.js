@@ -675,7 +675,7 @@ export function SetNewPassword({ t, onDone }) {
             <Text style={st.label}>{t.pass}</Text>
             <IconField icon={<Ikon ad="kilit" boy={15} renk={C.muted} />}>
               <TextInput style={st.inputBare} value={p1} onChangeText={setP1} secureTextEntry
-                placeholder="En az 8 karakter" placeholderTextColor={C.mut} />
+                placeholder={t.pwMinPh} accessibilityLabel={t.pass} placeholderTextColor={C.mut} />
             </IconField>
             {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
             <Btn label={t.setNewPassBtn} onPress={save} disabled={busy} busy={busy} style={{ marginTop: ARA[14] }} />
