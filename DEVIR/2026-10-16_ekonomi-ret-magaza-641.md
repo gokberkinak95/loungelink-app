@@ -46,3 +46,6 @@ https://claude.ai/artifact/DRgmDDYaZeHkcYCcWx8oWS
 ## Bekleyen kararlar
 - Mağaza görselleri ve site plan kartları onayı.
 - Apple/Google hesapları, RevenueCat anahtarları (rehber).
+
+## Build
+- Android önizleme APK 6.4.1: https://expo.dev/artifacts/eas/O88MRAPh3KNkYLdlysRQ5CjhcKR1FfTXd3MSfhVCELY.apk
