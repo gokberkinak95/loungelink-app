@@ -97,3 +97,7 @@ RevenueCat entegrasyonu; iOS'u ortaya çıkar; ret yememek için her şeyi ayarl
 - EAS'ta **hiç ortam değişkeni yok** → `GOOGLE_SERVICES_JSON` yok → Android build'lerinde push hiç yapılandırılmamış. Firebase adımları rehber §10.
 - Supabase yerleşik e-postası ekip dışına göndermiyor → Resend + özel SMTP rehber §2 (yayından önce zorunlu).
 - Yasal metindeki adres "İstanbul, Türkiye — APA GIZ PLAZA" korunuyor (Gökberk'in önceki tercihi); bireysel yapıda değiştirmek isterse tek satır.
+
+## Build
+- Android önizleme APK 6.4.0 (yeni native paketler derlendi): https://expo.dev/artifacts/eas/Nzs2rCy36dmIglZy6igJEyXB4uEHOmFlalgbsoSpGFs.apk
+- iOS build: Apple hesabı açılınca ilk build Gökberk tarafından etkileşimli alınacak (rehber §7).
