@@ -11,7 +11,7 @@
 // ============================================================
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BUYUK, gorunur } from "./i18n";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal, StyleSheet, KeyboardAvoidingView, Keyboard } from "react-native";
 // 🔴 `BTN` adı bu dosyada ZATEN VAR (varyant haritası). Tema tarafındaki
 // ölçüler ayrı adla giriyor; aynı adı ikinci kez bağlamak sessiz bir
 // gölgeleme değil, doğrudan çalışma anı hatası verdi.
@@ -29,7 +29,19 @@ import { Katman } from "./katman";
 // Web (yalnız `web_sahne` render'ı): durum çubuğu yok → 0. Böylece sahne
 // görüntüsü onaylanan tasarımla AYNI koordinat sisteminde karşılaştırılır;
 // cihazda üstteki pay durum çubuğu kadar (Android gerçek değer, iOS 48).
-export const TOPPAD = Platform.OS === "android" ? (StatusBar.currentHeight || 24) : Platform.OS === "web" ? 0 : 48;
+// 15 Ekim (iOS hazırlığı) — iOS'ta üst pay SABİT 48'di: Dynamic Island'lı iPhone'larda (14 Pro ve
+// sonrası) durum çubuğu 54–59pt → başlıklar çentiğin altına giriyordu. Artık cihazın kendi
+// güvenli alanı (react-native-safe-area-context · ilk pencere ölçüsü) okunuyor; uygulama
+// yalnız dikey, yani açılıştaki ölçü değişmez. Ölçü yoksa (web, eski build) eski değer.
+let _ilkPay = null;
+try { _ilkPay = require("react-native-safe-area-context").initialWindowMetrics; } catch (e) { _ilkPay = null; }
+const _ins = (_ilkPay && _ilkPay.insets) || null;
+export const TOPPAD = Platform.OS === "android" ? (StatusBar.currentHeight || 24)
+  : Platform.OS === "web" ? 0
+  : (_ins && _ins.top > 0 ? _ins.top : 48);
+// Alt güvenli alan: iOS ev göstergesi (Face ID'li iPhone'larda 34pt). Android'de 0 —
+// Android gezinti çubuğu pencerenin dışında kalıyor (kenardan kenara mod kapalı).
+export const ALTPAD = Platform.OS === "ios" ? (_ins ? _ins.bottom : 0) : 0;
 
 // bant iç kenar boşluğu — tasarımda 64/1080 ≈ %5.9
 const SP_BANT = 20;
@@ -2924,6 +2936,30 @@ export function YeniEtiket({ t, stil }) {
 
 // 2 Ekim — `hata`: eylem reddedilirse sebep PENCERENİN İÇİNDE yazılır (eskiden ekranın
 // en altına düşüyordu; kullanıcı pencereyi kapatınca bile nedenini göremiyordu).
+// 15 Ekim (iOS hazırlığı) — KLAVYE KABI. Android klavye açılınca pencereyi kendisi küçültüyor
+// (adjustResize); iOS küçültmüyor: Modal içindeki not/arama kutusu klavyenin ALTINDA kalıyordu.
+// Girdi taşıyan her Modal'ın içeriği bununla sarılır; Android'de düz View (davranış aynen).
+// Klavye açık mı? Alt güvenli alan (ev göstergesi) payı klavye açıkken düşer — klavye
+// zaten o bölgeyi örtüyor; pay kalırsa girdi ile klavye arasında boşluk kalır.
+export function useKlavyeAcik() {
+  const [acik, setAcik] = useState(false);
+  useEffect(() => {
+    const goster = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const gizle = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const a = Keyboard.addListener(goster, () => setAcik(true));
+    const b = Keyboard.addListener(gizle, () => setAcik(false));
+    return () => { a.remove(); b.remove(); };
+  }, []);
+  return acik;
+}
+
+export function KlavyeKabi({ children, stil }) {
+  if (Platform.OS === "ios") {
+    return <KeyboardAvoidingView behavior="padding" style={[{ flex: 1 }, stil]}>{children}</KeyboardAvoidingView>;
+  }
+  return <View style={[{ flex: 1 }, stil]}>{children}</View>;
+}
+
 export function ConfirmModal({ visible, title, body, confirmLabel, cancelLabel, danger, onConfirm, onCancel, busy, hata }) {
   // Onay düğmesinin mürekkebi zeminine göre (bkz. aşağıdaki 23 Eylül notu).
   const onayMurekkep = danger ? "#fff" : C.onAccent;

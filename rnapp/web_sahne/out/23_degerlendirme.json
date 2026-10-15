@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -25,7 +16,7 @@
   "YILDIZ",
   "360",
   "LOUNGEPUAN",
-  "6",
+  "7",
   "KREDİ",
   "Profil",
   "",
@@ -43,7 +34,7 @@
   "",
   "",
   "Bildirimler",
-  "1",
+  "3",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -80,7 +71,7 @@
   "Planım",
   "",
   "Tanış",
-  "1",
+  "3",
   "",
   "Profil",
   "",
@@ -91,7 +82,7 @@
   "Bekleyen · 3",
   "Tamamlanan",
   "Ağırlaman nasıl geçti?",
-  "TAV Primeclass · 4 Ekim",
+  "TAV Primeclass · 15 Ekim",
   "",
   "0/240 · 20 karakter daha",
   "Bu cümlenin LoungeLink sitesinde yayınlanmasına izin veriyorum. Yalnız yukarıdaki ad görünür.",
@@ -101,7 +92,7 @@
   "İzin vermezsen yalnız bizde kalır. İstediğin an geri alabilirsin — yayından düşer.",
   "Kartını paylaşmayı düşünen biri, bizim yazdığımız hiçbir cümleye senin bir cümlen kadar inanmaz. İki satır yeter.",
   "Kaan T.",
-  "TAV Primeclass · IST · 4 Ekim · 14:20–16:40"
+  "TAV Primeclass · IST · 15 Ekim · 14:20–16:40"
  ],
  "tasan": [],
  "bitisik": []

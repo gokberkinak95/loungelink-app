@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -24,25 +15,31 @@
   "KART HAKKIN",
   "KAÇIRILAN",
   "",
-  "0",
+  "1",
   "son 30 gün",
   "MERTEBE",
   "",
   "Ev Sahibi",
   "3 ağırlama",
-  "İLANLARIM · 1 aktif",
+  "İLANLARIM · 2 aktif",
   "+ İlan Ekle",
   "AKTİF İLANLARIN",
+  "CANLI · 1 YER AÇIK",
+  "TAV Primeclass",
+  "IST · 15 EKİM · 14:20–16:40",
+  "",
+  "TK · Türk Hava Yolları",
+  "1 başvuru · 1 Bekliyor",
+  "İlanı kaldır",
+  "İlanı düzenle",
   "CANLI · DOLU",
   "Comfort Lounge",
-  "SAW · 5 EKİM · 09:00–11:30",
+  "SAW · 16 EKİM · 09:00–11:30",
   "",
   "PC · Pegasus",
   "İlanı kaldır",
   "İlanı düzenle",
   "YAYINDA OLMAYANLAR · 1",
-  "",
-  "SÜRESİ DOLANLAR · 1",
   "",
   "+ İlan Ekle",
   "",
@@ -53,7 +50,7 @@
   "Planım",
   "",
   "Tanış",
-  "1",
+  "3",
   "",
   "Profil"
  ],

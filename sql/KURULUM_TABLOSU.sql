@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-05 · 375 dosya · son: 331 · 315-331 elle eklendi)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-05 · 377 dosya · son: 333 · 315-333 elle eklendi)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -586,6 +586,8 @@ select z.dosya, 'tespit'
   (364, '329_silinen_hesap_14_gun_anonim.sql', 'tablo', 'onceki_epostalar'),
   (365, '330_bo_hesabi_geri_al.sql', 'fonksiyon', 'admin_hesabi_geri_al'),
   (366, '331_soru_kendi_kaydinda.sql', 'tablo', 'kural_sorulari'),
+  (367, '332_revenuecat_satin_alma.sql', 'fonksiyon', 'rc_olay_isle'),
+  (368, '333_magaza_inceleme_hesabi.sql', 'fonksiyon', 'inceleme_hesabi_hazirla'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -970,6 +972,8 @@ with imza(sira, dosya, tip, ad) as (
   (364, '329_silinen_hesap_14_gun_anonim.sql', 'tablo', 'onceki_epostalar'),
   (365, '330_bo_hesabi_geri_al.sql', 'fonksiyon', 'admin_hesabi_geri_al'),
   (366, '331_soru_kendi_kaydinda.sql', 'tablo', 'kural_sorulari'),
+  (367, '332_revenuecat_satin_alma.sql', 'fonksiyon', 'rc_olay_isle'),
+  (368, '333_magaza_inceleme_hesabi.sql', 'fonksiyon', 'inceleme_hesabi_hazirla'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

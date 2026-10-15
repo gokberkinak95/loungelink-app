@@ -1,3 +1,16 @@
+SQL SIRASI - 15 Ekim 2026 (6. tur) - YENI: 332 + 333 - 330 ve 331'den SONRA (kosulmadilarsa once onlar)
+
+  1) 332_revenuecat_satin_alma.sql  -> Magaza satin almalari (RevenueCat): urun eslemesi (iap_urunleri),
+       abonelikler, olay defteri (rc_olaylari) ve tek kapi rc_olay_isle (yalniz service_role).
+       AYRICA HATA DUZELTMESI: Sik Ucan / Kahya'nin aylik plan kredisi bir tip uyusmazligi yuzunden
+       HIC verilmiyordu (plan_kredisi_yerlestir hatayi yutuyordu). Dogrulama: iki satir tamam = true.
+  2) 333_magaza_inceleme_hesabi.sql -> inceleme_hesabi_hazirla(e-posta): Apple/Google incelemecisi icin
+       dogrulanmis, 10 kredili, vitrini goren demo hesap. Kullaniciya gorunen "Beta doneminde..."
+       cumleleri temizlenir (Apple 2.2). Dogrulama: iki satir tamam = true.
+       Hesabi uygulamada inceleme@loungelink.co ile actiktan SONRA:
+         select public.inceleme_hesabi_hazirla('inceleme@loungelink.co');
+
+---------------------------------------------------------------------------
 SQL SIRASI - 5 Ekim 2026 (5. tur) - YENI: 331 - 330'dan SONRA (330 kosulmadiysa once onu kos)
 
   1) 331_soru_kendi_kaydinda.sql  -> Ilan kurali sorulari artik kendi tablosunda (kural_sorulari).

@@ -8,13 +8,15 @@ import { ErrorBoundary } from "./src/ErrorBoundary";
 import { supabase, setAppVersion, logError } from "./src/supabase";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle } from "./src/cevrimdisi";
 import { signInWithGoogle, signInWithApple, appleAvailable, needsOnboarding, RESET_REDIRECT, REDIRECT_URL } from "./src/social";
+import * as AppleAuthentication from "expo-apple-authentication";
 import * as ExpoLinking from "expo-linking";
 import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
-import { SikkeDugme, CamSerit } from "./src/ui";
+import { SikkeDugme, CamSerit, ALTPAD, KlavyeKabi } from "./src/ui";
 import { Katman } from "./src/katman";
+import { odemeGiris, odemeCikis } from "./src/odeme";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
 import { LegalDoc, Trips, Hosting, Discovery, RequestsPanel, Chat, VerifyPhone, KimlikDogrula, Profile, Notifications, useUnread, Meet, Marketplace, Plans, PublicProfile, CompanionChat, Safety, TrustVisual, SessionHistory, Referral, HostAccessSource, HostBroadcast, LiveStatus, ActionNeeded, RateReminder, HikayeDaveti, MyQuestions, EditAvailability, EditTrip, Wallet, LoungeRadarCard, HostApply, Settings, EditProfile, AddVisit, HostAvailability, ReportUser, Campaigns, HomeConnections, FindHostCard, LoungeGuide, Degerlendirmeler, HostDaveti, SakinGun, UlasilabilirlikKarti, YasOnayi, AkisSeridi, SekmeSeridi, SoruEkrani, SoruOzeti } from "./src/screens";
 // v2.87 (madde 7): ana sayfadaki ilan bloğu da katlanır oldu — ikinci bir
@@ -332,6 +334,7 @@ function AppInner() {
     return ok;
   }, []);
   useEffect(() => { checkNet(); }, [checkNet]);
+  const [bakiyeTazele, setBakiyeTazele] = useState(0);   // aylık plan kredisi yüklenince ana sayfa bakiyesi
   // 🔴 v1.77: SQL 080'in expire_stale_sessions() fonksiyonu YAZILMIŞ ama
   // HİÇBİR YERDEN ÇAĞRILMIYORDU — yani buluşma saati geçmiş, hiç başlatılmamış
   // kabuller sonsuza kadar "accepted" kalıyor, slot dolu görünüyor ve misafirin
@@ -359,7 +362,20 @@ function AppInner() {
       // (`reason = 'plan_monthly:<YYYY-MM>'`), kaç kez çağrıldığı
       // önemsiz. Cron kurulursa daha erken çalışır; kurulmazsa kullanıcı
       // uygulamayı her açtığında yerine oturur.
-      try { await supabase.rpc("plan_kredisi_yerlestir"); } catch (e) {}
+      // 15 Ekim — kredi GERÇEKTEN verildiyse (ayda bir) ana sayfanın verisi yeniden okunur: şerit
+      // açılıştaki eski bakiyeyi gösteriyordu (332 düzeltmesinden sonra ölçüldü: ekran 14, sunucu 15).
+      // `reload` DEĞİL: o bütün sekmeleri yeniden kurar ve açılıştan bir saniye sonra kullanıcının
+      // o anki dokunuşunu bozar (e2e 208'de ölçüldü). Yalnız ana sayfanın verisi tazelenir.
+      try {
+        const { data: pk, error: pkErr } = await supabase.rpc("plan_kredisi_yerlestir");
+        if (pkErr) logError("plan_kredisi_yerlestir", pkErr);
+        // Fonksiyon kendi hatasını yutup {ok:false, neden} döner — bu hata aylarca böyle GÖRÜNMEDİ (332).
+        else if (pk && pk.ok === false && pk.neden && pk.neden !== "oturum_yok") logError("plan_kredisi_yerlestir", { message: pk.neden });
+        if (pk && pk.durum === "verildi") setBakiyeTazele(x => x + 1);
+      } catch (e) {}
+      // 15 Ekim (SQL 332) — RevenueCat kullanıcısı = Supabase kullanıcısı: mağaza olayları
+      // webhook'a bu kimlikle gelir. Anahtar yoksa (web/sahne) sessizce atlanır.
+      try { await odemeGiris(session.user.id); } catch (e) {}
     })();
   }, [session?.user?.id]);
   // ══════════════════════════════════════════════════════════════════════
@@ -497,7 +513,7 @@ function AppInner() {
       )}
       {screen === "login" && <Auth mode="login" t={t} go={setScreen} lang={lang} toggleLang={toggleLang} />}
       {screen === "register" && <Auth mode="register" t={t} go={setScreen} lang={lang} toggleLang={toggleLang} />}
-      {screen === "home" && <Main t={t} lang={lang} toggleLang={toggleLang} setLangGlobal={applyLang} session={session} />}
+      {screen === "home" && <Main t={t} lang={lang} toggleLang={toggleLang} setLangGlobal={applyLang} session={session} bakiyeTazele={bakiyeTazele} />}
     </Sayfa>
   );
 }
@@ -670,7 +686,7 @@ export function SetNewPassword({ t, onDone }) {
   );
 }
 
-export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
+export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele = 0 }) {
   // 🔴 12 EYLÜL · KAPSAM TURU — TANIŞ VE PLANIM DA DARALIYOR.
   // Bu iki sekmenin bandı App.js'te, kaydırma listesi ise `Meet` /
   // `Trips` / `Hosting` içinde. O yüzden ilk turda bağlayamamıştım:
@@ -739,6 +755,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
   }, [session?.user?.id]);
 
   async function handleLogout() {
+    try { await odemeCikis(); } catch (e) {}
     try {
       // 🔴 v1.75 (Gokberk): ÇIKIŞ ARTIK ENGELLENMİYOR. Eski kural tek taraflı
       // başlatılmış bir oturum yüzünden kullanıcıyı uygulamada kilitliyordu
@@ -1873,7 +1890,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             BAĞLANDI. Davet/bağlantı katmanında verilen cevap `setReload`
             çağırıyor; ana sayfa da o cevabı görmeden bayat kalıyordu.
             `Discovery`/`Hosting`/`Trips` zaten bu anahtarı taşıyordu. */}
-        {tab === "home" && <Home key={"hm" + reload} akisTazele={akisTazele} t={t} lang={lang} session={session} onOpenChat={setChat} onProfilSekmesi={() => setTab("prof")} onOpenCompanion={(cid, nm) => setCompChat({ channelId: cid, name: nm })} onVerify={() => setShowVerify(true)} onRole={setRoleState} setRadar={setRadar} setTab={sekmeyeGit} setHostTripsSub={setHostTripsSub} onWallet={() => setShowWallet(true)} onDiscover={(sc) => setShowDisc(sc || {})} onOpenProfile={setPubProfile} setShowQuestions={setShowQuestions} onGuide={() => setShowGuide(true)}
+        {tab === "home" && <Home key={"hm" + reload} akisTazele={akisTazele} bakiyeTazele={bakiyeTazele} t={t} lang={lang} session={session} onOpenChat={setChat} onProfilSekmesi={() => setTab("prof")} onOpenCompanion={(cid, nm) => setCompChat({ channelId: cid, name: nm })} onVerify={() => setShowVerify(true)} onRole={setRoleState} setRadar={setRadar} setTab={sekmeyeGit} setHostTripsSub={setHostTripsSub} onWallet={() => setShowWallet(true)} onDiscover={(sc) => setShowDisc(sc || {})} onOpenProfile={setPubProfile} setShowQuestions={setShowQuestions} onGuide={() => setShowGuide(true)}
           setShowIstekler={setShowIstekler}
           setShowDavetler={setShowDavetler} setShowSohbetler={setShowSohbetler} />}
         {/* Sekme olarak Keşfet: kapsamsız. `onBack` YOK — bir sekmenin
@@ -1972,7 +1989,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
                      // Android sırayı zIndex değil elevation ile verir: kartlar (elevation 2) çubuğun
                      // fildişi geçişinin ÜSTÜNE çizilmesin. Zeminsiz kapta gölge çizilmez, yalnız sıra.
                      elevation: temaModu() === "v7" && Platform.OS === "android" ? 12 : undefined, shadowOpacity: 0,
-                     paddingTop: temaModu() === "v7" ? ARA[26] : ARA[6], paddingBottom: ARA[18] }}>
+                     paddingTop: temaModu() === "v7" ? ARA[26] : ARA[6],
+                     // 15 Ekim — iOS ev göstergesi: çubuk göstergenin ÜSTÜNDE durur (Face ID'li iPhone'da 34pt).
+                     paddingBottom: Math.max(ARA[18], ALTPAD + ARA[6]) }}>
       {/* v7.2 (Gökberk 4. tur: "bildirimlerde işaretlediğim yerde arka planda bir şeyler görüyorum") —
           çubuğun üst payı tamamen saydamdı: liste metni kapsülün üstünde yarım kesik görünüyordu.
           Fildişi geçiş (alttan opak → üstte saydam): içerik çubuğun altına süzülerek kaybolur. */}
@@ -2148,7 +2167,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session }) {
             // ile dokunulan üst aynı olsun. Tam ekran → gölgesi ekran dışında.
             ...(katmanCubuguGoster ? null : KATMAN_Z),
           }}>
-          {OVERLAY_VIEWS[topOverlay]()}
+          {/* 15 Ekim (iOS) — klavye açılınca iOS pencereyi küçültmüyor: sohbet ve formlardaki
+              girdi klavyenin ALTINDA kalıyordu. Katmanın tamamı klavyeden kaçar (Android'de düz View). */}
+          <KlavyeKabi>{OVERLAY_VIEWS[topOverlay]()}</KlavyeKabi>
         </View>
       ) : null}
     </Sayfa>
@@ -2791,7 +2812,24 @@ function SocialAuthButtons({ t, onBusyChange, onError }) {
   return (
     <View style={{ marginBottom: ARA[26] }}>
       {dugme("google", t.continueWithGoogle)}
-      {hasApple ? <View style={{ marginTop: ARA[12] }}>{dugme("apple", t.continueWithApple)}</View> : null}
+      {/* 15 Ekim (App Store hazırlığı) — Apple ile giriş düğmesi Apple'ın RESMİ düğmesi: özel çizilmiş
+          (logosuz) düğme App Review'da "4.8 / HIG — Sign in with Apple düğmesi" reddi sebebi. Resmi
+          düğme cihaz diline göre kendi metnini yazar ("Apple ile Devam Et"); stil açık zeminde siyah.
+          `hasApple` yalnız iOS'ta true — Android görünümü değişmez. */}
+      {hasApple ? (
+        <View style={{ marginTop: ARA[12] }}>
+          {busy === "apple" ? (
+            <View accessibilityLabel={t.continueWithApple} accessibilityState={{ busy: true }} style={[hayalet, { backgroundColor: C.brandApple, borderColor: C.brandApple }]}><ActivityIndicator color={C.onAccent} /></View>
+          ) : (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              cornerRadius={R.md}
+              style={{ width: "100%", height: 52 }}
+              onPress={() => { if (!busy) run("apple"); }} />
+          )}
+        </View>
+      ) : null}
       <View style={{ alignItems: "center", justifyContent: "center", marginTop: ARA[22], height: 22 }}>
         <View style={{ position: "absolute", left: 0, right: 0, height: 1, backgroundColor: C.line }} />
         <View style={{ backgroundColor: C.bg, paddingHorizontal: ARA[10] }}>
@@ -3560,7 +3598,7 @@ function greetWord(t) {
 // 🔴 18 EYLÜL — `setMeetSub` İMZADAN ÇIKTI. Akış şeridi artık "reqs"/"conns"
 // alt görünümlerine değil, kendi tam ekranlarına gidiyor (md.4); prop
 // gövdede okunmayan bir yalan hâline gelmişti ve `check.js` yakaladı.
-export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, onRole, setRadar, setTab, setHostTripsSub, onWallet, onOpenProfile, onDiscover, setShowQuestions, onGuide, setShowIstekler, setShowDavetler, setShowSohbetler, onProfilSekmesi, akisTazele = 0 }) {
+export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, onRole, setRadar, setTab, setHostTripsSub, onWallet, onOpenProfile, onDiscover, setShowQuestions, onGuide, setShowIstekler, setShowDavetler, setShowSohbetler, onProfilSekmesi, akisTazele = 0, bakiyeTazele = 0 }) {
   const [data, setData] = useState(null);
   // 13 Eylül md.8/15 — durum çubuğu perdesi için kaydırma konumu.
   const kaydirY = useRef(new Animated.Value(0)).current;
@@ -3671,7 +3709,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         hostStats, myAvs,
       });
     })();
-  }, [session, tazele]);
+  }, [session, tazele, bakiyeTazele]);
 
   // Hata varsa SPINNER DEĞİL, yeniden deneme. Sonsuz spinner "yükleniyor"
   // demez, "bozuk" der — ve kullanıcı ikincisine inanır.

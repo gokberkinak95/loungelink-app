@@ -165,6 +165,14 @@ def kesfet(b, port, k):
 
     # ── 206 · kredisiz ────────────────────────────────────────────────
     def kredisiz():
+        # 15 Ekim (332) — aylık plan kredisi artık GERÇEKTEN veriliyor (Yolcu ayda 1): uygulama
+        # açılınca Can'ın bakiyesi 0'dan 1'e çıkıyordu. Bu ayın payını "verildi" işaretle (0 kredi).
+        db("""insert into credit_ledger (user_id, delta, reason, balance_after)
+              select u.id, 0, 'plan_monthly:' || to_char(timezone('Europe/Istanbul', now()), 'YYYY-MM') || ':' || public.etkin_plan(u.id)::text,
+                     coalesce((select sum(delta) from credit_ledger c where c.user_id = u.id), 0)
+                from users u where u.id = %s
+                 and not exists (select 1 from credit_ledger c where c.user_id = u.id
+                                  and c.reason like 'plan_monthly:' || to_char(timezone('Europe/Istanbul', now()), 'YYYY-MM') || '%%')""", (KIM["can"],))
         e = _kesfet("can")
         try:
             C = KIM["can"]

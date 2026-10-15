@@ -37,7 +37,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
-import { RotaHatti, BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve } from "./ui";
+import { RotaHatti, BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve, KlavyeKabi, ALTPAD, useKlavyeAcik } from "./ui";
 import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -1830,6 +1830,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
         );
       })()}
       <Modal visible={!!target} animationType="slide" onRequestClose={() => setTarget(null)}>
+        <KlavyeKabi>
         {/* #32: MVP Istek Gonder — tam ekran, Hdr'li */}
         <Sayfa>
           <Hdr t={t} scene="İSTEK" title={t.reqTitle} onBack={() => setTarget(null)} />
@@ -2299,6 +2300,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
             })()}
           </ScrollView>
         </Sayfa>
+      </KlavyeKabi>
       </Modal>
     </Kaydirma>
     </Sayfa>
@@ -3022,6 +3024,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
         </View>
       </Modal>
       <Modal visible={!!target} animationType="slide" onRequestClose={() => setTarget(null)}>
+        <KlavyeKabi>
         {/* #31: MVP Baglanti Kur — tam ekran */}
         <Sayfa>
           <Hdr t={t} ustBilgi={t.sceneConnect} title={`${t.connTitle}: ${abbrevName(target?.name)}`} onBack={() => setTarget(null)} />
@@ -3089,6 +3092,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
               disabled={busy || !intent} busy={busy} style={{ marginTop: SP[3] }} />
           </ScrollView>
         </Sayfa>
+      </KlavyeKabi>
       </Modal>
     </Kaydirma>
   );
@@ -3331,9 +3335,10 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
 
         {/* MVP: bağlantı daveti NOT ile gönderilir */}
         <Modal visible={connOpen} animationType="slide" transparent onRequestClose={() => setConnOpen(false)}>
+        <KlavyeKabi>
           <View style={{ flex: 1, justifyContent: "flex-end" }}>
             <PerdeBulanik />
-            <View style={{ ...POPUP_YUZEY(), borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: ARA[18] }}>
+            <View style={{ ...POPUP_YUZEY(), borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: ARA[18], paddingBottom: ARA[18] + ALTPAD }}>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[1] }}>
                 {t.connTitle}: {shortName(d.name)}
               </Text>
@@ -3362,7 +3367,8 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </KlavyeKabi>
+      </Modal>
         {targetId !== uid && onReport && (
           <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onReport(targetId, d.name)} style={{ alignSelf: "center", marginTop: SP[4], padding: SP[2] }}>
             <Text style={{ color: C.mut, fontSize: FS.sm, textDecorationLine: "underline" }}>{t.ppReport}</Text>
@@ -3405,6 +3411,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
   const uid = session?.user?.id;
   const [msgs, setMsgs] = useState(null);
   const [txt, setTxt] = useState("");
+  const klavye = useKlavyeAcik();               // 15 Ekim · iOS ev göstergesi payı
   const [peerId, setPeerId] = useState(null);   // karsi tarafin id'si (profil + bildir icin)
   const [err, setErr] = useState("");           // v2.78: gonderim hatasi artik GORUNUYOR
   const ref = useRef(null);
@@ -3542,8 +3549,8 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
           <Text style={{ color: C.redInk, fontSize: FS.sm }}>{err}</Text>
         </View>
       )}
-      <View style={{ flexDirection: "row", padding: ARA[10], gap: SP[2], borderTopWidth: 1, borderTopColor: C.line, backgroundColor: C.card }}>
-        <TextInput style={[S.input, { flex: 1, marginBottom: 0 }]} value={txt} onChangeText={setTxt} placeholder="..." placeholderTextColor={C.mut} />
+      <View style={{ flexDirection: "row", padding: ARA[10], paddingBottom: ARA[10] + (klavye ? 0 : ALTPAD), gap: SP[2], borderTopWidth: 1, borderTopColor: C.line, backgroundColor: C.card }}>
+        <TextInput style={[S.input, { flex: 1, marginBottom: 0 }]} value={txt} onChangeText={setTxt} placeholder={t.typeMsg} accessibilityLabel={t.typeMsg} placeholderTextColor={C.mut} />
         <TouchableOpacity hitSlop={TAP.slop} disabled={!txt.trim()} onPress={send}
           accessibilityRole="button" accessibilityLabel={t.sendMsg}
           style={{ backgroundColor: txt.trim() ? C.purple : C.line, borderRadius: R.xs, paddingHorizontal: ARA[18], justifyContent: "center" }}>
@@ -3764,6 +3771,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
       </ScrollView>
 
       <Modal visible={sos} transparent animationType="fade" onRequestClose={() => setSos(false)}>
+        <KlavyeKabi>
         <View style={{ flex: 1, justifyContent: "center", padding: ARA[30] }}>
           <PerdeBulanik />
           <View style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[22] }}>
@@ -3797,6 +3805,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
             </TouchableOpacity>
           </View>
         </View>
+      </KlavyeKabi>
       </Modal>
     </Sayfa>
   );

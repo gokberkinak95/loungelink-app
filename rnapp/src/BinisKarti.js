@@ -39,7 +39,7 @@ import { Ikon } from "./ikon";
 import { mapErr } from "./i18n";
 import { logError, supabase } from "./supabase";
 import { ARA, C, F, FS, R, SATIR, SP, TAP } from "./theme";
-import { Btn } from "./ui";
+import { ALTPAD, Btn } from "./ui";
 import { ustIsik } from "./ortak";
 import { OnayDamgasi } from "./hareket";
 import { MONO } from "./typography";
@@ -431,7 +431,7 @@ export function BinisKartiPanel({ t, request, ilan, onKapat, onDogrulandi }) {
           onDize={(ham, sure) => { setGorunum("secim"); dizeGeldi(ham, sure, "scan"); }}
           onHata={(kod) => { setGorunum("sonuc"); setSonuc({ gecti: false, kod });
                              kaydet("scan", false, kod, null, null); }} />
-        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: SP[4],
+        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: SP[4], paddingBottom: SP[4] + ALTPAD,
                        backgroundColor: C.paper }}>
           {AtlaDugmesi}
           <Btn v="ghost" sm label={t.back} a11yLabel={t.back} onPress={() => setGorunum("secim")} />

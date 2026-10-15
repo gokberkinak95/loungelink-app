@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-10-04
+-- Uretim tarihi: 2026-10-15
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,7 +9,7 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 520
+-- Toplam fonksiyon: 524
 -- Birden cok dosyada tanimli (dikkat!): 160
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
@@ -31546,3 +31546,287 @@ end $function$;
 
 -- ── Gönderdiğim sorular ─────────────────────────────────────────────────────
 -- sqlcheck: allow-replace sorularim  (dönüş tipi 314 ile AYNI; yalnız yazım farkı)
+
+-- ----------------------------------------------------------------------
+-- rc_olay_isle   [etkin kaynak: 332_revenuecat_satin_alma.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.rc_olay_isle(p_olay jsonb)
+returns jsonb
+language plpgsql security definer set search_path = public as $rc332$
+declare
+  e        jsonb := coalesce(p_olay -> 'event', p_olay);
+  v_id     text  := e ->> 'id';
+  v_tur    text  := upper(coalesce(e ->> 'type', ''));
+  v_magaza text  := case upper(coalesce(e ->> 'store', ''))
+                      when 'APP_STORE' then 'apple' when 'MAC_APP_STORE' then 'apple'
+                      when 'PLAY_STORE' then 'google' else 'diger' end;
+  v_urun   text;
+  v_islem  text  := coalesce(e ->> 'transaction_id', e ->> 'original_transaction_id');
+  v_uid    uuid;
+  v_aday   text;
+  v_u      iap_urunleri%rowtype;
+  v_bitis  timestamptz;
+  v_sonuc  text;
+  v_r      jsonb;
+  v_bal    int;
+  v_satis  kredi_satislari%rowtype;
+  v_geri   int;
+begin
+  -- 🔴 İSTEMCİ BURAYA GELEMEZ: auth.uid() doluysa çağıran bir kullanıcıdır.
+  if auth.uid() is not null then raise exception 'not_admin'; end if;
+  if coalesce(v_id, '') = '' then raise exception 'olay_kimligi_bos'; end if;
+
+  -- Aynı olay ikinci kez gelirse: hata değil, "zaten işlendi" (RevenueCat yeniden dener).
+  if exists (select 1 from rc_olaylari where olay_kimlik = v_id) then
+    return jsonb_build_object('ok', true, 'zaten_islendi', true);
+  end if;
+
+  -- Ürün: PRODUCT_CHANGE'de yeni ürün `new_product_id`. Google "urun:temelplan" → "urun_temelplan".
+  v_urun := replace(coalesce(nullif(e ->> 'new_product_id', ''), e ->> 'product_id', ''), ':', '_');
+  select * into v_u from iap_urunleri where urun_kodu = v_urun;
+
+  -- Kullanıcı: uygulama RevenueCat'e Supabase kimliğiyle giriş yapar (Purchases.logIn(uid)).
+  -- Anonim kimlikle gelen olayda takma adlar (aliases) taranır.
+  for v_aday in
+    select x from (
+      select e ->> 'app_user_id' as x
+      union all select e ->> 'original_app_user_id'
+      union all select jsonb_array_elements_text(coalesce(e -> 'aliases', '[]'::jsonb))
+    ) a where x ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  loop
+    select id into v_uid from users where id = v_aday::uuid;
+    exit when v_uid is not null;
+  end loop;
+
+  if e ? 'expiration_at_ms' and nullif(e ->> 'expiration_at_ms', '') is not null then
+    v_bitis := to_timestamp((e ->> 'expiration_at_ms')::numeric / 1000.0);
+  end if;
+
+  if v_tur = 'TEST' then
+    v_sonuc := 'test';
+  elsif v_uid is null then
+    v_sonuc := 'kullanici_yok';
+  elsif v_u.urun_kodu is null then
+    v_sonuc := 'urun_tanimsiz';
+
+  -- ── KREDİ ──────────────────────────────────────────────────────────────
+  elsif v_u.tur = 'kredi' and v_tur in ('NON_RENEWING_PURCHASE', 'INITIAL_PURCHASE') then
+    if v_magaza = 'diger' then
+      v_sonuc := 'magaza_tanimsiz';
+    else
+      v_r := public.kredi_paketi_isle(v_uid, v_magaza, coalesce(v_islem, v_id), v_u.paket_kod, e);
+      v_sonuc := case when coalesce((v_r ->> 'zaten_islendi')::boolean, false) then 'kredi_zaten_islendi'
+                      else 'kredi_yuklendi' end;
+    end if;
+
+  elsif v_u.tur = 'kredi' and v_tur = 'CANCELLATION' then
+    -- Mağaza iadesi: satış 'iade'; verilen kredi en fazla mevcut bakiye kadar geri alınır
+    -- (bakiye negatife düşemez — 299/B1 kilidi).
+    select * into v_satis from kredi_satislari
+     where saglayici = v_magaza and makbuz_kimlik = coalesce(v_islem, v_id) and durum = 'dogrulandi';
+    if v_satis.id is null then
+      v_sonuc := 'iade_satis_bulunamadi';
+    else
+      update kredi_satislari set durum = 'iade' where id = v_satis.id;
+      select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = v_uid;
+      v_geri := least(v_satis.kredi, greatest(v_bal, 0));
+      if v_geri > 0 then
+        insert into credit_ledger (user_id, delta, reason, ref_id, balance_after, note)
+        values (v_uid, -v_geri, 'kredi_magaza_iadesi', v_satis.id, v_bal - v_geri,
+                format('Mağaza iadesi · %s kredi geri alındı', v_geri));
+      end if;
+      v_sonuc := 'kredi_iade_' || v_geri;
+    end if;
+
+  -- ── ABONELİK ───────────────────────────────────────────────────────────
+  elsif v_u.tur = 'abonelik' and v_tur in ('INITIAL_PURCHASE', 'RENEWAL', 'PRODUCT_CHANGE', 'UNCANCELLATION') then
+    insert into abonelikler (user_id, plan, urun_kodu, magaza, durum, bitis, son_olay, guncellendi)
+    values (v_uid, v_u.plan, v_u.urun_kodu, v_magaza, 'aktif', v_bitis, v_tur, now())
+    on conflict (user_id) do update
+      set plan = excluded.plan, urun_kodu = excluded.urun_kodu, magaza = excluded.magaza,
+          durum = 'aktif', bitis = excluded.bitis, son_olay = excluded.son_olay, guncellendi = now();
+    update users set plan = v_u.plan where id = v_uid;
+    -- Bu ayın plan kredisi hemen (aylık yerleştirme zaten verilmişse farkı verir).
+    perform public.plan_kredisi_yerlestir(v_uid);
+    v_sonuc := 'plan_' || v_u.plan::text;
+
+  elsif v_u.tur = 'abonelik' and v_tur = 'CANCELLATION' then
+    update abonelikler set durum = 'yenileme_kapali', bitis = coalesce(v_bitis, bitis),
+                           son_olay = v_tur, guncellendi = now()
+     where user_id = v_uid;
+    v_sonuc := 'yenileme_kapali';
+
+  elsif v_u.tur = 'abonelik' and v_tur = 'BILLING_ISSUE' then
+    update abonelikler set durum = 'odeme_sorunu', son_olay = v_tur, guncellendi = now() where user_id = v_uid;
+    v_sonuc := 'odeme_sorunu';
+
+  elsif v_u.tur = 'abonelik' and v_tur = 'EXPIRATION' then
+    -- Yalnız SÜRESİ BİTEN ürün hâlâ kayıtlı abonelikse düşür (yükseltme sonrası eski ürünün
+    -- bitişi yeni planı düşürmesin).
+    if exists (select 1 from abonelikler where user_id = v_uid and urun_kodu = v_u.urun_kodu) then
+      update abonelikler set durum = 'bitti', son_olay = v_tur, guncellendi = now() where user_id = v_uid;
+      update users set plan = 'yolcu' where id = v_uid;
+      v_sonuc := 'plan_bitti';
+    else
+      v_sonuc := 'eski_urun_bitti';
+    end if;
+
+  else
+    v_sonuc := 'kayit';
+  end if;
+
+  insert into rc_olaylari (olay_kimlik, tur, user_id, urun_kodu, magaza, islem_kimlik, sonuc, ham)
+  values (v_id, v_tur, v_uid, nullif(v_urun, ''), v_magaza, v_islem, v_sonuc, p_olay);
+
+  return jsonb_build_object('ok', true, 'sonuc', v_sonuc);
+end $rc332$;
+
+revoke all on function public.rc_olay_isle(jsonb) from public, anon, authenticated;
+grant execute on function public.rc_olay_isle(jsonb) to service_role;
+
+-- ── 5 · Uygulama: aboneliğim (salt okunur) ─────────────────────────────────
+
+-- ----------------------------------------------------------------------
+-- aboneligim   [etkin kaynak: 332_revenuecat_satin_alma.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.aboneligim()
+returns jsonb
+language sql stable security definer set search_path = public as $ab332$
+  select coalesce((
+    select jsonb_build_object('plan', a.plan, 'urun', a.urun_kodu, 'magaza', a.magaza,
+                              'durum', a.durum, 'bitis', a.bitis)
+      from abonelikler a where a.user_id = auth.uid()), '{}'::jsonb);
+$ab332$;
+revoke all on function public.aboneligim() from public, anon;
+grant execute on function public.aboneligim() to authenticated;
+
+-- ── 6 · BO: son satın alma olayları ────────────────────────────────────────
+
+-- ----------------------------------------------------------------------
+-- bo_rc_olaylari   [etkin kaynak: 332_revenuecat_satin_alma.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.bo_rc_olaylari(p_gun int default 30)
+returns table(olay_kimlik text, tur text, user_id uuid, ad text, urun_kodu text, magaza text, sonuc text, created_at timestamptz)
+language plpgsql stable security definer set search_path = public as $bo332$
+begin
+  if auth.uid() is not null and not exists (select 1 from admin_roles ar where ar.user_id = auth.uid()) then
+    raise exception 'not_admin';
+  end if;
+  return query
+    select o.olay_kimlik, o.tur, o.user_id, p.name, o.urun_kodu, o.magaza, o.sonuc, o.created_at
+      from rc_olaylari o left join profiles p on p.user_id = o.user_id
+     where o.created_at > now() - make_interval(days => greatest(1, least(coalesce(p_gun, 30), 365)))
+     order by o.created_at desc limit 500;
+end $bo332$;
+revoke all on function public.bo_rc_olaylari(int) from public, anon;
+grant execute on function public.bo_rc_olaylari(int) to authenticated, service_role;
+
+-- ── 7 · AYLIK PLAN KREDİSİ HİÇ VERİLMİYORDU (ölçüldü, 332 testinde) ────────
+-- `plan_kredisi_yerlestir` içinde `v_plan` plan_type, karşılaştırma `p.plan::text = v_plan`
+-- → 42883 "operator does not exist: text = plan_type". Fonksiyon hatayı `exception when
+-- others` ile yutup {"ok":false} dönüyordu: Sık Uçan / Kâhya'nın aylık kredisi kimseye
+-- yüklenmiyordu. 253 §9 aynı deseni yalnız `v_etkin` adıyla (my_plan) düzeltmişti.
+do $pk332$
+declare r record;
+begin
+  for r in
+    select p.oid, pg_get_functiondef(p.oid) as tanim
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public' and p.proname = 'plan_kredisi_yerlestir'
+       and (pg_get_functiondef(p.oid) like '%p.plan::text = v_plan%'
+            or pg_get_functiondef(p.oid) like '%values (v_uid, ''system'', ''Aylık kredin yüklendi%')
+  loop
+    -- Bildirim kategorisi 'system' → 'credits': dokununca Cüzdan açılsın (bildirim_hedefi
+    -- 'system' için hedef döndürmüyor; kredi artık gerçekten verildiği için görünür oldu).
+    execute replace(replace(r.tanim, 'p.plan::text = v_plan', 'p.plan = v_plan'),
+                    'values (v_uid, ''system'', ''Aylık kredin yüklendi', 'values (v_uid, ''credits'', ''Aylık kredin yüklendi');
+    raise notice '332 §7: plan_kredisi_yerlestir duzeltildi (tip + bildirim kategorisi).';
+  end loop;
+end $pk332$;
+
+-- ── DOĞRULAMA ──────────────────────────────────────────────────────────────
+select 'revenuecat tek kapisi' as kontrol,
+       exists (select 1 from pg_proc where proname = 'rc_olay_isle')
+   and not has_function_privilege('authenticated', 'public.rc_olay_isle(jsonb)', 'execute')
+   and (select count(*) from iap_urunleri) >= 7 as tamam
+union all
+select 'aylik plan kredisi calisir',
+       position('p.plan::text = v_plan' in pg_get_functiondef('public.plan_kredisi_yerlestir(uuid)'::regprocedure)) = 0
+   and position('''credits'', ''Aylık kredin' in pg_get_functiondef('public.plan_kredisi_yerlestir(uuid)'::regprocedure)) > 0;
+-- Beklenen: iki satır tamam = true.
+
+-- ----------------------------------------------------------------------
+-- inceleme_hesabi_hazirla   [etkin kaynak: 333_magaza_inceleme_hesabi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.inceleme_hesabi_hazirla(p_email text)
+returns jsonb
+language plpgsql security definer set search_path = public as $ih333$
+declare
+  v_uid uuid;
+  v_bal int;
+  v_ek  int;
+begin
+  -- Yalnız SQL Editor (postgres / service_role) ya da yönetici.
+  if auth.uid() is not null
+     and not exists (select 1 from admin_roles ar where ar.user_id = auth.uid()) then
+    raise exception 'not_admin';
+  end if;
+
+  select id into v_uid from users where lower(email) = lower(btrim(p_email));
+  if v_uid is null then
+    return jsonb_build_object('ok', false, 'neden',
+      'Bu e-postayla hesap yok. Önce uygulamada bu e-postayla kayıt ol, sonra tekrar çalıştır.');
+  end if;
+
+  insert into verifications (user_id, email_verified, email_verified_at, phone_verified, phone_verified_at, phone_verified_method)
+  values (v_uid, true, now(), true, now(), 'manual')
+  on conflict (user_id) do update
+    set email_verified = true, email_verified_at = coalesce(verifications.email_verified_at, now()),
+        phone_verified = true, phone_verified_at = coalesce(verifications.phone_verified_at, now()),
+        phone_verified_method = coalesce(verifications.phone_verified_method, 'manual');
+
+  insert into test_gorunurlugu (user_id, ekleyen)
+  values (v_uid, '333 · magaza inceleme')
+  on conflict (user_id) do nothing;
+
+  select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = v_uid;
+  v_ek := greatest(0, 10 - v_bal);
+  if v_ek > 0 then
+    insert into credit_ledger (user_id, delta, reason, balance_after, note)
+    values (v_uid, v_ek, 'admin_adjust', v_bal + v_ek, 'Mağaza inceleme hesabı (333)');
+  end if;
+
+  return jsonb_build_object('ok', true, 'kullanici', v_uid, 'bakiye', v_bal + v_ek,
+                            'not', 'Doğrulandı, 10 kredi, vitrin görünür.');
+end $ih333$;
+
+revoke all on function public.inceleme_hesabi_hazirla(text) from public, anon, authenticated;
+grant execute on function public.inceleme_hesabi_hazirla(text) to service_role;
+
+-- ── 2 · "BETA" KULLANICIYA GÖRÜNMEZ (Apple 2.2) ─────────────────────────────
+-- App Store "beta / demo / test" diye kendini tanıtan uygulamayı reddeder (beta = TestFlight).
+-- `request_credit_topup` kullanıcıya iki "Beta döneminde…" cümlesi döndürüyordu.
+do $bt333$
+declare r record; v text;
+begin
+  for r in
+    select p.oid, pg_get_functiondef(p.oid) as tanim
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public' and p.proname = 'request_credit_topup'
+       and pg_get_functiondef(p.oid) like '%Beta döneminde%'
+  loop
+    v := replace(r.tanim, 'Beta döneminde talepler elle değerlendiriliyor.', 'Talepler ekibimiz tarafından elle değerlendiriliyor.');
+    v := replace(v, 'Talebin alındı. Beta döneminde elle değerlendiriliyor.', 'Talebin alındı; ekibimiz en kısa sürede değerlendirecek.');
+    execute v;
+    raise notice '333 §2: request_credit_topup metinleri guncellendi.';
+  end loop;
+end $bt333$;
+
+-- ── DOĞRULAMA ──────────────────────────────────────────────────────────────
+select 'inceleme hesabi fonksiyonu' as kontrol,
+       exists (select 1 from pg_proc where proname = 'inceleme_hesabi_hazirla')
+   and not has_function_privilege('authenticated', 'public.inceleme_hesabi_hazirla(text)', 'execute') as tamam
+union all
+select 'kullaniciya beta yazmiyor',
+       position('Beta döneminde' in pg_get_functiondef('public.request_credit_topup'::regproc)) = 0;
+-- Beklenen: iki satır tamam = true.

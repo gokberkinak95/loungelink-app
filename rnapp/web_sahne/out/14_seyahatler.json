@@ -1,22 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -24,7 +7,7 @@
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
   "Seyahatlerim",
   "Seyahatlerim",
-  "5 EKİM · AKTARMA",
+  "BUGÜN · AKTARMA",
   "IST",
   "LHR",
   "",
@@ -32,13 +15,13 @@
   "UÇUŞ",
   "TK1979",
   "SALON",
-  "14:00–18:00",
+  "17:11–21:11",
   "KİŞİ",
   "1 + 1",
-  "Keşfet'te 10 uyumlu ilan →",
+  "Keşfet'te 2 uyumlu ilan →",
   "",
   "Host bul",
-  "12 EKİM · TATİL",
+  "24 EKİM · TATİL",
   "SAW",
   "",
   "PC · Pegasus",

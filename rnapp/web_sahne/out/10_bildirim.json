@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -25,7 +16,7 @@
   "YILDIZ",
   "200",
   "LOUNGEPUAN",
-  "14",
+  "15",
   "KREDİ",
   "Profil",
   "",
@@ -88,20 +79,20 @@
   "İstekler",
   "Oturumlar",
   "",
-  "Tümünü okundu işaretle · 18",
+  "Tümünü okundu işaretle · 19",
   "Bildirimler",
   "BUGÜN",
+  "",
+  "Aylık kredin yüklendi ✓",
+  "3 dk",
+  "1 kredi hesabına eklendi. Planın her ay bu krediyi veriyor.",
   "",
   "İstek kabul edildi",
-  "6 dk",
+  "7 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "22 dk",
-  "Ayşegül D. seninle tanışmak istiyor.",
-  "",
-  "Havalimanı güncellemesi #1",
-  "1 sa"
+  "23 dk"
  ],
  "tasan": [],
  "bitisik": []

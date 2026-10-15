@@ -32,16 +32,17 @@ import { havalimanlariniGetir } from "./katalog";
 import { logError, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
-import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant } from "./ui";
+import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant, KlavyeKabi, ALTPAD } from "./ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Linking, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
 import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { yerelGun } from "./zaman";
+import { odemeVar, krediPaketleri, abonelikPaketleri, satinAl, geriYukle, abonelikYonet, bekleKredi, beklePlan } from "./odeme";
 
 export const timeOk = s => /^\d{2}:\d{2}$/.test(s);
 
@@ -61,9 +62,10 @@ export function Picker({ label, value, options, onPick, t }) {
         <Text style={{ color: value ? C.ink : C.mut, fontSize: FS.lg }}>{value ? value.label : t.select}</Text>
       </TouchableOpacity>
       <Modal visible={open} transparent animationType="slide">
+        <KlavyeKabi>
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
           <PerdeBulanik />
-          <View style={{ ...POPUP_YUZEY(), borderTopLeftRadius: 18, borderTopRightRadius: 18, maxHeight: "70%", padding: SP[4] }}>
+          <View style={{ ...POPUP_YUZEY(), borderTopLeftRadius: 18, borderTopRightRadius: 18, maxHeight: "70%", padding: SP[4], paddingBottom: SP[4] + ALTPAD }}>
             <AramaKutusu value={q} onChange={setQ} sonuc={gorunen.length} t={t}
               placeholder={t.searchPlaceholder || "Ara…"} />
             <FlatList data={gorunen} keyExtractor={i => i.key}
@@ -79,6 +81,7 @@ export function Picker({ label, value, options, onPick, t }) {
             </TouchableOpacity>
           </View>
         </View>
+      </KlavyeKabi>
       </Modal>
     </>
   );
@@ -644,8 +647,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   const [klavye, setKlavye] = useState(false);
   useEffect(() => {
     if (!Keyboard || !Keyboard.addListener) return undefined;
-    const a = Keyboard.addListener("keyboardDidShow", () => setKlavye(true));
-    const b = Keyboard.addListener("keyboardDidHide", () => setKlavye(false));
+    // iOS "Will" olayları: klavye animasyonuyla AYNI anda yerleşir (Did ile önce örtüp sonra zıplıyordu).
+    const a = Keyboard.addListener(Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow", () => setKlavye(true));
+    const b = Keyboard.addListener(Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide", () => setKlavye(false));
     return () => { a && a.remove && a.remove(); b && b.remove && b.remove(); };
   }, []);
   const dibeKaydir = useCallback(() => {
@@ -1814,7 +1818,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           </Text>
         </View>
       ) : (
-      <View style={{ paddingHorizontal: ARA[22], paddingTop: ARA[12], paddingBottom: ARA[12],
+      <View style={{ paddingHorizontal: ARA[22], paddingTop: ARA[12], paddingBottom: ARA[12] + (klavye ? 0 : ALTPAD),
                      backgroundColor: C.card }}>
         <View style={{ flexDirection: "row", alignItems: "center",
                        borderWidth: 1, borderColor: C.line2 || C.line, borderRadius: R.lg,
@@ -3344,6 +3348,16 @@ export function Plans({ t, session, onBack, lang }) {
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState("");
   const [yillik, setYillik] = useState(false);
+  // 15 Ekim (SQL 332) — mağaza ürünleri RevenueCat'ten; fiyat MAĞAZANIN fiyatıdır.
+  const [rc, setRc] = useState(null);         // { sik_ucan: { aylik: {fiyat, paket}, ... } }
+  const [okMsg, setOkMsg] = useState("");
+  const odemeAcik = odemeVar();
+  useEffect(() => {
+    if (!odemeAcik) return undefined;
+    let iptal = false;
+    abonelikPaketleri().then(x => { if (!iptal) setRc(x || {}); }).catch(() => { if (!iptal) setRc({}); });
+    return () => { iptal = true; };
+  }, [odemeAcik]);
 
   const load = useCallback(async () => {
     const [{ data: pl, error: e1 }, { data: mp, error: e2 }] = await Promise.all([
@@ -3382,8 +3396,32 @@ export function Plans({ t, session, onBack, lang }) {
   // Ekran BİLGİLENDİRME olarak kalıyor: planlar, neyi içerdikleri ve
   // "ağırlayan kişi para ödemez" kuralı görünüyor. Yükseltme, ödeme
   // entegrasyonu (Stripe/IAP) bağlanana kadar destek üzerinden.
-  function choose(plan) {
-    setMsg(t.plansUpgradeSoon);
+  async function choose(plan) {
+    setMsg(""); setOkMsg("");
+    if (!odemeAcik) { setMsg(t.plansUpgradeSoon); return; }
+    const pk = rc && rc[plan] && rc[plan][yillik ? "yillik" : "aylik"];
+    if (!pk) { setMsg(t.odemeMagazaYok); return; }
+    setBusy(plan);
+    const sonuc = await satinAl(pk.paket);
+    if (sonuc.iptal) { setBusy(null); return; }
+    if (sonuc.bekliyor) { setBusy(null); setOkMsg(t.odemeBekliyor); return; }
+    if (sonuc.hata) { setBusy(null); setMsg(t.odemeHata); return; }
+    setOkMsg(t.odemeIsleniyor);
+    const yansidi = await beklePlan(plan);
+    setBusy(null);
+    const ad = ((plans || []).find(x => x.plan === plan) || {}).ad || "";
+    setOkMsg(yansidi ? String(t.odemePlanAktif).replace("{plan}", ad) : t.odemeGecikti);
+    load();
+  }
+
+  async function restore() {
+    setMsg(""); setOkMsg("");
+    setBusy("geri");
+    const oldu = await geriYukle();
+    setBusy(null);
+    if (!oldu) { setMsg(t.odemeHata); return; }
+    setOkMsg(t.planRestoreOk);
+    setTimeout(load, 2500);
   }
 
   if (plans === null) return <Load t={t} title={t.plansTitle} onBack={onBack} />;
@@ -3476,6 +3514,11 @@ export function Plans({ t, session, onBack, lang }) {
           // ekranda hiç yoktu: "249 ₺ ödersem ne alıyorum?" sorusunun
           // cevabı yazmıyordu.
           const krediAy = ilkSayi(p.aylik_kredi, p.monthly_credits);
+          // Mağaza fiyatı varsa O gösterilir (Apple/Google'ın tahsil edeceği tutar, yerel biçimde).
+          const donemKey = yillik ? "yillik" : "aylik";
+          const magazaFiyat = ucret > 0 && rc && rc[p.plan] && rc[p.plan][donemKey] ? rc[p.plan][donemKey].fiyat : null;
+          // Ücretsiz plana geçiş = mağazada aboneliği iptal etmek (uygulama planı kendisi değiştiremez).
+          const ucretsizeDonus = odemeAcik && ucret === 0 && !!durum && !!durum.satin_alinan && durum.satin_alinan !== p.plan;
           return (
             <View key={p.plan} style={{
               backgroundColor: isCur ? C.goldSoft : C.card,
@@ -3488,7 +3531,7 @@ export function Plans({ t, session, onBack, lang }) {
               </View>
 
               <Text style={{ marginTop: SP[1], color: C.gold, fontSize: FS.title, fontWeight: "700" }}>
-                {ucret == null ? t.planPriceUnknown : ucret === 0 ? t.free : `₺${ucret}`}
+                {magazaFiyat ? magazaFiyat : ucret == null ? t.planPriceUnknown : ucret === 0 ? t.free : `₺${ucret}`}
                 {ucret > 0 && (
                   <Text style={{ fontSize: FS.sm, color: C.mut, fontWeight: "400" }}>
                     {yillik ? t.planPerYear : ` ${t.perMonth}`}
@@ -3557,7 +3600,9 @@ export function Plans({ t, session, onBack, lang }) {
                   <Text style={{ color: C.gold, fontWeight: "700", fontSize: FS.sm }}>{t.current}</Text>
                 </View>
               ) : (
-                <Btn v="gold" sm label={t.choosePlan} onPress={() => choose(p.plan)} disabled={busy === p.plan} busy={busy === p.plan} style={{ marginTop: SP[3] }} />
+                ucretsizeDonus
+                  ? <Btn v="ghost" sm label={t.planManage} onPress={abonelikYonet} style={{ marginTop: SP[3] }} />
+                  : <Btn v="gold" sm label={t.choosePlan} onPress={() => choose(p.plan)} disabled={!!busy} busy={busy === p.plan} style={{ marginTop: SP[3] }} />
               )}
             </View>
           );
@@ -3572,7 +3617,33 @@ export function Plans({ t, session, onBack, lang }) {
         </View>
 
         {!!msg && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{msg}</Text></View>}
-        <Text style={{ color: C.mutedAA, fontSize: FS.xs, textAlign: "center", marginTop: SP[2], lineHeight: 17 }}>{t.upgradeNote}</Text>
+        {!!okMsg && (
+          <View style={{ backgroundColor: C.tealBg, borderRadius: R.sm, padding: SP[3], marginTop: SP[2] }}>
+            <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 19 }}>{okMsg}</Text>
+          </View>
+        )}
+        {/* 15 Ekim — Apple 3.1.2 / Google Play abonelik kuralı: süre, otomatik yenileme, iptal yolu,
+            Kullanım Koşulları ve Gizlilik bağlantıları satın alma ekranında GÖRÜNÜR olmalı;
+            "Satın alımları geri yükle" düğmesi zorunlu. */}
+        {odemeAcik ? (
+          <View style={{ marginTop: SP[3] }}>
+            <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 17 }}>
+              {Platform.OS === "ios" ? t.planDisclosureIos : t.planDisclosureAndroid}
+            </Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: SP[3], marginTop: SP[2] }}>
+              <Text accessibilityRole="link" onPress={() => Linking.openURL("https://loungelink.co/kosullar").catch(() => {})}
+                style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600", textDecorationLine: "underline" }}>{t.planTermsLink}</Text>
+              <Text accessibilityRole="link" onPress={() => Linking.openURL("https://loungelink.co/gizlilik").catch(() => {})}
+                style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600", textDecorationLine: "underline" }}>{t.planPrivacyLink}</Text>
+            </View>
+            <Btn v="ghost" sm label={t.planRestore} onPress={restore} disabled={!!busy} busy={busy === "geri"} style={{ marginTop: SP[3] }} />
+            {!!durum && !!durum.satin_alinan && durum.satin_alinan !== "yolcu" && (
+              <Btn v="ghost" sm label={t.planManage} onPress={abonelikYonet} style={{ marginTop: SP[2] }} />
+            )}
+          </View>
+        ) : (
+          <Text style={{ color: C.mutedAA, fontSize: FS.xs, textAlign: "center", marginTop: SP[2], lineHeight: 17 }}>{t.upgradeNote}</Text>
+        )}
       </ScrollView>
     </Sayfa>
   );
@@ -4814,6 +4885,33 @@ export function HediyeBolumu({ t, onDone }) {
 }
 export function Wallet({ t, session, onBack }) {
   const [bal, setBal] = useState(null);
+  // 15 Ekim (SQL 332) — kredi paketleri mağazadan (RevenueCat): { ll_kredi_3: {kredi, fiyat, paket} }
+  const [rcKredi, setRcKredi] = useState(null);
+  const [alinan, setAlinan] = useState(null);     // satın alınan paket kodu (busy)
+  const [odemeMsg, setOdemeMsg] = useState("");
+  const odemeAcik = odemeVar();
+  useEffect(() => {
+    if (!odemeAcik) return undefined;
+    let iptal = false;
+    krediPaketleri().then(x => { if (!iptal) setRcKredi(x || {}); }).catch(() => { if (!iptal) setRcKredi({}); });
+    return () => { iptal = true; };
+  }, [odemeAcik]);
+  async function krediAl(kod) {
+    const rk = rcKredi && rcKredi[kod];
+    setOdemeMsg("");
+    if (!rk) { setOdemeMsg(t.odemeMagazaYok); return; }
+    setAlinan(kod);
+    const once = bal;
+    const sonuc = await satinAl(rk.paket);
+    if (sonuc.iptal) { setAlinan(null); return; }
+    if (sonuc.bekliyor) { setAlinan(null); setOdemeMsg(t.odemeBekliyor); return; }
+    if (sonuc.hata) { setAlinan(null); setOdemeMsg(t.odemeHata); return; }
+    setOdemeMsg(t.odemeIsleniyor);
+    const yeni = await bekleKredi(session?.user?.id, once);
+    setAlinan(null);
+    setOdemeMsg(yeni != null ? String(t.odemeKrediYuklendi).replace("{n}", String(rk.kredi)) : t.odemeGecikti);
+    load();
+  }
   // 🔴 v2.65 — useState([]) "defter boş" demekti; oysa henüz okunmamıştı.
   // null = yükleniyor, [] = gerçekten boş, loadErr = gelmedi.
   const [led, setLed] = useState(null);
@@ -4995,8 +5093,8 @@ export function Wallet({ t, session, onBack }) {
       <Text style={S.label}>{t.walletPacks}</Text>
       {/* Paketin NE OLDUĞUNU önce söylüyoruz: bir abonelik değil, takviye. */}
       <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[10] }}>{t.walletPacksIntro}</Text>
-      {(paket?.paketler || []).map(p => (
-        <View key={p.kod} style={[S.card, { flexDirection: "row", alignItems: "center", opacity: 0.75 },
+      {(paket?.paketler || []).map(p => { const kodRc = "ll_kredi_" + p.kredi; const rk = rcKredi && rcKredi[kodRc]; return (
+        <View key={p.kod} style={[S.card, { flexDirection: "row", alignItems: "center", opacity: rk ? 1 : 0.75 },
                                   p.one_cikan && { borderColor: "transparent", borderWidth: 1.5 }]}>
           <View style={{ flex: 1, minWidth: 0, marginRight: ARA[10] }}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.lg }}>
@@ -5010,14 +5108,28 @@ export function Wallet({ t, session, onBack }) {
             {!!p.aciklama && <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[2] }}>{p.aciklama}</Text>}
           </View>
           <View style={{ alignItems: "flex-end", flexShrink: 0 }}>
-            <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.lg }}>{p.fiyat_try} ₺</Text>
-            <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: ARA[2] }}>
-              {String(t.walletPerCredit).replace("{n}", String(p.kredi_basina))}
-            </Text>
-            <Text style={{ fontSize: FS.xs, color: C.gold, marginTop: ARA[2], fontWeight: "600" }}>{t.walletSoon}</Text>
+            {/* Mağaza fiyatı varsa O (Apple/Google'ın tahsil edeceği tutar); kredi başı TL hesabı
+                veritabanı fiyatına dayandığı için yalnız mağaza yokken gösterilir. */}
+            <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.lg }}>{rk ? rk.fiyat : `${p.fiyat_try} ₺`}</Text>
+            {!rk && (
+              <Text style={{ fontSize: FS.xs, color: C.mut, marginTop: ARA[2] }}>
+                {String(t.walletPerCredit).replace("{n}", String(p.kredi_basina))}
+              </Text>
+            )}
+            {rk ? (
+              <Btn v="gold" sm label={t.odemeSatinAl} onPress={() => krediAl(kodRc)}
+                disabled={!!alinan} busy={alinan === kodRc} style={{ marginTop: ARA[6] }} />
+            ) : (
+              <Text style={{ fontSize: FS.xs, color: C.gold, marginTop: ARA[2], fontWeight: "600" }}>{odemeAcik && rcKredi === null ? "…" : t.walletSoon}</Text>
+            )}
           </View>
         </View>
-      ))}
+      ); })}
+      {!!odemeMsg && (
+        <View style={{ backgroundColor: C.tealBg, borderRadius: R.sm, padding: SP[3], marginBottom: SP[2] }}>
+          <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 19 }}>{odemeMsg}</Text>
+        </View>
+      )}
       {/* 🔴 DÜRÜSTLÜK ŞERİDİ. Paket bilerek abonelikten pahalı. Bunu
           kullanıcı hesaplayıp bulmasın diye BİZ söylüyoruz. Gizlenen bir
           fiyat farkı, bulunduğu gün güveni bitirir. */}

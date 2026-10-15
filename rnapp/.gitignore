@@ -54,3 +54,4 @@ yarn-error.log*
 
 .DS_Store
 *.tsbuildinfo
+play-service-account.json
