@@ -30,6 +30,7 @@ import { pushDurumOku } from "./src/push";
 import { useRecognitionMoment } from "./src/HostWallet";
 import MomentScreen from "./src/MomentScreen";
 import { AcilisIsigi, dokun } from "./src/hareket";
+import { AcilisSahnesi } from "./src/acilis";
 // v2.73 — GÖVDE YAZISI ARTIK BİZİM. Tek çağrı; ayrıntısı src/typography.js.
 // Buraya, ilk render'dan ÖNCE koyuldu: sonrasında çağrılsaydı ilk ekran
 // sistem fontuyla çizilip sonra zıplardı.
@@ -4148,11 +4149,23 @@ export default function App() {
   // zemini değil, header fotoğrafı, kart gradyanları ve hale de.
   // `Sayfa` içine koyduğumda üç sekme aynı anda mount olduğu için üç kez
   // çiziliyordu (ölçüm: zemin 11 → 8.58). Burada tek kopya (11 → 10.5).
+  // 17 Ekim — BULUTLARIN ARASINDAN açılış (src/acilis.js). Kökte, uygulamanın ÜSTÜNDE:
+  // AppInner altta yüklemeye devam eder; sahne bitince kendini kaldırır. Web'de yok (e2e + çekim).
+  // Web'de yalnız `?acilis=1` ile (doğrulama çekimi); testler ve mağaza çekimi etkilenmez.
+  const acilisAcik = Platform.OS !== "web" || (typeof window !== "undefined" && /[?&]acilis=1/.test((window.location && window.location.search) || ""));
+  const [acilis, setAcilis] = React.useState(acilisAcik);
+  const [slogan, setSlogan] = React.useState("");
+  React.useEffect(() => {
+    if (!acilisAcik) return;
+    getLang().then((l) => { const d = (D && D[l]) || D.tr || {}; setSlogan([d.v7Slogan1, d.v7Slogan2].filter(Boolean).join(" ")); })
+      .catch(() => setSlogan(D.tr ? D.tr.v7Slogan1 + " " + D.tr.v7Slogan2 : ""));
+  }, []);
   return (
     <ErrorBoundary>
       <View style={{ flex: 1 }}>
         <AppInner />
         <Tanecik />
+        {acilis && <AcilisSahnesi slogan={slogan} onBitti={() => setAcilis(false)} />}
       </View>
     </ErrorBoundary>
   );

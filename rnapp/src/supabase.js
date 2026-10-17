@@ -1,7 +1,7 @@
 import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 import Constants from "expo-constants";
 
 // 🔴 v1.83 — ANAHTAR ROTASYONU KOLAYLIĞI
@@ -65,4 +65,14 @@ export function logError(screen, err, code) {
       p_context: null,
     }).then(() => {}, () => {});   // sessiz: log yazamamak sorun değil
   } catch (e) { /* yut */ }
+}
+
+
+// 17 Ekim — MALİYET KORUMASI: periyodik sorgular (sohbet, oturum, gelen kutusu) uygulama
+// ARKA PLANDAYKEN istek atmasın. Android JS zamanlayıcıları arka planda bir süre daha
+// çalışır; açık bırakılmış bir sohbet ekranı her 8 sn'de tüm mesaj geçmişini çekiyordu.
+// Ön plana dönünce ilk tikte veri tazelenir.
+export function onPlanda() {
+  const d = AppState && AppState.currentState;
+  return d == null || d === "active";
 }

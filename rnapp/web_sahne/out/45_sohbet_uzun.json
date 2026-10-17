@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -7,7 +16,7 @@
   "",
   "İYİ GÜNLER",
   "Gökberk",
-  "15",
+  "14",
   "KREDİ",
   "200",
   "LOUNGEPUAN",
@@ -27,7 +36,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "17:11–21:11",
+  "16:03–20:03",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -70,29 +79,29 @@
   "2",
   ":",
   "2",
-  "4",
+  "6",
   ":",
+  "4",
   "1",
   "0",
-  "0",
-  "9",
   "DURUM",
   "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "14:32",
+  "13:24",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "14:34",
+  "13:26",
   "Lounge girişindeyim",
-  "14:39",
+  "13:31",
   "Ben de yeni geçtim, kapıdayım.",
-  "14:39",
+  "13:31",
   "Süper. Kaç numaralı kapıdasın?",
-  "14:40",
+  "13:32",
   "A12. Primeclass girişi tam karşısı.",
-  "14:40",
+  "13:32",
   "Anladım, yürüyen merdivenden çıkıyorum.",
-  "14:40",
-  "Acele etme, uçuşa daha var."
+  "13:32",
+  "Acele etme, uçuşa daha var.",
+  "13:33"
  ],
  "tasan": [],
  "bitisik": []

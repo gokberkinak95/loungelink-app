@@ -124,6 +124,10 @@ C.brandApple      = "#000000";   // Apple Sign In — siyah düğme zemini (zoru
 C.brandAppleInk   = "#1F1F1F";   // Apple/Google beyaz düğme üzerindeki metin
 C.brandGoogle     = "#4285F4";   // Google marka mavisi (zorunlu)
 
+// 17 Ekim — AÇILIŞ SAHNESİ (src/acilis.js) renkleri. Temadan BAĞIMSIZ: açılış her temada aynı
+// gökyüzü. `sis` app.json splash.backgroundColor ile aynı olmak ZORUNDA (yerel kare = ilk kare).
+export const ACILIS = { sis: "#DCE3EF", gece: "#1A2B4C", krem: "#FAEEDC", altin: "#D4C3A3" };
+
 export const F = {
   // MVP: Cormorant Garamond. iOS'ta Georgia en yakin sistem serif'i.
   // Android'de "Georgia" YOK — bilinmeyen fontFamily sessizce Roboto'ya

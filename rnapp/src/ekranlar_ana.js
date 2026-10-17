@@ -30,7 +30,7 @@ import { CarrierPicker, Katlanir, norm } from "./Pickers";
 import { badgeLabel, fmtLongDate, mapErr, shortName, sinirMetni, BUYUK, gorunur, etkinDil } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
-import { logError, supabase } from "./supabase";
+import { logError, onPlanda, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP, temaModu } from "./theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -3518,7 +3518,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
           .subscribe();
       } catch (e) {}
     }, 1200);
-    const iv = setInterval(load, 8000);
+    const iv = setInterval(() => { if (onPlanda()) load(); }, 8000);
     return () => { clearTimeout(timer); clearInterval(iv); try { if (sub) supabase.removeChannel(sub); } catch (e) {} };
   }, [load, channelId]);
 

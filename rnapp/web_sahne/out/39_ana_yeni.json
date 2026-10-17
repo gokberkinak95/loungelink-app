@@ -7,10 +7,6 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -43,7 +39,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "17:01–20:31",
+  "15:53–19:23",
   "Host bul",
   "",
   "Ana Sayfa",

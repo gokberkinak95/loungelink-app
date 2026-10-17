@@ -5,7 +5,9 @@
 #   rnapp/assets: icon.png (1024, RGB), adaptive-icon.png, monochrome-icon.png, favicon.png
 #   website: app/icon.png + app/apple-icon.png (256), public/icon.png (1024), public/favicon.png (64)
 #   backoffice: public/icon.png (1024), public/favicon.png (64)
-# Kullanim:  python brand/build_ikon_hale.py [--yalniz-onizleme klasor]
+# Kullanim:  python brand/build_ikon_hale.py              -> sevkiyata (assets + website + backoffice) yazar
+#            python brand/build_ikon_hale.py <klasor>     -> yalniz app varliklari o klasore (marka_check)
+#            python brand/build_ikon_hale.py --yalniz-onizleme <klasor>
 import os, sys
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -69,7 +71,13 @@ def ikon(olcek=1.0):
     im.alpha_composite(renkli(m, SAMP, 0.8, 38 * k))
     im.alpha_composite(renkli(m, KREM, 0.95, 14 * k))
     im.alpha_composite(renkli(m, BEYAZ_SICAK, 1, 3.5 * k))
-    return im.convert("RGB")
+    # Koyu degrade + hale 8 bitte basamak (bant) yapar; ucgen dagilimli +-1 LSB titresim
+    # bantlari kirar. Tohum sabit -> her calisma ayni dosyayi uretir (marka_check birebir).
+    import numpy as np
+    rng = np.random.default_rng(int(olcek * 1000))
+    d = np.asarray(im.convert("RGB"), dtype=np.float64)
+    d = d + (rng.random(d.shape[:2] + (1,)) - rng.random(d.shape[:2] + (1,)))
+    return Image.fromarray(np.clip(np.round(d), 0, 255).astype(np.uint8), "RGB")
 
 
 def monokrom():
@@ -80,8 +88,25 @@ def monokrom():
     return im
 
 
+def acilis_yerel():
+    # Yerel acilis ekrani: SAYDAM. Zemin app.json splash.backgroundColor = sis (#DCE3EF);
+    # bulutlardan cikis hareketi (src/acilis.js) tam bu sis karesinden baslar.
+    return Image.new("RGBA", (1284, 1284), (0, 0, 0, 0))
+
+
 def main():
     hedef = None
+    if len(sys.argv) == 2 and not sys.argv[1].startswith("--"):
+        # marka_check: yalniz app varliklari, duz adlarla
+        d = sys.argv[1]
+        os.makedirs(d, exist_ok=True)
+        ikon(1.0).save(os.path.join(d, "icon.png"))
+        ikon(0.66).save(os.path.join(d, "adaptive-icon.png"))
+        monokrom().save(os.path.join(d, "monochrome-icon.png"))
+        ikon(1.0).resize((64, 64), Image.LANCZOS).save(os.path.join(d, "favicon.png"))
+        acilis_yerel().save(os.path.join(d, "splash.png"))
+        print("ok ->", d)
+        return
     if len(sys.argv) > 2 and sys.argv[1] == "--yalniz-onizleme":
         hedef = sys.argv[2]
         os.makedirs(hedef, exist_ok=True)
@@ -100,6 +125,7 @@ def main():
     kaydet(AD, os.path.join(A, "adaptive-icon.png"))
     kaydet(MO, os.path.join(A, "monochrome-icon.png"))
     kaydet(I, os.path.join(A, "favicon.png"), 64)
+    kaydet(acilis_yerel(), os.path.join(A, "splash.png"))
     W = os.path.join(PROJE, "website")
     kaydet(I, os.path.join(W, "app", "icon.png"), 256)
     kaydet(I, os.path.join(W, "app", "apple-icon.png"), 256)

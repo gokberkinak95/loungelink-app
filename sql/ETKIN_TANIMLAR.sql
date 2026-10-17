@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-10-15
+-- Uretim tarihi: 2026-10-17
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,8 +9,8 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 524
--- Birden cok dosyada tanimli (dikkat!): 160
+-- Toplam fonksiyon: 529
+-- Birden cok dosyada tanimli (dikkat!): 161
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -101,7 +101,7 @@
 --   partner_payout               -> etkin: 209_saglayici_modulu.sql  (ayrica: 029_bo_requirements.sql)
 --   pending_ratings              -> etkin: 303_ertelenen_puan_ana_sayfadan_duser.sql  (ayrica: 032_p2_flows.sql, 081_pending_ratings_link.sql, 186_context_for_cards.sql, 187_kanitlanmis_kusurlar.sql)
 --   phone_in_use                 -> etkin: 253_guvenlik_kapanisi.sql  (ayrica: 049_discovery_safety_phone_delete.sql)
---   plan_kredisi_yerlestir       -> etkin: 236_ust_plan_bir_ay_ucretsiz.sql  (ayrica: 225_planin_sozu_tutulsun.sql)
+--   plan_kredisi_yerlestir       -> etkin: 334_ekonomi_ve_icerik_suzgeci.sql  (ayrica: 225_planin_sozu_tutulsun.sql, 236_ust_plan_bir_ay_ucretsiz.sql)
 --   push_kanali                  -> etkin: 278_push_kanali_enum.sql  (ayrica: 276_push_kanallari.sql)
 --   rate_session                 -> etkin: 078_trust_single_writer.sql  (ayrica: 008_chat_sessions.sql, 068_fix_rate_session.sql)
 --   recompute_badge              -> etkin: 046_trust_and_host_visibility.sql  (ayrica: 032_p2_flows.sql, 033_beta_credits_dualrole_radar.sql)
@@ -144,7 +144,7 @@
 --   start_session                -> etkin: 080_session_lifecycle.sql  (ayrica: 008_chat_sessions.sql, 026_doc_parity_core.sql, 077_session_autostart_intro_slots.sql)
 --   start_session_request        -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
 --   submit_field_report          -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 095_close_the_loop.sql, 152_field_reports_loop.sql)
---   subscription_plans           -> etkin: 220_plan_katalogu_ve_dil.sql  (ayrica: 210_abonelik_push_ve_kapsam.sql)
+--   subscription_plans           -> etkin: 334_ekonomi_ve_icerik_suzgeci.sql  (ayrica: 210_abonelik_push_ve_kapsam.sql, 220_plan_katalogu_ve_dil.sql)
 --   test_hesabi_gizli_mi         -> etkin: 302_test_hesaplarini_gorenler.sql  (ayrica: 301_guven_ve_akis_tamamlama.sql)
 --   trg_acik_istek_tavani        -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   trg_bakiye_negatife_dusemez  -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql)
@@ -155,6 +155,7 @@
 --   trg_ilan_kapatma_kapisi      -> etkin: 243_one_cikarma_gercekten_calissin.sql  (ayrica: 237_ilan_ve_seyahat_duzenlenebilsin.sql, 240_kural_kapida_degil_odada.sql)
 --   trg_istek_guven_esigi        -> etkin: 288_guven_esigi_kolonu.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   trg_odul_ekonomi_kapisi      -> etkin: 245_vitrin_gokberkin_listesi.sql  (ayrica: 244_odul_ekonomisi.sql)
+--   trg_sohbet_suzgeci           -> etkin: 334_ekonomi_ve_icerik_suzgeci.sql  (ayrica: 255_magaza_sartlari.sql)
 --   trg_soru_bildirimi_host      -> etkin: 239_soru_hangi_ilana_ait.sql  (ayrica: 238_cuzdan_ve_soru_dili.sql)
 --   trg_soru_izi                 -> etkin: 239_soru_hangi_ilana_ait.sql  (ayrica: 235_sordugunu_gorebilmeli.sql)
 --   trg_soru_metni               -> etkin: 239_soru_hangi_ilana_ait.sql  (ayrica: 238_cuzdan_ve_soru_dili.sql)
@@ -13184,16 +13185,15 @@ begin
 end $function$
 
 -- ----------------------------------------------------------------------
--- subscription_plans   [etkin kaynak: 220_plan_katalogu_ve_dil.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- subscription_plans   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.subscription_plans(p_lang text default 'tr')
-returns jsonb language sql stable security definer set search_path = public as $fn$
+returns jsonb language sql stable security definer set search_path = public as $sp334$
   select jsonb_agg(jsonb_build_object(
            'plan', p.plan, 'ad',
              case when lower(coalesce(p_lang,'tr')) = 'en'
-                  then coalesce(nullif(p.ad_en,''), p.ad)
-                  else p.ad end,
+                  then coalesce(nullif(p.ad_en,''), p.ad) else p.ad end,
            'aylik_kredi', p.monthly_credits,
            'aylik_fiyat', p.price_try, 'yillik_fiyat', p.yillik_try,
            'yillik_indirim_yuzde', case when p.price_try > 0 and p.yillik_try > 0
@@ -13204,45 +13204,20 @@ returns jsonb language sql stable security definer set search_path = public as $
                   then p.perks_en else p.perks end,
            'sira', p.sort_order,
            'kacirilan_sikligi', p.kacirilan_sikligi,
-           'oncelikli_destek', p.oncelikli_destek)
+           'oncelikli_destek', p.oncelikli_destek,
+           'acik_istek', p.acik_istek_tavani,
+           'baglanti_haftalik', p.baglanti_haftalik)
          order by p.sort_order)
     from plan_catalog p where p.aktif;
-$fn$;
-grant execute on function public.subscription_plans(text) to authenticated;
+$sp334$;
 
+-- ── §3 · Kayıt hediyesi 1 ──────────────────────────────────────────────────
+update beta_settings set value = jsonb_set(value, '{amount}', '1'::jsonb) where key = 'signup_credits';
 
--- ════════════════════════════════════════════════════════════════════════
--- NÖBETÇİ — varsayılan bir daha ölü plana bakmasın
---
--- Bu kusur "sil değil pasife al" kararının yan etkisiydi ve iki sürüm
--- boyunca kimse görmedi. Bir daha görünmez kalmasın.
--- ════════════════════════════════════════════════════════════════════════
-do $$
-declare v_def text; v_olu int; v_aktif_plan int;
-begin
-  select column_default into v_def from information_schema.columns
-   where table_schema='public' and table_name='users' and column_name='plan';
-
-  if v_def is null or not exists (
-       select 1 from plan_catalog p
-        where p.aktif and v_def like '%''' || p.plan::text || '''%') then
-    raise exception '220: users.plan varsayilani (%) AKTIF bir plana bakmiyor', coalesce(v_def,'(yok)');
-  end if;
-
-  select count(*) into v_olu from users u
-   where exists (select 1 from plan_catalog p
-                  where p.plan = u.plan and coalesce(p.aktif,false) = false);
-  if v_olu > 0 then
-    raise exception '220: % kullanici hala PASIF planda', v_olu;
-  end if;
-
-  select count(*) into v_aktif_plan from plan_catalog where aktif;
-  if v_aktif_plan = 0 then
-    raise exception '220: aktif plan YOK — katalog bos';
-  end if;
-
-  raise notice '220: varsayilan % · pasif planda kullanici 0 · aktif plan %', v_def, v_aktif_plan;
-end $$;
+-- ── §4 · Aylık plan kredisi: devretmez ─────────────────────────────────────
+-- Önceki ayın plan kredisinden kullanılmayanı bul: o aydan beri yapılan NET istek harcaması
+-- (tutma − iade) önce plan kredisinden düşülmüş sayılır. Gelir kalemleri (paket, ağırlama,
+-- hediye, yönetici, plan payları) harcama değildir.
 
 -- ----------------------------------------------------------------------
 -- send_missed_value_digest   [etkin kaynak: 210_abonelik_push_ve_kapsam.sql]
@@ -16716,66 +16691,69 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- plan_kredisi_yerlestir   [etkin kaynak: 236_ust_plan_bir_ay_ucretsiz.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- plan_kredisi_yerlestir   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-create or replace function public.plan_kredisi_yerlestir(p_user uuid default null)
-returns jsonb language plpgsql security definer set search_path = public as $pky$
+create or replace function public.plan_kredisi_yerlestir(p_user uuid default null::uuid)
+returns jsonb
+language plpgsql security definer set search_path to 'public' as $pk334$
 declare
-  v_uid uuid := coalesce(p_user, auth.uid());
+  v_uid uuid := public.kimlik(p_user);
   v_ay text; v_n int; v_reason text; v_bal int; v_plan plan_type;
+  v_onceki int := 0; v_son_ay text; v_yanan int := 0;
 begin
   if v_uid is null then return jsonb_build_object('ok', false, 'neden', 'oturum_yok'); end if;
 
-  v_plan := public.etkin_plan(v_uid)::text;
   v_ay := to_char(timezone('Europe/Istanbul', now()), 'YYYY-MM');
-  -- 🔴 Sebep artık PLANI da taşıyor: hediye ay ortasında açılırsa kişi o
-  -- ayın üst-plan kredisini de alabilsin. Aksi hâlde "zaten_verildi"ye
-  -- takılıp hediyenin kredisi hiç yazılmazdı.
-  v_reason := 'plan_monthly:' || v_ay || ':' || v_plan;
 
-  if exists (select 1 from credit_ledger where user_id = v_uid and reason = v_reason) then
-    return jsonb_build_object('ok', true, 'durum', 'zaten_verildi', 'ay', v_ay, 'plan', v_plan);
+  -- 1) Önceki ayın kullanılmayan plan kredisi düşer (ayda bir kez).
+  select max(substring(reason from '^plan_monthly:([0-9]{4}-[0-9]{2})')) into v_son_ay
+    from credit_ledger where user_id = v_uid and reason ~ '^plan_monthly:[0-9]{4}-[0-9]{2}:' and delta > 0;
+  if v_son_ay is not null and v_son_ay < v_ay
+     and not exists (select 1 from credit_ledger where user_id = v_uid and reason = 'plan_expire:' || v_son_ay) then
+    v_yanan := coalesce(public.plan_kredisi_kalan(v_uid), 0);
+    select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = v_uid;
+    insert into credit_ledger (user_id, delta, reason, balance_after, note)
+    values (v_uid, -v_yanan, 'plan_expire:' || v_son_ay, v_bal - v_yanan,
+            format('%s ayının kullanılmayan %s plan kredisi devretmedi', v_son_ay, v_yanan));
   end if;
 
-  select coalesce(p.monthly_credits, 0) into v_n
-    from plan_catalog p where p.plan::text = v_plan and p.aktif;
+  -- 2) Bu ayın payı.
+  v_plan := public.etkin_plan(v_uid);
+  v_reason := 'plan_monthly:' || v_ay || ':' || v_plan::text;
+  if exists (select 1 from credit_ledger where user_id = v_uid and reason = v_reason) then
+    return jsonb_build_object('ok', true, 'durum', 'zaten_verildi', 'ay', v_ay, 'plan', v_plan, 'yanan', v_yanan);
+  end if;
+
+  select coalesce(p.monthly_credits, 0) into v_n from plan_catalog p where p.plan = v_plan and p.aktif;
   v_n := coalesce(v_n, 0);
   if v_n <= 0 then
-    return jsonb_build_object('ok', true, 'durum', 'plan_kredisi_yok', 'ay', v_ay);
+    return jsonb_build_object('ok', true, 'durum', 'plan_kredisi_yok', 'ay', v_ay, 'yanan', v_yanan);
   end if;
 
-  -- Aynı ay içinde alt plandan kredi aldıysa FARKI ver, tamamını değil.
-  declare v_onceki int := 0;
-  begin
-    select coalesce(max(delta),0) into v_onceki from credit_ledger
-     where user_id = v_uid and reason like 'plan_monthly:' || v_ay || '%';
-    if v_onceki >= v_n then
-      return jsonb_build_object('ok', true, 'durum', 'zaten_yeterli', 'ay', v_ay);
-    end if;
-    v_n := v_n - v_onceki;
-  end;
+  -- Ay içinde plan yükseldiyse yalnız FARK verilir.
+  select coalesce(sum(delta), 0) into v_onceki from credit_ledger
+   where user_id = v_uid and reason like 'plan_monthly:' || v_ay || ':%';
+  if v_onceki >= v_n then
+    return jsonb_build_object('ok', true, 'durum', 'zaten_yeterli', 'ay', v_ay, 'yanan', v_yanan);
+  end if;
+  v_n := v_n - v_onceki;
 
-  select coalesce(sum(delta),0) into v_bal from credit_ledger where user_id = v_uid;
+  select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = v_uid;
   insert into credit_ledger (user_id, delta, reason, balance_after)
   values (v_uid, v_n, v_reason, v_bal + v_n);
 
   insert into notifications (user_id, category, title, body, ref_type)
-  values (v_uid, 'system', 'Aylık kredin yüklendi ✓',
-          v_n || ' kredi hesabına eklendi. Planın her ay bu krediyi veriyor.',
+  values (v_uid, 'credits', 'Aylık kredin yüklendi ✓',
+          v_n || ' kredi hesabına eklendi. Aylık plan kredisi bir sonraki aya devretmez.',
           'credits');
 
-  return jsonb_build_object('ok', true, 'durum', 'verildi', 'adet', v_n,
-                            'ay', v_ay, 'plan', v_plan);
+  return jsonb_build_object('ok', true, 'durum', 'verildi', 'adet', v_n, 'ay', v_ay, 'plan', v_plan, 'yanan', v_yanan);
 exception when others then
   return jsonb_build_object('ok', false, 'neden', sqlerrm);
-end $pky$;
-grant execute on function public.plan_kredisi_yerlestir(uuid) to authenticated;
+end $pk334$;
 
--- ----------------------------------------------------------------------------
--- 7) BACKOFFICE
--- ----------------------------------------------------------------------------
-drop function if exists public.bo_plan_hediyeleri(text);
+-- ── §5 · Haftalık bağlantı isteği sınırı ───────────────────────────────────
 
 -- ----------------------------------------------------------------------
 -- bekleyen_teslimler   [etkin kaynak: 229_odul_teslim_sozu.sql]
@@ -24262,46 +24240,30 @@ begin
 end $st255$;
 
 -- ----------------------------------------------------------------------
--- trg_sohbet_suzgeci   [etkin kaynak: 255_magaza_sartlari.sql]
+-- trg_sohbet_suzgeci   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.trg_sohbet_suzgeci() returns trigger
-language plpgsql security definer set search_path = public as $tss255$
-declare v jsonb;
+language plpgsql security definer set search_path = public as $tss334$
+declare v jsonb; v_temiz text;
 begin
   v := public.sohbet_temizle(new.body);
   new.body := v ->> 'body';
+  v_temiz := public.uygunsuz_maskele(new.body);
+  if v_temiz is distinct from new.body then
+    new.body := v_temiz;
+    v := jsonb_set(v, '{sebep}', coalesce(v -> 'sebep', '[]'::jsonb) || '"uygunsuz"'::jsonb);
+  end if;
   if jsonb_array_length(coalesce(v -> 'sebep', '[]'::jsonb)) > 0 then
     new.flagged := true;
-    new.flag_reason := array_to_string(
-      array(select jsonb_array_elements_text(v -> 'sebep')), ',');
+    new.flag_reason := array_to_string(array(select jsonb_array_elements_text(v -> 'sebep')), ',');
   end if;
   return new;
 exception when others then
-  -- 🔴 SÜZGEÇ, MESAJI DÜŞÜREMEZ. Bir moderasyon aracının arızası
-  -- kullanıcının konuşmasını kesmemeli.
   return new;
-end $tss255$;
+end $tss334$;
 
-drop trigger if exists trg_sohbet_suzgeci on messages;
-create trigger trg_sohbet_suzgeci before insert on messages
-  for each row execute function public.trg_sohbet_suzgeci();
-
-grant execute on function public.sohbet_temizle(text) to authenticated;
-
--- ════════════════════════════════════════════════════════════════════════
--- §2 — 18 YAŞ ONAYI KAYIT AKIŞINA GİRDİ (istemci v2.99)
---
--- Platform Sözleşmesi 18 yaş sınırı koyuyor; akış hiç sormuyordu.
--- Mağaza yaş derecelendirmesi (yabancılarla sohbet + yüz yüze buluşma)
--- ile sözleşme arasındaki boşluk buydu.
---
--- 🆕 SINIF: "SÖZLEŞMEDE YAZAN AMA AKIŞTA SORULMAYAN BİR ŞART, ŞART DEĞİL
--- TEMENNİDİR."
---
--- ⚠️ DOĞUM TARİHİ SORMUYORUZ — bilerek. Doğrulanamayan bir doğum tarihi
--- toplamak, KVKK açısından gereksiz veri toplamaktır; beyan yeterli ve
--- sözleşmenin dayanağı olur.
--- ════════════════════════════════════════════════════════════════════════
+-- Diğer görünür metinler: tetikleyiciye kolon adları argüman olarak verilir.
 
 -- ----------------------------------------------------------------------
 -- yas_onayim   [etkin kaynak: 255_magaza_sartlari.sql]
@@ -31830,3 +31792,208 @@ union all
 select 'kullaniciya beta yazmiyor',
        position('Beta döneminde' in pg_get_functiondef('public.request_credit_topup'::regproc)) = 0;
 -- Beklenen: iki satır tamam = true.
+
+-- ----------------------------------------------------------------------
+-- plan_kredisi_kalan   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.plan_kredisi_kalan(p_user uuid)
+returns int
+language sql stable security definer set search_path = public as $pkk334$
+  with son as (
+    select substring(reason from '^plan_monthly:([0-9]{4}-[0-9]{2})') as ay, min(created_at) as bas, sum(delta) as pay
+      from credit_ledger
+     where user_id = p_user and reason ~ '^plan_monthly:[0-9]{4}-[0-9]{2}:' and delta > 0
+     group by 1 order by 1 desc limit 1
+  ), harcama as (
+    select coalesce(-sum(c.delta), 0) as net
+      from credit_ledger c, son
+     where c.user_id = p_user and c.created_at >= son.bas
+       and c.reason !~ '^(plan_monthly|plan_expire|kredi_satin_alma|kredi_magaza_iadesi|hosted_session|beta_signup|signup|admin|paid_guest|seed)'
+  )
+  select greatest(0, least(son.pay - greatest(harcama.net, 0),
+                           (select coalesce(sum(delta), 0) from credit_ledger where user_id = p_user)))::int
+    from son, harcama;
+$pkk334$;
+
+-- ----------------------------------------------------------------------
+-- baglanti_hakkim   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.baglanti_hakkim(p_user uuid default null)
+returns jsonb
+language plpgsql stable security definer set search_path = public as $bh334$
+declare v_uid uuid := public.kimlik(p_user); v_tavan int; v_kul int; v_ilk timestamptz;
+begin
+  if v_uid is null then return jsonb_build_object('ok', false); end if;
+  select p.baglanti_haftalik into v_tavan from plan_catalog p where p.plan = public.etkin_plan(v_uid);
+  select count(*), min(created_at) into v_kul, v_ilk
+    from connection_requests
+   where from_id = v_uid and created_at > now() - interval '7 days'
+     and coalesce(intent, '') <> 'kural_sorusu';
+  return jsonb_build_object('ok', true, 'sinirsiz', v_tavan is null, 'tavan', v_tavan,
+    'kullanilan', v_kul, 'kalan', case when v_tavan is null then null else greatest(0, v_tavan - v_kul) end,
+    'yenilenme', case when v_ilk is null then null else v_ilk + interval '7 days' end);
+end $bh334$;
+revoke all on function public.baglanti_hakkim(uuid) from public, anon;
+grant execute on function public.baglanti_hakkim(uuid) to authenticated, service_role;
+
+do $sc334$
+declare v text;
+begin
+  v := pg_get_functiondef('public.send_connection(uuid, text, text)'::regprocedure);
+  if position('baglanti_haftalik_sinir' in v) = 0 then
+    v := replace(v,
+      '  if public.is_blocked_pair(v_uid, p_to) then raise exception ''blocked_pair''; end if;',
+      '  if public.is_blocked_pair(v_uid, p_to) then raise exception ''blocked_pair''; end if;
+  -- 334 · haftalık bağlantı isteği sınırı (Yolcu 3 · Sık Uçan 15 · Kâhya sınırsız)
+  if coalesce((public.baglanti_hakkim(v_uid) ->> ''kalan'')::int, 1) <= 0 then
+    raise exception ''baglanti_haftalik_sinir'';
+  end if;');
+    if position('baglanti_haftalik_sinir' in v) = 0 then
+      raise exception '334: send_connection icinde ekleme noktasi bulunamadi';
+    end if;
+    execute v;
+  end if;
+end $sc334$;
+
+-- ── §5b · BO: kaçak göstergesi ─────────────────────────────────────────────
+-- Tanış sohbetinde lounge'a birlikte girmeyi konuşan çiftlerden kaçı aynı dönemde RESMİ bir
+-- oturuma döndü? Dönmeyenlerin oranı yüksekse uygulamadaki yönlendirme ve bağlantı sınırı
+-- sıkılaştırılır; düşükse kullanıcı boşuna yorulmaz. Yalnız sayı döner, mesaj içeriği dönmez.
+
+-- ----------------------------------------------------------------------
+-- bo_kacak_gostergesi   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.bo_kacak_gostergesi(p_gun int default 30)
+returns jsonb
+language plpgsql stable security definer set search_path = public as $kg334$
+declare v_gun int := greatest(1, least(coalesce(p_gun, 30), 365)); v jsonb;
+begin
+  if auth.uid() is not null and not exists (select 1 from admin_roles ar where ar.user_id = auth.uid()) then
+    raise exception 'not_admin';
+  end if;
+  with konusan as (
+    select distinct c.id as kanal, least(cr.from_id, cr.to_id) as a, greatest(cr.from_id, cr.to_id) as b
+      from chat_channels c
+      join connection_requests cr on cr.id = c.connection_id
+      join messages m on m.channel_id = c.id
+     where c.kind = 'companion' and m.created_at > now() - make_interval(days => v_gun)
+       and lower(m.body) ~ '(lounge|salona|salonda|misafir olarak|misafirin olay|kartımla|kartinla|kartınla|yanına al|yanina al|birlikte gir|beraber gir|take me in|as your guest|guest pass)'
+  ), sonuc as (
+    select k.*, exists (
+      select 1 from sessions s join requests r on r.id = s.request_id
+       where r.created_at > now() - make_interval(days => v_gun)
+         and least(r.guest_id, r.host_id) = k.a and greatest(r.guest_id, r.host_id) = k.b) as resmi
+      from konusan k
+  )
+  select jsonb_build_object('gun', v_gun,
+           'lounge_konusan_cift', count(*),
+           'resmi_oturuma_donen', count(*) filter (where resmi),
+           'donmeyen', count(*) filter (where not resmi),
+           'donmeyen_orani', case when count(*) > 0 then round(100.0 * count(*) filter (where not resmi) / count(*)) end)
+    into v from sonuc;
+  return v;
+end $kg334$;
+revoke all on function public.bo_kacak_gostergesi(int) from public, anon;
+grant execute on function public.bo_kacak_gostergesi(int) to authenticated, service_role;
+
+-- ── §6 · Uygunsuz içerik süzgeci (Apple 1.2) ───────────────────────────────────────────
+
+-- ----------------------------------------------------------------------
+-- uygunsuz_maskele   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.uygunsuz_maskele(p text)
+returns text
+language plpgsql immutable set search_path = public as $um334$
+declare
+  r record; v_out text := ''; v_norm text; v_bas text;
+  -- Normalize sözcükle TAM eşleşir (önek kökler `.*` ile). Liste bilerek dar.
+  v_desen constant text :=
+    '^(siktir.*|sikeyim|sikerim|sikiyim|sikik.*|sikiş.*|sikis.*|yarrak.*|yarak|amk|amq|amına.*|amina.*|amını|amini|'
+    'amcık.*|amcik.*|orospu.*|oç|piç|piçler|göt|götveren|gotveren|ibne.*|pezevenk.*|kahpe.*|şerefsiz.*|serefsiz.*|'
+    'gavat.*|yavşak.*|yavsak.*|puşt.*|pust|kaltak.*|sürtük.*|surtuk.*|ananı|anani|'
+    'fuck.*|motherfuck.*|shit|shitty|bitch.*|cunt.*|nigg.*|faggot.*|asshole.*|whore.*|slut.*|dick|pussy)$';
+begin
+  if p is null or p = '' then return p; end if;
+  v_bas := substring(p from '^\s*');
+  v_out := coalesce(v_bas, '');
+  for r in select m[1] as tok, m[2] as sp from regexp_matches(p, '(\S+)(\s*)', 'g') as m loop
+    v_norm := lower(translate(r.tok, 'ÇĞİIÖŞÜÂÎÛ', 'çğiıöşüâîû'));
+    v_norm := regexp_replace(v_norm, '[^a-zçğıöşüâîû0-9]', '', 'g');
+    if v_norm <> '' and v_norm ~ v_desen then
+      v_out := v_out || '•••' || r.sp;
+    else
+      v_out := v_out || r.tok || r.sp;
+    end if;
+  end loop;
+  return v_out;
+end $um334$;
+grant execute on function public.uygunsuz_maskele(text) to authenticated, service_role;
+
+-- Sohbet: mevcut süzgece (255) uygunsuz sözcük maskesi + işaret eklenir.
+
+-- ----------------------------------------------------------------------
+-- trg_uygunsuz_suz   [etkin kaynak: 334_ekonomi_ve_icerik_suzgeci.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.trg_uygunsuz_suz() returns trigger
+language plpgsql security definer set search_path = public as $tus334$
+declare c text; v text; m text; j jsonb := to_jsonb(new); degisti boolean := false;
+begin
+  foreach c in array tg_argv loop
+    v := j ->> c;
+    if v is not null then
+      m := public.uygunsuz_maskele(v);
+      if m is distinct from v then
+        j := jsonb_set(j, array[c], to_jsonb(m));
+        degisti := true;
+      end if;
+    end if;
+  end loop;
+  if degisti then new := jsonb_populate_record(new, j); end if;
+  return new;
+exception when others then
+  return new;
+end $tus334$;
+
+drop trigger if exists trg_uygunsuz_profil on profiles;
+create trigger trg_uygunsuz_profil before insert or update of name, bio, profession on profiles
+  for each row execute function public.trg_uygunsuz_suz('name', 'bio', 'profession');
+drop trigger if exists trg_uygunsuz_baglanti on connection_requests;
+create trigger trg_uygunsuz_baglanti before insert or update of intro, cevap, cevap_notu on connection_requests
+  for each row execute function public.trg_uygunsuz_suz('intro', 'cevap', 'cevap_notu');
+drop trigger if exists trg_uygunsuz_soru on kural_sorulari;
+create trigger trg_uygunsuz_soru before insert or update of soru, cevap, cevap_notu on kural_sorulari
+  for each row execute function public.trg_uygunsuz_suz('soru', 'cevap', 'cevap_notu');
+drop trigger if exists trg_uygunsuz_puan on ratings;
+create trigger trg_uygunsuz_puan before insert or update of comment on ratings
+  for each row execute function public.trg_uygunsuz_suz('comment');
+drop trigger if exists trg_uygunsuz_istek on requests;
+create trigger trg_uygunsuz_istek before insert or update of intro_message, decision_note on requests
+  for each row execute function public.trg_uygunsuz_suz('intro_message', 'decision_note');
+drop trigger if exists trg_uygunsuz_davet on invites;
+create trigger trg_uygunsuz_davet before insert or update of note on invites
+  for each row execute function public.trg_uygunsuz_suz('note');
+drop trigger if exists trg_uygunsuz_ilan on availabilities;
+create trigger trg_uygunsuz_ilan before insert or update of rule_note on availabilities
+  for each row execute function public.trg_uygunsuz_suz('rule_note');
+
+-- ── DOĞRULAMA ──────────────────────────────────────────────────────────────
+select 'kahya kredi basi en ucuz' as kontrol,
+       (select price_try::numeric / monthly_credits from plan_catalog where plan = 'kahya')
+     < (select price_try::numeric / monthly_credits from plan_catalog where plan = 'sik_ucan') as tamam
+union all
+select 'yolcu aylik kredi yok, kayit hediyesi 1',
+       (select monthly_credits from plan_catalog where plan = 'yolcu') = 0
+   and (select (value ->> 'amount')::int from beta_settings where key = 'signup_credits') = 1
+union all
+select 'paketler 1-3-5, abonelikten pahali',
+       (select array_agg(kredi order by sira) from kredi_paketleri where aktif) = array[1,3,5]
+   and (select min(fiyat_try::numeric / kredi) from kredi_paketleri where aktif)
+     > (select max(price_try::numeric / monthly_credits) from plan_catalog where aktif and monthly_credits > 0)
+union all
+select 'haftalik baglanti siniri',
+       position('baglanti_haftalik_sinir' in pg_get_functiondef('public.send_connection(uuid, text, text)'::regprocedure)) > 0
+union all
+select 'suzgec maskeler, masumu birakir',
+       public.uygunsuz_maskele('Selam orospu çocuğu, Sık Uçan planı güzel') = 'Selam ••• çocuğu, Sık Uçan planı güzel'
+   and public.uygunsuz_maskele('I got the pic, sik ucan') = 'I got the pic, sik ucan';
+-- Beklenen: beş satır tamam = true.

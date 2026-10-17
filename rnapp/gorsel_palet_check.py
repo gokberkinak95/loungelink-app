@@ -77,6 +77,8 @@ MUAF = {
     # v7 Aviation Light (2 Ekim 2026 onay): markanın İKİNCİ kutbu gece mavisi #1A2B4C (hue ~265).
     # Bu iki varlık o rengin kendisi (bant gecesi · gök bulutu); şampanya bandına çekmek tasarımı bozar.
     "v7_gece_ust.png":     "v7 gece mavisi bant geçişi (#1A2B4C) — onaylı A tasarımının gökyüzü",
+    "acilis_gok.png":      "açılış sahnesinin gece gökyüzü (#0E1A36 → #1A2B4C → #2B4170) — Gökberk onayı 17 Ekim, önizleme v3",
+    "acilis_bulut_arka.png": "açılış sahnesinde en arkadaki gölgeli bulut katmanı (mavi-gri) — aynı onay",
     "isik_bulutu_gok.png": "v7 K9 canlı zeminin gök mavisi bulutu (#9FB3CB) — onaylı hareket dili",
 }
 

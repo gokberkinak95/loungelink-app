@@ -1,12 +1,20 @@
-SQL SIRASI - 16 Ekim 2026 (7. tur) - YENI: 334 - 332 ve 333'ten SONRA
+SQL SIRASI - 17 Ekim 2026 (7. tur, SON MODEL) - YENI: 334 - 332 ve 333'ten SONRA
+(16 Ekim'deki 334 tarifi ESKIDI; dosya son modele gore yeniden yazildi. Eski hali hic kosulmadiysa
+ sorun yok - yalniz bu dosyayi kos.)
+
+Sira: 330 -> 331 -> 332 -> 333 -> 334 (hangisi kosulmadiysa oradan basla)
 
   1) 334_ekonomi_ve_icerik_suzgeci.sql
-       -> EKONOMI: Kahya 12 -> 16 kredi (kredi basina en ucuz plan olsun; once Sik Ucan'dan
-          pahaliydi). Yolcu'nun (ucretsiz) aylik kredisi artik BIRIKMEZ (bakiye paya tamamlanir).
-          Kayit hediyesi 5 -> 3 kredi.
-       -> APPLE 1.2: profil, sohbet, baglanti notu, soru-cevap, puan yorumu, istek ve ilan
-          notlarinda kufur/hakaret suzgeci (sozcuk maskelenir; sohbette moderasyona isaretlenir).
-       Dogrulama: uc satir tamam = true.
+       -> UYELIK: Yolcu (ucretsiz) aylik kredi YOK, kayitta 1 kredi; 1 acik istek; haftada 3 baglanti.
+          Sik Ucan 99,99 TL/ay - 899,99 TL/yil: ayda 3 kredi, 3 acik istek, haftada 15 baglanti.
+          Kahya 199,99 TL/ay - 1.799,99 TL/yil: ayda 7 kredi, 6 acik istek, sinirsiz baglanti.
+          Paketler: 1 kredi 79,99 - 3 kredi 199,99 - 5 kredi 299,99 (ll_kredi_5; ll_kredi_6 pasif).
+       -> Aylik PLAN kredisi bir sonraki aya DEVRETMEZ (paket ve agirlama kredisi suresiz).
+       -> Haftalik baglanti hakki (baglanti_hakkim) + send_connection siniri (baglanti_haftalik_sinir).
+       -> BO "Tanis Kacagi" gostergesi (bo_kacak_gostergesi).
+       -> APPLE 1.2: profil/sohbet/not/soru/yorum alanlarinda kufur suzgeci.
+       Dogrulama: bes satir tamam = true.
+       App 6.5.0 bunu bekler (eski app de calisir; baglanti hakki satiri gorunmez).
 
 ---------------------------------------------------------------------------
 SQL SIRASI - 15 Ekim 2026 (6. tur) - YENI: 332 + 333 - 330 ve 331'den SONRA (kosulmadilarsa once onlar)

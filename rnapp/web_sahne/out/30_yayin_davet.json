@@ -1,5 +1,22 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -16,7 +33,7 @@
   "YILDIZ",
   "360",
   "LOUNGEPUAN",
-  "7",
+  "6",
   "KREDİ",
   "Profil",
   "",
@@ -89,7 +106,7 @@
   "IST",
   "14:20",
   "TAV Primeclass",
-  "15 Ekim · 14:20–16:40",
+  "17 Ekim · 14:20–16:40",
   "1 yer açık · 1/2",
   "",
   "SAW"

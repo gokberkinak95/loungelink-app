@@ -23,9 +23,10 @@ REFERANSTAN BİR YÜKÜMLÜLÜĞE ÇEVİRİR."
 |---|---|---|---|
 | `bant.jpg` | Pinterest pin 66709638231091375 (özgün üretici bilinmiyor) | belirsiz | ⚠️ KABUL EDİLDİ — Gökberk, 26 Ağu 2026 |
 | `arsiv_gorsel/bant_2026-09-20.jpg` | AYNI görselin derecelendirme ÖNCESİ hâli — `brand/build_bant_derece.py --uygula` arşivledi (eski dosya silinmez kuralı) | `bant.jpg` ile aynı | ⚠️ KABUL EDİLDİ — aynı madde |
-| `icon.png` | `brand/build_brand.py` üretiyor | kendi üretimimiz | ✓ |
-| `adaptive-icon.png` | `brand/build_brand.py` | kendi üretimimiz | ✓ |
-| `monochrome-icon.png` | `brand/build_brand.py` | kendi üretimimiz | ✓ |
+| `icon.png` | `brand/build_ikon_hale.py` üretiyor (v8 Hale, 17 Ekim) | kendi üretimimiz | ✓ |
+| `adaptive-icon.png` | `brand/build_ikon_hale.py` | kendi üretimimiz | ✓ |
+| `monochrome-icon.png` | `brand/build_ikon_hale.py` | kendi üretimimiz | ✓ |
+| `acilis_*.png` | `brand/build_acilis.py` üretiyor (bulut, gökyüzü, ışık, bulanık kanat; kodla çizildi) | kendi üretimimiz | ✓ |
 | `notification-icon.png` | `brand/build_brand.py` | kendi üretimimiz | ✓ |
 | `favicon.png` | `brand/build_brand.py` | kendi üretimimiz | ✓ |
 | `zemin-acik.png` | `zemin_uret.py` üretiyor (paletten) | kendi üretimimiz | ✓ |
@@ -186,3 +187,16 @@ hâlinde build'i de kırılmaz kılıyor.
 🆕 SINIF: "BİR VARLIĞI KENDİN ÜRETMİŞ OLMAN, ONU DEFTERE YAZMAMAK İÇİN
 SEBEP DEĞİL — DEFTER 'NEYİ DAĞITIYORUZ' SORUSUNU CEVAPLAR, 'KİMDEN
 ALDIK' SORUSUNU DEĞİL."
+
+
+## v8 EKLERİ (17 Ekim 2026) — kemersiz ikon ve bulutlardan çıkan açılış
+
+**`icon.png` · `adaptive-icon.png` · `monochrome-icon.png` · `favicon.png` · `splash.png`** —
+`brand/build_ikon_hale.py` bunları kendi `mark-kanat.png` işaretimizden ve kodla çizilen
+degrade/hale katmanlarından ÜRETİYOR. Dış kaynak yok.
+
+**`acilis_bulut_on.png` · `acilis_bulut_orta.png` · `acilis_bulut_arka.png`** — bulut
+katmanları PIL ile elips + Gauss bulanıklığından üretildi (üretim kodu açılış önizlemesiyle
+birlikte; fotoğraf değil). **`acilis_gok.png`** (dikey degrade), **`acilis_isik.png`**
+(radyal ışık) ve **`acilis_kanat_bulanik.png`** (`mark-kanat.png`'nin bulanık kopyası) de
+aynı şekilde kodla üretildi. Hiçbirinde üçüncü taraf içerik yok.

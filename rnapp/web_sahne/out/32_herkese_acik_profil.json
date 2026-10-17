@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [
   "adım ('dokun_a11y', 'Burak S.'): Locator.click: Timeout 4000ms exceeded."
  ],
@@ -28,7 +41,7 @@
   "S",
   "Selin B.",
   "Ürün Yönetimi",
-  "TK712 · IST · 21 Şubat 2027",
+  "TK712 · IST · 13 Mart 2027",
   "",
   "İş",
   "İlanı var",

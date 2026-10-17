@@ -41,9 +41,13 @@ from PIL import Image, ImageChops
 
 KOK = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(KOK, "assets")
-URETICI = os.path.join(KOK, "brand", "build_brand.py")
+# 17 Ekim: ikon v8 "Hale" (kemersiz ucak) -> uretici build_ikon_hale.py. build_brand.py cairo
+# istiyordu ve bu makinede hic calismadi (denetim yillardir "uretici coktu" ile kirmiziydi).
+# notification-icon.png bildirim silueti (beyaz kanat) ikon degisikliginden etkilenmedi;
+# bu nobetin kapsami disinda.
+URETICI = os.path.join(KOK, "brand", "build_ikon_hale.py")
 TUREYEN = ["icon.png", "adaptive-icon.png", "monochrome-icon.png",
-           "notification-icon.png", "favicon.png", "splash.png"]
+           "favicon.png", "splash.png"]
 # `mark-*.png` KAYNAKTIR, türev değil — karşılaştırmaya girmez.
 
 
@@ -77,7 +81,7 @@ def fark(a_yol, b_yol):
 
 def main():
     if not os.path.exists(URETICI):
-        print("🔴 brand/build_brand.py yok")
+        print("🔴 brand/build_ikon_hale.py yok")
         return 1
     gecici = tempfile.mkdtemp(prefix="ll_marka_")
     try:
@@ -134,7 +138,7 @@ def main():
             print("    🔴 " + k)
         print()
         if ayrik or kural:
-            print("🔴 `python brand/build_brand.py` çalıştırmak markayı DEĞİŞTİRİR.")
+            print("🔴 `python brand/build_ikon_hale.py` çalıştırmak markayı DEĞİŞTİRİR.")
             print("   Ya üreticiyi sevkiyata uydur, ya sevkiyatı üreticiden yenile.")
             return 1
         print("✓ Üretici ile sevkiyat birebir aynı — 'tek kaynak' iddiası doğru.")

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -16,7 +25,7 @@
   "YILDIZ",
   "360",
   "LOUNGEPUAN",
-  "7",
+  "6",
   "KREDİ",
   "Profil",
   "",
@@ -81,9 +90,9 @@
   "LOUNGELINK",
   "GÜVENİLİR HOST",
   "BAKİYE",
-  "7",
+  "6",
   "KREDİ",
-  "7 misafir isteği gönderebilirsin",
+  "6 misafir isteği gönderebilirsin",
   "Selin B.",
   "LL 1284 7316",
   "",

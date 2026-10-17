@@ -117,6 +117,7 @@ STUBS["react-native"] = new Proxy({}, {
       spring: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
       stagger: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
       delay: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
+      multiply: (a, b) => a,   // 17 Ekim: acilis.js (icerik x opaklik)
       sequence: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
       parallel: () => ({ start: (cb) => cb && cb(), stop: () => {} }),
       loop: () => ({ start: () => {}, stop: () => {} }),

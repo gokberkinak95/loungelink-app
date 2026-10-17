@@ -22,7 +22,7 @@
 // Tek yönlü; asla tersi. (`node check.js` yer tutucu kalmadığını denetler.)
 // ============================================================
 
-export const LEGAL_VERSION = "2026-10-15";
+export const LEGAL_VERSION = "2026-10-17";
 
 // Veri sorumlusu: gerçek kişi (bireysel geliştirici). Mağaza hesabındaki ad ile aynı.
 const COMPANY = "Gökberk İnak";
@@ -322,6 +322,13 @@ devredemezsin. Hesabını istediğin an uygulama içinden silebilirsin.
 · Kredi; ağırlayarak kazanılabilir, abonelik planının aylık payından
   gelir ya da uygulama içinden paket olarak satın alınabilir. Kredi
   nakde çevrilemez, devredilemez, hesap silindiğinde sona erer.
+· Abonelik planının aylık kredisi o ay içindir; kullanılmayan kısmı bir
+  sonraki aya devretmez. Satın alınan paket kredisi ve ağırlayarak
+  kazanılan kredi süresizdir.
+· Ücretsiz Yolcu planında kayıtta 1 kredi verilir; aylık kredi yoktur.
+· Bağlantı (Tanış) istekleri plana göre haftalık sınırlıdır: Yolcu 3,
+  Sık Uçan 15, Kâhya sınırsız. Son 7 gün içinde gönderilen istekler
+  sayılır; 7 günü dolan istek hakkı geri açar.
 · LoungePuan (ödül puanı) bir para birimi değildir; nakde çevrilemez,
   devredilemez ve kampanya koşullarına göre değişebilir.
 

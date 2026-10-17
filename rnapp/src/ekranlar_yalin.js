@@ -29,7 +29,7 @@ import { AramaKutusu, Katlanir, eslesir } from "./Pickers";
 import { badgeLabel, fmtLongDate, mapErr, shortName, BUYUK, gorunur, etkinDil } from "./i18n";
 import { bayrak } from "./runtime";
 import { havalimanlariniGetir } from "./katalog";
-import { logError, supabase } from "./supabase";
+import { logError, onPlanda, supabase } from "./supabase";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
 import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant, KlavyeKabi, ALTPAD } from "./ui";
@@ -224,7 +224,7 @@ export function RequestsPanel({ t, session, onOpenChat, onOpenProfile, lang, aci
   }, [uid]);
 
   // `tazele` deps'te: başka ekranda verilen cevap bu listeyi de tazeler.
-  useEffect(() => { load(); const iv = setInterval(load, 15000); return () => clearInterval(iv); }, [load, tazele]);
+  useEffect(() => { load(); const iv = setInterval(() => { if (onPlanda()) load(); }, 15000); return () => clearInterval(iv); }, [load, tazele]);
 
   // 🔴 v1.75 (Gokberk: "Kabul Et hiçbir şey yapmıyor"): hata SESSİZCE
   // yutuluyordu. Sunucu 'fully_booked' (ilanın tüm slotları dolu),
@@ -911,7 +911,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     // 🆕 SINIF: "`x = x || yeni()` BİR KEZ ÇALIŞIR; ARKASINDAN GELEN
     // `x = yeni()` O KORUMAYI SESSİZCE İPTAL EDER."
     let bitti = false;
-    iv2 = setInterval(loadSess, 8000);
+    iv2 = setInterval(() => { if (onPlanda()) loadSess(); }, 8000);
     // 🔴 20 AĞUSTOS — OTURUM KONTROLLERİ SOHBETTE HİÇ GÖRÜNMÜYORDU.
     // Gökberk: "ilan kabulü sonrası açılan sohbet ekranında oturum başlat,
     // oturum tamamla, canlı durum gibi alanlar yok gibi. Uçmuş sanki."
@@ -957,6 +957,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           p => addMsgs([p.new]))
         .subscribe();
       iv1 = setInterval(async () => {
+        if (!onPlanda()) return;
         const { data: m2, error: hata7 } = await supabase.from("messages").select("*").eq("channel_id", c.id).order("created_at");
         if (hata7) logError("ekranlar_yalin.js:684", hata7);
         if (m2) setMsgs(m2);
@@ -5224,7 +5225,7 @@ export function LoungeRadarCard({ t, session, onOpen }) {
   }, []);
   useEffect(() => {
     load();
-    const id = setInterval(load, 120000); // 2 dk'da bir tazele
+    const id = setInterval(() => { if (onPlanda()) load(); }, 120000); // 2 dk'da bir tazele
     return () => clearInterval(id);
   }, [load]);
 
@@ -6175,7 +6176,7 @@ export function BaglantiIstekleri({ t, lang, embedded = false, yalnizGelen = fal
     if (error) { logError("baglanti_istekleri", error); setRows([]); return; }
     setRows(Array.isArray(data) ? data : []);
   }, []);
-  useEffect(() => { load(); const iv = setInterval(load, 30000); return () => clearInterval(iv); }, [load]);
+  useEffect(() => { load(); const iv = setInterval(() => { if (onPlanda()) load(); }, 30000); return () => clearInterval(iv); }, [load]);
 
   async function yanitla(id, kabul) {
     setBusy(id); setErr("");

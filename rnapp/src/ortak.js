@@ -30,7 +30,7 @@ import { LEGAL_DOCS, LEGAL_ORDER, LEGAL_VERSION } from "./legal";
 import { bayrak } from "./runtime";
 // `ui.js` ortak.js'i içe AKTARMIYOR — yön tek, döngü yok (bagimlilik_check ölçüyor).
 import { Ikon, IkonMetin } from "./ikon";
-import { logError, supabase } from "./supabase";
+import { logError, onPlanda, supabase } from "./supabase";
 import { yeniId } from "./cevrimdisi";
 import { bildirimAyarlariniAc, pushIzniIste, pushDurumOku } from "./push";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, temaYenidenKur } from "./theme";
@@ -413,7 +413,7 @@ export function useUnread(session) {
   useEffect(() => {
     if (!uid) return;
     load();
-    const iv = setInterval(load, 12000);
+    const iv = setInterval(() => { if (onPlanda()) load(); }, 12000);
     let sub;
     // Realtime aboneliğini geciktir + tamamen izole et (APK'da beyaz ekran riskine karşı)
     const timer = setTimeout(() => {
