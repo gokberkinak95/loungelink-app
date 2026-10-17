@@ -57,7 +57,7 @@ SAHNELER = {
     "68_vitrin_pano":  ("",        [("bekle", 1200)]),   # ekran: SessizPano · K6
     "69_vitrin_kalkis": ("",       [("bekle", 1200)]),   # ekran: KalkisHalkasi · K7
     "59_vitrin_zemin": ("",        [("bekle", 2400)]),   # ekran: Sayfa atmosferi · K9   # ekran: TakimyildizPuan · K8 + K2
-    "50_istek_gonder": ("kaan",    [("dokun", "Keşfet"), ("dokun", "İstek gönder"), ("bekle", 900)]),   # ekran: Discovery · istek modalı
+    "50_istek_gonder": ("kaan",    [("dokun", "Keşfet"), ("dokun", "İstek gönder"), ("bekle", 2000)]),   # 16 Ekim: 900 ms modal kayma animasyonunu yarıda yakalıyordu (başlıkta beyaz şerit)   # ekran: Discovery · istek modalı
     # v6.1 — md.e: kural ekranının altı ("Salon kurallarını oku" resmî kaynağa)
     "51_kural_alt":    ("kaan",    [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("kaydir",), ("bekle", 700)]),   # ekran: KuralKarari
     "14_seyahatler":   ("gokberk", [("dokun", "Planım")]),   # ekran: Trips

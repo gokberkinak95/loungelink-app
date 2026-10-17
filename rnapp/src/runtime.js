@@ -44,8 +44,13 @@ let _bayraklar = { ...VARSAYILAN };
 let _ustKatman = { tr: {}, en: {} };
 const _dinleyiciler = new Set();
 
+// 17 Ekim — Apple 2.3.1(a) "gizli özellik / uzaktan yapılandırma" reddine karşı:
+// sunucu bayrağı bir özelliği yalnız KAPATABİLİR, asla AÇAMAZ. Uygulamada varsayılanı
+// kapalı olan (incelemede görünmeyen) bir özellik sonradan uzaktan açılamaz; yeni özellik
+// ancak yeni sürümle ve incelemeden geçerek gelir. Acil kapatma düğmeleri çalışmaya devam eder.
 export function bayrak(ad) {
-  return _bayraklar[ad] === undefined ? !!VARSAYILAN[ad] : !!_bayraklar[ad];
+  if (!VARSAYILAN[ad]) return false;
+  return _bayraklar[ad] === undefined ? true : !!_bayraklar[ad];
 }
 export function tumBayraklar() { return { ..._bayraklar }; }
 

@@ -2330,7 +2330,8 @@ export { ConfirmModal };
 // ayrı Row, dört ayrı API demekti — ui.js'e yazılan erişilebilirlik ve
 // 44px dokunma hedefi düzeltmeleri hiçbirine ulaşmıyordu.
 // Artık Toggle TEK yerden gelir: ./ui. Ölü ikizler kaldırıldı.
-export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFilter, onClearRadar, onRequestListing, onVerify, onAddTrip, filtersOpen: filtersOpenProp, setFiltersOpen: setFiltersOpenProp, altSekme, setAltSekme, bnt}) {
+export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFilter, onClearRadar, onRequestListing, onVerify, onAddTrip, filtersOpen: filtersOpenProp, setFiltersOpen: setFiltersOpenProp, altSekme, setAltSekme, bnt, onPlans}) {
+  const [bagHak, setBagHak] = useState(null);   // 334 · haftalık bağlantı hakkı (BaglantiHakki doldurur)
   // 🔴 Canlı APP 18: Meet, onOpenChat'i NESNE ile çağırıyordu ama App.js
   // (channelId, name) bekliyor → companion sohbet HİÇ açılmıyordu.
   // Doğrusu: kabul edilmiş bağlantının kanalını bul (yoksa oluştur), sonra aç.
@@ -3087,9 +3088,10 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             <Text style={S.label}>{t.connIntro}</Text>
             <TextInput style={[S.input, { minHeight: 80 }]} value={intro} onChangeText={x => setIntro(x.slice(0, 140))} multiline placeholder={t.connIntroPh} placeholderTextColor={C.dim} />
 
+            <BaglantiHakki t={t} onPlans={onPlans ? () => { setTarget(null); onPlans(); } : null} onDurum={setBagHak} />
             {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
             <Btn v="purple" label={t.connSend} sagAd="sag" a11yLabel={t.connSend} onPress={send}
-              disabled={busy || !intent} busy={busy} style={{ marginTop: SP[3] }} />
+              disabled={busy || !intent || (bagHak && !bagHak.sinirsiz && Number(bagHak.kalan) <= 0)} busy={busy} style={{ marginTop: SP[3] }} />
           </ScrollView>
         </Sayfa>
       </KlavyeKabi>
@@ -3097,7 +3099,8 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     </Kaydirma>
   );
 }
-export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onReport }) {
+export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onReport, onPlans }) {
+  const [bagHak, setBagHak] = useState(null);   // 334 · haftalık bağlantı hakkı
   const uid = session?.user?.id;
   const [d, setD] = useState(null);
   const [rel, setRel] = useState("none");
@@ -3361,7 +3364,10 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
                 value={connIntro} onChangeText={x => setConnIntro(x.slice(0, 140))} multiline
                 placeholder={t.connPh} placeholderTextColor={C.dim} />
               <Text style={{ color: C.dim, fontSize: FS.xs, textAlign: "right", marginTop: SP[1] }}>{connIntro.length}/140</Text>
-              <Btn label={`${t.connSend}`} sagAd="sag" onPress={doConnect} disabled={connBusy} busy={connBusy} style={{ marginTop: ARA[10] }} />
+              <BaglantiHakki t={t} onPlans={onPlans ? () => { setConnOpen(false); onPlans(); } : null} onDurum={setBagHak} />
+              {!!err && <Text style={{ color: C.redInk, fontSize: FS.sm, marginTop: SP[2] }}>{err}</Text>}
+              <Btn label={`${t.connSend}`} sagAd="sag" onPress={doConnect}
+                disabled={connBusy || (bagHak && !bagHak.sinirsiz && Number(bagHak.kalan) <= 0)} busy={connBusy} style={{ marginTop: ARA[10] }} />
               <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setConnOpen(false)} style={{ alignItems: "center", paddingVertical: SP[3] }}>
                 <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.cancel}</Text>
               </TouchableOpacity>
@@ -3399,6 +3405,55 @@ export function PhoneGate({ t, onVerify }) {
   );
 }
 
+
+// ============================================================
+// 16 Ekim (SQL 334) — HAFTALIK BAĞLANTI HAKKI
+// Yolcu haftada 3, Sık Uçan 15, Kâhya sınırsız bağlantı isteği gönderir. Kullanıcı sınıra
+// "hata" ile değil önceden kalan hakkını görerek varır; dolunca ne zaman yenileneceği ve
+// ücretli planlardaki hak yazılır, "Planları gör" planlara götürür. Sınırsızsa hiçbir şey çizmez.
+// `tazele` bağlantı gönderildikçe artırılır (sayı yerinde güncellensin).
+// ============================================================
+export function BaglantiHakki({ t, onPlans, tazele = 0, onDurum }) {
+  const [h, setH] = useState(null);
+  useEffect(() => {
+    let iptal = false;
+    (async () => {
+      const { data, error } = await supabase.rpc("baglanti_hakkim");
+      if (error) { logError("baglanti_hakkim", error); return; }
+      if (!iptal) { setH(data || null); if (onDurum) onDurum(data || null); }
+    })();
+    return () => { iptal = true; };
+  }, [tazele]);
+  if (!h || !h.ok || h.sinirsiz) return null;
+  const doldu = Number(h.kalan) <= 0;
+  if (!doldu) {
+    return (
+      <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: SP[2] }}>
+        {String(t.connLeft).replace("{n}", String(h.kalan)).replace("{t}", String(h.tavan))}
+      </Text>
+    );
+  }
+  const gun = h.yenilenme ? fmtLongDate(yerelGun(new Date(h.yenilenme))) : "";
+  return (
+    <View accessibilityLiveRegion="polite"
+      style={{ backgroundColor: C.amberBg || C.goldBg, borderRadius: R.sm, padding: ARA[14], marginTop: SP[3] }}>
+      <Text style={{ color: C.amberInk || C.ink, fontSize: FS.sm, fontWeight: "700" }}>{t.connLimitTitle}</Text>
+      <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 19, marginTop: ARA[4] }}>
+        {String(t.connLimitBody).replace("{t}", String(h.tavan)).replace("{gun}", gun)}
+      </Text>
+      {!!onPlans && <Btn v="ghost" sm full={false} label={t.connLimitPlans} onPress={onPlans} style={{ marginTop: ARA[10] }} />}
+    </View>
+  );
+}
+
+
+// Sohbette birlikte lounge'a girme konuşuluyor mu? (TR + EN; Türkçe büyük harf normalize)
+const LOUNGE_KONUSMA = /(lounge|salona|salonda|misafirin olay[iı]m|misafir olarak|misafiriniz|misafirim|kart[iı]mla|kart[iı]nla|yan[iı]na al|yan[iı]nda g[oö]t[uü]r|birlikte gir|beraber gir|take me in|as your guest|guest pass)/;
+export function loungeKonusuldu(msgs) {
+  if (!Array.isArray(msgs) || msgs.length === 0) return false;
+  return msgs.slice(-40).some(m => LOUNGE_KONUSMA.test(String(m.body || "").replace(/İ/g, "i").replace(/I/g, "ı").toLowerCase()));
+}
+
 // ============ CompanionChat (§17) ============
 export function CompanionChat({ t, session, channelId, otherName, onBack, onOpenProfile, onReport }) {
   useEffect(() => {
@@ -3413,6 +3468,22 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
   const [txt, setTxt] = useState("");
   const klavye = useKlavyeAcik();               // 15 Ekim · iOS ev göstergesi payı
   const [peerId, setPeerId] = useState(null);   // karsi tarafin id'si (profil + bildir icin)
+  // 16 Ekim (SQL 334) — "lounge'a birlikte girelim" konuşması Tanış'tan resmi isteğe yönlendirilir.
+  const [benHost, setBenHost] = useState(false);
+  const [kartKapali, setKartKapali] = useState(true);
+  useEffect(() => {
+    let iptal = false;
+    (async () => {
+      try { const v = await AsyncStorage.getItem("ll_lounge_yonlendirme_" + channelId); if (!iptal) setKartKapali(v === "1"); }
+      catch (e) { if (!iptal) setKartKapali(false); }
+      const uid0 = session?.user?.id;
+      if (!uid0) return;
+      const { data: ru, error: re } = await supabase.from("users").select("role").eq("id", uid0).maybeSingle();
+      if (re) logError("companion_rol", re);
+      if (!iptal) setBenHost(ru?.role === "host");
+    })();
+    return () => { iptal = true; };
+  }, [channelId]);
   const [err, setErr] = useState("");           // v2.78: gonderim hatasi artik GORUNUYOR
   const ref = useRef(null);
 
@@ -3495,6 +3566,24 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
       <View style={{ backgroundColor: C.goldTint, paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
         <Text style={{ color: C.goldInk, fontSize: FS.xs, textAlign: "center" }}>{t.safetyBar}</Text>
       </View>
+      {/* 16 Ekim (SQL 334) — LOUNGE YÖNLENDİRMESİ. Sohbette birlikte lounge'a girme konuşulursa
+          resmi yol hatırlatılır: misafire iade güvencesi, host'a kredi + puan + Sık Uçan hediyesi.
+          Konuşmayı ENGELLEMEZ; kapatılabilir ve kanal başına bir kez kapatılınca bir daha çıkmaz. */}
+      {!kartKapali && loungeKonusuldu(msgs) && (
+        <View style={{ backgroundColor: C.card, borderBottomWidth: 1, borderColor: C.line, paddingVertical: ARA[12], paddingHorizontal: ARA[14] }}>
+          <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "700" }}>{t.chatNudgeTitle}</Text>
+          <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 19, marginTop: ARA[4] }}>{benHost ? t.chatNudgeHost : t.chatNudgeGuest}</Text>
+          <View style={{ flexDirection: "row", gap: SP[3], marginTop: ARA[10], alignItems: "center" }}>
+            {!benHost && onOpenProfile && peerId && (
+              <Btn v="gold" sm full={false} label={t.chatNudgeCta} onPress={() => onOpenProfile(peerId)} />
+            )}
+            <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop}
+              onPress={() => { setKartKapali(true); try { AsyncStorage.setItem("ll_lounge_yonlendirme_" + channelId, "1"); } catch (e) {} }}>
+              <Text style={{ color: C.mut, fontSize: FS.sm }}>{t.chatNudgeDismiss}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
       {msgs === null ? <Load icerik /> : (
         <ScrollView ref={ref} onContentSizeChange={() => ref.current?.scrollToEnd({ animated: true })}
           contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[20] }}>

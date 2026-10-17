@@ -260,8 +260,8 @@ export default function MomentScreen({
           <KapiAralanir ikiz={ikiz} />
         ) : (kind === "completed" || kind === "reciprocity")
           ? <Ikon ad={mark} boy={38} renk={ALTIN()} />
-          : <Image source={require("../assets/mark-kemer.png")}
-              style={{ width: 76, height: 76 }} resizeMode="contain" />}
+          : <Image source={require("../assets/mark-kanat-sampanya.png")}
+              style={{ width: 88, height: 43 }} resizeMode="contain" />}
         {!!dugum && (
           <Text style={{ fontSize: FS.micro, fontWeight: "700", letterSpacing: 2.4,
                          color: ALTIN(), marginTop: ARA[34] }}>

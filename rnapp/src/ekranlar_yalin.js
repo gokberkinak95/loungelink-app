@@ -3554,28 +3554,37 @@ export function Plans({ t, session, onBack, lang }) {
                   Ayrıcalıkların EN ÜSTÜNDE ve sayıyla duruyor: listedeki
                   cümlelerin arasına karışan bir madde değil, planın somut
                   karşılığı. */}
-              {krediAy != null && krediAy > 0 && (
-                // 🔴 12 EYLÜL (Gökberk md.6) — "plan sayfasında ayda x kredi
-                // yazan yerin yanındaki icon bitişik duruyor text ile".
-                // Doğru: ikonun `stil`i hiç verilmemişti, yani sağ boşluğu
-                // 0 pt. Uygulamadaki diğer 40+ satır-içi ikonun hepsinde
-                // `marginRight` var; burada unutulmuştu. `alignItems` de
-                // "center"dan "flex-start"a geçti — kutu iki satır ve ikon
-                // ikisinin ortasında asılı duruyordu.
-                <View style={{ flexDirection: "row", alignItems: "flex-start", marginTop: SP[3],
-                               backgroundColor: C.tealBg, borderWidth: 1, borderColor: C.tealLine,
-                               borderRadius: R.xs, paddingVertical: SP[2], paddingHorizontal: ARA[10] }}>
-                  <Ikon ad="kutlama" boy={FS.lg} renk={C.mut} stil={{ marginRight: ARA[8], marginTop: ARA[2] }} />
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ color: C.tealInk, fontSize: FS.base, fontWeight: "700" }}>
-                      {String(t.planMonthlyCredits).replace("{n}", String(krediAy))}
+              {/* 16 Ekim (SQL 334) — PLANIN ASIL KARŞILIĞI EN ÜSTTE ve BÜYÜK: "ayda N lounge girişi".
+                  Kredi yalnız gerçekleşen girişte harcandığı için kullanıcıya kredi değil GİRİŞ sayısı
+                  söylenir; yanında giriş başına maliyet (mağaza fiyatından, yoksa katalog fiyatından).
+                  Ücretsiz planda "ilk girişin bizden". */}
+              {(() => {
+                if (krediAy == null) return null;
+                if (krediAy <= 0) {
+                  return ucret === 0 ? (
+                    <View style={{ marginTop: SP[3], backgroundColor: C.tealBg, borderRadius: R.sm, paddingVertical: SP[2], paddingHorizontal: ARA[12] }}>
+                      <Text style={{ color: C.tealInk, fontSize: FS.base, fontWeight: "700" }}>{t.planFreeCredit}</Text>
+                    </View>
+                  ) : null;
+                }
+                const rcPaket = rc && rc[p.plan] && rc[p.plan][donemKey] && rc[p.plan][donemKey].paket;
+                const magazaSayi = rcPaket && rcPaket.product && typeof rcPaket.product.price === "number" ? rcPaket.product.price : null;
+                const aylikTutar = magazaSayi != null ? (yillik ? magazaSayi / 12 : magazaSayi) : (yillik && yilFiyat ? yilFiyat / 12 : aylik);
+                const giris = aylikTutar ? aylikTutar / krediAy : null;
+                const girisMetni = giris ? "₺" + (Math.round(giris * 10) / 10).toLocaleString("tr-TR") : null;
+                return (
+                  <View style={{ marginTop: SP[3], backgroundColor: C.tealBg, borderRadius: R.sm, paddingVertical: ARA[12], paddingHorizontal: ARA[14] }}>
+                    <Text style={{ color: C.tealInk, fontSize: FS.lg, fontWeight: "700" }}>
+                      {String(t.planVisitsMonth).replace("{n}", String(krediAy))}
                     </Text>
-                    <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 15, marginTop: 0 }}>
-                      {t.planMonthlyCreditsWhy}
-                    </Text>
+                    {!!girisMetni && (
+                      <Text style={{ color: C.tealInk, fontSize: FS.sm, marginTop: ARA[2] }}>
+                        {String(t.planPerVisit).replace("{p}", girisMetni)}
+                      </Text>
+                    )}
                   </View>
-                </View>
-              )}
+                );
+              })()}
 
               {/* v2.87: ayrıcalıklar taranabilir olsun diye madde işareti
                   metnin AKIŞINDAN çıkarıldı — ✓ artık ayrı bir sütunda ve
@@ -3608,6 +3617,7 @@ export function Plans({ t, session, onBack, lang }) {
           );
         })}
 
+        <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 17, marginBottom: SP[3] }}>{t.planNoRollover}</Text>
         {/* 🔴 KREDİ SATMIYORUZ — ve bunu AÇIKÇA söylüyoruz.
             Ürünün cümlesi "kullanmadığın hakkı çevir". Krediyi
             parayla satmak o cümleyi bozar; söylemezsek kullanıcı
@@ -5042,7 +5052,7 @@ export function Wallet({ t, session, onBack }) {
     // v2.100 — SQL 256: satın alma ve kapıda iade. Sözlükte olmayan bir
     // sebep "Kredi işlemi" diye nötrleşiyordu; para konuşan ekranda
     // "neden değişti?" sorusunun cevabı NÖTR OLAMAZ.
-    kredi_satin_alma: t.ledSatinAlma, kapida_ret_iade: t.ledKapidaIade,
+    kredi_satin_alma: t.ledSatinAlma, kapida_ret_iade: t.ledKapidaIade, plan_expire: t.ledPlanExpire,
     request_stale_refund: t.ledStaleRefund, late_cancel_forfeit: t.ledLateCancel,
   };
   const reasonLabel = (raw) => {

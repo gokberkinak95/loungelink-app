@@ -2791,8 +2791,8 @@ export function Load({ dark }) {
           değil artık: uygulama ikonuyla AYNI işaret (konik kanat
           darbesi). Bekleme saniyesi markayı taşır. */}
       <Animated.Image
-        source={dark ? require("../assets/mark-kemer.png") : require("../assets/mark-kemer-ink.png")}
-        style={{ width: 92, height: 92, opacity: pulse, marginBottom: ARA[6] }}
+        source={dark ? require("../assets/mark-kanat.png") : require("../assets/mark-kanat-bronz.png")}
+        style={{ width: 96, height: 47, opacity: pulse, marginBottom: ARA[14] }}
         resizeMode="contain" />
       <Text style={{ color: dark ? C.paper : C.dim, fontSize: FS.xs, letterSpacing: 3 }}>LOUNGELINK</Text>
     </View>

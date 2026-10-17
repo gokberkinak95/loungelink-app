@@ -140,6 +140,8 @@ begin
                                              where cr.from_id = any(hepsi) and cr.to_id = any(hepsi));
   delete from chat_channels where connection_id in (select id from connection_requests where from_id = any(hepsi) and to_id = any(hepsi));
   delete from connection_requests where from_id = any(hepsi) and to_id = any(hepsi);
+  -- 331 sonrası sorular kendi tablosunda: temizlenmezse her yenilemede birikip günlük soru sınırını doldurur
+  delete from kural_sorulari where soran_id = any(hepsi) and host_id = any(hepsi);
   delete from availabilities a where a.host_id = selen
      and not exists (select 1 from requests r where r.avail_id = a.id);
   delete from visits where user_id = selen and not exists (select 1 from requests r where r.visit_id = visits.id);

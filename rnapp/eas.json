@@ -49,7 +49,7 @@
       "ios": {
         "appleId": "REPLACE_APPLE_ID_EMAIL",
         "ascAppId": "REPLACE_APP_STORE_CONNECT_APP_ID",
-        "appleTeamId": "REPLACE_TEAM_ID"
+        "appleTeamId": "D57RLX67QJ"
       },
       "android": {
         "serviceAccountKeyPath": "./play-service-account.json",

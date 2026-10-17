@@ -376,6 +376,7 @@ begin
   delete from chat_channels where connection_id in
     (select id from connection_requests where from_id in (g, hd, kt, ey, ad, bs, ek) or to_id in (g, hd, kt, ey, ad, bs, ek));
   delete from connection_requests where from_id in (g, hd, kt, ey, ad, bs, ek) or to_id in (g, hd, kt, ey, ad, bs, ek);
+  delete from kural_sorulari where soran_id in (g, hd, kt, ey, ad, bs, ek) or host_id in (g, hd, kt, ey, ad, bs, ek);
   insert into connection_requests (from_id, to_id, status, intro) values
     (hd, g, 'pending',  'Uçuşun aynı, güzel.'),
     (g, kt, 'pending',  'Aynı uçuştayız.'),

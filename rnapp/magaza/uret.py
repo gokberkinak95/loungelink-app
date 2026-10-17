@@ -10,9 +10,21 @@
 #   Google Play ikon          512 × 512    → cikti/play/icon-512.png
 # Kullanım:  python magaza/uret.py   (önce: python web_sahne/cek.py <sahneler>)
 # ============================================================================
-import os, pathlib, base64
+import os, pathlib, base64, time
 from playwright.sync_api import sync_playwright
 from PIL import Image
+
+def yaz_png(out, veri):
+    # Windows'ta dosya kısa süre kilitli olabiliyor (görüntüleyici/tarayıcı): Errno 22 → bekle, yeniden dene.
+    for i in range(8):
+        try:
+            with open(out, "wb") as fh:
+                fh.write(veri)
+            return
+        except OSError:
+            time.sleep(0.5 * (i + 1))
+    raise OSError("yazilamadi: " + str(out))
+
 
 KOK = pathlib.Path(__file__).resolve().parent
 APP = KOK.parent
@@ -92,7 +104,7 @@ def main():
                 tmp.write_text(kare_html(w, h, olcu, sahne, baslik, alt), encoding="utf-8")
                 pg.goto(uri(tmp)); pg.wait_for_timeout(500)
                 out = CIKTI / hedef / f"{no}_{sahne}.png"
-                pg.screenshot(path=str(out))
+                yaz_png(out, pg.screenshot())
                 Image.open(out).convert("RGB").save(out)   # mağazalar alfa kanalı istemez
             pg.close()
 
@@ -112,7 +124,7 @@ def main():
         pg = b.new_page(viewport={"width": 1024, "height": 500}, device_scale_factor=1)
         pg.goto(uri(tmp)); pg.wait_for_timeout(500)
         out = CIKTI / "play" / "feature.png"
-        pg.screenshot(path=str(out))
+        yaz_png(out, pg.screenshot())
         Image.open(out).convert("RGB").save(out)
         b.close()
     tmp.unlink(missing_ok=True)

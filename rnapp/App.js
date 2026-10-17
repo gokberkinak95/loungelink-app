@@ -1512,7 +1512,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
         if (r && r.request_id) setChat({ req: { id: r.request_id }, name: r.other_name, openPanel: true }); }} />),
     live: () => (<LiveStatus t={t} session={session} onBack={() => setShowLive(false)}
       onGoSession={(req) => { setShowLive(false); if (req) setChat({ req, name: null }); }} />),
-    pub: () => (<PublicProfile t={t} session={session} targetId={pubProfile} onBack={() => setPubProfile(null)}
+    pub: () => (<PublicProfile t={t} session={session} targetId={pubProfile} onPlans={() => setShowPlans(true)} onBack={() => setPubProfile(null)}
       onOpenChat={(id, name) => { companionAc(id, name, () => setPubProfile(null)); }}
       onReport={(id, name) => { setPubProfile(null); setReport({ targetId: id, targetName: name, sessionId: null }); }} />),
     verify: () => (<VerifyPhone t={t} session={session} onDone={() => setShowVerify(false)} onBack={() => setShowVerify(false)} />),
@@ -1942,7 +1942,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
         {/* 4 Eylül — Trips artık yalnız tasarım 14'ü çiziyor: host daveti
             (v3.4 merdiveni) "İlanlarım" çipinin arkasında (misafirde Lounge
             erişim kurulumunu açar), rehber Ana Sayfa'da, sohbet İstekler'de. */}
-        {tab === "meet" && <Meet key={"m" + reload} t={t} lang={lang} session={session} rol={role} onOpenProfile={setPubProfile} onOpenChat={(channelId, name) => setCompChat({ channelId, name })} radarFilter={radar} onClearRadar={() => setRadar(null)} onRequestListing={(av) => setShowDisc({ airport: av.airport_code, focusHost: av.host_id, focusAvail: av.id })} onVerify={() => setShowVerify(true)} onAddTrip={(av) => { setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} filtersOpen={meetFilterOpen} setFiltersOpen={setMeetFilterOpen} altSekme={meetSub} setAltSekme={setMeetSub} bnt={bntMeet} />}
+        {tab === "meet" && <Meet key={"m" + reload} onPlans={() => setShowPlans(true)} t={t} lang={lang} session={session} rol={role} onOpenProfile={setPubProfile} onOpenChat={(channelId, name) => setCompChat({ channelId, name })} radarFilter={radar} onClearRadar={() => setRadar(null)} onRequestListing={(av) => setShowDisc({ airport: av.airport_code, focusHost: av.host_id, focusAvail: av.id })} onVerify={() => setShowVerify(true)} onAddTrip={(av) => { setPendingReqAvail(av && av.id ? av : null); setShowAddVisit(true); }} filtersOpen={meetFilterOpen} setFiltersOpen={setMeetFilterOpen} altSekme={meetSub} setAltSekme={setMeetSub} bnt={bntMeet} />}
         {/* 5 Eylül — profil bandı artık Profile'ın kendisinde (kimlik + şerit
             bandın içinde; veri orada). */}
         {tab === "prof" && <Profile t={t} refresh={profRefresh} session={session} onManagePlan={() => setShowPlans(true)} onSafety={() => setShowSafety(true)} onTrust={() => setShowTrust(true)} onHistory={() => setShowHist(true)} onReferral={() => setShowRef(true)} onRatings={() => setShowRatings(true)} onWallet={() => setShowWallet(true)} onLogout={handleLogout} onShop={() => setShowShop(true)} onSettings={() => setShowSettings(true)} onCampaigns={() => setShowCamps(true)} onBroadcast={() => setShowBc(true)} onBell={() => setShowNotif(true)} unread={unread} onEditProfile={() => setShowEditProf(true)} />}
