@@ -86,3 +86,6 @@ kredisi devretmez · haftalık bağlantı hakkı · Tanış kaçağı gösterges
 4. Site plan kartları (son model) önizleme → onay → uygula.
 5. Supabase spend cap açık mı kontrol et; Vercel Pro'ya geçilirse Spend Management.
 6. Play kapalı test: 12 testçi ilk gün eklensin; veri güvenliği formu koda göre.
+
+## APK
+- Android önizleme APK 6.5.0 (288): https://expo.dev/artifacts/eas/zXWQvHVHfA_7ivMnlixNOHD1CCzMV_Uk1i2Kt7IpHjg.apk
