@@ -3124,6 +3124,10 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
   const [connBusy, setConnBusy] = useState(false);
   const [connIntent, setConnIntent] = useState("coffee");   // MVP: NE ARIYORSUN
   const [myScore, setMyScore] = useState(0);
+  // 18 Ekim — görünürlük kararı SUNUCUNUN kuralından (profil_gorunur_mu · eşik beta_settings
+  // `profil_trusted_esik`, varsayılan 40). Uygulama 55 diyordu: Tanış listesinde görünen (puanı
+  // 40-54 arası izleyici) kişinin profili burada boş açılıyordu. null = henüz sorulmadı / hata.
+  const [sunucuGorur, setSunucuGorur] = useState(null);
   const [ppSessions, setPpSessions] = useState(null);  // MVP: "Oturum" satırı   // "Trusted+" gorunurlugu icin kendi guven puanim
 
   useEffect(() => {
@@ -3156,9 +3160,14 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
       // parametreli. Tek dalga.
       // `sessions` kendi `try`si içindeydi (düşerse "—" gösteriliyordu);
       // o tolerans `.catch(() => null)` ile TAŞINDI, kaybolmadı.
-      const { data: mine, error: eMine } = await supabase.from("trust_scores").select("score").eq("user_id", uid).maybeSingle();
+      const [{ data: mine, error: eMine }, { data: gor, error: eGor }] = await Promise.all([
+        supabase.from("trust_scores").select("score").eq("user_id", uid).maybeSingle(),
+        supabase.rpc("profil_gorunur_mu", { p_target: targetId }),
+      ]);
       if (eMine) logError("pp_kendi_guven", eMine);
       setMyScore(mine?.score ?? 0);
+      if (eGor) logError("pp_gorunur_mu", eGor);
+      else setSunucuGorur(!!gor);
       // "Oturum N": eskiden RLS yüzünden yalnız İKİNİZİN ortak oturumlarını
       // sayıyordu. Sayı artık karttan (sunucu, kişinin tüm tamamlanmış oturumları).
       setPpSessions(kart && typeof kart.oturum === "number" ? kart.oturum : null);
@@ -3173,8 +3182,8 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
   // değil. Eski kod yalnızca "Everyone"ı açıyordu ve varsayılan "Trusted+"
   // olduğu için neredeyse HER profil boş görünüyordu (MVP'de zengin görünür).
   const showFull = connected
-    || d.profile_visibility === "Everyone"
-    || (d.profile_visibility === "Trusted+" && myScore >= 55);
+    || (sunucuGorur != null ? sunucuGorur
+        : (d.profile_visibility === "Everyone" || (d.profile_visibility === "Trusted+" && myScore >= 40)));
   const firstName = (d.name || "").split(" ")[0];
 
   // 🔴 Canlı APP 16: profilden "Bağlan" hiçbir sayfa açmadan sessizce

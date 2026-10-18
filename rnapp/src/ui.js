@@ -39,9 +39,11 @@ const _ins = (_ilkPay && _ilkPay.insets) || null;
 export const TOPPAD = Platform.OS === "android" ? (StatusBar.currentHeight || 24)
   : Platform.OS === "web" ? 0
   : (_ins && _ins.top > 0 ? _ins.top : 48);
-// Alt güvenli alan: iOS ev göstergesi (Face ID'li iPhone'larda 34pt). Android'de 0 —
-// Android gezinti çubuğu pencerenin dışında kalıyor (kenardan kenara mod kapalı).
-export const ALTPAD = Platform.OS === "ios" ? (_ins ? _ins.bottom : 0) : 0;
+// Alt güvenli alan: iOS ev göstergesi (Face ID'li iPhone'larda 34pt).
+// 18 Ekim — Android de cihazın kendi ölçüsünü okuyor. Hedef API 35/36 ile Android 15-16 uygulamayı
+// kenardan kenara çizer: gezinti çubuğu sekme çubuğunun ÜSTÜNE biner. Kenardan kenara olmayan
+// cihazda safe-area ölçüsü 0 döner (pencere çubuğun dışında) → eski davranış aynen sürer.
+export const ALTPAD = Platform.OS === "web" ? 0 : (_ins ? _ins.bottom : 0);
 
 // bant iç kenar boşluğu — tasarımda 64/1080 ≈ %5.9
 const SP_BANT = 20;

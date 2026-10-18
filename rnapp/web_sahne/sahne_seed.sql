@@ -417,6 +417,16 @@ begin
   update trust_scores set score = 88, badge = 'trusted' where user_id = hs;
   update trust_scores set score = 84, badge = 'trusted' where user_id = hd;
   update trust_scores set score = 44, badge = 'basic'   where user_id = g;
+  -- 18 Ekim: tetikleyici yeniden hesabı Kaan'ı 64 → 32'ye indiriyordu; 32 < profil_trusted_esik (40)
+  -- olunca Tanış'ta "Güvenilir üyeler"e açık profilleri (Deniz K., Burak S.) GÖREMİYORDU
+  -- (05b_baglanti_kur ve 32_herkese_acik_profil 6.4.0'dan beri bu yüzden düşüyordu).
+  -- Tasarım değerleri BÜTÜN sahne kişilerine en sonda yeniden yazılır.
+  update trust_scores set score = 71, badge = 'verified' where user_id = hm;
+  update trust_scores set score = 64, badge = 'basic'    where user_id = kt;
+  update trust_scores set score = 69, badge = 'verified' where user_id = ey;
+  update trust_scores set score = 75, badge = 'verified' where user_id = ad;
+  update trust_scores set score = 61, badge = 'basic'    where user_id = bs;
+  update trust_scores set score = 72, badge = 'verified' where user_id = ek;
 end $$;
 
 commit;

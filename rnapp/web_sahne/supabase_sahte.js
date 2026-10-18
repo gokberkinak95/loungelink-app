@@ -170,3 +170,7 @@ export function logError(screen, err, code) {
   try { console.warn("[sahne logError]", screen, String(err && err.message || err), code || ""); } catch (e) {}
 }
 export const SUPABASE_URL = "https://sahne.invalid";
+
+// 18 Ekim — src/supabase.js'in yeni dışa aktarımı (arka planda periyodik sorgu yok).
+// Sahne tarayıcısı hep ön planda.
+export function onPlanda() { return true; }

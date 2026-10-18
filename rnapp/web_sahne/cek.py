@@ -34,7 +34,7 @@ SAHNELER = {
     "01_splash":       ("",        []),   # ekran: Splash
     "16_giris":        ("",        [("dokun", "Giriş Yap")]),   # ekran: Auth
     "17_kayit":        ("",        [("dokun", "Başla"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Başla"),
-                                   ("yaz", "adın soyadın", "Gökberk İnak"), ("yaz", "email@example.com", "gokberk@ornek.com"),
+                                   ("yaz", "adın soyadın", "Gökberk İnak"), ("yaz", "ad@ornek.com", "gokberk@ornek.com"),
                                    ("yaz", "En az 8 karakter", "sahne-sifre-1"), ("dokun", "Devam Et"),
                                    ("dokun_a11y", "Lounge'a girmek istiyorum"), ("dokun", "Devam Et"),
                                    ("dokun_a11y", "Kabul ediyorum: Kullanım"), ("dokun_a11y", "Kabul ediyorum: Topluluk"), ("dokun_a11y", "Kabul ediyorum: Bu uygulama"), ("dokun_a11y", "Kabul ediyorum: Havalimanı"), ("dokun_a11y", "Kabul ediyorum: Platform")]),   # ekran: CompleteOnboarding
@@ -166,6 +166,7 @@ SAHNELER = {
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile
     "32_herkese_acik_profil": ("kaan", [("dokun", "Tanış"), ("dokun_a11y", "Burak S.")]),  # ekran: PublicProfile
+    "32b_baglanti_hakki": ("kaan", [("dokun", "Tanış"), ("dokun_a11y", "Burak S."), ("kaydir",), ("bekle", 800)]),  # 18 Ekim · Bağlantı Kur sayfası + haftalık hak satırı (SQL 334)   # ekran: Meet
     "33_sorularim":    ("gokberk", [("dokun_a11y", "Soru")]),                              # ekran: MyQuestions
     "34_host_ol":      ("gokberk", [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla"),
                                 ("dokun_a11y", "Kartımda bir kişilik yer var")]),           # ekran: HostApply

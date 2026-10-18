@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -53,7 +40,7 @@
   "YAYINDA · DOLU",
   "SAW",
   "Comfort Lounge",
-  "18 EKİM · 09:00–11:30",
+  "19 EKİM · 09:00–11:30",
   "",
   "Misafir ücretsiz",
   "İlanı yönet",
@@ -65,18 +52,18 @@
   "E",
   "Ece Y.",
   "AKADEMİSYEN",
-  "%52",
+  "%62",
   "UYUM",
-  "17 Ekim · 14:20–16:40 · TAV Primeclass",
+  "18 Ekim · 14:20–16:40 · TAV Primeclass",
   "TELEFON",
   "AYNI UÇUŞ",
   "1 OTURUM",
-  "GÜVEN 32",
+  "GÜVEN 69",
   "“Uçuştan önce kahve?”",
   "Misafiri kabul et",
   "Reddet",
   "⭐ Son oturumunu puanla",
-  "TAV Primeclass · 17 Ekim",
+  "TAV Primeclass · 18 Ekim",
   "",
   "Kaan T. ile · TK1979 · 14:20–16:40",
   "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",
