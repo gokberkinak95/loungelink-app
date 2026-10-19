@@ -33,7 +33,7 @@
 - app `npm run verify`: ilk koşu 8 kırmızı (yeni kod: şerit dokunma alanı, ham renkler → `TUR` jetonu, tema
   sızıntısı, elle seçim düğmesi → `Cip`, ölü metin goVerify, ham_kod_check'in Windows komut satırı sınırı
   [WinError 206 → anahtarlar dosyayla]) → ikinci koşu yalnız bayat dokunma makbuzu; sahne koşusu yeniledi.
-- sahne çekimi hata 0 (arıza sahneleri hariç) · dokunma yolu düşen 0 · akış e2e **197/197**, ✗ 0.
+- sahne çekimi hata 0 (arıza sahneleri hariç) · dokunma yolu düşen 0 · akış e2e **211/211**, ✗ 0.
 - yönlendirme sahneleri: Planları gör → Plan · şerit → Bildirimler · telefon kartı → Doğrulamalarım · Host bul → Keşfet.
 - SQL 335 yerelde 9/9; telefon şartı senaryosu doğru.
 
