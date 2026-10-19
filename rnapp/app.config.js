@@ -41,7 +41,37 @@ function geriTusuEski(config) {
   });
 }
 
-module.exports = ({ config }) => geriTusuEski(hazirla(config));
+// 18 Ekim — FIREBASE (telefon SMS doğrulaması, SQL 335). Yapılandırma dosyası olan platformda
+// eklentiler eklenir; iOS'ta Firebase pod'ları statik framework ister. Dosya yoksa hiçbiri eklenmez
+// ve react-native.config.js yerel kodu o platformda bağlamaz (ikisi aynı kararı verir).
+function iosPlist(config) {
+  const easYol = process.env.GOOGLE_SERVICE_INFO_PLIST;
+  const yerel = path.join(__dirname, "GoogleService-Info.plist");
+  const yol = easYol && fs.existsSync(easYol) ? easYol : (fs.existsSync(yerel) ? "./GoogleService-Info.plist" : null);
+  if (yol) { config.ios = config.ios || {}; config.ios.googleServicesFile = yol; }
+  return config;
+}
+function firebaseEkle(config) {
+  const platform = process.env.EAS_BUILD_PLATFORM;
+  const androidOk = !!(config.android && config.android.googleServicesFile);
+  const iosOk = !!(config.ios && config.ios.googleServicesFile);
+  const hazir = platform === "android" ? androidOk : platform === "ios" ? iosOk : (androidOk || iosOk);
+  if (!hazir) return config;
+  config.plugins = [...(config.plugins || []), "@react-native-firebase/app", "@react-native-firebase/auth"];
+  if (iosOk) {
+    config.plugins = config.plugins.map((p) => {
+      if (Array.isArray(p) && p[0] === "expo-build-properties") {
+        const ayar = { ...(p[1] || {}) };
+        ayar.ios = { ...(ayar.ios || {}), useFrameworks: "static" };
+        return [p[0], ayar];
+      }
+      return p;
+    });
+  }
+  return config;
+}
+
+module.exports = ({ config }) => firebaseEkle(geriTusuEski(iosPlist(hazirla(config))));
 
 function hazirla(config) {
   const easYol = process.env.GOOGLE_SERVICES_JSON;

@@ -46,4 +46,17 @@ if (process.env.LL_SAHNE === "1") {
   };
 }
 
+// 18 Ekim — @react-native-firebase yalnız telefonda (Android/iOS) çalışır; web paketine girerse
+// `firebase` JS SDK'sını arar ve derleme düşer. Web'de taklide yönlendir (her modda).
+{
+  const KOK = __dirname;
+  const onceki = config.resolver.resolveRequest;
+  config.resolver.resolveRequest = (context, moduleName, platform) => {
+    if (platform === "web" && moduleName.startsWith("@react-native-firebase/")) {
+      return { type: "sourceFile", filePath: path.join(KOK, "web_sahne", "firebase_sahte.js") };
+    }
+    return onceki ? onceki(context, moduleName, platform) : context.resolveRequest(context, moduleName, platform);
+  };
+}
+
 module.exports = config;

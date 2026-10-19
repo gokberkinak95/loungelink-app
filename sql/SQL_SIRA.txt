@@ -1,3 +1,17 @@
+SQL SIRASI - 18 Ekim 2026 (8. tur) - YENI: 335 - 334'ten SONRA
+
+  1) 335_telefon_firebase_dogrulama.sql
+       -> Telefon SMS dogrulamasi (Firebase) icin sunucu: gonderim izni (yalniz TR cep, kullanici ve
+          numara basina gunde 3, 60 sn kilit), dogrulamayi YALNIZ panel (service_role) yazar,
+          numara degisince dogrulama duser. "Guvenilir uyelere acik" profilleri gorme esigi 40 -> 25.
+       -> Bildirim yonlendirmesi: ilan kapandi, sistemdeki kredi, plan degisikligi ve kacirilan firsat
+          ozeti artik ilgili ekrana gidiyor (once hicbir yere gitmiyordu).
+       Dogrulama: alti satir tamam = true.
+       Kanal KAPALI baslar. Firebase kurulumu (rehber 10b) bitip Firebase'li build cikinca iki satir:
+         update beta_settings set value = to_jsonb('<firebase-proje-id>'::text) where key = 'firebase_proje_id';
+         update beta_settings set value = to_jsonb('firebase'::text) where key = 'telefon_kanali';
+
+---------------------------------------------------------------------------
 SQL SIRASI - 17 Ekim 2026 (7. tur, SON MODEL) - YENI: 334 - 332 ve 333'ten SONRA
 (16 Ekim'deki 334 tarifi ESKIDI; dosya son modele gore yeniden yazildi. Eski hali hic kosulmadiysa
  sorun yok - yalniz bu dosyayi kos.)

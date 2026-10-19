@@ -67,3 +67,48 @@ https://claude.ai/artifact/WSHDf9qARJtv5PtjbKMq5u — Firebase Telefon Doğrulam
 5. `eas.json`: Apple hesabı e-postası (`appleId`) + `ascAppId` (App Store Connect › uygulama ›
    App Information › Apple ID: 10 haneli SAYI; Team ID D57RLX67QJ ayrı bir şey).
 6. App Store Connect iş ayarları (vergi, DSA, banka, posta kodu) ve SQL'ler — Gökberk yapacak.
+
+
+---
+
+# EK (18 Ekim, ikinci yarı) — telefon doğrulama · app 6.6.0 · BO 1.99.0
+
+## Gökberk onayları
+- Telefon doğrulama akışı (önizleme https://claude.ai/artifact/WSHDf9qARJtv5PtjbKMq5u): "gayet iyi".
+  Firebase + eşik 25 dahil.
+- Uygulama içi bildirim şeridi ve ilk kullanım ipuçları: önizleme hazırlandı
+  (https://claude.ai/artifact/AutU7VdeomJ6ZSYRh8YTHm) — ONAY BEKLİYOR, uygulanmadı.
+
+## Ne değişti
+- **SQL 335** `335_telefon_firebase_dogrulama.sql`: `telefon_gonderim_izni` (yalnız TR cep,
+  kullanıcı/numara başına günde 3, 60 sn kilit), `telefon_dogrulandi_yaz` (yalnız service_role),
+  numara değişince doğrulamayı düşüren tetikleyici, `dogrulama_kanali.firebase_hazir`, eşik 40 → 25.
+  Kanal KAPALI başlar (`beta_settings.telefon_kanali`). Yerel test **10/10**.
+- **BO 1.99.0** `/api/telefon-dogrula`: Supabase oturum jetonu + Google imzalı Firebase jetonu
+  (issuer/audience = `beta_settings.firebase_proje_id`, giriş yöntemi phone, 10 dk) → RPC.
+  Middleware'de yalnız bu yol + POST açık. Yerel deneme: jetonsuz 401, sahte jeton 401, GET → login.
+- **App 6.6.0**: `src/telefon.js` (TelefonDogrulamaSayfasi: numara · onay · kod · başarı),
+  "Telefonu Doğrula" ekranı Firebase açıkken "Doğrulamalarım" (e-posta/telefon/kimlik satırları),
+  numarası kayıtlı ama doğrulanmamış kullanıcıya bir kez teklif (yeni hesapta "son adım").
+  @react-native-firebase/app + auth 21.14.0: YALNIZ yapılandırma dosyası varsa bağlanır
+  (`react-native.config.js` + `app.config.js`; iOS'ta o zaman statik framework). Dosya yoksa
+  build bugünkü gibi; uygulama e-posta yoluna düşer. Web'de taklit (`web_sahne/firebase_sahte.js`).
+  Yeni sahneler: 93_tel_onay · 93b_tel_kod · 93c_tel_basari · 93d_tel_numara.
+- Rehber: 10b (Firebase SMS adımları + kanalı açan iki SQL satırı), push kontrolleri (pg_net, FCM V1),
+  "Yayından önce: hesap ve hukuk" (Supabase Pro, Vercel Pro, VERBİS, İYS), SQL listesine 334 + 335.
+
+## 19 Ekim ekleri
+- **Bildirim yönlendirmesi ölçüldü** (yerel DB, 21 tür): ilan kapandı, sistem kategorisindeki kredi,
+  plan değişikliği ve kaçırılan fırsat özeti hiçbir yere gitmiyordu → SQL 335 §6b `bildirim_hedefi`
+  (plan/ilan · cüzdan · planlar · keşfet) + App.js `bildirimeGit` (planlar, kesfet). Ölçüm sonrası
+  hedefsiz kalan yalnız genel duyuru (şeritte Bildirimler sayfasını açacak).
+- Önizleme v3 (bildirim şeridi + ilk kullanım): ince şerit (4 sn, parmak üstündeyken bekler, yukarı
+  it = kapat, dokun = ilgili ekran), ipuçları karartılmış katmanda, "Nasıl çalışır?" ana sayfada
+  DÜĞME (kendiliğinden açılmaz). Onay bekliyor.
+- Kurulum tablosu: 315-335 elle eklenmiş satırlar korunarak 335 eklendi (tablo_uret.py elle
+  eklenenleri siliyor — koşma). `tablo_sina.py` 16:09'da bir SQL dosyasında takıldı, durduruldu.
+
+## Gökberk'ten beklenen
+1. Rehber 10 ve 10b → "Firebase tamam" → Firebase'li build → iki SQL satırı ile kanal açılır.
+2. SQL: 330 → … → 334 → **335**.
+3. Bildirim şeridi + ilk kullanım önizlemesine onay.

@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -30,12 +17,12 @@
   "%80",
   "UYUM",
   "TAV Primeclass",
-  "IST · 17 EKİM · 14:20–16:40",
+  "IST · 18 EKİM · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "24 dk içinde",
+  "1 sa 19 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -45,11 +32,11 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 18 EKİM · 07:00–09:30",
+  "IST · 19 EKİM · 07:00–09:30",
   "",
   "Misafir ücretsiz",
   "",
-  "17 sa 4 dk içinde",
+  "17 sa 59 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -59,12 +46,12 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 18 EKİM · 10:00–13:00",
+  "IST · 19 EKİM · 10:00–13:00",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "20 sa 4 dk içinde",
+  "20 sa 59 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -74,7 +61,7 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 18 EKİM · 16:00–17:30",
+  "IST · 19 EKİM · 16:00–17:30",
   "",
   "Misafir ücretsiz",
   "",
@@ -88,7 +75,7 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 18 EKİM · 18:00–19:30",
+  "IST · 19 EKİM · 18:00–19:30",
   "",
   "Misafir ücretsiz",
   "",
@@ -102,7 +89,7 @@
   "%76",
   "UYUM",
   "Primeclass Lounge",
-  "IST · 18 EKİM · 20:00–21:30",
+  "IST · 19 EKİM · 20:00–21:30",
   "",
   "Misafir ücretsiz",
   ""

@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-10-17
+-- Uretim tarihi: 2026-10-19
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,8 +9,8 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 529
--- Birden cok dosyada tanimli (dikkat!): 161
+-- Toplam fonksiyon: 532
+-- Birden cok dosyada tanimli (dikkat!): 162
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -22,7 +22,7 @@
 --   bana_gelen_sorular           -> etkin: 331_soru_kendi_kaydinda.sql  (ayrica: 313_akis_durum_makinesi_bildirim_soru.sql)
 --   bayat_istekleri_iade_et      -> etkin: 316_bayat_istek_supurgede.sql  (ayrica: 249_is_modeli_ve_soguk_ag.sql, 274_istek_tavani_kilidi.sql, 300_uctan_uca_denetim.sql)
 --   bekleyen_hikaye_daveti       -> etkin: 296_hikaye_daveti_erteleme.sql  (ayrica: 230_host_hikayeleri.sql)
---   bildirim_hedefi              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 254_urun_bosluklari.sql, 266_eksik_bildirimler.sql)
+--   bildirim_hedefi              -> etkin: 335_telefon_firebase_dogrulama.sql  (ayrica: 254_urun_bosluklari.sql, 266_eksik_bildirimler.sql, 313_akis_durum_makinesi_bildirim_soru.sql)
 --   binis_karti_durumu           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   binis_karti_kaydet           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   blok_gecmisi_kapat           -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 204_blok_eylem_sinirinda.sql)
@@ -50,6 +50,7 @@
 --   discover_people              -> etkin: 070_discover_people_trip_data.sql  (ayrica: 015_connections.sql, 024_avatars_storage.sql, 044_trip_purpose_and_people_fix.sql, 049_discovery_safety_phone_delete.sql, 054_discover_people_include_hosts.sql, 059_discover_everyone_request_gate.sql)
 --   discover_people_prebfilter   -> etkin: 327_tanis_profil_gorunurlugu.sql  (ayrica: 286_tanis_cift_satir.sql, 319_tanis_gorunurluk_olcek.sql, 324_tanis_silinmis_yasakli_suzgeci.sql)
 --   discovery_rule_badges        -> etkin: 304_kesfet_engelinin_gercek_sebebi.sql  (ayrica: 090_rules_to_app.sql, 102_badge_wording.sql, 116_badges_gate_and_sort.sql, 135_short_and_honest.sql, 219_kredi_ve_ucret_dili.sql, 221_hosta_sor.sql)
+--   dogrulama_kanali             -> etkin: 335_telefon_firebase_dogrulama.sql  (ayrica: 269_dogrulama_zinciri.sql)
 --   expire_stale_sessions        -> etkin: 316_bayat_istek_supurgede.sql  (ayrica: 080_session_lifecycle.sql, 187_kanitlanmis_kusurlar.sql, 292_zaman_dilimi_yerel_an.sql, 298_supurge_kisiti_ve_asim_dedektoru.sql, 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql, 300_uctan_uca_denetim.sql)
 --   flight_fetch_allow           -> etkin: 225_planin_sozu_tutulsun.sql  (ayrica: 091_flight_quota.sql)
 --   flight_info                  -> etkin: 195_ucus_alanlari_ve_kod_paylasimi.sql  (ayrica: 091_flight_quota.sql)
@@ -24141,16 +24142,28 @@ on conflict (key) do nothing;
 -- ════════════════════════════════════════════════════════════════════════
 
 -- ----------------------------------------------------------------------
--- bildirim_hedefi   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
--- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- bildirim_hedefi   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.bildirim_hedefi(p_id uuid)
-returns jsonb language plpgsql stable security definer set search_path = public as $function$
+returns jsonb language plpgsql stable security definer set search_path = public as $bh335$
 declare v_uid uuid := auth.uid(); n record; v_req requests%rowtype; v_cr connection_requests%rowtype; v_rid uuid;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   select * into n from notifications where id = p_id and user_id = v_uid;
   if n.id is null then return jsonb_build_object('ekran', null); end if;
+
+  -- 335 · yönlendirmesi olmayan türler ölçüldü (yerel DB, 21 tür örneği): ilan kapandı,
+  -- sistem kategorisinde kredi, plan değişikliği, kaçırılan fırsat özeti hiçbir yere gitmiyordu.
+  if n.ref_type = 'availability' then
+    return jsonb_build_object('ekran', 'plan', 'alt', 'ilan', 'ref', n.ref_id);
+  elsif n.ref_type = 'credits' then
+    return jsonb_build_object('ekran', 'cuzdan');
+  elsif n.ref_type = 'plan' then
+    return jsonb_build_object('ekran', 'planlar');
+  elsif n.ref_type = 'missed_digest' then
+    return jsonb_build_object('ekran', 'kesfet');
+  end if;
 
   if n.ref_type = 'message' then
     return jsonb_build_object('ekran', 'sohbet', 'ref', n.ref_id);
@@ -24195,7 +24208,23 @@ begin
     when 'ratings'     then jsonb_build_object('ekran','degerlendirmeler','ref', n.ref_id)
     when 'safety'      then jsonb_build_object('ekran','guvenlik')
     else jsonb_build_object('ekran', null) end;
-end $function$;
+end $bh335$;
+grant execute on function public.bildirim_hedefi(uuid) to authenticated;
+
+-- §7 · doğrulama
+select 'kanal anahtari' as kontrol, exists (select 1 from beta_settings where key = 'telefon_kanali') as tamam
+union all
+select 'esik 25', (select (value #>> '{}')::int from beta_settings where key = 'profil_trusted_esik') = 25
+union all
+select 'yazan kapi yalniz service_role',
+       not has_function_privilege('authenticated', 'public.telefon_dogrulandi_yaz(uuid, text)', 'execute')
+union all
+select 'gonderim izni authenticated', has_function_privilege('authenticated', 'public.telefon_gonderim_izni(text)', 'execute')
+union all
+select 'numara degisince dusuren tetikleyici', exists (select 1 from pg_trigger where tgname = 'telefon_degisti')
+union all
+select 'bildirim hedefi: ilan ve kredi turleri', pg_get_functiondef('public.bildirim_hedefi(uuid)'::regprocedure) like '%missed_digest%';
+-- Beklenen: altı satır tamam = true.
 
 -- ----------------------------------------------------------------------
 -- sohbet_temizle   [etkin kaynak: 255_magaza_sartlari.sql]
@@ -25900,42 +25929,25 @@ end $rt269$;
 -- ════════════════════════════════════════════════════════════════════════
 
 -- ----------------------------------------------------------------------
--- dogrulama_kanali   [etkin kaynak: 269_dogrulama_zinciri.sql]
+-- dogrulama_kanali   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.dogrulama_kanali()
 returns jsonb
-language sql stable security definer set search_path = public as $dk269$
+language sql stable security definer set search_path = public as $dk335$
   select jsonb_build_object(
     'kanal', coalesce((select value #>> '{}' from beta_settings where key = 'otp_channel'), 'email'),
-    -- 🔴 `sms_hazir`: kanal 'sms' OLSA BİLE gönderici yoksa yalan söylemeyelim.
-    -- Bugün gönderici yok; bu bayrak bir gönderici eklendiğinde
-    -- `otp_sms_saglayici` ayarıyla açılacak.
-    'sms_hazir', coalesce((select value #>> '{}' from beta_settings
-                            where key = 'otp_sms_saglayici'), '') <> '',
-    'not', coalesce((select value #>> '{}' from beta_settings
-                      where key = 'otp_notice_phone_declared'), '')
+    'sms_hazir', coalesce((select value #>> '{}' from beta_settings where key = 'otp_sms_saglayici'), '') <> '',
+    'telefon_kanali', coalesce((select value #>> '{}' from beta_settings where key = 'telefon_kanali'), 'kapali'),
+    'firebase_hazir', coalesce((select value #>> '{}' from beta_settings where key = 'telefon_kanali'), '') = 'firebase'
+                      and coalesce((select value #>> '{}' from beta_settings where key = 'firebase_proje_id'), '') <> '',
+    'not', coalesce((select value #>> '{}' from beta_settings where key = 'otp_notice_phone_declared'), '')
   );
-$dk269$;
+$dk335$;
 revoke execute on function public.dogrulama_kanali() from public;
 grant execute on function public.dogrulama_kanali() to authenticated, anon;
 
-insert into beta_settings (key, value)
-values ('otp_sms_saglayici', to_jsonb(''::text))
-on conflict (key) do nothing;
-
--- ════════════════════════════════════════════════════════════════════════
--- §5 — `send_otp` ARTIK SESSİZCE BAŞARILI OLMUYOR
---
--- 🔴 EN SİNSİ HALKA BURASIYDI. Fonksiyon kodu üretiyor, saklıyor ve
--- `{ok:true}` dönüyor. Uygulama `ok` görüp kod ekranına geçiyor.
--- Hiçbir yerde hata YOK — ama SMS de yok. Sistem "çalıştı" diyor,
--- kullanıcı boş ekrana bakıyor.
---
--- 🆕 SINIF: "GÖNDERMEYEN BİR GÖNDERİCİNİN 'TAMAM' DEMESİ, HATA VERMESİNDEN
--- DAHA KÖTÜDÜR — HATA GÖRÜLÜR, SESSİZ BAŞARI GÖRÜLMEZ."
---
--- Artık gönderici tanımlı değilse `sms_not_configured` fırlatıyor.
--- ════════════════════════════════════════════════════════════════════════
+-- §4 · gönderim izni: uygulama Firebase'e SMS istemeden önce sorar
 
 -- ----------------------------------------------------------------------
 -- test_verisi_tazele   [etkin kaynak: 270_test_verisi_gorunur.sql]
@@ -31997,3 +32009,98 @@ select 'suzgec maskeler, masumu birakir',
        public.uygunsuz_maskele('Selam orospu çocuğu, Sık Uçan planı güzel') = 'Selam ••• çocuğu, Sık Uçan planı güzel'
    and public.uygunsuz_maskele('I got the pic, sik ucan') = 'I got the pic, sik ucan';
 -- Beklenen: beş satır tamam = true.
+
+-- ----------------------------------------------------------------------
+-- telefon_gonderim_izni   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.telefon_gonderim_izni(p_phone text)
+returns jsonb
+language plpgsql security definer set search_path = public as $tg335$
+declare
+  v_uid uuid := auth.uid();
+  v_kan text;
+  v_k int; v_n int;
+  v_tavan_k int := coalesce((select (value #>> '{}')::int from beta_settings where key = 'telefon_gunluk_kullanici'), 3);
+  v_tavan_n int := coalesce((select (value #>> '{}')::int from beta_settings where key = 'telefon_gunluk_numara'), 3);
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  if coalesce((select value #>> '{}' from beta_settings where key = 'telefon_kanali'), 'kapali') <> 'firebase' then
+    raise exception 'sms_not_configured';
+  end if;
+  v_kan := public.telefon_kanonik(p_phone);
+  -- kanonik biçim artısız: 905XXXXXXXXX (268 · telefon_kanonik)
+  if v_kan is null or v_kan !~ '^905[0-9]{9}$' then raise exception 'telefon_yalniz_tr_cep'; end if;
+  if exists (select 1 from users where phone_kanonik = v_kan and deleted_at is null and id <> v_uid) then
+    raise exception 'phone_taken';
+  end if;
+  if exists (select 1 from telefon_gonderimleri where user_id = v_uid and created_at > now() - interval '60 seconds') then
+    raise exception 'too_many_requests';
+  end if;
+  select count(*) into v_k from telefon_gonderimleri where user_id = v_uid and created_at > now() - interval '24 hours';
+  select count(*) into v_n from telefon_gonderimleri where phone_kanonik = v_kan and created_at > now() - interval '24 hours';
+  if v_k >= v_tavan_k or v_n >= v_tavan_n then raise exception 'telefon_gunluk_sinir'; end if;
+  insert into telefon_gonderimleri (user_id, phone_kanonik) values (v_uid, v_kan);
+  return jsonb_build_object('ok', true, 'telefon', '+' || v_kan, 'kalan', least(v_tavan_k - v_k, v_tavan_n - v_n) - 1);
+end $tg335$;
+revoke all on function public.telefon_gonderim_izni(text) from public, anon;
+grant execute on function public.telefon_gonderim_izni(text) to authenticated;
+
+-- §5 · doğrulamayı yazan TEK kapı (yalnız service_role: panel /api/telefon-dogrula)
+
+-- ----------------------------------------------------------------------
+-- telefon_dogrulandi_yaz   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.telefon_dogrulandi_yaz(p_user uuid, p_phone text)
+returns jsonb
+language plpgsql security definer set search_path = public as $td335$
+declare
+  v_kan text; v_once int; v_sonra int;
+begin
+  v_kan := public.telefon_kanonik(p_phone);
+  if v_kan is null then raise exception 'invalid_phone'; end if;
+  if not exists (select 1 from users where id = p_user and deleted_at is null) then raise exception 'user_not_found'; end if;
+  if exists (select 1 from users where phone_kanonik = v_kan and deleted_at is null and id <> p_user) then
+    raise exception 'phone_taken';
+  end if;
+  select coalesce((select score from trust_scores where user_id = p_user), 0) into v_once;
+  begin
+    update users set phone = '+' || v_kan, phone_e164 = v_kan, phone_kanonik = v_kan where id = p_user;
+  exception when unique_violation then
+    raise exception 'phone_taken';
+  end;
+  insert into verifications (user_id, phone_verified, phone_verified_at, phone_verified_method)
+  values (p_user, true, now(), 'sms')
+  on conflict (user_id) do update
+    set phone_verified = true, phone_verified_at = now(), phone_verified_method = 'sms';
+  v_sonra := public.recompute_trust(p_user);
+  return jsonb_build_object('ok', true, 'telefon', '+' || v_kan, 'puan_once', v_once, 'puan_sonra', v_sonra,
+    'esik', coalesce((select (value #>> '{}')::int from beta_settings where key = 'profil_trusted_esik'), 40));
+end $td335$;
+revoke all on function public.telefon_dogrulandi_yaz(uuid, text) from public, anon, authenticated;
+grant execute on function public.telefon_dogrulandi_yaz(uuid, text) to service_role;
+
+-- §6 · numara değişince doğrulama düşer (eski numaranın doğrulaması yeni numaraya geçmesin)
+
+-- ----------------------------------------------------------------------
+-- trg_telefon_degisti   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.trg_telefon_degisti()
+returns trigger
+language plpgsql security definer set search_path = public as $tt335$
+begin
+  if coalesce(old.phone_kanonik, '') <> coalesce(new.phone_kanonik, '') then
+    update verifications set phone_verified = false, phone_verified_at = null
+     where user_id = new.id and phone_verified;
+    if found then perform public.recompute_trust(new.id); end if;
+  end if;
+  return new;
+end $tt335$;
+drop trigger if exists telefon_degisti on public.users;
+create trigger telefon_degisti after update of phone_kanonik on public.users
+  for each row execute function public.trg_telefon_degisti();
+
+-- telefon_dogrulandi_yaz önce numarayı yazar (tetikleyici doğrulamayı düşürür), SONRA
+-- doğrulamayı true yapar: sıra bilerek böyle.
+
+-- §6b · bildirim yönlendirmesi (uygulama içi şerit, telefon bildirimi ve bildirim listesi aynı
+-- hedefi kullanır). Hedefi olmayan bildirim (genel duyuru) uygulamada Bildirimler sayfasını açar.

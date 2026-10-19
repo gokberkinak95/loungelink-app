@@ -3183,7 +3183,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
   // olduğu için neredeyse HER profil boş görünüyordu (MVP'de zengin görünür).
   const showFull = connected
     || (sunucuGorur != null ? sunucuGorur
-        : (d.profile_visibility === "Everyone" || (d.profile_visibility === "Trusted+" && myScore >= 40)));
+        : (d.profile_visibility === "Everyone" || (d.profile_visibility === "Trusted+" && myScore >= 25)));
   const firstName = (d.name || "").split(" ")[0];
 
   // 🔴 Canlı APP 16: profilden "Bağlan" hiçbir sayfa açmadan sessizce

@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -65,7 +52,7 @@
   "S",
   "Selin B.",
   "Ürün Yönetimi",
-  "TK712 · IST · 29 Mart 2027",
+  "TK712 · IST · 1 Nisan 2027",
   "",
   "İş",
   "İlanı var",
@@ -104,8 +91,8 @@
   "",
   "Temel Doğrulama · güven 50",
   "",
-  "B",
-  "Burak Classic Plus"
+  "K",
+  "Kerem Classic"
  ],
  "tasan": [],
  "bitisik": []

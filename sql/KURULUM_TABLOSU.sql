@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-05 · 378 dosya · son: 334 · 315-334 elle eklendi)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 379 dosya · son: 335 · 315-335 elle eklendi)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -589,6 +589,7 @@ select z.dosya, 'tespit'
   (367, '332_revenuecat_satin_alma.sql', 'fonksiyon', 'rc_olay_isle'),
   (368, '333_magaza_inceleme_hesabi.sql', 'fonksiyon', 'inceleme_hesabi_hazirla'),
   (369, '334_ekonomi_ve_icerik_suzgeci.sql', 'fonksiyon', 'uygunsuz_maskele'),
+  (370, '335_telefon_firebase_dogrulama.sql', 'fonksiyon', 'telefon_dogrulandi_yaz'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -976,6 +977,7 @@ with imza(sira, dosya, tip, ad) as (
   (367, '332_revenuecat_satin_alma.sql', 'fonksiyon', 'rc_olay_isle'),
   (368, '333_magaza_inceleme_hesabi.sql', 'fonksiyon', 'inceleme_hesabi_hazirla'),
   (369, '334_ekonomi_ve_icerik_suzgeci.sql', 'fonksiyon', 'uygunsuz_maskele'),
+  (370, '335_telefon_firebase_dogrulama.sql', 'fonksiyon', 'telefon_dogrulandi_yaz'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -52,8 +61,8 @@
   "TARİH",
   "Bugün",
   "Yarın",
-  "Pazartesi",
   "Salı",
+  "Çarşamba",
   "Tarih seç",
   "",
   "HAVAYOLU",

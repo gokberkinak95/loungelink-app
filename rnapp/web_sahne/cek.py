@@ -166,6 +166,10 @@ SAHNELER = {
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile
     "32_herkese_acik_profil": ("kaan", [("dokun", "Tanış"), ("dokun_a11y", "Burak S.")]),  # ekran: PublicProfile
+    "93_tel_onay":   ("yeni", [("bekle", 1800)], "tv=onay"),     # 18 Ekim · telefon doğrulama sayfası (SQL 335)   # ekran: TelefonDogrulamaSayfasi
+    "93b_tel_kod":   ("yeni", [("bekle", 1800)], "tv=kod"),      # ekran: TelefonDogrulamaSayfasi
+    "93c_tel_basari":("yeni", [("bekle", 1800)], "tv=basari"),   # ekran: TelefonDogrulamaSayfasi
+    "93d_tel_numara":("yeni", [("bekle", 1800)], "tv=numara"),   # ekran: TelefonDogrulamaSayfasi
     "32b_baglanti_hakki": ("kaan", [("dokun", "Tanış"), ("dokun_a11y", "Burak S."), ("kaydir",), ("bekle", 800)]),  # 18 Ekim · Bağlantı Kur sayfası + haftalık hak satırı (SQL 334)   # ekran: Meet
     "33_sorularim":    ("gokberk", [("dokun_a11y", "Soru")]),                              # ekran: MyQuestions
     "34_host_ol":      ("gokberk", [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla"),

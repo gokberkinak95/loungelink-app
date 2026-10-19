@@ -30,6 +30,7 @@ import { badgeLabel, fmtLongDate, mapErr, shortName, BUYUK, gorunur, etkinDil } 
 import { bayrak } from "./runtime";
 import { havalimanlariniGetir } from "./katalog";
 import { logError, onPlanda, supabase } from "./supabase";
+import { TelefonDogrulamaSayfasi, telefonHazir } from "./telefon";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
 import { BosDurum, ConfirmModal, GecisKarti, Hdr, LoadFail, TOPPAD, Sayfa, Btn, Secim, Cip, useDaralanBant, Kaydirma, DumanliCam, PerdeBulanik, POPUP_YUZEY, UyumMuhru, DurumSatiri, Serit, YeniEtiket, yeniCerceve, akisKarti, FotoBant, KlavyeKabi, ALTPAD } from "./ui";
@@ -2610,7 +2611,37 @@ export function KimlikDogrula({ t, session, onBack, onDone }) {
   );
 }
 
-export function VerifyPhone({ t, session, onDone, onBack }) {
+export function VerifyPhone({ t, session, onDone, onBack, onKimlik }) {
+  // 18 Ekim (SQL 335 · src/telefon.js) — Firebase SMS kanalı açıksa ve bu build Firebase
+  // taşıyorsa ekran "Doğrulamalarım"a döner ve telefon satırı yeni doğrulama sayfasını açar.
+  // Değilse aşağıdaki eski yol (e-posta önde, numara yalnız kaydedilir) aynen çalışır.
+  const [fbHazir, setFbHazir] = useState(null);
+  const [dg, setDg] = useState(null);
+  const [tvAcik, setTvAcik] = useState(false);
+  const [eskiYol, setEskiYol] = useState(false);
+  const dgYukle = useCallback(async () => {
+    const uid = session?.user?.id; if (!uid) return null;
+    const [{ data: v, error: ev }, { data: ts, error: et }, { data: u, error: eu }] = await Promise.all([
+      supabase.from("verifications").select("email_verified, phone_verified, id_verified").eq("user_id", uid).maybeSingle(),
+      supabase.from("trust_scores").select("score").eq("user_id", uid).maybeSingle(),
+      supabase.from("users").select("phone").eq("id", uid).maybeSingle(),
+    ]);
+    if (ev) logError("dg_verifications", ev);
+    if (et) logError("dg_trust", et);
+    if (eu) logError("dg_users", eu);
+    const yeni = { email: !!v?.email_verified, phone: !!v?.phone_verified, id: !!v?.id_verified, puan: ts?.score ?? null, tel: u?.phone || "" };
+    setDg(yeni);
+    return yeni;
+  }, [session]);
+  useEffect(() => {
+    let iptal = false;
+    telefonHazir().then(async (h) => {
+      if (iptal) return;
+      setFbHazir(h);
+      if (h) { const d = await dgYukle(); if (!iptal && d && !d.phone) setTvAcik(true); }
+    });
+    return () => { iptal = true; };
+  }, [dgYukle]);
   // v1.74: klasik kayıtta telefon zaten alınıyor — kullanıcıya tekrar
   // yazdırmak gereksiz sürtünme. Kayıtlı numara varsa alan ÖN DOLU gelir;
   // sosyal girişte numara olmadığı için boş +90 ile başlar.
@@ -2722,6 +2753,45 @@ export function VerifyPhone({ t, session, onDone, onBack }) {
     if (error) return setErr(mapOtpErr(error.message));
     setStage("done");
     setTimeout(() => onDone && onDone(), 1400);
+  }
+
+  if (fbHazir && !eskiYol) {
+    const satir = (ad, alt, tamam, puan, onPress) => (
+      <TouchableOpacity key={ad} accessibilityRole="button" hitSlop={TAP.slop} disabled={tamam || !onPress} onPress={onPress}
+        style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: SP[2],
+                 paddingVertical: ARA[14], borderBottomWidth: 1, borderColor: C.line }}>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text style={{ color: C.ink, fontSize: FS.base, fontWeight: "600" }}>{ad}</Text>
+          <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[2] }}>{alt}</Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: ARA[4] }}>
+          {tamam && <Ikon ad="tamam" boy={14} renk={C.greenInk || C.green} />}
+          <Text style={{ color: tamam ? (C.greenInk || C.green) : C.goldText, fontWeight: "700", fontSize: FS.sm }}>
+            {tamam ? `+${puan}` : `${t.dgDogrula} · +${puan}`}
+          </Text>
+          {!tamam && !!onPress && <Ikon ad="sag" boy={14} renk={C.goldText} />}
+        </View>
+      </TouchableOpacity>
+    );
+    return (
+      <Sayfa>
+        <Hdr t={t} ustBilgi={t.sceneAccount} title={t.dgBaslik} onBack={onBack} />
+        <View style={{ flex: 1, padding: ARA[22] }}>
+          <View style={{ backgroundColor: C.card, borderRadius: R.md || 14, paddingHorizontal: ARA[14] }}>
+            {satir(t.dgEposta, dg?.email ? (myEmail || t.dgDogrulandi) : t.dgEpostaAlt, !!dg?.email, 10, () => setEskiYol(true))}
+            {satir(t.dgTelefon, dg?.phone ? (dg.tel || t.dgDogrulandi) : t.dgTelAlt, !!dg?.phone, 10, () => setTvAcik(true))}
+            {satir(t.dgKimlik, dg?.id ? t.dgDogrulandi : t.dgKimlikAlt, !!dg?.id, 18, onKimlik || null)}
+          </View>
+          {dg && dg.puan != null && (
+            <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 17, marginTop: ARA[12] }}>
+              {String(t.dgNot).replace("{p}", String(dg.puan))}
+            </Text>
+          )}
+        </View>
+        <TelefonDogrulamaSayfasi t={t} session={session} acik={tvAcik} ilkNumara={dg?.tel || ""} kaynak="profil"
+          onKapat={() => setTvAcik(false)} onBitti={() => { dgYukle(); }} />
+      </Sayfa>
+    );
   }
 
   return (

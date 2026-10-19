@@ -31,6 +31,7 @@ import { useRecognitionMoment } from "./src/HostWallet";
 import MomentScreen from "./src/MomentScreen";
 import { AcilisIsigi, dokun } from "./src/hareket";
 import { AcilisSahnesi } from "./src/acilis";
+import { TelefonDogrulamaSayfasi, telefonHazir } from "./src/telefon";
 // v2.73 — GÖVDE YAZISI ARTIK BİZİM. Tek çağrı; ayrıntısı src/typography.js.
 // Buraya, ilk render'dan ÖNCE koyuldu: sonrasında çağrılsaydı ilk ekran
 // sistem fontuyla çizilip sonra zıplardı.
@@ -830,6 +831,35 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
   useEffect(() => { bntTrips.sifirla(); }, [hostTripsSub, bntTrips.sifirla]);
   useEffect(() => { bntMeet.sifirla(); }, [meetSub, bntMeet.sifirla]);
   const [showVerify, setShowVerify] = useState(false);
+  // 18 Ekim (SQL 335) — numarası kayıtlı ama doğrulanmamış kullanıcıya BİR KEZ "numaranı doğrula"
+  // sayfası (kanal açık ve build Firebase taşıyorsa). Yeni hesapta "Hesabın hazır · son adım".
+  const [telTeklif, setTelTeklif] = useState(null);
+  useEffect(() => {
+    let iptal = false;
+    const uid = session?.user?.id;
+    if (!uid) return undefined;
+    (async () => {
+      const anahtar = "ll_tel_teklif_" + uid;
+      if (Platform.OS === "web" && globalThis.__TV_SAHNE) {   // yalnız web sahne çekimi
+        setTimeout(() => { if (!iptal) setTelTeklif({ tel: "+905321234518", kaynak: "kayit" }); }, 600);
+        return;
+      }
+      try { if (await AsyncStorage.getItem(anahtar)) return; } catch (e) { return; }
+      const [{ data: u, error: eu }, { data: v, error: ev }] = await Promise.all([
+        supabase.from("users").select("phone").eq("id", uid).maybeSingle(),
+        supabase.from("verifications").select("phone_verified").eq("user_id", uid).maybeSingle(),
+      ]);
+      if (eu) logError("tel_teklif_users", eu);
+      if (ev) logError("tel_teklif_ver", ev);
+      if (iptal || !u?.phone || v?.phone_verified) return;
+      if (!(await telefonHazir()) || iptal) return;
+      try { await AsyncStorage.setItem(anahtar, "1"); } catch (e) {}
+      const yeni = session?.user?.created_at && (Date.now() - new Date(session.user.created_at).getTime()) < 24 * 3600 * 1000;
+      // açılış sahnesi (~3,6 sn) bitmeden açılmasın
+      setTimeout(() => { if (!iptal) setTelTeklif({ tel: u.phone, kaynak: yeni ? "kayit" : "profil" }); }, 4500);
+    })();
+    return () => { iptal = true; };
+  }, [session?.user?.id]);
   const [showKimlik, setShowKimlik] = useState(false);   // SQL 285 — kimlik belgesi
   const [showNotif, setShowNotif] = useState(false);
   const [showPlans, setShowPlans] = useState(false);
@@ -1340,6 +1370,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
       else { setSohbetSekme("oturum"); setShowSohbetler(true); }
     }
     else if (h.ekran === "istek_sohbet" && h.ref) setChat({ req: { id: h.ref }, name: "" });
+    // 19 Ekim (SQL 335 §6b) — plan değişikliği ve kaçırılan fırsat özeti de bir yere gider
+    else if (h.ekran === "planlar") setShowPlans(true);
+    else if (h.ekran === "kesfet") setTab("disc");
     else if (h.ekran === "cuzdan") setShowWallet(true);
     else if (h.ekran === "degerlendirmeler") setShowRatings(true);
     else if (h.ekran === "guvenlik") setShowSafety(true);
@@ -1516,7 +1549,8 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     pub: () => (<PublicProfile t={t} session={session} targetId={pubProfile} onPlans={() => setShowPlans(true)} onBack={() => setPubProfile(null)}
       onOpenChat={(id, name) => { companionAc(id, name, () => setPubProfile(null)); }}
       onReport={(id, name) => { setPubProfile(null); setReport({ targetId: id, targetName: name, sessionId: null }); }} />),
-    verify: () => (<VerifyPhone t={t} session={session} onDone={() => setShowVerify(false)} onBack={() => setShowVerify(false)} />),
+    verify: () => (<VerifyPhone t={t} session={session} onDone={() => setShowVerify(false)} onBack={() => setShowVerify(false)}
+      onKimlik={() => { setShowVerify(false); setShowKimlik(true); }} />),
     kimlik: () => (<KimlikDogrula t={t} session={session} onBack={() => setShowKimlik(false)} />),
     wallet: () => (<Wallet t={t} session={session} onBack={() => setShowWallet(false)} />),
     hostApply: () => (<HostApply t={t} session={session} onBack={() => setShowHostApply(false)} />),
@@ -2173,6 +2207,8 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           <KlavyeKabi>{OVERLAY_VIEWS[topOverlay]()}</KlavyeKabi>
         </View>
       ) : null}
+      <TelefonDogrulamaSayfasi t={t} session={session} acik={!!telTeklif} ilkNumara={telTeklif?.tel || ""}
+        kaynak={telTeklif?.kaynak || "profil"} onKapat={() => setTelTeklif(null)} onBitti={() => setReload(x => x + 1)} />
     </Sayfa>
   );
 }
