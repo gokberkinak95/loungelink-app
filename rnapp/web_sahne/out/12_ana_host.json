@@ -1,11 +1,20 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "GÜNAYDIN",
   "Selin B.",
   "• Güvenilir Host",
   "6",
@@ -40,7 +49,7 @@
   "YAYINDA · DOLU",
   "SAW",
   "Comfort Lounge",
-  "19 EKİM · 09:00–11:30",
+  "20 EKİM · 09:00–11:30",
   "",
   "Misafir ücretsiz",
   "İlanı yönet",
@@ -54,7 +63,7 @@
   "AKADEMİSYEN",
   "%62",
   "UYUM",
-  "18 Ekim · 14:20–16:40 · TAV Primeclass",
+  "19 Ekim · 14:20–16:40 · TAV Primeclass",
   "TELEFON",
   "AYNI UÇUŞ",
   "1 OTURUM",
@@ -63,7 +72,7 @@
   "Misafiri kabul et",
   "Reddet",
   "⭐ Son oturumunu puanla",
-  "TAV Primeclass · 18 Ekim",
+  "TAV Primeclass · 19 Ekim",
   "",
   "Kaan T. ile · TK1979 · 14:20–16:40",
   "Sonra puanlarsan: Profil › Oturum Geçmişi'nde 24 saat boyunca durur",

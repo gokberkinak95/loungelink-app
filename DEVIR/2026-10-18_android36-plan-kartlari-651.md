@@ -112,3 +112,8 @@ https://claude.ai/artifact/WSHDf9qARJtv5PtjbKMq5u — Firebase Telefon Doğrulam
 1. Rehber 10 ve 10b → "Firebase tamam" → Firebase'li build → iki SQL satırı ile kanal açılır.
 2. SQL: 330 → … → 334 → **335**.
 3. Bildirim şeridi + ilk kullanım önizlemesine onay.
+
+## APK 6.6.0 ve testler (19 Ekim)
+- Android önizleme APK 6.6.0 (290): https://expo.dev/artifacts/eas/BGsbUcP354ppc3FcA2oqejMZOpEiGtgP3MImigM_dUY.apk
+- sahne çekimi: hata=0 (arıza sahneleri hariç) · dokunma yolu düşen 0 · akış e2e **197/197**.
+- Önizleme v5 (bildirim şeridi + ilk kullanım + Keşfet uçuş çipleri) onay bekliyor: https://claude.ai/artifact/AutU7VdeomJ6ZSYRh8YTHm

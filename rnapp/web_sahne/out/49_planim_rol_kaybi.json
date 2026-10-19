@@ -18,6 +18,10 @@
   },
   {
    "t": "warning",
+   "s": "[sahne logError] tel_teklif_users Network request failed "
+  },
+  {
+   "t": "warning",
    "s": "[sahne logError] kabuk_rol Network request failed "
   },
   {
@@ -27,6 +31,12 @@
  ],
  "errors": [],
  "calls": [
+  {
+   "kind": "from",
+   "fn": null,
+   "table": "users",
+   "error": "Network request failed"
+  },
   {
    "kind": "from",
    "fn": null,
@@ -68,6 +78,12 @@
    "screen": "network",
    "err": "Network request failed",
    "code": "offline"
+  },
+  {
+   "kind": "logError",
+   "screen": "tel_teklif_users",
+   "err": "Network request failed",
+   "code": null
   },
   {
    "kind": "from",

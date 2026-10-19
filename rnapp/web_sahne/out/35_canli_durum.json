@@ -1,11 +1,20 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
   "",
-  "İYİ GÜNLER",
+  "GÜNAYDIN",
   "Gökberk",
   "14",
   "KREDİ",
@@ -27,7 +36,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "15:09–19:09",
+  "12:38–16:38",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -63,7 +72,7 @@
   "CANLI",
   "Oturum · Canlı Durum",
   "02:28",
-  ":29",
+  ":30",
   "BULUŞMAYA",
   "Oturum Aktif",
   "KARŞI TARAF DİYOR",

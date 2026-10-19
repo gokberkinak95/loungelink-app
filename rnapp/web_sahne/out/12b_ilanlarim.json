@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -26,7 +35,7 @@
   "AKTİF İLANLARIN",
   "CANLI · 1 YER AÇIK",
   "TAV Primeclass",
-  "IST · 18 EKİM · 14:20–16:40",
+  "IST · 19 EKİM · 14:20–16:40",
   "",
   "TK · Türk Hava Yolları",
   "1 başvuru · 1 Bekliyor",
@@ -34,7 +43,7 @@
   "İlanı düzenle",
   "CANLI · DOLU",
   "Comfort Lounge",
-  "SAW · 19 EKİM · 09:00–11:30",
+  "SAW · 20 EKİM · 09:00–11:30",
   "",
   "PC · Pegasus",
   "İlanı kaldır",
