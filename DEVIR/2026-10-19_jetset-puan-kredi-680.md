@@ -61,7 +61,7 @@ Gökberk'in kararları (19 Ekim):
   375 px'te yatay taşma yok (scrollWidth 375), hesaplayıcı üç planda doğru sayılar.
 
 ## APK
-- 6.8.0 APK ALINAMADI: EAS ücretsiz planın Android hakkı bitti. Gökberk $19 ödedi (makbuz 19 Ekim) ama Billing hâlâ Free gösteriyor → Expo tarafında plan açılınca `npx eas-cli build --platform android --profile preview`.
+- Android önizleme APK 6.8.0 (292): https://expo.dev/artifacts/eas/zfgwLgZtW_AzhqUV6v38vq_H_EEwNTplEdYWaIhOK7Y.apk (EAS Starter planına geçildi, 19 Ekim)
 
 ## Açık / Gökberk'ten
 1. SQL: 335 (koşulmadıysa) → 336 → 337.
