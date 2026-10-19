@@ -1,13 +1,27 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "?",
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 5 g 23 sa · 71 ilan · 29 host yayında",
+  "Havalimanı saatine 5 g 20 sa · 71 ilan · 29 host yayında",
   "İstanbul",
   "",
   "S",
@@ -22,7 +36,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "3 sa 50 dk içinde",
+  "20 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -36,7 +50,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "20 sa 30 dk içinde",
+  "17 sa 0 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -51,7 +65,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "23 sa 30 dk içinde",
+  "20 sa 0 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -65,7 +79,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "1 g 5 sa içinde",
+  "1 g 2 sa içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -79,7 +93,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "1 g 7 sa içinde",
+  "1 g 4 sa içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -91,8 +105,7 @@
   "Primeclass Lounge",
   "IST · 20 EKİM · 20:00–21:30",
   "",
-  "Misafir ücretsiz",
-  ""
+  "Misafir ücretsiz"
  ],
  "tasan": [],
  "bitisik": []

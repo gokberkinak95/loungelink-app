@@ -1,22 +1,10 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "?",
   "AYNI LOUNGE'DAKİ YOLCULARLA BAĞLAN",
   "Tanış",
   "Tanış",
@@ -65,16 +53,24 @@
   "S",
   "Selin B.",
   "Ürün Yönetimi",
-  "TK712 · IST · 17 Nisan 2027",
+  "TK712 · IST · 7 Mayıs 2027",
   "",
   "İş",
   "İlanı var",
   "",
   "Doğrulanmış · güven 58",
   "",
-  "C",
-  "Ceren AJet IST",
-  "Hukuk",
+  "D",
+  "Deniz AJet ESB",
+  "Egitim",
+  "ESB",
+  "İlanı var",
+  "",
+  "Temel Doğrulama · güven 50",
+  "",
+  "B",
+  "Burak Classic Plus",
+  "Finans",
   "IST",
   "İlanı var",
   "",
@@ -96,16 +92,7 @@
   "",
   "Temel Doğrulama · güven 50",
   "",
-  "P",
-  "Pinar ABD Karti",
-  "Finans",
-  "DLM",
-  "İlanı var",
-  "",
-  "Temel Doğrulama · güven 50",
-  "",
-  "O",
-  "Ozan Corporate"
+  "R"
  ],
  "tasan": [],
  "bitisik": []

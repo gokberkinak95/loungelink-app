@@ -26,6 +26,18 @@
    "error": "Network request failed"
   },
   {
+   "kind": "logError",
+   "screen": "discover_availabilities",
+   "err": "Network request failed",
+   "code": null
+  },
+  {
+   "kind": "logError",
+   "screen": "network",
+   "err": "Network request failed",
+   "code": "offline"
+  },
+  {
    "kind": "rpc",
    "fn": "discover_availabilities",
    "table": null,
@@ -42,26 +54,17 @@
    "screen": "network",
    "err": "Network request failed",
    "code": "offline"
-  },
-  {
-   "kind": "logError",
-   "screen": "discover_availabilities",
-   "err": "Network request failed",
-   "code": null
-  },
-  {
-   "kind": "logError",
-   "screen": "network",
-   "err": "Network request failed",
-   "code": "offline"
   }
  ],
  "metin": [
   "LOUNGELINK",
+  "?",
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 1 g 2 sa",
+  "Havalimanı saatine 23 sa 0 dk",
+  "IST · 20 Eki",
+  "SAW · 21 Eki",
   "İstanbul",
   "",
   "",

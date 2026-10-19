@@ -29,8 +29,16 @@
 - §6d kredi paketi adları "1 kredi / 3 kredi / 5 kredi" (Cüzdan "Tek hak / Üç hak" yazıyordu).
 - Doğrulama: dokuz satır tamam = true. Yerel: 9/9; telefon şartı senaryosu (kanal kapalı/açık/kural sorusu) doğru.
 
-## Testler
-(aşağıda)
+## Testler (sayılarla)
+- app `npm run verify`: ilk koşu 8 kırmızı (yeni kod: şerit dokunma alanı, ham renkler → `TUR` jetonu, tema
+  sızıntısı, elle seçim düğmesi → `Cip`, ölü metin goVerify, ham_kod_check'in Windows komut satırı sınırı
+  [WinError 206 → anahtarlar dosyayla]) → ikinci koşu yalnız bayat dokunma makbuzu; sahne koşusu yeniledi.
+- sahne çekimi hata 0 (arıza sahneleri hariç) · dokunma yolu düşen 0 · akış e2e **197/197**, ✗ 0.
+- yönlendirme sahneleri: Planları gör → Plan · şerit → Bildirimler · telefon kartı → Doğrulamalarım · Host bul → Keşfet.
+- SQL 335 yerelde 9/9; telefon şartı senaryosu doğru.
+
+## APK
+- Android önizleme APK 6.7.0 (291): https://expo.dev/artifacts/eas/KCwW3mhANZZ1oLqZxbNidLWuLO4t5rhJIOBYrobHVMc.apk
 
 ## Açık / Gökberk'ten
 1. SQL: 330 → … → 334 → 335.
