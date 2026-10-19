@@ -172,6 +172,15 @@ def ana(b, port, k):
     def istek_red():
         kartlar = _kartlar()
         if not kartlar:
+            # Tek kart kalınca "#1 / 1" sırası basılmıyor (SQL 336: kabul edilen misafirin aynı
+            # günkü diğer istekleri geri çekildiği için kart sayısı düşebilir) → ekrandaki adla DB'den bul.
+            m = e.metin()
+            for ad, saat in db("""select p.name, to_char(a.time_from,'HH24:MI') from requests r
+                                   join availabilities a on a.id=r.avail_id join profiles p on p.user_id=r.guest_id
+                                   where r.host_id=%s and r.status='pending' order by r.created_at""", (N,)):
+                if ad in m:
+                    kartlar = [(ad, saat)]; break
+        if not kartlar:
             return False, "reddedilecek istek kartı kalmadı"
         ad, saat = kartlar[0]
         r = _istek_satiri(ad, saat)
