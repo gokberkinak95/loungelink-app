@@ -327,6 +327,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
   // ikinci bir çağrıyla zenginleştiriliyor.
   const [availCarrier, setAvailCarrier] = useState({});   // avail_id -> kod
   const [kurucu, setKurucu] = useState({});               // host_id -> kurucu no (v6.1 md.35)
+  const [yalnizKim, setYalnizKim] = useState({});         // avail_id -> true (SQL 337 · yalnız kimlikli misafir)
   // Kod tek başına ("TK") herkese bir şey söylemez; `carrier_options`
   // kod→ad eşlemesini veren mevcut RPC. Gelmezse çip kodu gösterir.
   const [carrierMap, setCarrierMap] = useState({});
@@ -407,7 +408,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     const ids = list.map(r => r.id).filter(Boolean).slice(0, 60);
     if (ids.length) {
       const hostIds = [...new Set(list.map(r => r.host_id).filter(Boolean))].slice(0, 60);
-      const [rz, ol, tsy, kr] = await Promise.all([
+      const [rz, ol, tsy, kr, yk] = await Promise.all([
         supabase.rpc("discovery_rule_badges", { p_ids: ids }),
         supabase.rpc("amenities_for", { p_ids: ids }),
         supabase.from("availabilities").select("id, carrier").in("id", ids),
@@ -417,7 +418,14 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
           ? supabase.from("profiles").select("user_id, founding_host_no").in("user_id", hostIds)
               .not("founding_host_no", "is", null).then(r => r).catch(() => ({ data: [] }))
           : Promise.resolve({ data: [] }),
+        // 19 Ekim (SQL 337) — host ilanı yalnız kimliği doğrulanmış misafirlere açtıysa misafir
+        // bunu istek göndermeden görür. Ayrı sorgu: kolon henüz yoksa yalnız rozet düşer.
+        supabase.from("availabilities").select("id").in("id", ids).eq("yalniz_kimlikli", true)
+          .then(r => r).catch(() => ({ data: [] })),
       ]);
+      const ykm = {};
+      for (const a of ((yk && !yk.error && yk.data) || [])) if (a && a.id) ykm[a.id] = true;
+      setYalnizKim(ykm);
       const km = {};
       for (const k of ((kr && kr.data) || [])) if (k && k.founding_host_no) km[k.user_id] = k.founding_host_no;
       setKurucu(km);
@@ -436,6 +444,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
     } else {
       setAmenities({});
       setAvailCarrier({});
+      setYalnizKim({});
     }
 
     // 🔵 v2.87'nin taşıyıcı sorgusu YUKARIDAKİ `Promise.all`a taşındı —
@@ -575,6 +584,12 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       );
     }
     setRows(list);
+    // 19 Ekim (SQL 337) — host'un "ilanını kaç kişi gördü" sayısı: listelenen ilanlar, izleyen
+    // başına günde bir kez sayılır (sunucu tekilleştirir; kendi ilanın sayılmaz). Sessiz: hata akışı bozmaz.
+    try {
+      const ids = (list || []).slice(0, 60).map(x => x && x.id).filter(Boolean);
+      if (ids.length) supabase.rpc("ilan_gorunum_yaz", { p_ids: ids }).then(({ error: ge }) => { if (ge) logError("ilan_gorunum_yaz", ge); });
+    } catch (e) {}
     // v2.96 (F1): keşfi GERÇEKTEN gören kullanıcı — huninin ikinci basamağı.
     supabase.rpc("huni_yaz", { p_olay: "kesif_goruldu",
       p_airport: (scope && scope.airport) || null })
@@ -1525,6 +1540,11 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                       {BUYUK(String(t.foundingBadge || "Kurucu Host #{n}").replace("{n}", String(kurucu[r.host_id])))}
                     </Text>
                   ) : null}
+                  {yalnizKim[r.id] ? (
+                    <Text numberOfLines={1} style={{ fontSize: FS.micro + 0.5, color: C.mut, marginTop: ARA[3] }}>
+                      {t.ilanYalnizKimlikliRozet}
+                    </Text>
+                  ) : null}
                 </View>
               </TouchableOpacity>
               {/* MVP satir 427: v>=85 yesil · v>=65 altin · alti gri.
@@ -1915,6 +1935,9 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                   <View style={{ marginTop: ARA[8] }}>
                     <CarrierChip code={availCarrier[target.id]} map={carrierMap} t={t} />
                   </View>
+                )}
+                {!!(target && yalnizKim[target.id]) && (
+                  <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[8] }}>{t.ilanYalnizKimlikliRozet}</Text>
                 )}
               </View>
             </View>

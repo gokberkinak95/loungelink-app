@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -38,7 +29,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "16:01–20:01",
+  "16:56–20:56",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -78,30 +69,30 @@
   "KAPI A12 ÖNÜ",
   "BULUŞMAYA",
   "0",
-  "2",
+  "0",
   ":",
-  "2",
-  "2",
+  "4",
+  "7",
   ":",
+  "0",
   "2",
   "1",
-  "6",
-  "5",
   "DURUM",
   "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "13:22",
+  "14:17",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "13:24",
+  "14:19",
   "Lounge girişindeyim",
-  "13:29",
+  "14:24",
   "Ben de yeni geçtim, kapıdayım.",
-  "13:30",
+  "14:25",
   "Süper. Kaç numaralı kapıdasın?",
-  "13:30",
+  "14:25",
   "A12. Primeclass girişi tam karşısı.",
-  "13:30",
-  "Anladım, yürüyen merdivenden çıkıyorum."
+  "14:25",
+  "Anladım, yürüyen merdivenden çıkıyorum.",
+  "14:26"
  ],
  "tasan": [],
  "bitisik": []

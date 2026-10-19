@@ -3549,6 +3549,18 @@ export function Plans({ t, session, onBack, lang }) {
         )}
 
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[3] }}>{t.plansSub}</Text>
+        {(() => {
+          const k = (plans || []).find(x => x.kurulus && x.kurulus_bitis);
+          if (!k) return null;
+          let d = String(k.kurulus_bitis);
+          try { d = fmtLongDate(d, lang); } catch (e) {}
+          return (
+            <View style={{ backgroundColor: C.goldSoft, borderRadius: R.sm, padding: ARA[12], marginBottom: SP[3] }}>
+              <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "700", letterSpacing: 0.8 }}>{BUYUK(t.kurulusRozet)}</Text>
+              <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 19, marginTop: ARA[2] }}>{String(t.kurulusNot).replace("{d}", d)}</Text>
+            </View>
+          );
+        })()}
 
         {/* Aylık / yıllık — indirim oranı VERİDEN geliyor, elle yazılmıyor */}
         <View style={{ flexDirection: "row", backgroundColor: C.bgAlt, borderRadius: R.sm, padding: SP[1], marginBottom: SP[4] }}>
@@ -3599,7 +3611,13 @@ export function Plans({ t, session, onBack, lang }) {
             }}>
               <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink }}>{p.ad}</Text>
-                {isCur && <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "700", letterSpacing: 1 }}>{t.currentPlan}</Text>}
+                {isCur ? <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "700", letterSpacing: 1 }}>{t.currentPlan}</Text>
+                  : p.kurulus ? (
+                    /* 19 Ekim (SQL 337) — kuruluş fiyatı rozeti; tarih sunucudan (beta_settings.kurulus_fiyat_bitis) */
+                    <View style={{ backgroundColor: C.goldSoft, borderRadius: R.full, paddingHorizontal: ARA[8], paddingVertical: ARA[2] }}>
+                      <Text style={{ color: C.goldText, fontSize: FS.micro, fontWeight: "700", letterSpacing: 0.8 }}>{t.kurulusRozet}</Text>
+                    </View>
+                  ) : null}
               </View>
 
               <Text style={{ marginTop: SP[1], color: C.gold, fontSize: FS.title, fontWeight: "700" }}>

@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -21,7 +8,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 5 g 20 sa · 71 ilan · 29 host yayında",
+  "Havalimanı saatine 5 g 17 sa · 71 ilan · 29 host yayında",
   "İstanbul",
   "",
   "S",
@@ -36,7 +23,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "20 dk içinde",
+  "Şu an açık",
   "Seyahat ekle",
   "",
   "N",
@@ -50,7 +37,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "17 sa 0 dk içinde",
+  "14 sa 30 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -65,7 +52,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "20 sa 0 dk içinde",
+  "17 sa 30 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -79,7 +66,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "1 g 2 sa içinde",
+  "23 sa 30 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -93,7 +80,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "1 g 4 sa içinde",
+  "1 g 1 sa içinde",
   "Seyahat ekle",
   "",
   "N",

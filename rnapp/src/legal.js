@@ -22,7 +22,7 @@
 // Tek yönlü; asla tersi. (`node check.js` yer tutucu kalmadığını denetler.)
 // ============================================================
 
-export const LEGAL_VERSION = "2026-10-17";
+export const LEGAL_VERSION = "2026-10-19";
 
 // Veri sorumlusu: gerçek kişi (bireysel geliştirici). Mağaza hesabındaki ad ile aynı.
 const COMPANY = "Gökberk İnak";
@@ -319,21 +319,32 @@ devredemezsin. Hesabını istediğin an uygulama içinden silebilirsin.
 · İstek reddedilir, iptal edilir veya 72 saat yanıtsız kalırsa kredi iade
   edilir. Kabul edilen buluşmada kapıda içeri alınmazsan da iade edilir.
 · İstek kabul edilirse kredi kullanılmış sayılır.
-· Kredi; ağırlayarak kazanılabilir, abonelik planının aylık payından
-  gelir ya da uygulama içinden paket olarak satın alınabilir. Kredi
-  nakde çevrilemez, devredilemez, hesap silindiğinde sona erer.
+· Kredi; abonelik planının aylık payından gelir, uygulama içinden paket
+  olarak satın alınabilir ya da ağırlayarak kazanılır. Kredi nakde
+  çevrilemez, devredilemez, hesap silindiğinde sona erer.
+· Ağırlama kredisi: Sık Uçan ve Jetset planlarında tamamlanan her
+  ağırlama 1 kredi kazandırır. Ücretsiz Yolcu planında yalnız ilk
+  ağırlamada bir kez 1 kredi verilir; 30 gün içinde 3 kişi ağırlayan
+  host'a Sık Uçan 30 gün ücretsiz açılır. Aynı kişilerle
+  kısa sürede tekrarlanan buluşmalar ve günlük üst sınır kredi
+  kazandırmaz.
 · Abonelik planının aylık kredisi o ay içindir; kullanılmayan kısmı bir
   sonraki aya devretmez. Satın alınan paket kredisi ve ağırlayarak
   kazanılan kredi süresizdir.
 · Ücretsiz Yolcu planında kayıtta 1 kredi verilir; aylık kredi yoktur.
 · Bağlantı (Tanış) istekleri plana göre haftalık sınırlıdır: Yolcu 3,
-  Sık Uçan 15, Kâhya sınırsız. Son 7 gün içinde gönderilen istekler
+  Sık Uçan 15, Jetset sınırsız. Son 7 gün içinde gönderilen istekler
   sayılır; 7 günü dolan istek hakkı geri açar.
-· LoungePuan (ödül puanı) bir para birimi değildir; nakde çevrilemez,
-  devredilemez ve kampanya koşullarına göre değişebilir.
+· Aynı uçuş için birden fazla host'a başvurduysan, biri kabul edince
+  aynı havalimanı ve gün için bekleyen diğer isteklerin kendiliğinden
+  geri çekilir ve kredileri iade edilir.
+· LoungePuan (ödül puanı): tamamlanan her buluşmada iki taraf da kendi
+  planına göre puan kazanır (Yolcu 100, Sık Uçan 250, Jetset 500).
+  LoungePuan bir para birimi değildir; nakde çevrilemez, devredilemez;
+  ödüllerin puan karşılığı ve stokları değişebilir.
 
 7) UYGULAMA İÇİ SATIN ALMA VE ABONELİK
-· Kredi paketleri ve abonelik planları (Sık Uçan, Kâhya) yalnızca App
+· Kredi paketleri ve abonelik planları (Sık Uçan, Jetset) yalnızca App
   Store veya Google Play üzerinden, mağazanın ödeme sistemiyle satın
   alınır. Fiyat, satın alma ekranında mağazanın gösterdiği tutardır.
 · Abonelik seçtiğin dönem (aylık ya da yıllık) için ücretlendirilir ve
@@ -341,6 +352,10 @@ devredemezsin. Hesabını istediğin an uygulama içinden silebilirsin.
   otomatik yenilenir. Aboneliği mağaza hesap ayarlarından yönetebilir ve
   iptal edebilirsin; iptal, içinde bulunduğun dönemin sonunda geçerli
   olur ve o güne kadar planın sürer.
+· Kuruluş fiyatı: kuruluş fiyatı döneminde (uygulamadaki plan ekranında
+  yazılı tarihe kadar) abone olanlar, abonelikleri kesintisiz sürdükçe
+  aynı fiyattan yenilenir. Abonelik iptal edilip sonradan yeniden
+  başlatılırsa o günkü fiyat geçerli olur.
 · İade talepleri mağazanın kendi iade süreciyle (Apple: reportaproblem.
   apple.com · Google Play: hesabındaki sipariş geçmişi) yapılır. Mağaza
   bir kredi paketini iade ederse, iade edilen kredi hesabından düşülür.

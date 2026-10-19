@@ -1,3 +1,28 @@
+SQL SIRASI - 19 Ekim 2026 (9. tur) - YENI: 336 + 337 - 335'ten SONRA
+
+Sira: 330 -> 331 -> 332 -> 333 -> 334 -> 335 -> 336 -> 337 (hangisi kosulmadiysa oradan basla)
+
+  1) 336_kabulde_digerleri_geri_cek.sql
+       -> Bir host istegi kabul edince misafirin AYNI havalimani + AYNI gun icin bekleyen diger
+          istekleri kendiliginden geri cekilir; her birinin kredisi tam iade edilir (istek_kredisi_iade,
+          cift iade olmaz), o host'lara ve misafire bildirim gider.
+       Dogrulama: uc satir tamam = true.
+  2) 337_jetset_puan_kredi_kurulus.sql
+       -> Ust plan adi Jetset (urun kimlikleri ll_kahya_* AYNI kalir). Host basamagi Kahya -> Kaptan.
+       -> LoungePuan herkesin KENDI planina gore: Yolcu 100, Sik Ucan 250, Jetset 500 (host ve misafir).
+       -> Agirlama kredisi: Sik Ucan ve Jetset her agirlamada 1; Yolcu yalniz ilk agirlamada 1 (bir kez).
+          Gunluk tavan ve ayni cift korumasi aynen duruyor.
+       -> Hediye Sik Ucan ayi: 30 gun icinde 3 agirlama (once 2).
+       -> Odul fiyatlari: Kahve 300, +2 kredi 800, Airalo 3 GB 1500, Amazon 2000, Marriott 3500,
+          Booking 25$ 4500, THY 1000 mil 8000 (digerleri ayni mantikla).
+       -> Kurulus fiyati: 31 Mart 2027'ye kadar abone olan, kesintisiz surdukce ayni fiyattan yenilenir
+          (BO Motor ayarlari > Fiyat'tan tarih degisir).
+       -> Host premium (Sik Ucan / Jetset): ilani "yalniz kimligi dogrulanmis misafirler"e acma,
+          ilan goruntulenme sayisi.
+       Dogrulama: on bir satir tamam = true.
+       App 6.8.0 bunu bekler (eski app de calisir; yeni satirlar gorunmez).
+
+---------------------------------------------------------------------------
 SQL SIRASI - 18 Ekim 2026 (8. tur) - YENI: 335 - 334'ten SONRA
 
   1) 335_telefon_firebase_dogrulama.sql

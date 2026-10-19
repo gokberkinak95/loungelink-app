@@ -2,7 +2,7 @@
   "expo": {
     "name": "LoungeLink",
     "slug": "loungelink",
-    "version": "6.7.0",
+    "version": "6.8.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.loungelink.app",
-      "versionCode": 291,
+      "versionCode": 292,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -112,7 +112,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.loungelink.app",
-      "buildNumber": "285",
+      "buildNumber": "286",
       "supportsTablet": false,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Biniş kartı ekran görüntünü seçebilmen için galeri erişimi gerekiyor. Seçtiğin görsel cihazından çıkmaz; okunduktan sonra kopyası silinir.",

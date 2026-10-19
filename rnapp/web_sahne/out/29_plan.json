@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -79,8 +88,10 @@
   "Plan",
   "AĞIRLA, ÖDEME",
   "Yolcu",
-  "3 kişi ağırladın. 2 ağırlamada üst plan 1 ay ücretsiz açılıyor.",
+  "3 kişi ağırladın. 3 ağırlamada üst plan 1 ay ücretsiz açılıyor.",
   "İhtiyacına göre bir plan seç",
+  "KURULUŞ FİYATI",
+  "31 Mart 2027 tarihine kadar abone olanlar, abonelikleri kesintisiz sürdükçe bu fiyattan yenilenir.",
   "Aylık",
   "Yıllık",
   "Yolcu",
@@ -90,9 +101,7 @@
   "",
   "Kayıtta 1 kredi: ilk lounge girişin bizden",
   "",
-  "Ağırlayarak kredi kazan",
-  "",
-  "Aynı anda 1 açık istek"
+  "Bir seferde 1 host'a başvuru"
  ],
  "tasan": [],
  "bitisik": []

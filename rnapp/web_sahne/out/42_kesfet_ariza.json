@@ -1,6 +1,14 @@
 {
  "console": [
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
    "t": "warning",
    "s": "[sahne logError] discover_availabilities Network request failed "
   },
@@ -26,6 +34,12 @@
    "error": "Network request failed"
   },
   {
+   "kind": "rpc",
+   "fn": "discover_availabilities",
+   "table": null,
+   "error": "Network request failed"
+  },
+  {
    "kind": "logError",
    "screen": "discover_availabilities",
    "err": "Network request failed",
@@ -36,12 +50,6 @@
    "screen": "network",
    "err": "Network request failed",
    "code": "offline"
-  },
-  {
-   "kind": "rpc",
-   "fn": "discover_availabilities",
-   "table": null,
-   "error": "Network request failed"
   },
   {
    "kind": "logError",
@@ -62,7 +70,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 23 sa 0 dk",
+  "Havalimanı saatine 20 sa 30 dk",
   "IST · 20 Eki",
   "SAW · 21 Eki",
   "İstanbul",

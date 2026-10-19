@@ -26,18 +26,18 @@
 alter table plan_catalog add column if not exists baglanti_haftalik int;   -- null = sınırsız
 
 update plan_catalog set monthly_credits = 0, acik_istek_tavani = 1, baglanti_haftalik = 3,
-       perks = '["Kayıtta 1 kredi: ilk lounge girişin bizden", "Ağırlayarak kredi kazan", "Aynı anda 1 açık istek", "Haftada 3 bağlantı isteği", "Kural motoru, sohbet ve güvenlik araçları"]'::jsonb,
-       perks_en = '["1 credit on sign-up: your first lounge visit is on us", "Earn credits by hosting", "1 open request at a time", "3 connection requests a week", "Rule engine, chat and safety tools"]'::jsonb
+       perks = '["Kayıtta 1 kredi: ilk lounge girişin bizden", "Ağırlayarak kredi kazan", "Bir seferde 1 host''a başvuru", "Haftada 3 bağlantı isteği", "Kural motoru, sohbet ve güvenlik araçları"]'::jsonb,
+       perks_en = '["1 credit on sign-up: your first lounge visit is on us", "Earn credits by hosting", "Apply to 1 host at a time", "3 connection requests a week", "Rule engine, chat and safety tools"]'::jsonb
  where plan = 'yolcu';
 
 update plan_catalog set monthly_credits = 3, price_try = 99, yillik_try = 899, acik_istek_tavani = 3, baglanti_haftalik = 15,
-       perks = '["Her ay 3 lounge girişi (aylık kredi devretmez)", "Aynı anda 3 host''a istek: kabul şansın katlanır", "Haftada 15 bağlantı isteği", "Haftalık kaçırılan fırsat bildirimi", "Kart hakkı dolma uyarısı: 90 · 30 · 7 gün önce", "Ayda 3 ilan öne çıkarma"]'::jsonb,
-       perks_en = '["3 lounge visits every month (monthly credits do not roll over)", "Request 3 hosts at once: multiply your chance", "15 connection requests a week", "Weekly missed-opportunity alerts", "Card benefit expiry alerts: 90 · 30 · 7 days ahead", "Feature a listing 3× a month"]'::jsonb
+       perks = '["Her ay 3 lounge girişi (aylık kredi devretmez)", "Aynı anda 3 host''a başvur: kabul şansın artar", "Haftada 15 bağlantı isteği", "Haftalık kaçırılan fırsat bildirimi", "Kart hakkı dolma uyarısı: 90 · 30 · 7 gün önce", "Ayda 3 ilan öne çıkarma"]'::jsonb,
+       perks_en = '["3 lounge visits every month (monthly credits do not roll over)", "Apply to 3 hosts at once: better odds", "15 connection requests a week", "Weekly missed-opportunity alerts", "Card benefit expiry alerts: 90 · 30 · 7 days ahead", "Feature a listing 3× a month"]'::jsonb
  where plan = 'sik_ucan';
 
 update plan_catalog set monthly_credits = 7, price_try = 199, yillik_try = 1799, acik_istek_tavani = 6, baglanti_haftalik = null,
-       perks = '["Her ay 7 lounge girişi (aylık kredi devretmez)", "Aynı anda 6 host''a istek", "Sınırsız bağlantı isteği", "Anlık kaçırılan fırsat bildirimi", "Kart hakkı dolma uyarısı: 90 · 30 · 7 gün önce", "Ayda 8 ilan öne çıkarma", "Öncelikli destek"]'::jsonb,
-       perks_en = '["7 lounge visits every month (monthly credits do not roll over)", "Request 6 hosts at once", "Unlimited connection requests", "Instant missed-opportunity alerts", "Card benefit expiry alerts: 90 · 30 · 7 days ahead", "Feature a listing 8× a month", "Priority support"]'::jsonb
+       perks = '["Her ay 7 lounge girişi (aylık kredi devretmez)", "Aynı anda 6 host''a başvur", "Sınırsız bağlantı isteği", "Anlık kaçırılan fırsat bildirimi", "Kart hakkı dolma uyarısı: 90 · 30 · 7 gün önce", "Ayda 8 ilan öne çıkarma", "Öncelikli destek"]'::jsonb,
+       perks_en = '["7 lounge visits every month (monthly credits do not roll over)", "Apply to 6 hosts at once", "Unlimited connection requests", "Instant missed-opportunity alerts", "Card benefit expiry alerts: 90 · 30 · 7 days ahead", "Feature a listing 8× a month", "Priority support"]'::jsonb
  where plan = 'kahya';
 
 -- ── §2 · Kredi paketleri: 1 · 3 · 5 ────────────────────────────────────────

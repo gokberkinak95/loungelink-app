@@ -488,6 +488,9 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
   // harfi, o da yoksa `AnAvatar` "?" çiziyor.
   const hostAdi = session?.user?.user_metadata?.name || session?.user?.email || "";
   const [rows, setRows] = useState(null);
+  // 19 Ekim (SQL 337) — host premium: ilan görüntülenmesi (ücretli planda) + "yalnız kimlikli misafir"
+  const [gorunum, setGorunum] = useState(null);     // { acik, ilanlar: { id: {hafta, toplam} } }
+  const [ykBusy, setYkBusy] = useState(null);
   const [loadErr, setLoadErr] = useState(false);   // v2.65 — bkz. Trips
   const [adding, setAdding] = useState(false);
   const [bolumAcik, setBolumAcik] = useState({});   // v6.3 · H3 katlı bölümler (yayında ilan yoksa açık başlar)
@@ -588,6 +591,10 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
     if (error) { setLoadErr(true); return; }
     setLoadErr(false);
     setRows(ilanlariSirala(data || []));
+    supabase.rpc("ilan_gorunum_istatistigi").then(({ data: g, error: ge }) => {
+      if (ge) { logError("ilan_gorunum_istatistigi", ge); return; }
+      setGorunum(g || null);
+    });
     // v2.49: başvurular ilanla birlikte gelir (host_requests avail_id döndürür)
     try {
       const { data: rq, error: hata3 } = await supabase.rpc("host_requests");
@@ -1142,6 +1149,35 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                   AYNI ağırlıkta, yan yanaydı ve kırmızıydı: göz önce yıkıcı eyleme
                   gidiyordu. Artık SOLDA, sessiz metin; kırmızı yalnız onay
                   penceresinde (geri dönüşü olan yer orası). Düzenle sağda kalıyor. */}
+              {/* 19 Ekim (SQL 337) — HOST PREMIUM: kaç kişi gördü · yalnız kimlikli misafir.
+                  Ücretsiz planda kilitli ve neyin açılacağını söyler (satış değil bilgi). */}
+              {durum === "canli" && gorunum && (
+                <View style={{ marginTop: SP[2], gap: ARA[6] }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: ARA[6] }}>
+                    <Ikon ad={gorunum.acik ? "goz" : "kilit"} boy={13} renk={C.mut} />
+                    <Text style={{ color: C.mut, fontSize: FS.xs, flex: 1, minWidth: 0 }}>
+                      {gorunum.acik
+                        ? String(t.ilanGorunum).replace("{h}", String((gorunum.ilanlar && gorunum.ilanlar[r.id] && gorunum.ilanlar[r.id].hafta) || 0))
+                            .replace("{t}", String((gorunum.ilanlar && gorunum.ilanlar[r.id] && gorunum.ilanlar[r.id].toplam) || 0))
+                        : t.ilanGorunumKilit}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: ARA[10] }}>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "600" }}>{t.yalnizKimlikliBas}</Text>
+                      <Text style={{ color: C.mut, fontSize: FS.xs }}>{gorunum.acik ? t.yalnizKimlikliAlt : t.yalnizKimlikliKilit}</Text>
+                    </View>
+                    <Toggle val={!!r.yalniz_kimlikli} a11yLabel={t.yalnizKimlikliBas} disabled={!gorunum.acik || ykBusy === r.id}
+                      onChange={async (v) => {
+                        setYkBusy(r.id);
+                        const { error: ye } = await supabase.rpc("ilan_yalniz_kimlikli_ayarla", { p_avail: r.id, p_acik: !!v });
+                        setYkBusy(null);
+                        if (ye) { logError("ilan_yalniz_kimlikli", ye); setBilgi(mapErr(t, ye.message)); return; }
+                        setRows(x => (x || []).map(y => y.id === r.id ? { ...y, yalniz_kimlikli: !!v } : y));
+                      }} />
+                  </View>
+                </View>
+              )}
               {durum !== "gecmis" && (
               <View style={{ flexDirection: "row", gap: SP[4], marginTop: SP[2], alignItems: "center", justifyContent: "space-between" }}>
                 {durum === "canli" ? (
