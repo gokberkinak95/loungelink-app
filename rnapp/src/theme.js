@@ -127,6 +127,12 @@ C.brandGoogle     = "#4285F4";   // Google marka mavisi (zorunlu)
 // 17 Ekim — AÇILIŞ SAHNESİ (src/acilis.js) renkleri. Temadan BAĞIMSIZ: açılış her temada aynı
 // gökyüzü. `sis` app.json splash.backgroundColor ile aynı olmak ZORUNDA (yerel kare = ilk kare).
 export const ACILIS = { sis: "#DCE3EF", gece: "#1A2B4C", krem: "#FAEEDC", altin: "#D4C3A3" };
+// 19 Ekim — "?" sayfa turu + bildirim şeridi (src/tur.js · src/serit.js). Fotoğraf bandının üstündeki
+// cam düğmeler ve tur karartması temadan bağımsız (bant her temada gece mavisi).
+export const TUR = {
+  camZemin: "rgba(255,255,255,0.12)", camKenar: "rgba(255,255,255,0.32)",
+  karartma: "rgba(14,12,10,0.55)", halka: "#E6D4A8", noktaKenar: "#1A2B4C",
+};
 
 export const F = {
   // MVP: Cormorant Garamond. iOS'ta Georgia en yakin sistem serif'i.

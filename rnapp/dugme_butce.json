@@ -1,5 +1,5 @@
 {
- "App.js": 4,
+ "App.js": 3,
  "__secim__": 12,
  "src/BinisKarti.js": 1,
  "src/ErrorBoundary.js": 1,
@@ -10,5 +10,7 @@
  "src/ekranlar_yalin.js": 10,
  "src/ortak.js": 2,
  "src/screens.js": 4,
+ "src/serit.js": 1,
+ "src/tur.js": 2,
  "src/ui.js": 2
 }

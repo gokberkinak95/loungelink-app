@@ -40,10 +40,13 @@ import Constants from "expo-constants";
 import { logError, supabase } from "./supabase";
 import { C } from "./theme";   // bildirim kanalı ışık rengi paletten
 
+// 19 Ekim — uygulama açıkken (bu işleyici yalnız ön planda çağrılır) uygulamanın kendi şeridi
+// (src/serit.js) gösterilir; telefonun şeridi de çıksa aynı bildirim iki kez görünürdü.
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: true,
-  }),
+  handleNotification: async () => {
+    const serit = !!globalThis.__LL_SERIT_AKTIF;
+    return { shouldShowAlert: !serit, shouldPlaySound: !serit, shouldSetBadge: true };
+  },
 });
 
 // İşletim sisteminin durumu → bizim kaydettiğimiz durum.

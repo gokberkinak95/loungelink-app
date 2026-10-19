@@ -41,7 +41,10 @@ export function sahneKur(ad, q) {
   globalThis.__SESSION = k ? { user: { id: k.id, email: k.email, app_metadata: { provider: "email" } }, access_token: "sahne" } : null;
   globalThis.__ONAY_ACIK = q.get("onay") === "acik";
   // 18 Ekim — `?tv=numara|onay|kod|basari`: telefon doğrulama sayfası o aşamada açılır (Firebase'siz çekim)
-  globalThis.__TV_SAHNE = q.get("tv") || "";   // 4 Ekim 2026: e-posta doğrulaması açık kayıt
+  globalThis.__TV_SAHNE = q.get("tv") || "";
+  // 19 Ekim — `?tur=ana|kesfet|…` sayfa turunu açar · `?serit=1` örnek bildirim şeridi gösterir
+  globalThis.__TUR_SAHNE = q.get("tur") || "";
+  globalThis.__SERIT_SAHNE = q.get("serit") || "";   // 4 Ekim 2026: e-posta doğrulaması açık kayıt
   // 🔴 12 Eylül · gece — AMBİYANS SABİTLENİYOR. `Atmosfer`in ufuk kuşağı
   // artık günün saatine bağlı; sahne görüntüleri saate bağlı olamaz.
   // `?an=safak|gunduz|aksam|gece` ile dört kuşak da çekilebiliyor.

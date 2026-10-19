@@ -14,7 +14,8 @@ const traverse = require(path.join(ROOT, "node_modules/@babel/traverse")).defaul
 const i18n = fs.readFileSync(path.join(ROOT, "src/i18n.js"), "utf8");
 const karsilikBlok = (i18n.match(/const EN_KARSILIK = \{([\s\S]*?)\n\};/) || [])[1] || "";
 const KARSILIK = new Set([...karsilikBlok.matchAll(/"([^"]+)"\s*:/g)].map(m => m[1]));
-const enKeys = new Set(JSON.parse(process.argv[2] || "[]"));
+const _arg = process.argv[2] || "[]";
+const enKeys = new Set(JSON.parse(_arg.startsWith("@") ? require("fs").readFileSync(_arg.slice(1), "utf8") : _arg));
 const files = ["App.js", ...fs.readdirSync(path.join(ROOT, "src"))
   .filter(f => f.endsWith(".js") && !["i18n.js", "legal.js"].includes(f)).map(f => "src/" + f)];
 const TR = /[çğıöşüÇĞİÖŞÜ]/;

@@ -6,7 +6,7 @@ SQL SIRASI - 18 Ekim 2026 (8. tur) - YENI: 335 - 334'ten SONRA
           numara degisince dogrulama duser. "Guvenilir uyelere acik" profilleri gorme esigi 40 -> 25.
        -> Bildirim yonlendirmesi: ilan kapandi, sistemdeki kredi, plan degisikligi ve kacirilan firsat
           ozeti artik ilgili ekrana gidiyor (once hicbir yere gitmiyordu).
-       Dogrulama: alti satir tamam = true.
+       Dogrulama: dokuz satir tamam = true. Ayrica: telefon sarti (SMS acikken lounge ve baglanti istegi telefon ister), kural sorusuna e-posta yeter, kredi paketi adlari "1 kredi / 3 kredi / 5 kredi".
        Kanal KAPALI baslar. Firebase kurulumu (rehber 10b) bitip Firebase'li build cikinca iki satir:
          update beta_settings set value = to_jsonb('<firebase-proje-id>'::text) where key = 'firebase_proje_id';
          update beta_settings set value = to_jsonb('firebase'::text) where key = 'telefon_kanali';

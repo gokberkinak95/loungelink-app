@@ -12,6 +12,7 @@ import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
 import { MONO } from "./typography";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP, temaModu } from "./theme";
 import { RotaHatti, BosDurum, ChipIcon, Hdr, LoadFail, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, CuzdanSeridi, useDaralanBant, Kaydirma, PerdeBulanik, POPUP_YUZEY } from "./ui";
+import { turHedef } from "./tur";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -213,7 +214,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
         <>
           {rows.length === 0 ? (
             <BosDurum ikon="ucus" metin={t.tripsEmpty} />
-          ) : rows.map(r => (
+          ) : rows.map((r, sira) => (
             /* tasarım 14 kartı 146 yüksek: başlık 18 · tarih 42 · ayraç 72 ·
                uyum 88 · "seni içeri alacak" 114 (üstten). */
             /* ══ v6.3 · PANO H2 (Gökberk onayı) — SEYAHAT KARTI BİR BİNİŞ KARTI ══
@@ -245,7 +246,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
               ].filter(Boolean);
               const varis = r.destination ? String(r.destination).trim() : "";
               return (
-              <View key={r.id} style={[S.card, { padding: 0, borderRadius: R.xl + 2 }]}>
+              <View key={r.id} {...(sira === 0 ? turHedef("seyahat_kart") : null)} style={[S.card, { padding: 0, borderRadius: R.xl + 2 }]}>
                 <View style={{ paddingHorizontal: ARA[18], paddingTop: SP[4], paddingBottom: ARA[12] }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     {/* 30 Eylül (Gökberk md.3) — sağ üst köşedeki çıplak kod ("TK", "PC")
@@ -280,6 +281,7 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                   </View>
                   <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: ARA[14] }}>
                     <TouchableOpacity disabled={n === 0} onPress={git} hitSlop={TAP.slop} style={{ flex: 1, minWidth: 0, minHeight: TAP.minHeight, justifyContent: "center" }}
+                      {...(sira === 0 ? turHedef("seyahat_uyumlu") : null)}
                       accessibilityRole="button"
                       // 4 Ekim 2026: etiket de görünen metinle AYNI dolduruluyor ({n} ekran okuyucuya ham gidiyordu)
                       accessibilityLabel={n == null ? t.tripMatchCounting : n > 0 ? String(t.tripMatchCta).replace("{n}", String(n)) : t.tripMatchNone}>
@@ -291,7 +293,9 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                     </TouchableOpacity>
                     <Btn v="ghost" daire a11yLabel={t.editTrip} onPress={() => onEditTrip && onEditTrip(r)}
                       sol={<Ikon ad="duzenle" boy={15} renk={C.ink} />} style={{ marginRight: SP[2] }} />
-                    <Btn v="gold" cip label={t.bkFindHost} a11yLabel={t.findHost} onPress={git} />
+                    <View {...(sira === 0 ? turHedef("seyahat_hostbul") : null)}>
+                      <Btn v="gold" cip label={t.bkFindHost} a11yLabel={t.findHost} onPress={git} />
+                    </View>
                   </View>
                 </View>
               </View>
@@ -815,7 +819,9 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
               hepsi var. Aynı ekranda iki düğme, iki farklı ürün — ve bu
               turun ana özelliği yolların BİRİNDE görünmüyordu.
               İkisi de aynı yere gidiyor artık. */}
-          <HostPanel t={t} onAddCard={onAddCard} onAdd={() => (onAddAvail ? onAddAvail() : setAdding(true))} />
+          <View {...turHedef("ilan_ozet")}>
+            <HostPanel t={t} onAddCard={onAddCard} onAdd={() => (onAddAvail ? onAddAvail() : setAdding(true))} />
+          </View>
           {/* 🔴 v2.95 (Gökberk madde 16) — "Müsaitlik ekle butonu İlanlarım'ın
               en altında; çok ilan varken aşağı inmek gerekiyor."
               Ölçtüm: düğme listenin ALTINDAYDI, yani listenin uzunluğu
@@ -833,7 +839,9 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                 {BUYUK(t.subTabListings)} · {String(t.availActiveN || "{n}").replace("{n}", String(rows.filter(x => ilanDurumu(x) === "canli").length))}
               </Text>
               {/* 5 Eylül — mockup 12c: küçük altın düğme (36pt, 12.5). `sm` 44pt'ti. */}
-              <Btn v="gold" cip full={false} label={t.addAvail} onPress={() => (onAddAvail ? onAddAvail() : setAdding(true))} a11yLabel={t.addAvail} />
+              <View {...turHedef("ilan_ekle")}>
+                <Btn v="gold" cip full={false} label={t.addAvail} onPress={() => (onAddAvail ? onAddAvail() : setAdding(true))} a11yLabel={t.addAvail} />
+              </View>
             </View>
           )}
           {/* Katlı bölüm: kullanıcı seçtiyse o; seçmediyse yayında ilan YOKKEN açık (boş ekran olmasın). */}
@@ -933,6 +941,7 @@ export function Hosting({ t, session, lang, onOpenChat, onAddAvail, onAddCard, o
                 return (
                   <View style={{ marginTop: SP[2] }}>
                     <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop}
+                      {...(i === 0 ? turHedef("ilan_basvuru") : null)}
                       onPress={() => setOpenReqs(o => ({ ...o, [r.id]: !o[r.id] }))}
                       style={{ alignSelf: "flex-start", backgroundColor: pend.length ? C.goldSoft : C.bgAlt,
                                borderWidth: 1, borderColor: pend.length ? C.gold + "50" : C.line,

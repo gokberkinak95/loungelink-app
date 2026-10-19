@@ -32,6 +32,8 @@ import MomentScreen from "./src/MomentScreen";
 import { AcilisIsigi, dokun } from "./src/hareket";
 import { AcilisSahnesi } from "./src/acilis";
 import { TelefonDogrulamaSayfasi, telefonHazir } from "./src/telefon";
+import { TurDugmesi, TurKatmani, turHedef, ilkTuruAc, turGoruldu, turAc } from "./src/tur";
+import { BildirimSeridi, seritGoster } from "./src/serit";
 // v2.73 — GÖVDE YAZISI ARTIK BİZİM. Tek çağrı; ayrıntısı src/typography.js.
 // Buraya, ilk render'dan ÖNCE koyuldu: sonrasında çağrılsaydı ilk ekran
 // sistem fontuyla çizilip sonra zıplardı.
@@ -794,6 +796,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
   }
 
   const [tab, setTab] = useState("home");
+  const tabRef = useRef("home"); tabRef.current = tab;   // 19 Ekim · ilk tur zamanlayıcısı güncel sekmeyi okusun
   // v2.96: alt sekme artık her rolde var. Varsayılan role göre: host
   // İlanlarım'a, misafir Seyahatlerim'e düşer — herkes kendi işine.
   const [hostTripsSub, setHostTripsSub] = useState("ilan");  // tab2: ilan | seyahat
@@ -834,12 +837,26 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
   // 18 Ekim (SQL 335) — numarası kayıtlı ama doğrulanmamış kullanıcıya BİR KEZ "numaranı doğrula"
   // sayfası (kanal açık ve build Firebase taşıyorsa). Yeni hesapta "Hesabın hazır · son adım".
   const [telTeklif, setTelTeklif] = useState(null);
+  // 19 Ekim — ana sayfa turu ilk girişte bir kez (açılış sahnesi ~3,6 sn bittikten sonra).
+  useEffect(() => {
+    if (!session?.user?.id) return undefined;
+    if (Platform.OS === "web") {   // yalnız web sahne çekimi
+      const z0 = setTimeout(() => {
+        if (globalThis.__TUR_SAHNE) turAc(globalThis.__TUR_SAHNE);
+        if (globalThis.__SERIT_SAHNE) seritGoster({ id: "sahne-1", baslik: "Deniz K.", metin: "Kapıdayım, Primeclass'ın önündeyim", tur: "mesaj", kisi: "Deniz K." });
+      }, 2200);
+      return () => clearTimeout(z0);
+    }
+    const z = setTimeout(() => { if (tabRef.current === "home") ilkTuruAc("ana"); }, 4800);
+    return () => clearTimeout(z);
+  }, [session?.user?.id]);
   useEffect(() => {
     let iptal = false;
     const uid = session?.user?.id;
     if (!uid) return undefined;
     (async () => {
       const anahtar = "ll_tel_teklif_" + uid;
+      if (Platform.OS === "web" && globalThis.__TV_SAHNE === "kart") return;   // sahne: yalnız ana sayfa kartı
       if (Platform.OS === "web" && globalThis.__TV_SAHNE) {   // yalnız web sahne çekimi
         setTimeout(() => { if (!iptal) setTelTeklif({ tel: "+905321234518", kaynak: "kayit" }); }, 600);
         return;
@@ -853,6 +870,8 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
       if (ev) logError("tel_teklif_ver", ev);
       if (iptal || !u?.phone || v?.phone_verified) return;
       if (!(await telefonHazir()) || iptal) return;
+      // Tanıtım turu henüz görülmediyse bu oturumda teklif yok (ikisi üst üste binmesin; sonraki açılışta çıkar).
+      if (!(await turGoruldu("ana")) || iptal) return;
       try { await AsyncStorage.setItem(anahtar, "1"); } catch (e) {}
       const yeni = session?.user?.created_at && (Date.now() - new Date(session.user.created_at).getTime()) < 24 * 3600 * 1000;
       // açılış sahnesi (~3,6 sn) bitmeden açılmasın
@@ -865,6 +884,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
   const [showPlans, setShowPlans] = useState(false);
   const [pubProfile, setPubProfile] = useState(null);
   const [compChat, setCompChat] = useState(null);   // {channelId, name}
+  const compChatRef = useRef(null); compChatRef.current = compChat ? compChat.channelId : null;   // 19 Ekim · şerit
   const [showSafety, setShowSafety] = useState(false);
   const [report, setReport] = useState(null);   // {targetId, targetName, sessionId}
   const [showTrust, setShowTrust] = useState(false);
@@ -1431,6 +1451,48 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     return () => { canli = false; try { sub && sub.remove(); } catch (e) {} };
   }, [session?.user?.id, bildirimeGit, refreshUnread]);
 
+  // 19 Ekim — UYGULAMA İÇİ ŞERİT (src/serit.js). İki kaynak, tek kart: (a) telefona düşen push
+  // (uygulama açıkken telefonun kendi şeridi gösterilmez), (b) gerçek zamanlı `notifications` kaydı
+  // (push kapalı/izinsizse de çalışsın). Aynı bildirim kimliği bir kez gösterilir.
+  const seritBildirim = useCallback(async (nid, baslik, metin, refTip) => {
+    if (!nid) return;
+    try {
+      const { data: h, error } = await supabase.rpc("bildirim_hedefi", { p_id: nid });
+      if (error) logError("serit_hedef", error);
+      // Kullanıcı o sohbetin içindeyse o sohbetin mesajı için kart çıkmaz.
+      if (h && h.ekran === "sohbet" && h.ref && compChatRef.current === h.ref) return;
+      const tur = refTip === "trip_reminder" || refTip === "meet_soon" ? "hatirlatma"
+        : h && h.ekran === "sohbet" ? "mesaj"
+        : h && (h.ekran === "istek_sohbet" || (h.ekran === "akis" && (h.alt === "baglanti" || h.alt === "davet"))) ? "onay" : "genel";
+      seritGoster({ id: nid, baslik, metin, tur, hedef: h || null });
+    } catch (e) { logError("serit_bildirim", e); }
+  }, []);
+  useEffect(() => {
+    if (!session?.user?.id || Platform.OS === "web") return undefined;
+    let sub = null, kanal = null;
+    try {
+      const Bildirimler = require("expo-notifications");
+      sub = Bildirimler.addNotificationReceivedListener((n) => {
+        const c = n?.request?.content || {};
+        seritBildirim(c.data && c.data.notification_id, c.title, c.body, c.data && c.data.ref_type);
+      });
+    } catch (e) { logError("serit_push", e); }
+    try {
+      kanal = supabase.channel("serit-" + session.user.id)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${session.user.id}` },
+          (p) => { const r = p && p.new; if (r) seritBildirim(r.id, r.title, r.body, r.ref_type); })
+        .subscribe();
+    } catch (e) { logError("serit_kanal", e); }
+    return () => { try { sub && sub.remove(); } catch (e) {} try { kanal && supabase.removeChannel(kanal); } catch (e) {} };
+  }, [session?.user?.id, seritBildirim]);
+  const seritAc = useCallback(async (b) => {
+    try {
+      if (/^[0-9a-f-]{36}$/i.test(String(b.id))) await supabase.rpc("bildirim_okundu", { p_id: b.id });
+      refreshUnread && refreshUnread();
+    } catch (e) { logError("serit_okundu", e); }
+    if (b.hedef && b.hedef.ekran) bildirimeGit(b.hedef); else setShowNotif(true);
+  }, [bildirimeGit, refreshUnread]);
+
   // Overlay render'i: acilis-sirali yiginin TEPESI gorunur (#9).
   const OVERLAY_VIEWS = {
     notif: () => (<Notifications t={t} session={session} onRefreshBadge={refreshUnread}
@@ -1875,7 +1937,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           </TouchableOpacity>
         </View>
       )}
-      {tab === "meet" && <Hdr t={t} kaydir={bntMeet.kaydir}
+      {tab === "meet" && <Hdr t={t} tur="tanis" kaydir={bntMeet.kaydir}
         onBack={sekmeGeri ? sekmeGeriDon : undefined}
         title={meetSub === "discover" ? t.meetTitle : meetSub === "reqs" ? t.connRequestsTitle : t.myConnections}
         foto={{ ustBilgi: meetSub === "discover" ? t.meetSub : t.connBandEyebrow,
@@ -1892,7 +1954,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
                      sessizce `else`e düşüp "conns" ile aynı listeyi
                      çiziyordu. Artık üç çip, üç gerçek görünüm.
                      ══════════════════════════════════════════════════ */
-                  <View style={{ flexDirection: "row", gap: ARA[8], marginTop: ARA[12] }}>
+                  <View {...turHedef("tanis_sekme")} style={{ flexDirection: "row", gap: ARA[8], marginTop: ARA[12], alignSelf: "flex-start" }}>
                     {[["discover", t.meetTitle], ["conns", t.myConnections], ["reqs", t.connRequestsTitle]].map(([k, lb]) => (
                       <Cip key={k} etiket={lb} secili={meetSub === k} onPress={() => setMeetSub(k)} />
                     ))}
@@ -1906,7 +1968,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
            v3.4 kararı ("misafir ilan yüzeyi görmez") + Gökberk 5 Eylül madde 6;
            tek çipli satır anlamsız olurdu, başlık zaten "Seyahatlerim". */
         const cipler = role === "host" ? (
-          <View style={{ flexDirection: "row", gap: ARA[8], marginTop: ARA[12] }}>
+          <View {...turHedef("planim_sekme")} style={{ flexDirection: "row", gap: ARA[8], marginTop: ARA[12], alignSelf: "flex-start" }}>
             {[["seyahat", t.subTabTrips], ["ilan", t.subTabListings]].map(([k, lb]) => (
               <Cip key={k} etiket={lb} secili={ilanSekmesi ? k === "ilan" : k === "seyahat"}
                 onPress={() => { setAltSekmeKuruldu(true); setHostTripsSub(k); }} />
@@ -1914,7 +1976,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           </View>
         ) : null;
         return (
-          <Hdr t={t} title={ilanSekmesi ? t.subTabListings : t.subTabTrips} kaydir={bntTrips.kaydir}
+          <Hdr t={t} tur="planim" title={ilanSekmesi ? t.subTabListings : t.subTabTrips} kaydir={bntTrips.kaydir}
             onBack={sekmeGeri ? sekmeGeriDon : undefined}
             foto={{ ustBilgi: ilanSekmesi ? t.hostingSub : t.tripsSub, altIcerik: cipler,
                     olc: bntTrips.olc, tam: bntTrips.tam }} />
@@ -2079,6 +2141,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           // (rgba 212,195,163 · 0.15) + dokununca hafif titreşim.
           if (v7 && k === "trips") return (
             <TouchableOpacity hitSlop={TAP.slop} key={k} accessibilityRole="button" accessibilityLabel={lab}
+              {...turHedef("tab_" + k)}
               accessibilityState={{ selected: on }}
               onPress={() => { dokun("hafif"); sekmeyeBas(); }}
               style={{ flex: 1, alignItems: "center", marginTop: -ARA[30] }}>
@@ -2096,6 +2159,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           );
           if (v7) return (
             <TouchableOpacity hitSlop={TAP.slop} key={k} accessibilityRole="button" accessibilityLabel={lab}
+              {...turHedef("tab_" + k)}
               accessibilityState={{ selected: on }}
               onPress={sekmeyeBas} style={{ flex: 1, alignItems: "center", paddingVertical: ARA[2] }}>
               {k === "prof" && unread > 0 && (
@@ -2209,6 +2273,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
       ) : null}
       <TelefonDogrulamaSayfasi t={t} session={session} acik={!!telTeklif} ilkNumara={telTeklif?.tel || ""}
         kaynak={telTeklif?.kaynak || "profil"} onKapat={() => setTelTeklif(null)} onBitti={() => setReload(x => x + 1)} />
+      {/* 19 Ekim — "?" sayfa turları (src/tur.js). Son adımın eylemi buradan yönlenir. */}
+      <TurKatmani t={t} rol={role} onGit={(hedef) => { if (hedef === "planlar") setShowPlans(true); }} />
+      <BildirimSeridi t={t} onAc={seritAc} onToplu={() => setShowNotif(true)} />
     </Sayfa>
   );
 }
@@ -3636,6 +3703,19 @@ function greetWord(t) {
 // alt görünümlerine değil, kendi tam ekranlarına gidiyor (md.4); prop
 // gövdede okunmayan bir yalan hâline gelmişti ve `check.js` yakaladı.
 export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, onRole, setRadar, setTab, setHostTripsSub, onWallet, onOpenProfile, onDiscover, setShowQuestions, onGuide, setShowIstekler, setShowDavetler, setShowSohbetler, onProfilSekmesi, akisTazele = 0, bakiyeTazele = 0 }) {
+  // 19 Ekim — telefon kartı: SMS açık + son 7 günde ✕ ile kapatılmadı
+  const [telKart, setTelKart] = useState(false);
+  useEffect(() => {
+    let canli = true;
+    (async () => {
+      let kapali = 0;
+      try { kapali = Number(await AsyncStorage.getItem("ll_tel_kart_kapali")) || 0; } catch (e) {}
+      if (Date.now() - kapali < 7 * 24 * 3600 * 1000) return;
+      const h = await telefonHazir();
+      if (canli) setTelKart(h);
+    })();
+    return () => { canli = false; };
+  }, []);
   const [data, setData] = useState(null);
   // 13 Eylül md.8/15 — durum çubuğu perdesi için kaydırma konumu.
   const kaydirY = useRef(new Animated.Value(0)).current;
@@ -3825,6 +3905,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
           (`CuzdanSeridi`), hücreler eşit dağılır. Sağ üst profil dairesi
           iki rolde de var. */}
       <FotoBant marka="LOUNGELINK"
+        turSlot={<TurDugmesi t={t} sayfa="ana" etiketli />}
         sag={onProfilSekmesi ? (
           <Btn v="ust" daire a11yLabel={t.navProfile} onPress={onProfilSekmesi}
             sol={<Ikon ad="profil" boy={19} renk={C.foto.baslik} />} />
@@ -3834,48 +3915,13 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         serifYani={data.role === "host" ? <Cip etiket={`• ${badgeLabel(t, data.badge, "host")}`} ton="ok" /> : null}
         altIcerik={
           <CuzdanSeridi hucreler={[
-            { deger: data.credits ?? 0, etiket: t.walletCredits || "kredi", onPress: onWallet },
+            { deger: data.credits ?? 0, etiket: t.walletCredits || "kredi", onPress: onWallet, turHedef: "ana_kredi" },
             { deger: (data.points || 0).toLocaleString("tr-TR"), etiket: t.marketTitle },
             { deger: data.score ?? 0, etiket: t.trust || "Güven" },
           ]} />
         } />
 
       <View style={{ paddingHorizontal: ARA[22], paddingTop: temaModu() === "v7" ? ARA[6] : ARA[20] }}>
-      {!data.phoneVerified && (
-        // ══════════════════════════════════════════════════════════════
-        // 🔴 12 EYLÜL (Gökberk md.4) — "39. görselde ekranda taşma var".
-        // ÖLÇÜLDÜ (gerçek DOM, 390 pt cihaz): metin kutusu 638 pt,
-        // içinde durduğu kart 346 pt → 292 pt ekran dışında.
-        // Sebep: metne `flex: 1` verilmişti ama ONU SARAN SATIR
-        // `flex: 0 0 auto` idi. Bir çocuğun `flex: 1`i, ebeveyni
-        // daralmıyorsa hiçbir şey yapmaz — satır 657 pt'ye kadar büyüyüp
-        // kartı taşırdı, metin de sarmadan tek satır kaldı.
-        // `flex: 1 + minWidth: 0` satırı daraltılabilir yapar; metin
-        // artık sarıyor. `alignItems` de "center"dan "flex-start"a geçti:
-        // iki satırlık bir uyarıda ikon ortada asılı kalıyordu.
-        // 🆕 SINIF: "`flex: 1` BİR İSTEK DEĞİL, EBEVEYNDEN GELEN BİR
-        // İZİNDİR — ZİNCİRDEKİ İLK DARALMAYAN KUTU ONU İPTAL EDER."
-        // ══════════════════════════════════════════════════════════════
-        temaModu() === "v7" ? (
-          // v7.2 (Gökberk 3 Ekim): uyarı kutusu → cam şerit. "telefon" ikonu 15pt'de boş bir
-          // dikdörtgen gibi okunuyordu ("ikon gelmemiş") → güven kalkanı, amber mürekkep.
-          <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} accessibilityRole="button" accessibilityLabel={t.goVerify}>
-            <CamSerit stil={{ paddingVertical: ARA[14], paddingHorizontal: ARA[18], flexDirection: "row", alignItems: "center" }}>
-              <View style={{ width: 34, height: 34, borderRadius: R.full, alignItems: "center", justifyContent: "center",
-                             backgroundColor: C.sicak + "1A", marginRight: ARA[12] }}>
-                <Ikon ad="guvenlik" boy={17} renk={C.amberInk} />
-              </View>
-              <Text style={{ color: C.body, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: Math.round(FS.sm * 1.45) }}>{t.phoneWhy}</Text>
-              <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: ARA[10] }}>{t.goVerify}</Text>
-            </CamSerit>
-          </TouchableOpacity>
-        ) : (
-        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onVerify} style={{ backgroundColor: C.amberBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <View style={{ flexDirection: "row", alignItems: "flex-start", flex: 1, minWidth: 0 }}><Ikon ad="telefon" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1], marginTop: ARA[2] }} /><Text style={{ color: C.amberInk, fontSize: FS.sm, flex: 1, minWidth: 0, lineHeight: 18 }}>{t.phoneWhy}</Text></View>
-          <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: SP[2] }}>{t.goVerify}</Text>
-        </TouchableOpacity>
-        )
-      )}
 
       </View>
 
@@ -3947,6 +3993,30 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
         onDavetler={() => setShowDavetler(true)}
         onSorular={() => setShowQuestions(true)}
         onIlanlar={() => { setHostTripsSub("ilan"); setTab("trips"); }} />
+      {/* 19 Ekim (Gökberk) — TELEFON KARTI: sayaçların ALTINDA, sağ üstte ✕ (7 gün gizler).
+          Yalnız SMS doğrulaması açıkken çizilir: açık değilken doğrulanamayan bir şeyi istemeyiz. */}
+      {!data.phoneVerified && telKart && (
+        <View>
+          <TouchableOpacity hitSlop={TAP.slop} onPress={onVerify} accessibilityRole="button" accessibilityLabel={t.telKartBas}>
+            <CamSerit stil={{ paddingVertical: ARA[14], paddingLeft: ARA[14], paddingRight: ARA[34], flexDirection: "row", alignItems: "center" }}>
+              <View style={{ width: 34, height: 34, borderRadius: R.full, alignItems: "center", justifyContent: "center",
+                             backgroundColor: C.sicak + "1A", marginRight: ARA[12] }}>
+                <Ikon ad="guvenlik" boy={17} renk={C.amberInk} />
+              </View>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "700" }}>{t.telKartBas}</Text>
+                <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: Math.round(FS.sm * 1.45), marginTop: ARA[2] }}>{t.telKartMet}</Text>
+              </View>
+              <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, marginLeft: ARA[10] }}>{t.telKartGit}</Text>
+            </CamSerit>
+          </TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={t.close || "Kapat"} hitSlop={TAP.slop}
+            onPress={() => { setTelKart(false); try { AsyncStorage.setItem("ll_tel_kart_kapali", String(Date.now())); } catch (e) {} }}
+            style={{ position: "absolute", right: ARA[6], top: ARA[6], width: 28, height: 28, alignItems: "center", justifyContent: "center" }}>
+            <Ikon ad="kapat" boy={14} renk={C.mut} />
+          </TouchableOpacity>
+        </View>
+      )}
       {data.role === "host" && data.hostStats ? (
         /* ── TASARIM 12b · HOST: Akışım'ın ALTINDA "BU AY" (katlanır) → çipler → ilanlar ── */
         <>

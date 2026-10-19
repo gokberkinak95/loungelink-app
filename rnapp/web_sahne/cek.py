@@ -166,6 +166,20 @@ SAHNELER = {
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile
     "32_herkese_acik_profil": ("kaan", [("dokun", "Tanış"), ("dokun_a11y", "Burak S.")]),  # ekran: PublicProfile
+    "94_tur_ana":    ("yeni", [("bekle", 3200)], "tur=ana"),                                       # 19 Ekim · sayfa turları   # ekran: TurKatmani
+    "94b_tur_ana_kredi": ("yeni", [("bekle", 3200), ("dokun", "Devam et"), ("dokun", "Devam et"), ("bekle", 600)], "tur=ana"),   # ekran: TurKatmani
+    "95_tur_kesfet": ("kaan", [("dokun", "Keşfet"), ("bekle", 1500), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("bekle", 600)]),   # ekran: TurKatmani
+    "96_tur_planim": ("gokberk", [("dokun", "Planım"), ("bekle", 1500), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("bekle", 600)]),   # ekran: TurKatmani
+    "96b_tur_ilan":  ("selin", [("dokun", "Planım"), ("bekle", 1500), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("dokun", "Devam et"), ("bekle", 600)]),   # ekran: TurKatmani
+    "97_tur_tanis":  ("gokberk", [("dokun", "Tanış"), ("bekle", 1500), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("dokun", "Devam et"), ("bekle", 600)]),   # ekran: TurKatmani
+    "98_tur_cuzdan": ("selin", [("dokun", "Profil"), ("dokun_a11y", "Cüzdan"), ("bekle", 1500), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("dokun", "Devam et"), ("dokun", "Devam et"), ("bekle", 600)]),   # ekran: TurKatmani
+    "98b_tur_kural": ("kaan", [("dokun", "Keşfet"), ("dokun_a11y", "Uyum"), ("bekle", 2600), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("bekle", 600)]),   # ekran: TurKatmani
+    "99_serit":      ("gokberk", [("bekle", 3200)], "serit=1"),                                    # ekran: BildirimSeridi
+    "99b_tel_kart":  ("yeni", [("bekle", 2400)], "tv=kart"),                           # ekran: Home · telefon kartı
+    "98c_yon_planlar": ("selin", [("dokun", "Profil"), ("dokun_a11y", "Cüzdan"), ("bekle", 1500), ("dokun_a11y", "Nasıl çalışır?"), ("bekle", 700), ("dokun", "Devam et"), ("dokun", "Devam et"), ("dokun", "Devam et"), ("dokun", "Planları gör"), ("bekle", 1500)]),   # yönlendirme · ekran: Plans
+    "99c_yon_serit":   ("gokberk", [("bekle", 3200), ("dokun", "Deniz K."), ("bekle", 1500)], "serit=1"),   # yönlendirme · ekran: Notifications
+    "99d_yon_telkart": ("yeni", [("bekle", 2400), ("dokun_a11y", "Telefonunu doğrula"), ("bekle", 1800)], "tv=kart"),   # yönlendirme · ekran: VerifyPhone
+    "99e_yon_hostbul": ("gokberk", [("dokun", "Planım"), ("bekle", 1200), ("dokun", "Host bul"), ("bekle", 1800)]),   # yönlendirme · ekran: Discovery
     "93_tel_onay":   ("yeni", [("bekle", 1800)], "tv=onay"),     # 18 Ekim · telefon doğrulama sayfası (SQL 335)   # ekran: TelefonDogrulamaSayfasi
     "93b_tel_kod":   ("yeni", [("bekle", 1800)], "tv=kod"),      # ekran: TelefonDogrulamaSayfasi
     "93c_tel_basari":("yeni", [("bekle", 1800)], "tv=basari"),   # ekran: TelefonDogrulamaSayfasi

@@ -30,6 +30,7 @@ import { badgeLabel, fmtLongDate, mapErr, shortName, BUYUK, gorunur, etkinDil } 
 import { bayrak } from "./runtime";
 import { havalimanlariniGetir } from "./katalog";
 import { logError, onPlanda, supabase } from "./supabase";
+import { turHedef } from "./tur";
 import { TelefonDogrulamaSayfasi, telefonHazir } from "./telefon";
 import { MONO } from "./typography";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, SATIR, temaModu } from "./theme";
@@ -5133,7 +5134,7 @@ export function Wallet({ t, session, onBack }) {
 
   return (
     <Sayfa>
-    <Hdr t={t} title={t.walletTitle} sub={t.walletSub} onBack={onBack} />
+    <Hdr t={t} tur="cuzdan" title={t.walletTitle} sub={t.walletSub} onBack={onBack} />
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
       {/* 🔴 12 Eylül · gece — ETİKET GİTTİ, KART GELDİ.
           Eskisi: ortalanmış üç satır, `goldBg` dolgu, 12pt köşe.
@@ -5148,12 +5149,14 @@ export function Wallet({ t, session, onBack }) {
           Artık kart da söylüyor ve yeniden denemenin yolu orada.
           🆕 SINIF: "BİR HATA MESAJI, HATANIN GÖRÜNDÜĞÜ YERDE DEĞİLSE
           KULLANICI İÇİN YOK DEMEKTİR." */}
+      <View {...turHedef("cuzdan_bakiye")}>
       <GecisKarti stil={{ marginBottom: loadErr ? ARA[10] : ARA[18] }}
         rozet={kimlik?.rozet} ad={kimlik?.ad} no={uyeNo}
         etiket={t.walletBalance} deger={loadErr ? "—" : (bal ?? "—")} birim={t.walletCredits}
         aciklama={loadErr ? t.walletBalanceFail
           : bal == null ? null
           : String(t.walletCreditsMeans).replace("{n}", String(bal))} />
+      </View>
       {loadErr && <LoadFail t={t} onRetry={load} style={{ marginBottom: ARA[18] }} />}
 
       {/* 🔴 v6.1 (Gökberk md.27) — kredi talebi her girişte ekranın yarısını
@@ -5177,6 +5180,7 @@ export function Wallet({ t, session, onBack }) {
       </Katlanir>
       )}
 
+      <View {...turHedef("cuzdan_paket")}>
       <Text style={S.label}>{t.walletPacks}</Text>
       {/* Paketin NE OLDUĞUNU önce söylüyoruz: bir abonelik değil, takviye. */}
       <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginBottom: ARA[10] }}>{t.walletPacksIntro}</Text>
@@ -5212,6 +5216,7 @@ export function Wallet({ t, session, onBack }) {
           </View>
         </View>
       ); })}
+      </View>
       {!!odemeMsg && (
         <View style={{ backgroundColor: C.tealBg, borderRadius: R.sm, padding: SP[3], marginBottom: SP[2] }}>
           <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 19 }}>{odemeMsg}</Text>

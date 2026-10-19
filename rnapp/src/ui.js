@@ -22,6 +22,7 @@ import { SessizPano, dokun } from "./hareket";   // K6 · boş durum panosu · v
 const dokunHafif = () => { try { dokun("hafif"); } catch (e) { /* titreşim yoksa sessiz */ } };
 import { Ikon } from "./ikon";
 import { Katman } from "./katman";
+import { TurDugmesi, turHedef } from "./tur";
 
 // Durum cubugu yuksekligi — icerik artik status bar'in ALTINA girmiyor.
 // (EditProfile basligi status bar'in arkasinda kaliyordu — gercek cihaz
@@ -702,6 +703,7 @@ export function CuzdanSeridi({ hucreler, stil }) {
         <React.Fragment key={h.etiket + i}>
           {i > 0 && <View style={{ width: 1, height: 26, backgroundColor: v7 ? "rgba(212,195,163,0.38)" : (C.line2 || C.line) }} />}
           <TouchableOpacity disabled={!h.onPress} onPress={h.onPress || undefined} hitSlop={TAP.slop}
+            {...(h.turHedef ? turHedef(h.turHedef) : null)}
             accessibilityRole={h.onPress ? "button" : undefined}
             accessibilityLabel={h.a11y || `${h.etiket}: ${h.deger}`}
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -1611,7 +1613,7 @@ function acikZemin(renk) {
 // durduğunu bilir: fildişi dolu çip orada ağır bir etiket gibi duruyordu.
 export const BantBaglami = React.createContext(false);
 export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
-                          sag, eylem, geri, yukseklik, serifBaslik, serifYani, altIcerik }) {
+                          sag, eylem, geri, yukseklik, serifBaslik, serifYani, altIcerik, turSlot }) {
   // 🔴 3 EYLÜL — `serifBaslik` ve `altIcerik` EKLENDİ.
   // Tasarımın ana sayfası (11_ana_misafir) bandın İÇİNDE iki şey daha
   // taşıyor: `.ust-h1.serif` (isim · Cormorant 52) ve `.cuzdan` şeridi.
@@ -1829,6 +1831,8 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
               yalnız bandın kendi metinleri için geçerli; slot içeriği
               kendi zeminini getiriyor. İşaret olmadan denetim, doğru
               çalışan bir düğmeyi kusur sanıyordu. */}
+          {/* 19 Ekim — "?" sayfa turu (src/tur.js) */}
+          {turSlot ? <View testID="bant-slot" style={{ marginLeft: SP[2] }}>{turSlot}</View> : null}
           {eylem ? <View testID="bant-slot" style={{ marginLeft: SP[2] }}>{eylem}</View> : null}
           {sag ? <View testID="bant-slot" style={{ marginLeft: SP[2] }}>{sag}</View> : null}
         </View>
@@ -1941,7 +1945,8 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
 //
 // 🆕 SINIF: **"BİR BİLEŞEN KENDİ ÇEVRESİNİ VARSAYAMAZ — TEKİL OLMASI
 // GEREKEN HER ŞEY, TEKİLLİĞİ ÇAĞIRANIN KARARINA BIRAKMALIDIR."**
-export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ustBilgi, marka = true, kahraman, kaydir, tekSatir }) {
+export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ustBilgi, marka = true, kahraman, kaydir, tekSatir, tur }) {
+  const turSlot = tur && t ? <TurDugmesi t={t} sayfa={tur} /> : null;
   // 🔴 `foto` AÇIK BİR TERCİH: her başlık fotoğraflı olmaz. Bant 520/1080
   // oranında yer kaplıyor ve bir LİSTE ekranında bu kabul edilebilir
   // (ölçüldü: iPhone SE'de ekranın %27'si, altında 3.5 ilan görünüyor);
@@ -1970,7 +1975,7 @@ export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ust
     const bant = (
       <FotoBant marka="LOUNGELINK" ustBilgi={ustBilgi || foto.ustBilgi} baslik={title}
         altBilgi={sub} sag={brandRight} eylem={right} geri={onBack}
-        altIcerik={foto.altIcerik} />
+        altIcerik={foto.altIcerik} turSlot={turSlot} />
     );
     // 🔴 12 EYLÜL — `kaydir` VERİLDİYSE BANT DARALIR.
     // Verilmediğinde tek bir piksel değişmiyor: bu dal bugünkü davranışı
@@ -1989,7 +1994,7 @@ export function Hdr({ title, sub, onBack, right, brandRight, scene, t, foto, ust
   if (temaModu() === "v7" && title && !kahraman) {
     return (
       <FotoBant marka="LOUNGELINK" ustBilgi={ustBilgi || gorunur(scene)} baslik={title}
-        altBilgi={sub} sag={brandRight} eylem={right} geri={onBack} />
+        altBilgi={sub} sag={brandRight} eylem={right} geri={onBack} turSlot={turSlot} />
     );
   }
   return (

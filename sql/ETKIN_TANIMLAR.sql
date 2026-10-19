@@ -9,8 +9,8 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 532
--- Birden cok dosyada tanimli (dikkat!): 162
+-- Toplam fonksiyon: 533
+-- Birden cok dosyada tanimli (dikkat!): 163
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -70,6 +70,7 @@
 --   ilan_guven_esigi_yaz         -> etkin: 288_guven_esigi_kolonu.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   ilan_kurali_sor              -> etkin: 331_soru_kendi_kaydinda.sql  (ayrica: 221_hosta_sor.sql, 223_sinirlar_dogruyu_soylesin.sql)
 --   invitable_guests             -> etkin: 075_invitable_guests_detail.sql  (ayrica: 030_match_and_broadcast.sql)
+--   is_contact_verified          -> etkin: 335_telefon_firebase_dogrulama.sql  (ayrica: 079_email_otp_contact_verification.sql)
 --   is_visible                   -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 029_bo_requirements.sql, 041_staff_accounts_excluded.sql)
 --   istegin_acik_oturumu_var_mi  -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 280_kredi_ve_durum_kilidi.sql)
 --   istek_kredisi_iade           -> etkin: 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql  (ayrica: 280_kredi_ve_durum_kilidi.sql, 284_kural_geri_bildirim_dongusu.sql)
@@ -5382,13 +5383,57 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- is_contact_verified   [etkin kaynak: 079_email_otp_contact_verification.sql]
+-- is_contact_verified   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.is_contact_verified(p_user uuid)
-returns boolean language sql stable security definer set search_path = public as $$
-  select coalesce(bool_or(phone_verified) or bool_or(email_verified), false)
-    from verifications where user_id = p_user
-$$;
+returns boolean language sql stable security definer set search_path = public as $cv335$
+  select case
+    when coalesce((select value #>> '{}' from beta_settings where key = 'telefon_kanali'), 'kapali') = 'firebase'
+      then coalesce((select phone_verified from verifications where user_id = p_user), false)
+    else public.iletisim_dogrulandi_gevsek(p_user) end
+$cv335$;
+revoke all on function public.is_contact_verified(uuid) from public, anon, authenticated;
+grant execute on function public.is_contact_verified(uuid) to service_role;
+
+do $ks335$
+declare v_tanim text; v_eski text := 'select phone_verified into v_ok from verifications where user_id = v_uid;
+  if not coalesce(v_ok,false) then raise exception ''phone_not_verified''; end if;';
+begin
+  select pg_get_functiondef(p.oid) into v_tanim from pg_proc p
+   where p.proname = 'ilan_kurali_sor' and p.pronamespace = 'public'::regnamespace limit 1;
+  if v_tanim is null then raise notice '335: ilan_kurali_sor yok — atlandi.'; return; end if;
+  if v_tanim like '%iletisim_dogrulandi_gevsek%' then raise notice '335: ilan_kurali_sor zaten guncel.'; return; end if;
+  if position(v_eski in v_tanim) = 0 then raise exception '335: ilan_kurali_sor govdesi beklenenden farkli — elle bak.'; end if;
+  v_tanim := replace(v_tanim, v_eski, 'if not public.iletisim_dogrulandi_gevsek(v_uid) then raise exception ''contact_not_verified''; end if;');
+  execute v_tanim;
+end $ks335$;
+
+-- §6d · kredi paketlerinin adları son modele (Cüzdan "Tek hak / Üç hak / Beş hak" yazıyordu)
+update kredi_paketleri set ad = '1 kredi', aciklama = 'Tek bir lounge isteği için.' where kod = 'tek';
+update kredi_paketleri set ad = '3 kredi', aciklama = 'Aynı anda birkaç ilana başvurmak için.' where kod = 'uclu';
+update kredi_paketleri set ad = '5 kredi', aciklama = 'En uygun fiyat: kredi başına 60 ₺.' where kod = 'besli';
+
+-- §7 · doğrulama
+select 'kanal anahtari' as kontrol, exists (select 1 from beta_settings where key = 'telefon_kanali') as tamam
+union all
+select 'esik 25', (select (value #>> '{}')::int from beta_settings where key = 'profil_trusted_esik') = 25
+union all
+select 'yazan kapi yalniz service_role',
+       not has_function_privilege('authenticated', 'public.telefon_dogrulandi_yaz(uuid, text)', 'execute')
+union all
+select 'gonderim izni authenticated', has_function_privilege('authenticated', 'public.telefon_gonderim_izni(text)', 'execute')
+union all
+select 'numara degisince dusuren tetikleyici', exists (select 1 from pg_trigger where tgname = 'telefon_degisti')
+union all
+select 'bildirim hedefi: ilan ve kredi turleri', pg_get_functiondef('public.bildirim_hedefi(uuid)'::regprocedure) like '%missed_digest%'
+union all
+select 'kural sorusu e-postayla acik', (select bool_or(prosrc like '%iletisim_dogrulandi_gevsek%') from pg_proc where proname = 'ilan_kurali_sor')
+union all
+select 'telefon sarti kanala bagli', pg_get_functiondef('public.is_contact_verified(uuid)'::regprocedure) like '%telefon_kanali%'
+union all
+select 'paket adlari guncel', (select count(*) from kredi_paketleri where aktif and ad in ('1 kredi','3 kredi','5 kredi')) = 3;
+-- Beklenen: dokuz satır tamam = true.
 
 -- ----------------------------------------------------------------------
 -- verify_email_contact   [etkin kaynak: 079_email_otp_contact_verification.sql]
@@ -24211,20 +24256,11 @@ begin
 end $bh335$;
 grant execute on function public.bildirim_hedefi(uuid) to authenticated;
 
--- §7 · doğrulama
-select 'kanal anahtari' as kontrol, exists (select 1 from beta_settings where key = 'telefon_kanali') as tamam
-union all
-select 'esik 25', (select (value #>> '{}')::int from beta_settings where key = 'profil_trusted_esik') = 25
-union all
-select 'yazan kapi yalniz service_role',
-       not has_function_privilege('authenticated', 'public.telefon_dogrulandi_yaz(uuid, text)', 'execute')
-union all
-select 'gonderim izni authenticated', has_function_privilege('authenticated', 'public.telefon_gonderim_izni(text)', 'execute')
-union all
-select 'numara degisince dusuren tetikleyici', exists (select 1 from pg_trigger where tgname = 'telefon_degisti')
-union all
-select 'bildirim hedefi: ilan ve kredi turleri', pg_get_functiondef('public.bildirim_hedefi(uuid)'::regprocedure) like '%missed_digest%';
--- Beklenen: altı satır tamam = true.
+-- §6c · telefon şartı (Gökberk onayı, 19 Ekim). SMS kanalı açıkken ('firebase') buluşma ya da
+-- yazışma açan her kapı (lounge isteği, Tanış bağlantısı, davet, ilan açma, host başvurusu) için
+-- TELEFON doğrulaması şart. Kanal kapalıyken bugünkü kural: telefon veya e-posta.
+-- Kural sorusu (host'a ilan kuralını sormak) buluşma açmaz: her zaman telefon VEYA e-posta yeter.
+-- (Önceki hata: kural sorusu yalnız telefon istiyordu; SMS olmadığı için kimse soru soramıyordu.)
 
 -- ----------------------------------------------------------------------
 -- sohbet_temizle   [etkin kaynak: 255_magaza_sartlari.sql]
@@ -32104,3 +32140,14 @@ create trigger telefon_degisti after update of phone_kanonik on public.users
 
 -- §6b · bildirim yönlendirmesi (uygulama içi şerit, telefon bildirimi ve bildirim listesi aynı
 -- hedefi kullanır). Hedefi olmayan bildirim (genel duyuru) uygulamada Bildirimler sayfasını açar.
+
+-- ----------------------------------------------------------------------
+-- iletisim_dogrulandi_gevsek   [etkin kaynak: 335_telefon_firebase_dogrulama.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.iletisim_dogrulandi_gevsek(p_user uuid)
+returns boolean language sql stable security definer set search_path = public as $ig335$
+  select coalesce(bool_or(phone_verified) or bool_or(email_verified), false)
+    from verifications where user_id = p_user
+$ig335$;
+revoke all on function public.iletisim_dogrulandi_gevsek(uuid) from public, anon, authenticated;
+grant execute on function public.iletisim_dogrulandi_gevsek(uuid) to service_role;

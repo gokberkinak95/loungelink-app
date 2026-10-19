@@ -38,6 +38,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Uyum yüzdesi, geri sayım, kredi. Gerekçe src/typography.js `MONO`.
 import { MONO } from "./typography";
 import { RotaHatti, BosDurum, ChipIcon, ConfirmModal, FotoBant, Hdr, LoadFail, TOPPAD, Toggle, ToneBadge, Sayfa, Btn, Secim, Cip, KararCipi, Olgu, useDaralanBant, Kaydirma, Muhur, IsikliKart, PerdeBulanik, POPUP_YUZEY, UyumMuhru, CamSerit, DurumSatiri, YeniEtiket, yeniCerceve, KlavyeKabi, ALTPAD, useKlavyeAcik } from "./ui";
+import { TurDugmesi, turHedef } from "./tur";
 import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -215,6 +216,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
   // Kapsam verilmediyse sıradaki seyahat okunur ve sıralama ipucu olur
   // (filtre DEĞİL — liste yine tam, önce uyanlar).
   const [otoTrip, setOtoTrip] = useState(null);
+  // 19 Ekim — UÇUŞ ÇİPLERİ (Gökberk: "gidiş-dönüş gibi birden fazla uçuşum varsa?"). 2+ yaklaşan
+  // uçuşta bandın altında çipler; seçilen uçuş başlığı ve sıralamayı belirler. Tek uçuşta çip yok.
+  const [ucuslar, setUcuslar] = useState([]);
+  const [ucusSec, setUcusSec] = useState(0);
   const [bitenAcik, setBitenAcik] = useState(false);   // 29 Eylül · "Bugün sona erenler" katlı
   useEffect(() => {
     if (scope?.sortTrip || !session?.user?.id) return;
@@ -224,11 +229,13 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       const { data, error } = await supabase.from("visits")
         .select("airport_code, visit_date, time_from, scheduled_departure")
         .eq("user_id", session.user.id).gte("visit_date", today)
-        .order("visit_date").limit(1);
+        .order("visit_date").limit(8);
       if (error) { logError("disc_oto_seyahat", error); return; }
-      const v = data && data[0];
-      if (canli && v) setOtoTrip({ airport: v.airport_code, date: v.visit_date, timeFrom: String(v.time_from || "").slice(0, 5),
-                                   kalkis: v.scheduled_departure || null });
+      const liste = (data || []).map(v => ({ airport: v.airport_code, date: v.visit_date, timeFrom: String(v.time_from || "").slice(0, 5),
+                                            kalkis: v.scheduled_departure || null }));
+      if (!canli) return;
+      setUcuslar(liste); setUcusSec(0);
+      if (liste[0]) setOtoTrip(liste[0]);
     })();
     return () => { canli = false; };
   }, [scope?.sortTrip, session?.user?.id]);
@@ -975,7 +982,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
 
   return (
     <Sayfa>
-    <Hdr t={t} right={
+    <Hdr t={t} tur={scope ? null : "kesfet"} right={
         // ══════════════════════════════════════════════════════════════
         // 🔴 30 AĞUSTOS — FİLTRE DÜĞMESİNİN YERİ.
         //
@@ -1055,7 +1062,20 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
          düştü — `mount_test`in bant nöbetçisi yakaladı.
          🆕 SINIF: "BİR BLOĞU BAŞTAN YAZARKEN EN BÜYÜK RİSK YAZDIĞIM
          DEĞİL, ARASINDA DURAN VE FARK ETMEDİĞİM ŞEYDİR." */
-      foto={{ ustBilgi: basKonum.dugum, olc: bnt.olc, tam: bnt.tam }}
+      foto={{ ustBilgi: basKonum.dugum, olc: bnt.olc, tam: bnt.tam,
+              altIcerik: !scope?.sortTrip && ucuslar.length >= 2 ? (
+                <View {...turHedef("kesfet_cipler")} style={{ marginTop: ARA[14], marginHorizontal: -ARA[22] }}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ paddingHorizontal: ARA[22], gap: ARA[6] }}>
+                    {ucuslar.map((u, k) => {
+                      let gun = String(u.date || "").slice(0, 10);
+                      try { gun = new Date(gun + "T12:00:00").toLocaleDateString(lang === "en" ? "en-GB" : "tr-TR", { day: "numeric", month: "short" }); } catch (e) {}
+                      return <Cip key={u.airport + u.date + k} etiket={`${u.airport} · ${gun}`} secili={k === ucusSec}
+                        onPress={() => { setUcusSec(k); setOtoTrip(u); }} />;
+                    })}
+                  </ScrollView>
+                </View>
+              ) : null }}
       kaydir={bnt.kaydir}
       onBack={onBack} />
     <Kaydirma {...bnt.scrollProps}
@@ -1572,7 +1592,9 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                         yer, kural motorunun konuştuğu yerdir. */}
                     {/* v6.3 (pano B · Gökberk onayı) — MONO SAYI YERİNE UYUM MÜHRÜ.
                         Kapalı ilanda mühür susar (koyu taş); açıkta fildişi. */}
-                    <UyumMuhru deger={ms} boy={44} kapali={kapali || bitti} etiket={t.matchWord} />
+                    <View {...(idx === 0 ? turHedef("kesfet_uyum") : null)}>
+                      <UyumMuhru deger={ms} boy={44} kapali={kapali || bitti} etiket={t.matchWord} />
+                    </View>
                   </TouchableOpacity>
                 );
               })() : null}
@@ -1763,8 +1785,10 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
                     /* 2 Ekim (md.1) — `Btn cip` kendi alignSelf'ini taşıyor ve kabın
                        flex-end'ini eziyordu: düğme sayacın hemen yanına yapışıyordu.
                        Diğer iki dal (Seyahat ekle · Başvuru kapalı) zaten sağda. */
+                    <View {...(idx === 0 ? turHedef("kesfet_istek") : null)} style={{ alignSelf: "flex-end" }}>
                     <Btn v="gold" cip sagAd="sag" label={t.reqSoon} style={{ alignSelf: "flex-end" }}
                       onPress={() => { setTarget(r); setErr(""); setMoreOpen(false); setAdvice(null); }} />
+                    </View>
                   ) : (
                     // 🔴 v2.24 — PASIF GORUNEN BUTON TIKLANABILIYORDU.
                     // Gorsel olarak soluk ama dokunulabilir bir buton,
@@ -2715,7 +2739,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
           görünümdeyken satır [Bağlantılar (n)][İstekler (n)] olur; geri
           ok banttadır (App.js). */}
       {sub === "discover" ? (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginBottom: ARA[14] }}>
+        <View {...turHedef("tanis_suzgec")} style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginBottom: ARA[14], alignSelf: "flex-start" }}>
           {/* 4 Ekim (Gökberk) — "Tümü" çipi EN BAŞTA: süzgeçsiz liste (uygulamayı kullanan, görünür
               herkes) artık bir dokunuşla seçilebiliyor. Eskiden ancak seçili çipe tekrar dokunup
               kaldırarak açılıyordu; kimse bilmiyordu. Tümü seçiliyken cipF = null. */}
@@ -2866,7 +2890,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
                 );
               })()
             ))
-            : shownPeople.map(p => {
+            : shownPeople.map((p, sira) => {
               // Tasarım 05: karta dokunmak = kişiye giden tek yol (ok).
               //   bağlı → sohbet · gelen istek → yanıtla · bekliyor → profil ·
               //   tanımadık → bağlantı kur (not ile).
@@ -2884,7 +2908,8 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
               // Tasarım 05: kartta eylem çipi yok; ilana istek bağlantı
               // sayfasındaki "İlanına git" kısayolundan (Keşfet'e odaklı).
               const ikinci = null;
-              return <PersonCard key={p.user_id} p={p} onAc={ac} ikinci={ikinci} />;
+              const kart = <PersonCard key={p.user_id} p={p} onAc={ac} ikinci={ikinci} />;
+              return sira === 0 ? <View key={p.user_id} {...turHedef("tanis_kisi")}>{kart}</View> : kart;
             })}
             {/* TASARIM 05 · alt kart: "Host olsam ne kazanırım?" — misafire host
                 daveti (altın zemin). 🔴 5 Eylül — HOST'A DA ÇIKIYORDU (Gökberk:
@@ -7574,19 +7599,19 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, is
           AYNI bant: kaş "KURAL MOTORU · SAW", serif başlık "neden %X?", altında
           salonun adı. Bant sayfayla birlikte kayar; geri oku bandın içinde. */}
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: ARA[34] }}>
-        <FotoBant marka="LOUNGELINK" geri={onBack}
+        <FotoBant marka="LOUNGELINK" geri={onBack} turSlot={<TurDugmesi t={t} sayfa="kural" />}
           ustBilgi={BUYUK([t.ruleEyebrow, avail?.airport_code].filter(Boolean).join(" · "))}
           baslik={String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}
           altBilgi={avail?.lounge_name || null} />
         <View style={{ flexGrow: 1, paddingHorizontal: ARA[22] }}>
         {/* 13 Eylül md.4 — sayıyı sıfırlayan/kısan şartı adıyla söyle. */}
         {!!sifirlayan && (
-          <Text style={{ fontSize: FS.sm, lineHeight: 19, color: C.redInk, marginTop: ARA[8] }}>
+          <Text {...turHedef("kural_ozet")} style={{ fontSize: FS.sm, lineHeight: 19, color: C.redInk, marginTop: ARA[8] }}>
             {String(t.ruleZeroWhy || "{k}").replace("{k}", String(sifirlayan.metin || sifirlayan.ad || ""))}
           </Text>
         )}
         {!sifirlayan && !!belirsiz && (
-          <Text style={{ fontSize: FS.sm, lineHeight: 19, color: C.amberInk, marginTop: ARA[8] }}>
+          <Text {...turHedef("kural_ozet")} style={{ fontSize: FS.sm, lineHeight: 19, color: C.amberInk, marginTop: ARA[8] }}>
             {String(t.ruleCapWhy || "{k}").replace("{k}", String(belirsiz.metin || belirsiz.ad || ""))}
           </Text>
         )}
@@ -7667,7 +7692,9 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, is
             const artan = kosullar.filter((k) => !yerlesti.has(k));
             if (artan.length) gruplar[gruplar.length - 1].satir.push(...artan);
 
-            return gruplar.filter((g) => g.satir.length > 0).map((g, gi) => {
+            const _gorunen = gruplar.filter((g) => g.satir.length > 0);
+            const _ilkSorun = _gorunen.findIndex((g) => g.satir.some((k) => k.durum === "yok"));
+            return _gorunen.map((g, gi) => {
               const yokKapi = g.satir.find((k) => k.durum === "yok" && k.agirlik === "kapi");
               const yokAny = g.satir.find((k) => k.durum === "yok");
               const bilinmez = g.satir.find((k) => k.durum === "bilinmiyor");
@@ -7686,7 +7713,8 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, is
                  doğru olan — zaten daha temiz. */
               const gIkon = gDurum === "yok" || gDurum === "bilinmiyor" ? "kapat" : "tamam";
               return (
-                <View key={g.id} style={{ marginTop: gi === 0 ? ARA[18] : ARA[22] }}>
+                <View key={g.id} {...(gi === _ilkSorun ? turHedef("kural_sorun") : gi === 0 ? turHedef("kural_sart") : null)}
+                  style={{ marginTop: gi === 0 ? ARA[18] : ARA[22] }}>
                   {gi > 0 ? (
                     <View style={{ height: 1, backgroundColor: temaModu() === "v7" ? (C.line2 || C.line) : C.kartKenar,
                                    marginBottom: ARA[22] }} />

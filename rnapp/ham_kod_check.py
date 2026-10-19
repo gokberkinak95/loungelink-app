@@ -236,7 +236,11 @@ def main():
     # H · `t.x || "Türkçe yedek"` ama `x` EN sözlükte YOK → İngilizcede
     #     Türkçe yedek görünür (carrierPick, searchCount … 23 Eylül'de 6 tane).
     en_anahtar = sorted(set(y[3:].split(".")[0].split("[")[0] for y, _ in o["degerler"]["en"]))
-    p = subprocess.run(["node", os.path.join(KOK, "render_check", "jsx_turkce_tara.js"), json.dumps(en_anahtar)],
+    # 19 Ekim — anahtar listesi komut satırına sığmıyordu (Windows 32 KB sınırı · WinError 206): dosyayla ver.
+    import tempfile
+    _tf = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
+    json.dump(en_anahtar, _tf); _tf.close()
+    p = subprocess.run(["node", os.path.join(KOK, "render_check", "jsx_turkce_tara.js"), "@" + _tf.name],
                        capture_output=True, text=True, timeout=120)
     if p.returncode:
         bulgu.append(("G", "jsx_turkce_tara.js", 0, "KOŞMADI: " + p.stderr[:200]))
