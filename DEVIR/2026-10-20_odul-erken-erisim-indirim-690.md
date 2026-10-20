@@ -86,4 +86,4 @@ Gökberk'in kararları (20 Ekim):
 - Yeni arıza sahneleri 49b–49h (plan, mağaza, tanış, geçmiş, güven, davet, profil).
 - Ortam: GTK3 Runtime kuruldu (Gökberk, winget) → cairosvg çalışıyor (`C:\Program Files\GTK3-Runtime Win64\bin`).
 - Testler: verify 77/77 · sahne 123, hata 0 (arıza sahneleri bilerek bozuk), dokunma yolu düşen 0 · akış e2e **224/224** · verify (GTK yoluyla) 77/77, ortam uyarısı 0.
-- APK 6.9.1 (marka): https://expo.dev/artifacts/eas/aYMWozrVThPIaMJdtGGIzfy-yv4pucvNgRpRORv_Z8o.apk · 6.9.2: APK692
+- APK 6.9.1 (marka): https://expo.dev/artifacts/eas/aYMWozrVThPIaMJdtGGIzfy-yv4pucvNgRpRORv_Z8o.apk · 6.9.2 (295): https://expo.dev/artifacts/eas/oVsOtmTFop88tWaXyLnH22vKr6sRgxT362-q97YPUAs.apk
