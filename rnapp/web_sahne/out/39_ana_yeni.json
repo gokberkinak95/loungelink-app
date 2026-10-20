@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -22,7 +13,7 @@
   "KREDİ",
   "0",
   "LOUNGEPUAN",
-  "26",
+  "16",
   "GÜVEN",
   "0",
   "SOHBET",
@@ -38,7 +29,7 @@
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "16:46–20:16",
+  "17:32–21:02",
   "Host bul",
   "",
   "Ana Sayfa",

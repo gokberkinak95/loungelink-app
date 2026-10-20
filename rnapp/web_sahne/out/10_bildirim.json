@@ -7,10 +7,6 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -97,15 +93,15 @@
   "BUGÜN",
   "",
   "İstek kabul edildi",
-  "1 sa",
+  "4 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "1 sa",
+  "20 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
   "",
   "Havalimanı güncellemesi #1",
-  "2 sa"
+  "1 sa"
  ],
  "tasan": [],
  "bitisik": []

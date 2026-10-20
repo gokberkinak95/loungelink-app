@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -36,7 +23,7 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · 212 GÜN SONRA",
+  "SIRADAKİ SEYAHATİN · 223 GÜN SONRA",
   "TK1979",
   "IST",
   "LHR",

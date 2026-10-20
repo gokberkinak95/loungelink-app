@@ -43,6 +43,7 @@ import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga,
 import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
+import { VitrinKarti, MiniErken, MiniFiyat, IndirimBandi, bantMetni } from "./odul_magaza";
 import { yerelGun } from "./zaman";
 import { odemeVar, krediPaketleri, abonelikPaketleri, satinAl, geriYukle, abonelikYonet, bekleKredi, beklePlan } from "./odeme";
 
@@ -3175,7 +3176,7 @@ export function Notifications({ t, session, onRefreshBadge, onGit, onBack }) {
     </Sayfa>
   );
 }
-export function Marketplace({ t, session, onBack }) {
+export function Marketplace({ t, session, onBack, onPlans, lang }) {
   const uid = session?.user?.id;
   const [rewards, setRewards] = useState(null);
   const [bal, setBal] = useState(0);
@@ -3184,6 +3185,11 @@ export function Marketplace({ t, session, onBack }) {
   const [cat, setCat] = useState("all");   // #16: MVP kategori sekmeleri
   const [err, setErr] = useState("");
   const [yukErr, setYukErr] = useState("");
+  // 6.9.0 (SQL 338) — mağaza durumu sunucudan: fiyat, erken erişim, vitrin, sunucu saati.
+  const [magaza, setMagaza] = useState(null);
+  const [fark, setFark] = useState(0);          // sunucu saati − cihaz saati (ms)
+  const en = (lang || etkinDil()) === "en";
+  const yenileZamani = useRef(null);
 
   const load = useCallback(async () => {
     // 🔴 v2.99 — `error` OKUNMUYORDU: ag koptugunda kullanici BOS BIR ODUL
@@ -3191,11 +3197,30 @@ export function Marketplace({ t, session, onBack }) {
     // en pahali sinif.
     // 🆕 SINIF: "BOS DURUM DAVET EDER, HATA DURUMU YENIDEN DENEMEYE CAGIRIR
     // — IKISI AYNI EKRAN OLAMAZ."
-    const [{ data: rw, error: e1 }, { data: pl }, { data: rd }] = await Promise.all([
-      supabase.from("rewards").select("*").eq("active", true).order("sort_order"),
+    const [{ data: mg, error: e0 }, { data: pl }, { data: rd }] = await Promise.all([
+      supabase.rpc("odul_magazasi"),
       supabase.from("points_ledger").select("delta").eq("user_id", uid),
       supabase.from("redemptions").select("reward_id, voucher_code").eq("user_id", uid),
     ]);
+    let rw = null, e1 = null;
+    if (!e0 && mg && Array.isArray(mg.oduller)) {
+      setMagaza(mg);
+      setFark(mg.simdi ? new Date(mg.simdi).getTime() - Date.now() : 0);
+      rw = mg.oduller;
+      // Bir sonraki durum değişiminde (erken erişim bitişi, vitrin bitişi, açılış) tek kez yenile.
+      if (yenileZamani.current) clearTimeout(yenileZamani.current);
+      if (mg.sonraki_degisim) {
+        const ms = new Date(mg.sonraki_degisim).getTime() - new Date(mg.simdi).getTime() + 1000;
+        if (ms > 0 && ms < 2 ** 31 - 1) yenileZamani.current = setTimeout(() => { yenileZamani.current = null; loadRef.current && loadRef.current(); }, ms);
+      }
+    } else {
+      // SQL 338 koşulmamışsa eski yol: liste fiyatı, erken erişim/indirim yok.
+      if (e0) logError("odul_magazasi", e0);
+      setMagaza(null);
+      const r0 = await supabase.from("rewards").select("*").eq("active", true).order("sort_order");
+      e1 = r0.error;
+      rw = (r0.data || []).map(x => ({ ...x, fiyat: x.cost_points, alabilir: true, erken: false, vitrin: !!x.is_featured, plan_fiyatlari: [] }));
+    }
     if (e1) { logError("marketplace_rewards", e1); setYukErr(mapErr(t, e1.message)); setRewards([]); return; }
     setYukErr("");
     setRewards(rw || []);
@@ -3203,12 +3228,18 @@ export function Marketplace({ t, session, onBack }) {
     const m = {}; (rd || []).forEach(r => { m[r.reward_id] = r.voucher_code; });
     setMine(m);
   }, [uid]);
-  useEffect(() => { load(); }, [load]);
+  const loadRef = useRef(null);
+  loadRef.current = load;
+  useEffect(() => { load(); return () => { if (yenileZamani.current) clearTimeout(yenileZamani.current); }; }, [load]);
 
   async function redeem(rw) {
     setBusy(rw.id);
     setErr("");
-    const { error } = await supabase.rpc("redeem_reward", { p_reward_id: rw.id });
+    // Gösterilen fiyat sunucuya gider: sunucu farklı hesaplarsa (plan ya da oran değişti)
+    // 'odul_fiyati_degisti' döner ve hiçbir puan düşmez; ekran yenilenip yeni fiyat görünür.
+    const { error } = magaza
+      ? await supabase.rpc("redeem_reward", { p_reward_id: rw.id, p_beklenen: rw.fiyat })
+      : await supabase.rpc("redeem_reward", { p_reward_id: rw.id });
     setBusy(null);
     // 🔴 v2.99 — HATA DALI YOKTU. Kullanici "Kullan"a basiyor, dugme bir an
     // donuyor ve eski haline geliyordu. Kupon gelmiyor, mesaj cikmiyor.
@@ -3217,7 +3248,11 @@ export function Marketplace({ t, session, onBack }) {
     // duzeltilmisti; UCUNCU ekranda tekrar etmis.
     // 🆕 SINIF: "BIR KUSURUN IKI YERDE DUZELTILMESI, UCUNCU YERDE
     // DUZELTILDIGI ANLAMINA GELMEZ — SINIFI ARA, ORNEGI DEGIL."
-    if (error) { logError("redeem_reward", error); setErr(mapErr(t, error.message)); return; }
+    if (error) {
+      logError("redeem_reward", error); setErr(mapErr(t, error.message));
+      if (/odul_fiyati_degisti|odul_erken_erisimde|out_of_stock|reward_unavailable/.test(error.message || "")) load();
+      return;
+    }
     if (!error) load();
   }
 
@@ -3225,6 +3260,10 @@ export function Marketplace({ t, session, onBack }) {
   // 🔴 v3.7 — ÖDÜL KATEGORİSİ İKONLARI da emoji taşıyordu; beşi de
   // gövde fontunda yok. Anlam adlarına çevrildi.
   const icon = { lounge: "odulSalon", miles: "odulMil", hotel: "odulOtel", esim: "odulEsim", insurance: "odulSigorta" };
+  // 6.9.0 — kategori çipleri yalnız ödülü olan kategoriler (boş "Lounge" sekmesi kalktı).
+  const KATLAR = [["hotel", t.catHotel], ["miles", t.catMiles], ["esim", "eSIM"], ["insurance", t.catInsurance]];
+  const kategoriCipleri = [["all", t.catAll], ...KATLAR.filter(([k]) => rewards.some(r => r.category === k))];
+  const bant = bantMetni(t, magaza, en);
 
   return (
     <Sayfa>
@@ -3246,7 +3285,7 @@ export function Marketplace({ t, session, onBack }) {
           }
           altIcerik={
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ARA[8], marginTop: ARA[12] }}>
-              {[["all", t.catAll], ["lounge", "Lounge"], ["hotel", t.catHotel], ["miles", t.catMiles], ["esim", "eSIM"], ["insurance", t.catInsurance]].map(([k, lb]) => (
+              {kategoriCipleri.map(([k, lb]) => (
                 <Cip key={k} etiket={lb} secili={cat === k} onPress={() => setCat(k)} />
               ))}
             </View>
@@ -3290,7 +3329,7 @@ export function Marketplace({ t, session, onBack }) {
         </View>
       )}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: ARA[14] }}>
-        {[["all", t.catAll], ["lounge", "Lounge"], ["hotel", t.catHotel], ["miles", t.catMiles], ["esim", "eSIM"], ["insurance", t.catInsurance]].map(([k, lb]) => (
+        {kategoriCipleri.map(([k, lb]) => (
           <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} onPress={() => setCat(k)}
             style={{ paddingVertical: SP[2], paddingHorizontal: SP[3], borderBottomWidth: 2.5, borderBottomColor: cat === k ? C.gold : "transparent" }}>
             <Text style={{ fontSize: FS.sm, color: cat === k ? C.gold : C.mut, fontWeight: cat === k ? "700" : "400" }}>{lb}</Text>
@@ -3308,57 +3347,44 @@ export function Marketplace({ t, session, onBack }) {
           seçim üretmez. Tek kahraman, listenin geri kalanını da okunur
           yapar. Hangi ödülün kahraman olacağı BO'dan seçilir (tek kahraman
           kuralı veritabanında kısmi benzersiz indeksle garanti). */}
+      {/* 6.9.0 — İNDİRİM ŞERİDİ + VİTRİN. Vitrindeki ödül listede ayrıca görünmez; vitrin süresi
+          bitince sunucu `vitrin=false` döner ve ödül listeye iner (aynı ödül iki yerde çıkmaz). */}
+      <View style={{ width: "100%" }}><IndirimBandi metin={bant} benim={!!(magaza && magaza.ucretli)} /></View>
       {(() => {
-        const hero = rewards.find(r => r.is_featured);
+        const hero = rewards.find(r => r.vitrin);
         if (!hero || (cat !== "all" && hero.category !== cat)) return null;
-        const owned = mine[hero.id];
-        const short = Math.max(0, (hero.cost_points || 0) - bal);
         return (
-          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} activeOpacity={0.85} disabled={!!owned || short > 0}
-            onPress={() => redeem(hero)}
-            style={{ backgroundColor: C.gece, borderRadius: R.sm, padding: ARA[18], marginBottom: SP[4], ...ELEV.raised }}>
-            <Text style={{ ...T.label, color: C.gold, marginBottom: ARA[6] }}>{t.shopHeroReward}</Text>
-            <Text style={{ ...T.title, fontWeight: "700", color: C.onAccent }}>{hero.title}</Text>
-            {!!hero.subtitle && (
-              <Text style={{ ...T.sm, color: C.coolLine, marginTop: SP[1] }}>{hero.subtitle}</Text>
-            )}
-            {!!hero.featured_note && (
-              <Text style={{ ...T.sm, color: C.gold, marginTop: ARA[6], fontWeight: "700" }}>{hero.featured_note}</Text>
-            )}
-            <View style={{ flexDirection: "row", alignItems: "center", marginTop: ARA[14] }}>
-              <Text style={{ ...T.lg, fontWeight: "700", color: C.gold, flex: 1 }}>
-                {(hero.cost_points || 0).toLocaleString()} {t.pointsUnit || "puan"}
-              </Text>
-              <View style={{ backgroundColor: owned ? C.pasifRozet : short > 0 ? C.pasifRozet : C.gold,
-                             borderRadius: R.xs, paddingVertical: SP[2], paddingHorizontal: ARA[18] }}>
-                <Text style={{ color: C.onAccent, ...T.sm, fontWeight: "700" }}>
-                  {owned ? (t.shopOwned || "Alındı") : short > 0 ? (t.shopShort || "Yetersiz") : (t.shopRedeem || "Kullan")}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+          <View style={{ width: "100%" }}>
+            <VitrinKarti t={t} m={magaza} rw={hero} en={en} fark={fark} sahip={!!mine[hero.id]} bakiye={bal}
+              mesgul={busy === hero.id} onAl={() => redeem(hero)} onPlanlar={onPlans} onYenile={load} />
+          </View>
         );
       })()}
-      {rewards.filter(r => (cat === "all" || r.category === cat) && !r.is_featured).map(rw => {
+      {rewards.filter(r => (cat === "all" || r.category === cat) && !r.vitrin).map(rw => {
         const has = mine[rw.id];
-        const can = bal >= rw.cost_points;
+        const can = bal >= rw.fiyat && rw.alabilir;
         return (
-          <View key={rw.id} style={{ width: "48.5%", backgroundColor: C.card, borderWidth: 1, borderColor: C.line, borderRadius: R.sm, padding: SP[3], marginBottom: SP[2], opacity: (can || has) ? 1 : 0.6 , ...ELEV.card }}>
+          <View key={rw.id} style={{ width: "48.5%", backgroundColor: C.card, borderWidth: 1, borderColor: C.line, borderRadius: R.sm, padding: SP[3], marginBottom: SP[2], opacity: (can || has || !rw.alabilir) ? 1 : 0.6, ...ELEV.card }}>
             <Ikon ad={icon[rw.category] || "davet"} boy={26} renk={C.goldText} stil={{ marginBottom: SP[2] }} />
+            <MiniErken t={t} rw={rw} fark={fark} onYenile={load} />
             <Text style={{ fontWeight: "600", color: C.ink, fontSize: FS.sm, marginBottom: SP[1], lineHeight: 16 }}>{rw.title}</Text>
             {!!rw.subtitle && <Text style={{ color: C.mut, fontSize: FS.xs, marginBottom: ARA[10] }}>{rw.subtitle}</Text>}
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: SP[1] }}>
+            {/* 6.9.0 — fiyat ÜSTTE, düğme ALTTA: her kartta aynı düzen. Yan yana dururken uzun fiyat
+                (üstü çizili + indirimli + "Jetset'te …") düğmeyi bazı kartlarda alta itiyordu. */}
+            <View style={{ alignItems: "flex-start", gap: ARA[8], marginTop: "auto", paddingTop: SP[1] }}>
               {/* v1.82: fiyat ile butondaki "eksik puan" yan yana İKİ SAYI gibi
                   okunuyordu ("1.500  +1.500"). Fiyatın yanına birim yazıldı,
                   buton artık sayı değil DURUM söylüyor. */}
-              <Text style={{ fontSize: FS.xs, fontWeight: "600", color: has ? C.green : C.gold }}>
-                {has ? t.redeemed : `${rw.cost_points.toLocaleString()} ${t.points}`}
-              </Text>
-              {!has && (
+              {has ? (
+                <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.greenInk }}>{t.redeemed}</Text>
+              ) : <MiniFiyat t={t} m={magaza} rw={rw} en={en} />}
+              {!has && (rw.alabilir ? (
                 <Btn v={can ? "gold" : "muted"} mini onPress={() => redeem(rw)}
                   disabled={!can || busy === rw.id} busy={busy === rw.id}
                   label={can ? t.redeem : t.notEnoughPoints} />
-              )}
+              ) : (
+                <Btn v="ghost" mini onPress={onPlans} label={t.odulPlanlariGor} />
+              ))}
             </View>
             {has && <View style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, paddingVertical: SP[1], paddingHorizontal: SP[2], marginTop: SP[2] }}>
               <Text style={{ fontSize: FS.micro, color: C.mutedAA, textAlign: "center" }}>{t.voucherIs}: {has}</Text>
@@ -3379,7 +3405,7 @@ export function Marketplace({ t, session, onBack }) {
         {[[t.earnSession, t.earnSessionD], [t.earnInvite, t.earnInviteD], [t.earnId, t.earnIdD], [t.earnLinkedin, t.earnLinkedinD]].map(([ti, de], i, arr) => (
           <View key={ti} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: SP[2], borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: C.line }}>
             <Text style={{ fontSize: FS.sm, color: C.body }}>{ti}</Text>
-            <Text style={{ fontSize: FS.xs, color: C.gold, fontWeight: "600" }}>{de}</Text>
+            <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>{de}</Text>
           </View>
         ))}
       </View>
@@ -3389,7 +3415,7 @@ export function Marketplace({ t, session, onBack }) {
           sözleşmesini tek cümlede anlatıyor ve kredi oranının 1:1 olmasıyla
           artık BİREBİR doğru: bir ağırlama = bir misafirlik hakkı. Sayı 3
           iken bu cümle kurulamazdı. */}
-      <Text style={{ fontSize: FS.lg, color: C.gold, textAlign: "center",
+      <Text style={{ fontSize: FS.lg, color: C.goldText, textAlign: "center",
                      lineHeight: 24, marginBottom: SP[4], paddingHorizontal: SP[3] }}>
         {t.motto}
       </Text>
@@ -3620,7 +3646,7 @@ export function Plans({ t, session, onBack, lang }) {
                   ) : null}
               </View>
 
-              <Text style={{ marginTop: SP[1], color: C.gold, fontSize: FS.title, fontWeight: "700" }}>
+              <Text style={{ marginTop: SP[1], color: C.goldText, fontSize: FS.title, fontWeight: "700" }}>
                 {magazaFiyat ? magazaFiyat : ucret == null ? t.planPriceUnknown : ucret === 0 ? t.free : `₺${ucret}`}
                 {ucret > 0 && (
                   <Text style={{ fontSize: FS.sm, color: C.mut, fontWeight: "400" }}>

@@ -22,7 +22,7 @@
 // Tek yönlü; asla tersi. (`node check.js` yer tutucu kalmadığını denetler.)
 // ============================================================
 
-export const LEGAL_VERSION = "2026-10-19";
+export const LEGAL_VERSION = "2026-10-20";
 
 // Veri sorumlusu: gerçek kişi (bireysel geliştirici). Mağaza hesabındaki ad ile aynı.
 const COMPANY = "Gökberk İnak";
@@ -342,6 +342,11 @@ devredemezsin. Hesabını istediğin an uygulama içinden silebilirsin.
   planına göre puan kazanır (Yolcu 100, Sık Uçan 250, Jetset 500).
   LoungePuan bir para birimi değildir; nakde çevrilemez, devredilemez;
   ödüllerin puan karşılığı ve stokları değişebilir.
+· Plan ayrıcalıkları (ödüller): ücretli plan üyeleri ödülleri planlarının
+  indirim oranı kadar daha az puanla alabilir; yeni ödüller bir süre yalnız
+  ücretli plan üyelerine açık olabilir (erken erişim). Oranlar ve süreler
+  mağazada ve plan ekranında yazar ve değişebilir; ödülü aldığın anda
+  mağazada sana gösterilen puan düşülür.
 
 7) UYGULAMA İÇİ SATIN ALMA VE ABONELİK
 · Kredi paketleri ve abonelik planları (Sık Uçan, Jetset) yalnızca App

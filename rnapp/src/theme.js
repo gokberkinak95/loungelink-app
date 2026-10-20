@@ -134,6 +134,10 @@ export const TUR = {
   karartma: "rgba(14,12,10,0.55)", halka: "#E6D4A8", noktaKenar: "#1A2B4C",
 };
 
+// 20 Ekim — ödül vitrini (src/odul_magaza.js): gece kartının üstündeki rozet çizgisi ve yetersiz
+// bakiye düğmesi. Gece kartı her temada gece mavisi → temadan bağımsız.
+export const ODUL = { rozetCizgi: "rgba(212,195,163,0.55)", pasifDolgu: "rgba(249,248,246,0.14)" };
+
 export const F = {
   // MVP: Cormorant Garamond. iOS'ta Georgia en yakin sistem serif'i.
   // Android'de "Georgia" YOK — bilinmeyen fontFamily sessizce Roboto'ya

@@ -1616,7 +1616,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     kimlik: () => (<KimlikDogrula t={t} session={session} onBack={() => setShowKimlik(false)} />),
     wallet: () => (<Wallet t={t} session={session} onBack={() => setShowWallet(false)} />),
     hostApply: () => (<HostApply t={t} session={session} onBack={() => setShowHostApply(false)} />),
-    shop: () => (<Marketplace t={t} session={session} onBack={() => setShowShop(false)} />),
+    shop: () => (<Marketplace t={t} lang={lang} session={session} onBack={() => setShowShop(false)} onPlans={() => setShowPlans(true)} />),
     camps: () => (<Campaigns t={t} onBack={() => setShowCamps(false)} />),
     settings: () => (<Settings t={t} lang={lang} setLang={setLangGlobal} session={session} onBack={() => setShowSettings(false)}
     onEditProfile={() => setShowEditProf(true)}

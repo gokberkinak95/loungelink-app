@@ -156,6 +156,13 @@ SAHNELER = {
     "20_ayarlar":      ("selin",   [("dokun", "Profil"), ("dokun_a11y", "Ayarlar")]),   # ekran: Settings
     "21_cuzdan":       ("selin",   [("dokun", "Profil"), ("dokun_a11y", "Cüzdan")]),     # ekran: Wallet
     "22_market":       ("selin",   [("dokun", "Profil"), ("dokun", "LoungePuan")]),     # ekran: Marketplace
+    # 6.9.0 (SQL 338) — vitrin + erken erişim + plana göre indirim, üç plan ve üç genişlik.
+    "22b_market_sikucan": ("mert",  [("dokun", "Profil"), ("dokun", "LoungePuan")]),     # ekran: Marketplace · Sık Uçan
+    "22c_market_jetset":  ("deniz", [("dokun", "Profil"), ("dokun", "LoungePuan")]),     # ekran: Marketplace · Jetset
+    "22d_market_320":     ("selin", [("dokun", "Profil"), ("dokun", "LoungePuan")], "gen=320"),  # ekran: Marketplace · 320
+    "22e_market_430":     ("selin", [("dokun", "Profil"), ("dokun", "LoungePuan")], "gen=430"),  # ekran: Marketplace · 430
+    "22f_market_liste":   ("selin", [("dokun", "Profil"), ("dokun", "LoungePuan"), ("kaydir",), ("bekle", 700)]),  # ekran: Marketplace · liste
+    "22g_market_planlar": ("selin", [("dokun", "Profil"), ("dokun", "LoungePuan"), ("dokun", "Planları gör"), ("bekle", 1200)]),  # ekran: Plans
     "23_degerlendirme":("selin",   [("dokun", "Profil"), ("dokun", "Değerlendirmeler")]),  # ekran: Degerlendirmeler
     "24_guvenlik":     ("selin",   [("dokun", "Profil"), ("dokun", "Güvenlik Merkezi")]),  # ekran: Safety
     "25_oturum_gecmisi":("selin",  [("dokun", "Profil"), ("dokun", "Oturum Geçmişi")]),    # ekran: SessionHistory
@@ -511,7 +518,10 @@ def cek(sahneler, tam=False):
                 kayit_sahne = SAHNELER[ad]
                 kim, adimlar = kayit_sahne[0], kayit_sahne[1]
                 ek = kayit_sahne[2] if len(kayit_sahne) > 2 else ""
-                ctx = b.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=3,
+                # 20 Ekim — `gen=NNN` ek sorgusu: dar/geniş telefon genişliği (320 · 375 · 430) ölçülür.
+                _g = re.search(r"gen=(\d+)", ek or "")
+                GEN = int(_g.group(1)) if _g else 390
+                ctx = b.new_context(viewport={"width": GEN, "height": 844}, device_scale_factor=3,
                                     is_mobile=True, has_touch=True, locale="tr-TR",
                                     user_agent="Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
                 pg = ctx.new_page()
@@ -552,8 +562,8 @@ def cek(sahneler, tam=False):
                     # Yani yanlış olan metin değil kutuydu ve o sınıf hiç
                     # ölçülmüyordu. Artık her sahne kendi taşan kutularını
                     # bildiriyor (`kutu_tasma_check.py` okuyor).
-                    kayit["tasan"] = pg.evaluate("""() => {
-                      const V = 390, cik = [];
+                    kayit["tasan"] = pg.evaluate("""(V) => {
+                      const cik = [];
                       const kaydirirMi = e => {
                         const c = getComputedStyle(e);
                         return c.overflowX === "auto" || c.overflowX === "scroll" ||
@@ -571,7 +581,7 @@ def cek(sahneler, tam=False):
                       });
                       // yalnız EN İÇTEKİ taşanlar: aynı metni taşıyan ata zincirini tekrar yazma
                       return cik.filter((a, i) => !cik.some((b, j) => j !== i && b.tx && a.tx === b.tx && b.g <= a.g && j > i)).slice(0, 20);
-                    }""")
+                    }""", GEN)
                     # 🔴 12 EYLÜL (Gökberk md.6) — İKON İLE METİN ARASINDAKİ BOŞLUK.
                     # "plan sayfasında ayda x kredi yazan yerin yanındaki icon
                     # bitişik duruyor text ile". Kaynaktan aramak yanıltıcı

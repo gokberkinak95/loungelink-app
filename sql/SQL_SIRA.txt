@@ -1,3 +1,21 @@
+SQL SIRASI - 20 Ekim 2026 (10. tur) - YENI: 338 - 337'den SONRA
+
+Sira: 335 -> 336 -> 337 -> 338 (hangisi kosulmadiysa oradan basla)
+
+  1) 338_odul_erken_erisim_plan_indirimi.sql
+       -> Plana gore odul indirimi: oran BO > Planlar'dan (baslangic: Sik Ucan %5, Jetset %10, Yolcu 0).
+          Fiyat sunucuda hesaplanir; ekranda gorunen = bakiyeden dusen = deftere yazilan = iade edilen.
+          Oran 0 ya da bos ise indirim yazilari hic cikmaz.
+       -> Erken erisim: BO > Oduller > satirin "Yayin" bolumu (kutu + acilis + gun). Sure boyunca yalniz
+          ucretli plan alir (sunucu zorlar); acilis anindan once odul kimseye gorunmez.
+       -> Vitrin suresi: "Vitrinde goster" + gun; bitince odul listeye iner, vitrinde tek odul.
+       -> Plan kartlarina (app + site) "Odullerde %X indirim" ve "Yeni odullere erken erisim" satirlari.
+       -> Plan ekranindaki hediye sayaci 30 gun kuralina uyduruldu; ucretli planda kazanc cumlesi.
+       Dogrulama: on bir satir tamam = true.
+       App 6.9.0 bunu bekler. Eski app 338 ile de calisir: liste fiyatini gosterir ama sunucu planin
+       fiyatini duser (gosterilenden FAZLA asla dusmez); erken erisimde ucretsiz plana yine izin vermez.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 19 Ekim 2026 (9. tur) - YENI: 336 + 337 - 335'ten SONRA
 
 Sira: 330 -> 331 -> 332 -> 333 -> 334 -> 335 -> 336 -> 337 (hangisi kosulmadiysa oradan basla)

@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -34,7 +43,7 @@
   "YAYINDA · 2 YER AÇIK",
   "IST",
   "TAV Primeclass",
-  "19 MAYIS 2027 · 14:20–16:40",
+  "31 MAYIS 2027 · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "İlanı yönet",
@@ -42,7 +51,7 @@
   "YAYINDA · 1 YER AÇIK",
   "SAW",
   "Comfort Lounge",
-  "20 MAYIS 2027 · 09:00–11:30",
+  "1 HAZİRAN 2027 · 09:00–11:30",
   "",
   "Misafir ücretli girer",
   "İlanı yönet",
@@ -50,12 +59,12 @@
   "YAYINDA · 2 YER AÇIK",
   "IST",
   "LOUNGE",
-  "21 MAYIS 2027 · 10:00–16:00",
+  "2 HAZİRAN 2027 · 10:00–16:00",
   "",
   "Misafir ücretli girer",
   "İlanı yönet",
   "",
-  "SIRADAKİ SEYAHATİN · 214 GÜN SONRA",
+  "SIRADAKİ SEYAHATİN · 225 GÜN SONRA",
   "TK712",
   "IST",
   "Şimdi seni salona alabilecek bir host bulalım.",

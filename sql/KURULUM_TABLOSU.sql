@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 381 dosya · son: 337 · 315-337 elle eklendi)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 382 dosya · son: 338 · 315-338 elle eklendi)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -592,6 +592,7 @@ select z.dosya, 'tespit'
   (370, '335_telefon_firebase_dogrulama.sql', 'fonksiyon', 'telefon_dogrulandi_yaz'),
   (371, '336_kabulde_digerleri_geri_cek.sql', 'fonksiyon', 'kabulde_digerlerini_geri_cek'),
   (372, '337_jetset_puan_kredi_kurulus.sql', 'fonksiyon', 'etkin_plan_ic'),
+  (373, '338_odul_erken_erisim_plan_indirimi.sql', 'fonksiyon', 'odul_magazasi'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -982,6 +983,7 @@ with imza(sira, dosya, tip, ad) as (
   (370, '335_telefon_firebase_dogrulama.sql', 'fonksiyon', 'telefon_dogrulandi_yaz'),
   (371, '336_kabulde_digerleri_geri_cek.sql', 'fonksiyon', 'kabulde_digerlerini_geri_cek'),
   (372, '337_jetset_puan_kredi_kurulus.sql', 'fonksiyon', 'etkin_plan_ic'),
+  (373, '338_odul_erken_erisim_plan_indirimi.sql', 'fonksiyon', 'odul_magazasi'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

@@ -429,5 +429,29 @@ begin
   update trust_scores set score = 72, badge = 'verified' where user_id = ek;
 end $$;
 
+-- 20 Ekim (SQL 338) — MAĞAZA SAHNESİ: erken erişimli vitrin ödülü + plan sahiplerine puan.
+-- Yalnız yerel `ll`. Ödül sabit kimlikli; her tazelemede aynı duruma döner (açılış 1 saat önce,
+-- 2 gün erken erişim, 7 gün vitrin). Deniz (Jetset) ve Mert (Sık Uçan) 3.000 puan alır.
+do $m$
+declare v uuid := 'a1b2c3d4-0000-4000-8000-0000000000e1';
+begin
+  if not exists (select 1 from information_schema.columns where table_name = 'rewards' and column_name = 'erken_erisim') then
+    return;   -- 338 yoksa sahne eski mağazayı çeker
+  end if;
+  insert into rewards (id, title, subtitle, category, cost_points, active, sort_order, supplier, teslim_sekli, teslim_saat, maliyet_turu)
+  values (v, 'Airalo eSIM 10 GB', 'Küresel veri · 30 gün', 'esim', 3000, true, 1, 'Airalo', 'manuel', 48, 'ortaklik')
+  on conflict (id) do update set active = true, cost_points = 3000, title = excluded.title, subtitle = excluded.subtitle;
+  update rewards set is_featured = false, vitrin_bitis = null where is_featured and id <> v;
+  update rewards set erken_erisim = true, acilis_at = now() - interval '1 hour', erken_erisim_gun = 2,
+                     is_featured = true, vitrin_bitis = now() + interval '7 days', plan_indirimi_yok = false
+   where id = v;
+  update plan_catalog set odul_indirim_yuzde = 5 where plan = 'sik_ucan';
+  update plan_catalog set odul_indirim_yuzde = 10 where plan = 'kahya';
+  delete from points_ledger where reason = 'sahne_magaza';
+  insert into points_ledger (user_id, delta, reason)
+  select id, 3000, 'sahne_magaza' from users where email in ('deniz@sahne.loungelink.test', 'mert@sahne.loungelink.test');
+  delete from redemptions where reward_id = v;
+end $m$;
+
 commit;
 select 'sahne seed OK' as sonuc;

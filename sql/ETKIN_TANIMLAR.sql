@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-10-19
+-- Uretim tarihi: 2026-10-20
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,8 +9,8 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 542
--- Birden cok dosyada tanimli (dikkat!): 164
+-- Toplam fonksiyon: 547
+-- Birden cok dosyada tanimli (dikkat!): 165
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -109,7 +109,7 @@
 --   rate_session                 -> etkin: 078_trust_single_writer.sql  (ayrica: 008_chat_sessions.sql, 068_fix_rate_session.sql)
 --   recompute_badge              -> etkin: 046_trust_and_host_visibility.sql  (ayrica: 032_p2_flows.sql, 033_beta_credits_dualrole_radar.sql)
 --   recompute_trust              -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 046_trust_and_host_visibility.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql)
---   redeem_reward                -> etkin: 229_odul_teslim_sozu.sql  (ayrica: 017_marketplace.sql, 029_bo_requirements.sql)
+--   redeem_reward                -> etkin: 338_odul_erken_erisim_plan_indirimi.sql  (ayrica: 017_marketplace.sql, 029_bo_requirements.sql, 229_odul_teslim_sozu.sql)
 --   remove_rating                -> etkin: 297_yetki_kapilari.sql  (ayrica: 021_moderation_tools.sql)
 --   request_account_deletion     -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 141_deletion_flow_check.sql)
 --   request_credit_cost          -> etkin: 252_ulasilabilirlik_ve_push_izni.sql  (ayrica: 206_host_motoru.sql, 249_is_modeli_ve_soguk_ag.sql)
@@ -139,6 +139,7 @@
 --   send_otp                     -> etkin: 269_dogrulama_zinciri.sql  (ayrica: 009_phone_otp.sql, 203_guvenlik_siniri.sql)
 --   set_availability_carrier     -> etkin: 198_thy_ajet_ms_yeniden_dogrulama.sql  (ayrica: 117_carrier_field.sql)
 --   set_featured                 -> etkin: 225_planin_sozu_tutulsun.sql  (ayrica: 030_match_and_broadcast.sql)
+--   set_featured_reward          -> etkin: 338_odul_erken_erisim_plan_indirimi.sql  (ayrica: 093_reward_featured.sql)
 --   seyahat_ekle                 -> etkin: 325_seyahat_cakismasi_farkli_havalimani.sql  (ayrica: 250_yaptirim_huni_dil_ve_kapilar.sql, 283_kural_motoru_on_iki_boyut.sql)
 --   seyahat_sil                  -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 250_yaptirim_huni_dil_ve_kapilar.sql)
 --   sorularim                    -> etkin: 331_soru_kendi_kaydinda.sql  (ayrica: 235_sordugunu_gorebilmeli.sql, 239_soru_hangi_ilana_ait.sql, 248_duzenleme_baglanti_degerlendirme.sql)
@@ -147,7 +148,7 @@
 --   start_session                -> etkin: 080_session_lifecycle.sql  (ayrica: 008_chat_sessions.sql, 026_doc_parity_core.sql, 077_session_autostart_intro_slots.sql)
 --   start_session_request        -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
 --   submit_field_report          -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 095_close_the_loop.sql, 152_field_reports_loop.sql)
---   subscription_plans           -> etkin: 337_jetset_puan_kredi_kurulus.sql  (ayrica: 210_abonelik_push_ve_kapsam.sql, 220_plan_katalogu_ve_dil.sql, 334_ekonomi_ve_icerik_suzgeci.sql)
+--   subscription_plans           -> etkin: 338_odul_erken_erisim_plan_indirimi.sql  (ayrica: 210_abonelik_push_ve_kapsam.sql, 220_plan_katalogu_ve_dil.sql, 334_ekonomi_ve_icerik_suzgeci.sql, 337_jetset_puan_kredi_kurulus.sql)
 --   test_hesabi_gizli_mi         -> etkin: 302_test_hesaplarini_gorenler.sql  (ayrica: 301_guven_ve_akis_tamamlama.sql)
 --   trg_acik_istek_tavani        -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   trg_bakiye_negatife_dusemez  -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql)
@@ -1855,47 +1856,54 @@ grant execute on function public.discover_people(text, date) to authenticated;
 select '070 OK - discover_people artik seyahat bilgisi donduruyor (havalimani/tarih/ucus/ayni-ucus)' as sonuc;
 
 -- ----------------------------------------------------------------------
--- redeem_reward   [etkin kaynak: 229_odul_teslim_sozu.sql]
--- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- redeem_reward   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-create or replace function public.redeem_reward(p_reward_id uuid)
-returns jsonb language plpgsql security definer set search_path = public as $rr$
+create or replace function public.redeem_reward(p_reward_id uuid, p_beklenen int default null)
+returns jsonb language plpgsql security definer set search_path = public as $rr338$
 declare
   v_uid  uuid := auth.uid();
   v_r    rewards%rowtype;
+  v_plan text;
+  v_fiyat int;
   v_pts  int;
   v_ref  text;
   v_due  timestamptz;
   v_id   uuid;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
+  -- Kilit ÖNCE, bakiye SONRA (aynı anda iki alım bakiyeyi iki kez harcayamaz).
+  perform pg_advisory_xact_lock(hashtextextended('puan:' || v_uid::text, 0));
   select * into v_r from rewards where id = p_reward_id for update;
   if not found or not coalesce(v_r.active,false) then raise exception 'reward_unavailable'; end if;
+  if v_r.acilis_at is not null and v_r.acilis_at > now() then raise exception 'reward_unavailable'; end if;
   if v_r.stock is not null and v_r.stock <= 0 then raise exception 'out_of_stock'; end if;
-
-  -- 🔴 Teslim sözü olmayan ödül SATILMAZ. Kısıt zaten engelliyor ama
-  -- eski bir satır kısıttan önce girmişse burada da duruyoruz:
-  -- "iki kapı" bilerek — biri veriye, biri akışa.
   if v_r.teslim_sekli is null or v_r.teslim_saat is null or v_r.supplier is null then
     raise exception 'reward_fulfillment_undefined';
   end if;
 
-  select coalesce(sum(delta),0) into v_pts from points_ledger where user_id = v_uid;
-  if v_pts < v_r.cost_points then raise exception 'insufficient_points'; end if;
+  v_plan := public.etkin_plan_ic(v_uid);
+  if v_r.erken_erisim and now() < v_r.acilis_at + make_interval(days => v_r.erken_erisim_gun)
+     and not public.plan_ucretli(v_plan) then
+    raise exception 'odul_erken_erisimde';
+  end if;
 
-  -- 🔴 ARTIK "KUPON" DEĞİL, "TALEP NUMARASI".
-  -- Eski kod LL-XXXXXX üretiyordu ve ekranda kupon gibi duruyordu.
-  -- Bu numara bir TAKİP numarası: kullanıcı bununla bize sorar, biz
-  -- bununla kuyrukta buluruz. Kimse onu tedarikçiye yazmaya kalkmaz.
+  v_fiyat := public.odul_fiyati_ic(v_r.cost_points, v_r.plan_indirimi_yok, v_plan);
+  if p_beklenen is not null and p_beklenen <> v_fiyat then raise exception 'odul_fiyati_degisti'; end if;
+
+  select coalesce(sum(delta),0) into v_pts from points_ledger where user_id = v_uid;
+  if v_pts < v_fiyat then raise exception 'insufficient_points'; end if;
+
   v_ref := 'TAL-' || to_char(now(), 'YYMMDD') || '-' || upper(substr(md5(random()::text), 1, 5));
   v_due := now() + make_interval(hours => v_r.teslim_saat);
 
-  insert into redemptions (user_id, reward_id, cost_points, voucher_code, durum, due_at)
-  values (v_uid, p_reward_id, v_r.cost_points, v_ref, 'bekliyor', v_due)
+  -- redemptions.cost_points = ÖDENEN (iade bu sayıyı geri yükler) · liste_puani = indirimsiz fiyat
+  insert into redemptions (user_id, reward_id, cost_points, liste_puani, voucher_code, durum, due_at)
+  values (v_uid, p_reward_id, v_fiyat, v_r.cost_points, v_ref, 'bekliyor', v_due)
   returning id into v_id;
 
   insert into points_ledger (user_id, delta, reason, ref_id)
-  values (v_uid, -v_r.cost_points, 'reward_redeem', p_reward_id);
+  values (v_uid, -v_fiyat, 'reward_redeem', p_reward_id);
 
   if v_r.stock is not null then
     update rewards set stock = stock - 1 where id = p_reward_id;
@@ -1903,33 +1911,22 @@ begin
 
   insert into notifications (user_id, category, title, body, ref_type, ref_id)
   values (v_uid, 'system', 'Talebin alındı ✦',
-          v_r.title || ' · takip no ' || v_ref || E'\n'
+          v_r.title || ' · ' || v_fiyat || ' LoungePuan · takip no ' || v_ref || E'\n'
        || v_r.supplier || ' tarafından hazırlanıyor. En geç '
        || to_char(v_due, 'DD.MM HH24:MI') || ' itibarıyla hesabındaki e-posta adresine gelecek. '
        || 'Gelmezse bu takip numarasıyla bize yaz — puanın iade edilir.',
           'reward', v_id);
 
   return jsonb_build_object(
-    'ok', true,
-    'takip_no', v_ref,
-    'durum', 'bekliyor',
-    'teslim_sekli', v_r.teslim_sekli,
-    'son_tarih', v_due,
-    'tedarikci', v_r.supplier,
-    'bakiye', v_pts - v_r.cost_points,
-    -- Eski alan adları geriye dönük bırakılıyor: app'in eski sürümü
-    -- `code`/`voucher` okuyorsa ekran boş kalmasın. Ama içerik artık
-    -- takip numarası ve bildirim metni ne olduğunu söylüyor.
-    'code', v_ref,
-    'voucher', v_ref
-  );
-end $rr$;
-grant execute on function public.redeem_reward(uuid) to authenticated;
+    'ok', true, 'takip_no', v_ref, 'durum', 'bekliyor', 'teslim_sekli', v_r.teslim_sekli,
+    'son_tarih', v_due, 'tedarikci', v_r.supplier,
+    'puan', v_fiyat, 'liste_puani', v_r.cost_points,
+    'bakiye', v_pts - v_fiyat, 'code', v_ref, 'voucher', v_ref);
+end $rr338$;
+revoke all on function public.redeem_reward(uuid, int) from public, anon;
+grant execute on function public.redeem_reward(uuid, int) to authenticated, service_role;
 
--- ----------------------------------------------------------------------------
--- 4) TESLİM KUYRUĞU — BO'nun tek ekranı + geciken sayacı
--- ----------------------------------------------------------------------------
-drop function if exists public.bekleyen_teslimler();
+-- §5 · BO: yayın ayarları tek işlemde (vitrin tekliği + erken erişim + indirimsizlik)
 
 -- ----------------------------------------------------------------------
 -- change_plan   [etkin kaynak: 018_subscriptions.sql]
@@ -7125,26 +7122,26 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 
 -- ----------------------------------------------------------------------
--- set_featured_reward   [etkin kaynak: 093_reward_featured.sql]
+-- set_featured_reward   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.set_featured_reward(p_reward_id uuid)
-returns jsonb language plpgsql security definer set search_path = public as $$
+returns jsonb language plpgsql security definer set search_path = public as $sf338$
 declare v_title text; v_active boolean;
 begin
   if p_reward_id is null then
-    update rewards set is_featured = false where is_featured;
+    update rewards set is_featured = false, vitrin_bitis = null where is_featured;
     return jsonb_build_object('ok', true, 'featured', null);
   end if;
-
-  select title, coalesce(active, true) into v_title, v_active
-    from rewards where id = p_reward_id;
+  select title, coalesce(active, true) into v_title, v_active from rewards where id = p_reward_id;
   if not found then raise exception 'reward_not_found'; end if;
   if not v_active then raise exception 'reward_inactive'; end if;
-
-  update rewards set is_featured = false where is_featured and id <> p_reward_id;
-  update rewards set is_featured = true  where id = p_reward_id;
+  update rewards set is_featured = false, vitrin_bitis = null where is_featured and id <> p_reward_id;
+  update rewards set is_featured = true, vitrin_bitis = null where id = p_reward_id;
   return jsonb_build_object('ok', true, 'featured', p_reward_id, 'title', v_title);
-end $$;
+end $sf338$;
+
+-- §6 · plan kartları: indirim ve erken erişim satırları ORANDAN üretilir (app + site aynı kaynaktan)
 
 -- ----------------------------------------------------------------------
 -- admin_anonymize_user   [etkin kaynak: 329_silinen_hesap_14_gun_anonim.sql]
@@ -13280,11 +13277,11 @@ begin
 end $function$
 
 -- ----------------------------------------------------------------------
--- subscription_plans   [etkin kaynak: 337_jetset_puan_kredi_kurulus.sql]
--- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- subscription_plans   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.subscription_plans(p_lang text default 'tr')
-returns jsonb language sql stable security definer set search_path = public as $sp337$
+returns jsonb language sql stable security definer set search_path = public as $sp338$
   select jsonb_agg(jsonb_build_object(
            'plan', p.plan, 'ad',
              case when lower(coalesce(p_lang,'tr')) = 'en' then coalesce(nullif(p.ad_en,''), p.ad) else p.ad end,
@@ -13293,8 +13290,15 @@ returns jsonb language sql stable security definer set search_path = public as $
            'yillik_indirim_yuzde', case when p.price_try > 0 and p.yillik_try > 0
              then round(100 - (p.yillik_try::numeric / (p.price_try * 12) * 100)) end,
            'haklar',
-             case when lower(coalesce(p_lang,'tr')) = 'en' and jsonb_array_length(coalesce(p.perks_en,'[]'::jsonb)) > 0
-                  then p.perks_en else p.perks end,
+             (case when lower(coalesce(p_lang,'tr')) = 'en' and jsonb_array_length(coalesce(p.perks_en,'[]'::jsonb)) > 0
+                   then p.perks_en else p.perks end)
+             || case when p.odul_indirim_yuzde > 0 then jsonb_build_array(
+                  case when lower(coalesce(p_lang,'tr')) = 'en'
+                       then format('%s%% off rewards', p.odul_indirim_yuzde)
+                       else format('Ödüllerde %%%s indirim', p.odul_indirim_yuzde) end) else '[]'::jsonb end
+             || case when p.price_try > 0 then jsonb_build_array(
+                  case when lower(coalesce(p_lang,'tr')) = 'en' then 'Early access to new rewards'
+                       else 'Yeni ödüllere erken erişim' end) else '[]'::jsonb end,
            'sira', p.sort_order,
            'kacirilan_sikligi', p.kacirilan_sikligi,
            'oncelikli_destek', p.oncelikli_destek,
@@ -13302,15 +13306,66 @@ returns jsonb language sql stable security definer set search_path = public as $
            'baglanti_haftalik', p.baglanti_haftalik,
            'agirlama_puani', p.agirlama_puani,
            'agirlama_kredisi', p.agirlama_kredisi,
+           'odul_indirim_yuzde', p.odul_indirim_yuzde,
+           'erken_erisim', p.price_try > 0,
            'kurulus', (public.kurulus_fiyati() ->> 'aktif')::boolean and p.price_try > 0,
            'kurulus_bitis', public.kurulus_fiyati() ->> 'bitis')
          order by p.sort_order)
     from plan_catalog p where p.aktif;
-$sp337$;
+$sp338$;
 grant execute on function public.subscription_plans(text) to anon, authenticated;
 
--- §8 · host premium A: yalnız kimliği doğrulanmış misafir
-alter table availabilities add column if not exists yalniz_kimlikli boolean not null default false;
+-- §6b · Plan ekranındaki hediye sayacı 337'nin kuralıyla aynı: SON 30 GÜN (son hediyeden sonrası).
+--      Önceki sayaç tüm zamanları sayıyordu: "3 kişi ağırladın. 3 ağırlamada üst plan açılıyor" diyordu
+--      ama hediye 30 gün penceresinde değerlendirildiği için açılmıyordu.
+do $mp338$
+declare v_def text; v_yeni text;
+begin
+  select pg_get_functiondef(p.oid) into v_def from pg_proc p
+   where p.proname = 'my_plan' and p.pronamespace = 'public'::regnamespace limit 1;
+  if v_def is null then raise exception '338: my_plan bulunamadi'; end if;
+  if v_def like '%338 · 30 gün%' then return; end if;
+  v_yeni := replace(v_def,
+    'where r.host_id = v_uid and s.status=''completed'' and s.completed_at > v_son;',
+    'where r.host_id = v_uid and s.status=''completed'' and s.completed_at > greatest(v_son, now() - interval ''30 days''); -- 338 · 30 gün');
+  v_yeni := replace(v_yeni,
+    'when v_agir > 0 then format(''%s kişi ağırladın. %s ağırlamada üst plan 1 ay ücretsiz açılıyor.'', v_agir, v_esik)',
+    'when v_agir > 0 then format(''Son 30 günde %s kişi ağırladın. %s ağırlama daha yaparsan %s 1 ay ücretsiz açılır.'', v_agir, greatest(1, v_esik - v_agir), coalesce((select ad from plan_catalog where plan::text = v_plan_hediye), ''üst plan''))');
+  v_yeni := replace(v_yeni,
+    'else format(''Birini ağırla — %s ağırlamada üst plan %s gün boyunca ücretsiz açılır.'', v_esik, v_gun) end;',
+    'else format(''Birini ağırla — 30 gün içinde %s ağırlamada %s %s gün boyunca ücretsiz açılır.'', v_esik, coalesce((select ad from plan_catalog where plan::text = v_plan_hediye), ''üst plan''), v_gun) end;');
+  -- Zaten hediye planında ya da üstünde olan (Sık Uçan, Jetset) "X ağırlama daha yaparsan Sık Uçan açılır"
+  -- cümlesini görmesin: ona kendi planının ağırlama kazancı yazılır.
+  v_yeni := replace(v_yeni,
+    'select * into v_p from plan_catalog where plan = v_etkin;',
+    'if v_g.id is null and (select sort_order from plan_catalog where plan::text = v_plan_hediye)
+        <= coalesce((select sort_order from plan_catalog where plan::text = v_satin), -1) then
+    v_neden := (select format(''Her buluşmada %s LoungePuan, her ağırlamada %s kredi kazanırsın.'',
+                              coalesce(pc.agirlama_puani, 0), coalesce(pc.agirlama_kredisi, 0))
+                  from plan_catalog pc where pc.plan::text = v_satin);
+  end if; -- 338 · ücretli plan cümlesi
+
+  select * into v_p from plan_catalog where plan = v_etkin;');
+  if v_yeni = v_def or v_yeni not like '%338 · 30 gün%' or v_yeni not like '%338 · ücretli plan cümlesi%' or v_yeni like '%üst plan 1 ay ücretsiz açılıyor%' then
+    raise exception '338: my_plan metni beklenen bicimde degil, yama uygulanamadi';
+  end if;
+  execute v_yeni;
+end $mp338$;
+
+-- §7 · doğrulama
+select 'erken erisim kolonlari' as kontrol, (select count(*) from information_schema.columns where table_name = 'rewards'
+         and column_name in ('erken_erisim','acilis_at','erken_erisim_gun','vitrin_bitis','plan_indirimi_yok')) = 5 as tamam
+union all select 'plan indirim kolonu', exists (select 1 from information_schema.columns where table_name = 'plan_catalog' and column_name = 'odul_indirim_yuzde')
+union all select 'indirim 0/5/10', (select array_agg(odul_indirim_yuzde order by sort_order) from plan_catalog where plan in ('yolcu','sik_ucan','kahya')) = array[0,5,10]
+union all select 'fiyat hesabi 3000 -> 2700', public.odul_fiyati_ic(3000, false, 'kahya') = 2700
+union all select 'indirimsiz odul', public.odul_fiyati_ic(2000, true, 'kahya') = 2000
+union all select 'yolcu indirimsiz', public.odul_fiyati_ic(3000, false, 'yolcu') = 3000
+union all select 'redeem_reward yeni imza', exists (select 1 from pg_proc where proname = 'redeem_reward' and pronargs = 2)
+union all select 'eski redeem_reward yok', not exists (select 1 from pg_proc where proname = 'redeem_reward' and pronargs = 1)
+union all select 'magaza rpc', exists (select 1 from pg_proc where proname = 'odul_magazasi')
+union all select 'plan kartlari indirim satiri', (public.subscription_plans('tr') -> 2 -> 'haklar')::text like '%indirim%'
+union all select 'plan sayaci 30 gun', (select bool_or(prosrc like '%338 · 30 gün%') from pg_proc where proname = 'my_plan');
+-- Beklenen: on bir satır tamam = true.
 
 -- ----------------------------------------------------------------------
 -- send_missed_value_digest   [etkin kaynak: 210_abonelik_push_ve_kapsam.sql]
@@ -32443,5 +32498,178 @@ union all select 'kurulus fiyati aktif', (public.kurulus_fiyati() ->> 'aktif')::
 union all select 'yalniz kimlikli tetikleyici', exists (select 1 from pg_trigger where tgname = 'istek_yalniz_kimlikli')
 union all select 'gorunum tablosu', to_regclass('public.ilan_gorunumleri') is not null
 union all select 'host basamagi kaptan', (select ad from host_tiers where code = 'kahya') = 'Kaptan'
-union all select 'hediye 30 gun penceresi', pg_get_functiondef('public.plan_hediyesi_degerlendir(uuid)'::regprocedure) like '%30 days%';
--- Beklenen: on bir satır tamam = true.
+union all select 'hediye 30 gun penceresi', pg_get_functiondef('public.plan_hediyesi_degerlendir(uuid)'::regprocedure) like '%30 days%'
+union all select 'konsiyerj kaldirildi', not exists (select 1 from host_tiers where istek_bedava or code = 'konsiyerj');
+-- Beklenen: on iki satır tamam = true.
+
+-- ----------------------------------------------------------------------
+-- plan_ucretli   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.plan_ucretli(p_plan text)
+returns boolean language sql stable security definer set search_path = public as $f338$
+  select coalesce((select price_try > 0 from plan_catalog where plan::text = p_plan), false);
+$f338$;
+
+-- İndirimli fiyat: 10'un katına AŞAĞI yuvarlanır (kullanıcı lehine; %5 bile 300'lük ödülde görünür).
+
+-- ----------------------------------------------------------------------
+-- odul_fiyati_ic   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.odul_fiyati_ic(p_cost int, p_indirimsiz boolean, p_plan text)
+returns int language plpgsql stable security definer set search_path = public as $f338b$
+declare v_pct int;
+begin
+  if p_cost is null then return null; end if;
+  if coalesce(p_indirimsiz, false) then return p_cost; end if;
+  select coalesce(odul_indirim_yuzde, 0) into v_pct from plan_catalog where plan::text = p_plan;
+  if coalesce(v_pct, 0) <= 0 then return p_cost; end if;
+  return least(p_cost, greatest(0, (floor(p_cost * (100 - v_pct) / 100.0 / 10) * 10)::int));
+end $f338b$;
+
+revoke all on function public.plan_ucretli(text) from public, anon;
+revoke all on function public.odul_fiyati_ic(int, boolean, text) from public, anon, authenticated;
+
+-- §3 · mağaza: kullanıcıya kendi fiyatı + erken erişim + vitrin durumu, hepsi sunucu saatiyle
+
+-- ----------------------------------------------------------------------
+-- odul_magazasi   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.odul_magazasi()
+returns jsonb language plpgsql stable security definer set search_path = public as $m338$
+declare
+  v_uid uuid := auth.uid();
+  v_plan text;
+  v_ucretli boolean;
+  v_now timestamptz := now();
+  v_oduller jsonb;
+  v_indirim jsonb;
+  v_sonraki timestamptz;
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  v_plan := public.etkin_plan_ic(v_uid);
+  v_ucretli := public.plan_ucretli(v_plan);
+
+  -- İndirimi olan ücretli planlar (Yolcu'daki "Jetset'te …" satırı ve şerit buradan).
+  select coalesce(jsonb_agg(jsonb_build_object('plan', p.plan, 'ad', p.ad, 'ad_en', coalesce(nullif(p.ad_en,''), p.ad),
+                                               'yuzde', p.odul_indirim_yuzde) order by p.sort_order), '[]'::jsonb)
+    into v_indirim
+    from plan_catalog p where p.aktif and p.price_try > 0 and p.odul_indirim_yuzde > 0;
+
+  with r as (
+    select w.*,
+           (w.erken_erisim and w.acilis_at <= v_now
+              and v_now < w.acilis_at + make_interval(days => w.erken_erisim_gun)) as erken_aktif,
+           case when w.erken_erisim then w.acilis_at + make_interval(days => w.erken_erisim_gun) end as erken_bitis,
+           (w.is_featured and (w.vitrin_bitis is null or w.vitrin_bitis > v_now)) as vitrin_aktif
+      from rewards w
+     where w.active and (w.acilis_at is null or w.acilis_at <= v_now)
+  )
+  select coalesce(jsonb_agg(jsonb_build_object(
+           'id', r.id, 'title', r.title, 'subtitle', r.subtitle, 'category', r.category,
+           'stock', r.stock, 'featured_note', r.featured_note, 'sort_order', r.sort_order,
+           'cost_points', r.cost_points,
+           'fiyat', public.odul_fiyati_ic(r.cost_points, r.plan_indirimi_yok, v_plan),
+           'plan_fiyatlari', (select coalesce(jsonb_agg(jsonb_build_object(
+                                 'plan', p.plan, 'ad', p.ad, 'ad_en', coalesce(nullif(p.ad_en,''), p.ad),
+                                 'fiyat', public.odul_fiyati_ic(r.cost_points, r.plan_indirimi_yok, p.plan::text))
+                                 order by p.sort_order), '[]'::jsonb)
+                                from plan_catalog p
+                               where p.aktif and p.price_try > 0 and p.odul_indirim_yuzde > 0
+                                 and not r.plan_indirimi_yok),
+           'erken', r.erken_aktif,
+           'erken_bitis', case when r.erken_aktif then r.erken_bitis end,
+           'alabilir', (not r.erken_aktif) or v_ucretli,
+           'vitrin', r.vitrin_aktif,
+           'is_featured', r.vitrin_aktif)
+         order by r.sort_order), '[]'::jsonb)
+    into v_oduller from r;
+
+  -- İstemci tam bu anda yenilesin diye: en yakın erken-erişim bitişi / vitrin bitişi / açılış.
+  select min(t) into v_sonraki from (
+    select acilis_at + make_interval(days => erken_erisim_gun) as t from rewards
+     where active and erken_erisim and acilis_at + make_interval(days => erken_erisim_gun) > v_now
+    union all select vitrin_bitis from rewards where active and is_featured and vitrin_bitis > v_now
+    union all select acilis_at from rewards where active and acilis_at > v_now
+  ) x;
+
+  return jsonb_build_object(
+    'simdi', v_now, 'sonraki_degisim', v_sonraki,
+    'plan', v_plan, 'ucretli', v_ucretli,
+    'benim_yuzde', case when v_ucretli then coalesce((select odul_indirim_yuzde from plan_catalog where plan::text = v_plan), 0) else 0 end,
+    'indirimli_planlar', v_indirim,
+    'ucretli_planlar', (select coalesce(jsonb_agg(jsonb_build_object('plan', p.plan, 'ad', p.ad,
+                          'ad_en', coalesce(nullif(p.ad_en,''), p.ad)) order by p.sort_order), '[]'::jsonb)
+                          from plan_catalog p where p.aktif and p.price_try > 0),
+    'oduller', v_oduller);
+end $m338$;
+revoke all on function public.odul_magazasi() from public, anon;
+grant execute on function public.odul_magazasi() to authenticated;
+
+-- §4 · ödül al: fiyat SUNUCUDA, erken erişim SUNUCUDA, ekrandaki fiyatla karşılaştırma
+--      p_beklenen: uygulamanın gösterdiği fiyat. Farklıysa (plan/oran değişti) 'odul_fiyati_degisti'
+--      — sessizce başka bir puan düşmez. Eski uygulama p_beklenen göndermez → sunucu fiyatı geçerli.
+drop function if exists public.redeem_reward(uuid);
+
+-- ----------------------------------------------------------------------
+-- odul_yayin_ayarla   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.odul_yayin_ayarla(
+  p_reward uuid, p_erken boolean, p_acilis timestamptz, p_erken_gun int,
+  p_vitrin boolean, p_vitrin_gun int, p_indirimsiz boolean)
+returns jsonb language plpgsql security definer set search_path = public as $y338$
+declare v_r rewards%rowtype; v_bas timestamptz; v_eski uuid;
+begin
+  if auth.uid() is not null
+     and not exists (select 1 from admin_roles where user_id = auth.uid()) then
+    raise exception 'not_admin';
+  end if;
+  select * into v_r from rewards where id = p_reward for update;
+  if not found then raise exception 'reward_not_found'; end if;
+  if coalesce(p_erken,false) and (p_acilis is null or p_erken_gun is null or p_erken_gun not between 1 and 30) then
+    raise exception 'erken_erisim_eksik';
+  end if;
+  if coalesce(p_vitrin,false) and not coalesce(v_r.active,true) then raise exception 'reward_inactive'; end if;
+  if coalesce(p_vitrin,false) and p_vitrin_gun is not null and p_vitrin_gun not between 1 and 60 then
+    raise exception 'vitrin_suresi_gecersiz';
+  end if;
+
+  update rewards set
+    erken_erisim = coalesce(p_erken,false),
+    -- Kutu kalkarsa erken erişim alanları sıfırlanır; açılış anı da (ödül hemen görünür olur).
+    acilis_at = case when coalesce(p_erken,false) then p_acilis else null end,
+    erken_erisim_gun = case when coalesce(p_erken,false) then p_erken_gun else null end,
+    plan_indirimi_yok = coalesce(p_indirimsiz, false)
+  where id = p_reward;
+
+  if coalesce(p_vitrin,false) then
+    select id into v_eski from rewards where is_featured and id <> p_reward;
+    update rewards set is_featured = false, vitrin_bitis = null where is_featured and id <> p_reward;
+    v_bas := greatest(now(), coalesce(case when coalesce(p_erken,false) then p_acilis end, now()));
+    update rewards set is_featured = true,
+           vitrin_bitis = case when p_vitrin_gun is null then null else v_bas + make_interval(days => p_vitrin_gun) end
+     where id = p_reward;
+  else
+    update rewards set is_featured = false, vitrin_bitis = null where id = p_reward;
+  end if;
+
+  return jsonb_build_object('ok', true, 'vitrinden_inen', v_eski);
+end $y338$;
+revoke all on function public.odul_yayin_ayarla(uuid, boolean, timestamptz, int, boolean, int, boolean) from public, anon, authenticated;
+grant execute on function public.odul_yayin_ayarla(uuid, boolean, timestamptz, int, boolean, int, boolean) to service_role;
+
+-- BO tablosu için: her ödülün plan başına fiyatı (aynı hesap: odul_fiyati_ic). Yalnız service_role.
+
+-- ----------------------------------------------------------------------
+-- bo_odul_fiyatlari   [etkin kaynak: 338_odul_erken_erisim_plan_indirimi.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.bo_odul_fiyatlari()
+returns jsonb language sql stable security definer set search_path = public as $bf338$
+  select coalesce(jsonb_object_agg(r.id, (
+           select jsonb_object_agg(p.plan, public.odul_fiyati_ic(r.cost_points, r.plan_indirimi_yok, p.plan::text))
+             from plan_catalog p where p.aktif)), '{}'::jsonb)
+    from rewards r;
+$bf338$;
+revoke all on function public.bo_odul_fiyatlari() from public, anon, authenticated;
+grant execute on function public.bo_odul_fiyatlari() to service_role;
+
+-- Eski "öne çıkar" düğmesi vitrin_bitis'i de temizlesin (süresiz vitrin).
