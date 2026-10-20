@@ -106,3 +106,5 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - Testler: verify 77/77 · sahne 126 (hata 0; arıza sahneleri bilerek bozuk) · dokunma düşen 0 · akış e2e **227/227** (tam koşu 226 + "Tam döngü" testi saat 23:00 sonrası test verisi çakışmasına takıldı — ürün doğru reddediyordu; test penceresi düzeltildi, bölüm 11/11).
 - iOS: kod aynı (Expo · tek kod tabanı). İlk iOS build'i Apple girişi ister (rehber §7) → Gökberk başlatır; sonrakileri ben.
   eas.json'da appleId + ascAppId hâlâ REPLACE.
+
+- APK 6.9.3 (296): https://expo.dev/artifacts/eas/7ag5ZHEXG96f64Pp3EcGGoi43GkvOq0WuVMC0WnXPwI.apk
