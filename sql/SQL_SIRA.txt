@@ -19,7 +19,8 @@ Sira: 330 -> 331 -> 332 -> 333 -> 334 -> 335 -> 336 -> 337 (hangisi kosulmadiysa
           (BO Motor ayarlari > Fiyat'tan tarih degisir).
        -> Host premium (Sik Ucan / Jetset): ilani "yalniz kimligi dogrulanmis misafirler"e acma,
           ilan goruntulenme sayisi.
-       Dogrulama: on bir satir tamam = true.
+       -> Konsiyerj basamagi (15 agirlama, kendi istekleri kredisiz) KALDIRILDI; en ust basamak Kaptan.
+       Dogrulama: on iki satir tamam = true.
        App 6.8.0 bunu bekler (eski app de calisir; yeni satirlar gorunmez).
 
 ---------------------------------------------------------------------------

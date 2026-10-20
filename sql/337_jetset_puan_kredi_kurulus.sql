@@ -42,6 +42,14 @@ update plan_catalog set
 -- §1b · host basamağı "Kâhya" → "Kaptan" (plan adı Jetset oldu; aynı kelime iki şeyi göstermesin)
 update host_tiers set ad = 'Kaptan' where code = 'kahya';
 
+-- §1c · Konsiyerj basamağı KALDIRILDI (Gökberk, 20 Ekim): 15 ağırlamada host'un kendi
+--      isteklerini kredisiz yapıyordu → ücretli plana geçme sebebini eritiyordu.
+--      En üst basamak artık Kaptan (5 ağırlama). request_credit_cost istek_bedava'yı
+--      host_tiers'tan okur; satır yoksa bedel normal (1).
+delete from host_tiers where code = 'konsiyerj';
+update host_tiers set aciklama = 'Beş kişiyi ağırladın. En üst basamak: keşifte belirgin öncelik ve her yeni ilanın 24 saat öne çıkıyor.'
+ where code = 'kahya';
+
 -- §2 · etkin planı SUNUCU İÇİNDE okuyan yardımcı (kimlik kontrolü yok: confirm_session karşı
 --      tarafın planını okumak zorunda; `etkin_plan` başkasının planında 'baskasinin_verisi' atar).
 create or replace function public.etkin_plan_ic(p_user uuid)
@@ -352,5 +360,6 @@ union all select 'kurulus fiyati aktif', (public.kurulus_fiyati() ->> 'aktif')::
 union all select 'yalniz kimlikli tetikleyici', exists (select 1 from pg_trigger where tgname = 'istek_yalniz_kimlikli')
 union all select 'gorunum tablosu', to_regclass('public.ilan_gorunumleri') is not null
 union all select 'host basamagi kaptan', (select ad from host_tiers where code = 'kahya') = 'Kaptan'
-union all select 'hediye 30 gun penceresi', pg_get_functiondef('public.plan_hediyesi_degerlendir(uuid)'::regprocedure) like '%30 days%';
--- Beklenen: on bir satır tamam = true.
+union all select 'hediye 30 gun penceresi', pg_get_functiondef('public.plan_hediyesi_degerlendir(uuid)'::regprocedure) like '%30 days%'
+union all select 'konsiyerj kaldirildi', not exists (select 1 from host_tiers where istek_bedava or code = 'konsiyerj');
+-- Beklenen: on iki satır tamam = true.

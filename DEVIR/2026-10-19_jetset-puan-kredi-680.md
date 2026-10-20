@@ -69,3 +69,13 @@ Gökberk'in kararları (19 Ekim):
 3. Konsiyerj basamağı (15 ağırlama) `istek_bedava`: host'un kendi istekleri kredisiz → plan satışını eritir.
 4. Mağaza: Jetset görünen adları; kuruluş fiyatı için ileride "preserve price / legacy price" (rehber 6d, 7).
 5. Firebase 10/10b, RevenueCat anahtarları, eas.json appleId + ascAppId.
+
+## Ek · 20 Ekim (Gökberk kararları)
+- **Konsiyerj basamağı kaldırıldı** (15 ağırlamada kendi istekleri kredisizdi → plan satışını eritiyordu).
+  SQL 337 §1c `delete from host_tiers where code='konsiyerj'`; en üst basamak Kaptan. 337 doğrulaması
+  artık **12 satır** (yerel 12/12, t337 18/18, `request_credit_cost` = 1).
+- Site 0.71.1 (basamak şeridi 3 sütun, SSS), BO 1.100.1: kullanıcı "Planı Ata" listesi yalnız gerçek planlar
+  (Yolcu / Sık Uçan / Jetset); eskiden `evsahibi`/`konsiyerj` basamak kodları vardı → atama hata veriyordu.
+- App: `hwRankInfo` metni (Kaptan'da biter) — yalnız metin, bir sonraki derlemeyle gider (6.8.0 APK'da eski metin).
+- Ödül ekonomisi: kullanıcı devamlılığı için şimdilik SINIR YOK (ayda 4 buluşma / 90 günde 1 önerileri reddedildi);
+  her şey ayarlandıktan sonra puan/para dengesine birlikte bakılacak.

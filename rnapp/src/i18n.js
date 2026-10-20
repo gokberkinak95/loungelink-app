@@ -177,7 +177,7 @@ export const D = {
     // 29 Eylül (Gökberk md.1) — kutuların (i) açıklamaları: tek cümle
     hwWalletInfo: "Kartlarındaki misafir hakları ve ne zaman yandıkları. Kullanmadığın hak dönem sonunda silinir.",
     hwMissedInfo: "Son dönemde kullanılmadan kalan misafir haklarının yaklaşık değeri. Ağırladıkça azalır.",
-    hwRankInfo: "Ağırladıkça çıktığın basamak: Yolcu › Ev Sahibi › Kaptan › Konsiyerj. Her basamak keşifte seni öne taşır.",
+    hwRankInfo: "Ağırladıkça çıktığın basamak: Yolcu › Ev Sahibi › Kaptan. Her basamak keşifte seni öne taşır.",
     hwRetry: "Tekrar dene →",
     hwEmptyTitle: "Kartını tanıt, hakkını gör.",
     hwAddCard: "Kartımı tanıt →",
