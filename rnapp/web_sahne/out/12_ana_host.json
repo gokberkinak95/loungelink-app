@@ -1,13 +1,27 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Selin B.",
   "• Güvenilir Host",
   "6",
@@ -18,7 +32,7 @@
   "GÜVEN",
   "0",
   "SOHBET",
-  "1",
+  "0",
   "İSTEK",
   "0",
   "DAVET",
@@ -37,7 +51,7 @@
   "BUGÜN · 14:20–16:40",
   "",
   "Misafir ücretsiz",
-  "1 istek bekliyor",
+  "İlanı yönet",
   "",
   "YAYINDA · DOLU",
   "SAW",
@@ -47,27 +61,17 @@
   "Misafir ücretsiz",
   "İlanı yönet",
   "",
-  "İSTEKLER",
-  "Sana gelen 1 istek",
-  "",
-  "GELEN İSTEKLER · EŞLEŞME PUANINA GÖRE",
-  "E",
-  "Ece Y.",
-  "AKADEMİSYEN",
-  "%62",
-  "UYUM",
-  "20 Ekim · 14:20–16:40 · TAV Primeclass",
-  "TELEFON",
-  "AYNI UÇUŞ",
-  "1 OTURUM",
-  "GÜVEN 69",
-  "“Uçuştan önce kahve?”",
-  "Misafiri kabul et",
-  "Reddet",
-  "",
-  "Radar kapalı",
-  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
-  "Radarı aç",
+  "BUGÜN",
+  "Bugün sakin. Sıradaki uçuşuna bakalım mı?",
+  "IST · 4 host",
+  "ADB · 3 host",
+  "AYT · 1 host",
+  "Salon ara",
+  "Planıma git",
+  "",
+  "Salon rehberi",
+  "",
+  "Yol arkadaşları",
   "⭐ Son oturumunu puanla",
   "TAV Primeclass · 20 Ekim",
   "",
@@ -87,6 +91,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

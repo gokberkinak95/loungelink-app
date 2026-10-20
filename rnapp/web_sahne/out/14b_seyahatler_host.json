@@ -1,8 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "?",
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
@@ -24,6 +34,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

@@ -4,6 +4,7 @@
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "",
   "Profil",
   "G",
@@ -72,6 +73,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

@@ -1,13 +1,23 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Boş",
   "6",
   "KREDİ",
@@ -25,7 +35,7 @@
   "SORU",
   "BUGÜN",
   "Bugün sakin. Sıradaki uçuşuna bakalım mı?",
-  "IST · 5 host",
+  "IST · 4 host",
   "ADB · 3 host",
   "AYT · 1 host",
   "Misafir olarak host bul",
@@ -45,6 +55,7 @@
   "",
   "Profil",
   "",
+  "LOUNGELINK",
   "LOUNGELINK",
   "PLANIM",
   "Havalimanı Ziyareti Ekle",
@@ -72,6 +83,12 @@
   "Uçuş kodum yok · havalimanını seçeceğim",
   "Devam"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

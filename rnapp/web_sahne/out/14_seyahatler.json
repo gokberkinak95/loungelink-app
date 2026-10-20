@@ -4,11 +4,12 @@
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
   "Seyahatlerim",
   "Seyahatlerim",
-  "BUGÜN · AKTARMA",
+  "21 EKİM · AKTARMA",
   "IST",
   "LHR",
   "",
@@ -16,13 +17,13 @@
   "UÇUŞ",
   "TK1979",
   "SALON",
-  "17:30–21:30",
+  "14:00–18:00",
   "KİŞİ",
   "1 + 1",
-  "Keşfet'te 2 uyumlu ilan →",
+  "Keşfet'te 10 uyumlu ilan →",
   "",
   "Host bul",
-  "29 EKİM · TATİL",
+  "28 EKİM · TATİL",
   "SAW",
   "",
   "PC · Pegasus",
@@ -47,6 +48,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

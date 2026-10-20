@@ -1,44 +1,17 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "?",
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 5 g 18 sa · 71 ilan · 29 host yayında",
+  "Havalimanı saatine 5 g 15 sa · 70 ilan · 28 host yayında",
   "İstanbul",
   "",
-  "S",
-  "",
-  "Selin B.",
-  "MİLES&SMİLES · ELİTE PLUS",
-  "%80",
-  "UYUM",
-  "TAV Primeclass",
-  "IST · 20 EKİM · 14:20–16:40",
-  "",
-  "Misafir ücretsiz",
-  "TK1979",
-  "",
-  "Şu an açık",
-  "Seyahat ekle",
-  "",
   "N",
   "",
   "Nehir A.",
@@ -50,7 +23,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "15 sa 34 dk içinde",
+  "12 sa 14 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -65,7 +38,7 @@
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "18 sa 34 dk içinde",
+  "15 sa 14 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -79,7 +52,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "1 g 0 sa içinde",
+  "21 sa 14 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -93,7 +66,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "1 g 2 sa içinde",
+  "23 sa 14 dk içinde",
   "Seyahat ekle",
   "",
   "N",
@@ -105,8 +78,28 @@
   "Primeclass Lounge",
   "IST · 21 EKİM · 20:00–21:30",
   "",
+  "Misafir ücretsiz",
+  "",
+  "1 g 1 sa içinde",
+  "Seyahat ekle",
+  "",
+  "D",
+  "",
+  "Deniz K.",
+  "MİLES&SMİLES · ELİTE PLUS",
+  "%72",
+  "UYUM",
+  "TAV Primeclass",
+  "IST · 21 EKİM · 14:20–16:40",
+  "",
   "Misafir ücretsiz"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

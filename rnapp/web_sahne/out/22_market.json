@@ -4,6 +4,7 @@
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "",
   "Profil",
   "S",
@@ -76,6 +77,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "360 Puan",
   "LoungePuan",
   "Tümü",
@@ -89,11 +91,15 @@
   "Sık Uçan ve Jetset'e erken erişim",
   "Airalo eSIM 10 GB",
   "Küresel veri · 30 gün",
-  "Sana açılmasına 1g 22:51",
-  ":05",
-  "3.000 Puan",
-  "Sık Uçan 2.850 · Jetset 2.700"
+  "Sana açılmasına 1g 22:49",
+  ":56"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

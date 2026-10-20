@@ -1,21 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -89,6 +77,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "AĞIRLAMA",
   "Yayın & Davet",
   "İlanını öne çıkar veya doğrudan davet gönder",
@@ -103,10 +92,14 @@
   "14:20",
   "TAV Primeclass",
   "20 Ekim · 14:20–16:40",
-  "1 yer açık · 1/2",
-  "",
-  "SAW"
+  "1 yer açık · 1/2"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

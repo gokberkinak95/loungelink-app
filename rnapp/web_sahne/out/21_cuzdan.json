@@ -1,17 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -85,6 +77,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Cüzdan",
   "Kredilerin ve hareket geçmişin",
@@ -99,10 +92,14 @@
   "",
   "Kredi talebi",
   "Kredin biterse ekibimizden talep edebilirsin.",
-  "",
-  "KREDİ PAKETLERİ",
-  "Paketler üyeliğin yerine geçmez; plan kredin bittiğinde tek seferlik ek haktır."
+  ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

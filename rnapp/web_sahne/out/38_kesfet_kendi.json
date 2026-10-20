@@ -1,8 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "?",
   "",
@@ -21,12 +31,12 @@
   "%76",
   "UYUM",
   "TAV Primeclass",
-  "IST · 4 HAZİRAN 2027 · 14:20–16:40",
+  "IST · 19 HAZİRAN 2027 · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "TK1979",
   "",
-  "226 g 22 sa içinde",
+  "241 g 19 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -36,12 +46,12 @@
   "%76",
   "UYUM",
   "IST",
-  "IST · 6 HAZİRAN 2027 · 12:00–18:00",
+  "IST · 21 HAZİRAN 2027 · 12:00–18:00",
   "",
   "Misafir ücretsiz",
   "TK712",
   "",
-  "228 g 20 sa içinde",
+  "243 g 17 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -51,12 +61,12 @@
   "%76",
   "UYUM",
   "ESB",
-  "ESB · 7 HAZİRAN 2027 · 09:00–12:00",
+  "ESB · 22 HAZİRAN 2027 · 09:00–12:00",
   "",
   "Misafir ücretsiz",
   "TK2104",
   "",
-  "229 g 17 sa içinde",
+  "244 g 14 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -66,12 +76,12 @@
   "%76",
   "UYUM",
   "Turkish Airlines Lounge — Dış Hat (Miles&Smiles)",
-  "IST · 8 HAZİRAN 2027 · 10:00–14:00",
+  "IST · 23 HAZİRAN 2027 · 10:00–14:00",
   "",
   "Misafir ücretsiz",
   "TK1953",
   "",
-  "230 g 18 sa içinde",
+  "245 g 15 sa içinde",
   "Seyahat ekle",
   "",
   "S",
@@ -81,19 +91,24 @@
   "%76",
   "UYUM",
   "Turkish Airlines Lounge",
-  "ESB · 11 HAZİRAN 2027 · 08:00–12:00",
+  "ESB · 26 HAZİRAN 2027 · 08:00–12:00",
   "",
   "Misafir ücretsiz",
   "TK2106",
   "",
-  "233 g 16 sa içinde",
+  "248 g 13 sa içinde",
   "Seyahat ekle",
   "",
   "S",
   "",
-  "Selin B.",
-  "MİLES&SMİLES · ELİTE PLUS"
+  "Selin B."
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

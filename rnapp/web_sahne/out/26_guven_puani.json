@@ -1,8 +1,22 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -76,6 +90,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "GÜVEN",
   "Güven Puanım",
   "88",
@@ -90,10 +105,14 @@
   "10/10",
   "Profil › Doğrulama'dan telefonunu doğrula.",
   "Meslek eklendi",
-  "6/6",
-  "Profili Düzenle'de mesleğini yaz.",
-  "Biyografi eklendi"
+  "6/6"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

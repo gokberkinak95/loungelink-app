@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -16,13 +25,14 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "KURAL MOTORU · IST",
   "Bu eşleşme",
-  "neden %96?",
-  "THY Dış Hat Business",
-  "Bu uyum puanı sosyal eşleşmeyi ölçer — ama şu şart sağlanmıyor, yani kapıdan geçemezsin: Salon iç hatta, uçuşun dış hat",
-  "KART · MİLES&SMİLES",
+  "neden %72?",
+  "TAV Primeclass",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Havayolu şartı bilinmiyor · uçuşunu gir",
+  "KART · MİLES&SMİLES ELİTE PLUS",
   "SALON UYUMLULUĞU",
   "",
   "Misafir hakkı var",
@@ -31,7 +41,7 @@
   "2 koşul",
   "UÇUŞ EŞLEŞMESİ",
   "",
-  "Salon iç hatta, uçuşun dış hat",
+  "Uçuş numarası doğrulanmadı",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",
@@ -41,11 +51,17 @@
   "3 koşul",
   "Gri satırlar, kaynağından doğrulayamadığımız şartlar. Onları bilmiyoruz — bildiğimizi söylemiyoruz.",
   "Son karar her zaman salona aittir. Kapıda alınmazsan kredin iade edilir.",
-  "Lounge isteği gönder",
+  "Seyahat ekle",
   "",
   "Salon kurallarını oku",
   ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

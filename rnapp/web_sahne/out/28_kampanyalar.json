@@ -1,17 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -85,6 +77,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "BÜYÜME",
   "Kampanyalar",
   "Aktif kampanyalara katıl, kod kullan",
@@ -93,6 +86,12 @@
   "",
   "Kampanyalar burada açılır. İlk duyanlardan olmak için bildirimleri açık tut."
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

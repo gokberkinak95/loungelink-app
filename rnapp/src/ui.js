@@ -1614,6 +1614,25 @@ function acikZemin(renk) {
 export const BantBaglami = React.createContext(false);
 export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                           sag, eylem, geri, yukseklik, serifBaslik, serifYani, altIcerik, turSlot }) {
+  // 20 Ekim (Gökberk: "adımız bizim markamız, 3 nokta ile kesmemeliyiz") — 320 px'te sağdaki
+  // bakiye hapı yer kaplayınca "LOUNGEL…" oluyordu. Marka alanı ve kelimenin yalın genişliği
+  // ölçülür; harf aralığı yalnız SIĞMADIĞINDA 4.6'dan aşağı iner (en az 1.5), o da yetmezse
+  // yazı 1 punto küçülür. Geniş ekranda değer değişmez (tavan 4.6) → 390/430 aynı kalır.
+  const [markaAlan, setMarkaAlan] = useState(0);
+  const [markaYalin, setMarkaYalin] = useState(0);
+  const MARKA_ARALIK = 4.6, MARKA_EN_AZ = 1.5;
+  const markaHarf = String(marka || "").length || 1;
+  const kanatPay = temaModu() === "v7" ? 26 + ARA[8] : 0;
+  const markaYer = markaAlan - kanatPay - 2;
+  let markaBoy = FS.xs, markaAralik = MARKA_ARALIK;
+  if (markaAlan > 0 && markaYalin > 0) {
+    const sigan = (markaYer - markaYalin) / markaHarf;
+    if (sigan < MARKA_ARALIK) markaAralik = Math.max(MARKA_EN_AZ, sigan);
+    if (sigan < MARKA_EN_AZ) {
+      markaBoy = FS.xs - 1;
+      markaAralik = Math.max(MARKA_EN_AZ, Math.min(MARKA_ARALIK, (markaYer - markaYalin * (markaBoy / FS.xs)) / markaHarf));
+    }
+  }
   // 🔴 3 EYLÜL — `serifBaslik` ve `altIcerik` EKLENDİ.
   // Tasarımın ana sayfası (11_ana_misafir) bandın İÇİNDE iki şey daha
   // taşıyor: `.ust-h1.serif` (isim · Cormorant 52) ve `.cuzdan` şeridi.
@@ -1808,7 +1827,14 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                 sol={<Ikon ad="sol" boy={20} renk={C.foto.baslik} />} />
             </View>
           ) : null}
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", overflow: "hidden" }}
+                onLayout={(e) => setMarkaAlan(Math.round(e.nativeEvent.layout.width))}>
+            {/* Ölçüm: kelimenin harf aralıksız yalın genişliği (görünmez, yer kaplamaz). */}
+            <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
+              style={{ position: "absolute", left: 0, top: 0, width: 1000, opacity: 0, flexDirection: "row" }}>
+              <Text onLayout={(e) => setMarkaYalin(Math.ceil(e.nativeEvent.layout.width))}
+                style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 0 }}>{marka}</Text>
+            </View>
             {/* v7 (Gökberk 2 Ekim: "iç sayfadaki küçük logo kullanımını geri getir") —
                 kanat işareti markanın önünde, şampanya. 26×13: kelimenin x-yüksekliğiyle hizalı. */}
             {temaModu() === "v7" ? (
@@ -1819,8 +1845,8 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
                 3'lük aralık kelimeyi "kalın yazı" gibi gösteriyordu;
                 4.6'da kelime bir MARKA İŞARETİNE dönüşüyor — okunacak bir
                 kelime değil, tanınacak bir imza. */}
-            <GolgeliMetin style={{ fontSize: FS.xs, fontWeight: "700",
-                                   letterSpacing: 4.6, color: C.foto.marka }}>
+            <GolgeliMetin style={{ fontSize: markaBoy, fontWeight: "700",
+                                   letterSpacing: markaAralik, color: C.foto.marka }}>
               {marka}
             </GolgeliMetin>
           </View>

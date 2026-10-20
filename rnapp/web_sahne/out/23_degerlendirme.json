@@ -1,17 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -85,6 +77,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "GÜVEN",
   "Değerlendirmeler",
   "Biten oturumlarının geri bildirimi",
@@ -99,10 +92,14 @@
   "Şimdi değil",
   "Göndermek için en az 20 karakter yaz.",
   "İzin vermezsen yalnız bizde kalır. İstediğin an geri alabilirsin — yayından düşer.",
-  "Kartını paylaşmayı düşünen biri, bizim yazdığımız hiçbir cümleye senin bir cümlen kadar inanmaz. İki satır yeter.",
-  "Kaan T.",
-  "TAV Primeclass · IST · 20 Ekim · 14:20–16:40"
+  "Kartını paylaşmayı düşünen biri, bizim yazdığımız hiçbir cümleye senin bir cümlen kadar inanmaz. İki satır yeter."
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

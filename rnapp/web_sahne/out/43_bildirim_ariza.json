@@ -1,14 +1,6 @@
 {
  "console": [
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] ortak.js:320 Network request failed "
   },
@@ -55,6 +47,7 @@
   }
  ],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -123,6 +116,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "Bildirimler",
   "Tümü",
   "Bağlantılar",
@@ -134,6 +128,12 @@
   "Bağlantı bir an koptu. Verilerin duruyor.",
   "Yeniden yükle"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

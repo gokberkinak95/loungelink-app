@@ -7,16 +7,21 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -32,13 +37,13 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN · BİNİŞ",
+  "SIRADAKİ SEYAHATİN · YARIN",
   "TK1979",
   "IST",
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "17:42–21:42",
+  "14:00–18:00",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -71,6 +76,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "AKIŞ",
   "Soru",
   "Gelen  0",
@@ -85,6 +91,12 @@
   "BEKLEYEN SORU YOK",
   "İlanların hakkında sana gelen soru yok. Biri misafir hakkını sorarsa burada yanıtlarsın."
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

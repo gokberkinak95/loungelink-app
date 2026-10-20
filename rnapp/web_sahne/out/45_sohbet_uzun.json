@@ -1,26 +1,14 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "14",
   "KREDİ",
@@ -36,13 +24,13 @@
   "DAVET",
   "0",
   "SORU",
-  "BUGÜN · BİNİŞ",
+  "SIRADAKİ SEYAHATİN · YARIN",
   "TK1979",
   "IST",
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "17:42–21:42",
+  "14:00–18:00",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -81,32 +69,37 @@
   "BULUŞMA",
   "KAPI A12 ÖNÜ",
   "BULUŞMAYA",
-  "0",
+  "1",
+  "9",
+  ":",
+  "3",
+  "3",
+  ":",
+  "3",
   "2",
-  ":",
   "3",
-  "5",
-  ":",
-  "4",
-  "3",
-  "4",
-  "3",
+  "2",
   "DURUM",
   "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "15:03",
+  "18:10",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "15:05",
+  "18:12",
   "Lounge girişindeyim",
-  "15:10",
+  "18:17",
   "Ben de yeni geçtim, kapıdayım.",
-  "15:10",
+  "18:17",
   "Süper. Kaç numaralı kapıdasın?",
-  "15:10",
+  "18:17",
   "A12. Primeclass girişi tam karşısı.",
-  "15:11",
-  "Anladım, yürüyen merdivenden çıkıyorum."
+  "18:18"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

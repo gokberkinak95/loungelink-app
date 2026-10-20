@@ -9,10 +9,6 @@
    "s": "font yüklenemedi NetworkError: A network error occurred."
   },
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] discover_availabilities Network request failed "
   },
@@ -70,13 +66,14 @@
  ],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 21 sa 34 dk",
-  "IST · 21 Eki",
-  "SAW · 22 Eki",
+  "Seyahatine göre sıralandı: IST · 20 Ekim",
+  "IST · 20 Eki",
+  "SAW · 21 Eki",
   "İstanbul",
   "",
   "",
@@ -95,6 +92,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

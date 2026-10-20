@@ -1,8 +1,22 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -73,6 +87,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "Bildirimler",
   "Tümü",
   "Bağlantılar",
@@ -84,16 +99,20 @@
   "BUGÜN",
   "",
   "İstek kabul edildi",
-  "7 dk",
+  "20 dk",
   "Deniz K. seni Primeclass'a alıyor.",
   "",
   "Yeni bağlantı isteği",
-  "23 dk",
+  "36 dk",
   "Ayşegül D. seninle tanışmak istiyor.",
-  "",
-  "Havalimanı güncellemesi #1",
-  "1 sa"
+  ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

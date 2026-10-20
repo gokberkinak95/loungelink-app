@@ -7,16 +7,25 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Selin B.",
   "• Doğrulanmış",
   "15",
@@ -43,7 +52,7 @@
   "YAYINDA · 2 YER AÇIK",
   "IST",
   "TAV Primeclass",
-  "31 MAYIS 2027 · 14:20–16:40",
+  "19 HAZİRAN 2027 · 14:20–16:40",
   "",
   "Misafir ücretsiz",
   "İlanı yönet",
@@ -51,7 +60,7 @@
   "YAYINDA · 1 YER AÇIK",
   "SAW",
   "Comfort Lounge",
-  "1 HAZİRAN 2027 · 09:00–11:30",
+  "20 HAZİRAN 2027 · 09:00–11:30",
   "",
   "Misafir ücretli girer",
   "İlanı yönet",
@@ -59,12 +68,12 @@
   "YAYINDA · 2 YER AÇIK",
   "IST",
   "LOUNGE",
-  "2 HAZİRAN 2027 · 10:00–16:00",
+  "21 HAZİRAN 2027 · 10:00–16:00",
   "",
   "Misafir ücretli girer",
   "İlanı yönet",
   "",
-  "SIRADAKİ SEYAHATİN · 225 GÜN SONRA",
+  "SIRADAKİ SEYAHATİN · 244 GÜN SONRA",
   "TK712",
   "IST",
   "Şimdi seni salona alabilecek bir host bulalım.",
@@ -86,6 +95,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

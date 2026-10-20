@@ -11,6 +11,7 @@
  ],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "",
   "Profil",
   "S",
@@ -83,6 +84,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Cüzdan",
   "Kredilerin ve hareket geçmişin",
@@ -97,10 +99,14 @@
   "",
   "Liste şu an gelmedi",
   "Bağlantı bir an koptu. Verilerin duruyor.",
-  "Yeniden yükle",
-  "",
-  "Kredi talebi"
+  "Yeniden yükle"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

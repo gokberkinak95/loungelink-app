@@ -277,7 +277,12 @@ begin
                              least(kalkis + interval '3 hours 40 minutes',
                                    date_trunc('day', kalkis) + interval '23 hours 59 minutes')::time, 'TK1979', 'TK'),
            (g, 'SAW', null,  current_date + 8, '09:00', '11:00', 'PC2210', 'PC'),
-           (kt, 'IST', 'AMS', current_date, '13:00', '17:00', 'TK1979', 'TK'),
+           -- 20 Ekim — Kaan'ın IST seyahati sabit 13:00–17:00'tı: akşam koşulan sahnede seyahat
+           -- BİTMİŞ sayılıyor, Keşfet "İstek gönder" yerine "Seyahat ekle" diyordu (50_istek_gonder
+           -- 18:51'de düştü). Artık Gökberk'inki gibi `kalkis`a bağlı: günün her saatinde gelecekte.
+           (kt, 'IST', 'AMS', kalkis::date, (kalkis - interval '20 minutes')::time,
+                              least(kalkis + interval '3 hours 40 minutes',
+                                    date_trunc('day', kalkis) + interval '23 hours 59 minutes')::time, 'TK1979', 'TK'),
            (kt, 'SAW', null,  current_date + 1, '08:30', '11:00', 'PC2210', 'PC'),   -- 02_kesfet sahnesi Kaan'la: iki karta da "İstek gönder"
            (ey, 'IST', 'LHR', current_date, '15:00', '18:05', 'TK1979', 'TK'),
            (ad, 'IST', 'FRA', current_date, '12:00', '16:00', 'TK1590', 'TK'),

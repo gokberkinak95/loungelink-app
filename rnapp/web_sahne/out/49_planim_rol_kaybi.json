@@ -1,6 +1,14 @@
 {
  "console": [
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
    "t": "warning",
    "s": "[sahne logError] kabuk_rol Network request failed "
   },
@@ -114,6 +122,7 @@
   "Hesap bilgin şu an yüklenemedi; bazı bölümler eksik görünebilir.",
   "Yeniden dene",
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "HAVALİMANI ZİYARETLERİNİ YÖNET",
   "Seyahatlerim",
@@ -132,6 +141,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

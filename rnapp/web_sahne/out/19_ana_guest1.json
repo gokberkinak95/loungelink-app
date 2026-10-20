@@ -4,10 +4,11 @@
  "calls": [],
  "metin": [
   "LOUNGELINK",
+  "LOUNGELINK",
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ GÜNLER",
+  "İYİ AKŞAMLAR",
   "Gökberk",
   "12",
   "KREDİ",
@@ -23,7 +24,7 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · 223 GÜN SONRA",
+  "SIRADAKİ SEYAHATİN · 242 GÜN SONRA",
   "TK1979",
   "IST",
   "LHR",
@@ -46,6 +47,12 @@
   "",
   "Profil"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 22,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

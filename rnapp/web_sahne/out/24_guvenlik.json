@@ -1,13 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -81,6 +77,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "GÜVENLİK",
   "Güvenlik Merkezi",
   "Güvende kalman için araçlar",
@@ -95,10 +92,14 @@
   "Sorun Bildir",
   "",
   "Sahte host, dolandırıcılık, taciz, platform dışı ödeme",
-  "",
-  "Engellenen Kullanıcılar",
-  "Engel listeni yönet"
+  ""
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }

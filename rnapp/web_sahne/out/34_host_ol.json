@@ -1,25 +1,9 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
+  "LOUNGELINK",
   "LOUNGELINK",
   "",
   "Profil",
@@ -90,6 +74,7 @@
   "Profil",
   "",
   "LOUNGELINK",
+  "LOUNGELINK",
   "HESABIM",
   "Profili Düzenle",
   "G",
@@ -107,10 +92,14 @@
   "Yanımda biri olsun ama sessiz olsun",
   "İkramlar için buradayım",
   "Büfeyi keşfetmeyi severim",
-  "Havalimanı kaşifi",
-  "Her köşeyi bilirim, gezmeyi severim",
-  "İsteğe bağlı. Boş bırakırsan eşleşme puanın etkilenmez — sadece uyum notu görünmez."
+  "Havalimanı kaşifi"
  ],
- "tasan": [],
+ "tasan": [
+  {
+   "g": 1000,
+   "sol": 72,
+   "tx": "LOUNGELINK"
+  }
+ ],
  "bitisik": []
 }
