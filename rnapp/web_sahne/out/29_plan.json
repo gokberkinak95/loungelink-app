@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -15,7 +28,7 @@
   "OTURUM",
   "—",
   "YILDIZ",
-  "360",
+  "300",
   "LOUNGEPUAN",
   "6",
   "KREDİ",
@@ -81,7 +94,7 @@
   "Plan",
   "AĞIRLA, ÖDEME",
   "Yolcu",
-  "Son 30 günde 3 kişi ağırladın. 1 ağırlama daha yaparsan Sık Uçan 1 ay ücretsiz açılır.",
+  "Son 30 günde 3 kişi ağırladın; Sık Uçan hediyen bir sonraki onaylanan buluşmada açılır.",
   "İhtiyacına göre bir plan seç",
   "KURULUŞ FİYATI",
   "31 Mart 2027 tarihine kadar abone olanlar, abonelikleri kesintisiz sürdükçe bu fiyattan yenilenir.",

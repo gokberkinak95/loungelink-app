@@ -1,14 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -24,7 +15,7 @@
   "OTURUM",
   "—",
   "YILDIZ",
-  "360",
+  "300",
   "LOUNGEPUAN",
   "6",
   "KREDİ",
@@ -87,7 +78,7 @@
   "",
   "LOUNGELINK",
   "LOUNGELINK",
-  "360 Puan",
+  "300 Puan",
   "LoungePuan",
   "Tümü",
   "Otel",
@@ -98,10 +89,10 @@
   "YENİ ÖDÜL",
   "",
   "Sık Uçan ve Jetset'e erken erişim",
-  "Airalo eSIM 10 GB",
+  "Yurt Dışı eSIM · 10 GB",
   "Küresel veri · 30 gün",
   "Sana açılmasına 1g 22:50",
-  ":55"
+  ":24"
  ],
  "tasan": [],
  "bitisik": []

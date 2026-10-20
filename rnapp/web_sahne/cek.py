@@ -170,6 +170,7 @@ SAHNELER = {
     "27_davet":        ("selin",   [("dokun", "Profil"), ("dokun", "Arkadaşını Davet Et")]),  # ekran: Referral
     "28_kampanyalar":  ("selin",   [("dokun", "Profil"), ("dokun", "Kampanyalar")]),       # ekran: Campaigns
     "29_plan":         ("selin",   [("dokun", "Profil"), ("dokun", "Plan")]),              # ekran: Plans
+    "29b_plan_jetset": ("deniz",   [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 900), ("gor", "MEVCUT PLANIN"), ("bekle", 700)]),              # ekran: Plans · Jetset (mağaza görseli)
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile
     "32_herkese_acik_profil": ("kaan", [("dokun", "Tanış"), ("dokun_a11y", "Burak S.")]),  # ekran: PublicProfile
@@ -279,6 +280,8 @@ SAHNELER = {
     "49e_gecmis_ariza":   ("selin",   [("dokun", "Profil"), ("dokun", "Oturum Geçmişi")], "bozuk=sessions"),        # ekran: SessionHistory · gelmedi
     "49f_guven_ariza":    ("selin",   [("dokun", "Profil"), ("dokun", "Güven Puanım")], "bozuk=trust_scores"),      # ekran: TrustVisual · gelmedi
     "49h_profil_ariza":   ("selin",   [("dokun", "Profil"), ("bekle", 1200)], "bozuk=profiles"),                     # ekran: Profile · gelmedi
+    "49i_ayarlar_ariza":  ("selin",   [("dokun", "Profil"), ("dokun_a11y", "Ayarlar"), ("bekle", 1200)], "bozuk=iletisim_epostam,users"),   # ekran: Settings · gelmedi
+    "49j_duzenle_ariza":  ("selin",   [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla"), ("bekle", 1200)], "bozuk=verifications,users"),   # ekran: EditProfile · gelmedi
     "49g_davet_ariza":    ("selin",   [("dokun", "Profil"), ("dokun", "Arkadaşını Davet Et")], "bozuk=my_referral"),  # ekran: Referral · gelmedi
 }
 

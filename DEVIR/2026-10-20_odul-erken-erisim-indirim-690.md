@@ -87,3 +87,22 @@ Gökberk'in kararları (20 Ekim):
 - Ortam: GTK3 Runtime kuruldu (Gökberk, winget) → cairosvg çalışıyor (`C:\Program Files\GTK3-Runtime Win64\bin`).
 - Testler: verify 77/77 · sahne 123, hata 0 (arıza sahneleri bilerek bozuk), dokunma yolu düşen 0 · akış e2e **224/224** · verify (GTK yoluyla) 77/77, ortam uyarısı 0.
 - APK 6.9.1 (marka): https://expo.dev/artifacts/eas/aYMWozrVThPIaMJdtGGIzfy-yv4pucvNgRpRORv_Z8o.apk · 6.9.2 (295): https://expo.dev/artifacts/eas/oVsOtmTFop88tWaXyLnH22vKr6sRgxT362-q97YPUAs.apk
+
+## Ek · 20 Ekim gece — mağaza hazırlığı (app 6.9.3 · site 0.72.3 · SQL 339)
+Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
+- **SQL 339** (koşulmadı): ödül adlarından marka çıkar (kategori adı; ürün/tedarikçi/puan aynı), ödül bildiriminde
+  tedarikçi adı geçmez ("Amazon tarafından hazırlanıyor" → "Hazırlanıyor"), Plan ekranı hediye cümlesi eşik dolunca
+  "bir sonraki onaylanan buluşmada açılır". Yerel 5/5, tekrar koşulabilir. SQL_SIRA 11. tur, KURULUM_TABLOSU 374.
+- **Yasal (bireysel):** metinler zaten "gerçek kişi · Gökberk İnak". Site check.js gerçek kişide MERSİS/KEP aramıyor.
+  **AÇIK: adres** — `ADDRESS` hâlâ "İstanbul, Türkiye — APA GIZ PLAZA" (tebligat adresi değil). Gökberk'ten alınacak;
+  3 kopyada değişecek (rnapp/src/legal.js → backoffice/lib/legal.js, website/lib/legal-source.js).
+- **Ortak hata görünümü** ek ekranlar: Profili Düzenle (profil gelmezse boş form + Kaydet ad/bio'yu EZERDİ),
+  Ayarlar, Kimlik doğrulama (hata "belge yok" sayılıp yeniden yükletiyordu), Şikâyet kişi listesi. Sahneler 49i, 49j.
+- **Oturum sonu kazanç** sabit "+500 / +200" yazıyordu → defterden (ref_id = oturum) gerçek tutar.
+- **Plan ekranı** ücretli üyede "AĞIRLA, ÖDEME" yerine "PLANININ KAZANCI".
+- **Mağaza görselleri** yenilendi: 8 kare (07 LoungePuan · Jetset, 08 Plan · Jetset), App Store 1320×2868 + Play 1080×1920.
+  Eski 6.3.1 kareleri `_arsiv/magaza_cikti_6.3.1/`. Sahne tohumu: Selin oturum puanları 100 (Yolcu), son kayıt oturuma bağlı.
+- Site 0.72.3: ödül örnekleri markasız.
+- Testler: verify 77/77 · sahne 126 (hata 0; arıza sahneleri bilerek bozuk) · dokunma düşen 0 · akış e2e **227/227** (tam koşu 226 + "Tam döngü" testi saat 23:00 sonrası test verisi çakışmasına takıldı — ürün doğru reddediyordu; test penceresi düzeltildi, bölüm 11/11).
+- iOS: kod aynı (Expo · tek kod tabanı). İlk iOS build'i Apple girişi ister (rehber §7) → Gökberk başlatır; sonrakileri ben.
+  eas.json'da appleId + ascAppId hâlâ REPLACE.

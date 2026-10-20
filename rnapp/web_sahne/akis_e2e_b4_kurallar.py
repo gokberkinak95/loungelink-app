@@ -72,14 +72,30 @@ def _simdi(s):
 def _pencere(s, once_dk=30, sonra_dk=90):
     t = _simdi(s)
     a = (t - _dt.timedelta(minutes=once_dk)); b = (t + _dt.timedelta(minutes=sonra_dk))
-    if a.date() != t.date() or b.date() != t.date():   # gece yarısı sınırı: yarına 10:00-12:00
-        g = t.date() + _dt.timedelta(days=1); return g, _dt.time(10, 0), _dt.time(12, 0), False
+    # gece yarısı sınırı: yarına 04:00-06:00 (20 Ekim — 10:00-12:00 tohumun kabul edilmiş 10:00 ilanıyla
+    # çakışıyordu; 23:00 sonrası koşuda "kendi_ilanlarin_cakisiyor". Tohumda 07:00 öncesi ilan yok.)
+    if a.date() != t.date() or b.date() != t.date():
+        g = t.date() + _dt.timedelta(days=1); return g, _dt.time(4, 0), _dt.time(6, 0), False
     return t.date(), a.time().replace(second=0, microsecond=0), b.time().replace(second=0, microsecond=0), True
 
 
 def _ilan_ve_seyahat(s, host="nehir", misafir="arda", slots=1, gun=None, bas=None, son=None):
     if gun is None:
         gun, bas, son, _ = _pencere(s)
+        # 20 Ekim — "şimdi" penceresi akşam koşusunda tohumun 20:00 ilanıyla çakışıyordu
+        # (kendi_ilanlarin_cakisiyor; ürün DOĞRU reddediyor). Bu işlem sonunda geri alınır (bitir →
+        # rollback): çakışan tohum ilanları yalnız bu test için kapatılır, test saatten bağımsız olur.
+        # Kapatmak olmaz (kabul edilmiş isteği olan ilan kapanmaz: has_accepted_requests — doğru kural);
+        # ilan gecenin ilk yarım saatine kaydırılır. Her deneme kendi savepoint'inde.
+        for (cid,) in s.q("""select id from availabilities
+                              where host_id = %s and avail_date = %s and active and time_from < %s and time_to > %s""",
+                          (KIM[host], gun, son, bas), tek=False):
+            s.cur.execute("savepoint kaydir")
+            try:
+                s.cur.execute("update availabilities set time_from = '00:01', time_to = '00:30' where id = %s", (cid,))
+                s.cur.execute("release savepoint kaydir")
+            except Exception:
+                s.cur.execute("rollback to savepoint kaydir")
     s.ol(host)
     aid, h = s.cagir("select (create_availability(%s,'IST',%s,%s,%s,%s)->>'id')::uuid", (_salon(s), gun, bas, son, slots))
     if h:

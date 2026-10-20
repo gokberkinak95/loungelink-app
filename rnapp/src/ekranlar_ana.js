@@ -5650,16 +5650,22 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
   const [foundingMsg, setFoundingMsg] = useState(null);
   const [hostApp, setHostApp] = useState(null);
   const [fcOpen, setFcOpen] = useState(false);   // madde 14: misafire bilgilendirme
+  // 20 Ekim — profil gelmezse form BOŞ açılıyordu ve "Kaydet" ad/biyografi/meslek alanlarını
+  // boşla EZERDİ. Ön dolum gelmeden form çizilmez; ortak hata görünümü.
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
 
   useEffect(() => {
     (async () => {
-      const [{ data: p }, { data: v }, { data: u }] = await Promise.all([
+      const [{ data: p, error: eP }, { data: v }, { data: u, error: eU }] = await Promise.all([
         supabase.from("profiles")
           .select("name, bio, profession, languages, linkedin_url, photo_url, photo_connections_only, access_source, women_safety_mode, travel_style, guest_capacity")
           .eq("user_id", uid).maybeSingle(),
         supabase.from("verifications").select("email_verified, phone_verified, id_verified").eq("user_id", uid).maybeSingle(),
         supabase.from("users").select("gender, role").eq("id", uid).maybeSingle(),
       ]);
+      if (eP || eU) { logError("profil_duzenle_yukle", eP || eU); setYukHata(true); return; }
+      setYukHata(false);
       setVerif(v || {});
       setMyRole(u?.role || "guest");
       setForm({
@@ -5688,7 +5694,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
           .catch(() => {});
       }
     })();
-  }, [uid]);
+  }, [uid, deneme]);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const toggleLang = l => setForm(f => ({
@@ -5733,6 +5739,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
     onBack();
   }
 
+  if (yukHata) return <LoadFailPage t={t} title={t.editProfTitle} onBack={onBack} onRetry={() => { setYukHata(false); setDeneme(x => x + 1); }} />;
   if (!form) return <View style={{ flex: 1, backgroundColor: C.bg, alignItems: "center", justifyContent: "center" }}><ActivityIndicator color={C.gold} /></View>;
 
   const comp = getProfileCompletion(form);

@@ -2471,6 +2471,7 @@ export const D = {
     planDiscount: "%{n} indirimli",
     planFreeUpgradeLabel: "ÜCRETSİZ AÇILDI",
     planHostLabel: "AĞIRLA, ÖDEME",
+    planKazancLabel: "PLANININ KAZANCI",
     // 🔴 v3.6 — ÜÇ EKRAN, PARA HAKKINDA ÜÇ FARKLI HİKÂYE.
     //   Planlar : "Kredi parayla satılmaz."          (asla)
     //   Cüzdan  : "kredi paketleri henüz satışta değil." (henüz)
@@ -4654,6 +4655,7 @@ export const D = {
     planDiscount: "{n}% off",
     planFreeUpgradeLabel: "UNLOCKED FREE",
     planHostLabel: "HOST, DON'T PAY",
+    planKazancLabel: "YOUR PLAN EARNS",
     planNoCreditSale: "A credit does not buy lounge access — it buys the right to ask a host. The host always decides; if they decline your credit returns instantly, and if they never answer it returns on its own after 72 hours. If you are turned away at the door, it is refunded too. You can earn credits by hosting, receive them with your plan, or buy them as a pack.",
     walletSub: "Your credits and ledger",
     walletCredits: "credits",

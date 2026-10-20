@@ -2177,6 +2177,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
 
   function flash(m) { setToast(m); setTimeout(() => setToast(""), 1800); }
 
+  const [yukHata, setYukHata] = useState(false);   // 20 Ekim — ayarlar gelmedi
   async function load() {
     const uid = session?.user?.id;
     if (!uid) return;
@@ -2200,8 +2201,8 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
     // `profiles` tasarımı gereği başkaları tarafından okunuyor; bir e-posta
     // adresi orada duramazdı. Kendi tablosunda, yalnız sahibine açık.
     const [
-      { data: u },
-      { data: p },
+      { data: u, error: eU },
+      { data: p, error: eP },
       { data: v },
       { data: ep, error: epErr },
       { data: np, error: npErr },
@@ -2214,6 +2215,9 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
       supabase.rpc("iletisim_epostam"),
       supabase.rpc("bildirim_tercihlerim"),
     ]);
+    // 20 Ekim — hesap ya da gizlilik ayarları gelmezse anahtarlar varsayılanla (yanlış) çizilmez.
+    if (eU || eP) { logError("ayarlar_yukle", eU || eP); setYukHata(true); return; }
+    setYukHata(false);
     setMe({ ...u, phone_verified: v?.phone_verified });
     setProf(p || {});
     if (epErr) logError("iletisim_epostam", epErr); else setIletisimEposta(ep || "");
@@ -2329,6 +2333,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
     <Text style={{ fontSize: FS.micro, fontWeight: "600", color: C.mutedAA, letterSpacing: 2, marginBottom: SP[2], marginTop: SP[1] }}>{children}</Text>
   );
 
+  if (yukHata) return <LoadFailPage t={t} title={t.settingsTitle} onBack={onBack} onRetry={() => { setYukHata(false); load(); }} />;
   if (!me) return <View style={{ flex: 1, backgroundColor: C.bg, alignItems: "center", justifyContent: "center" }}><ActivityIndicator color={C.gold} /></View>;
 
   return (

@@ -5,6 +5,10 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -18,7 +22,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 17 sa 54 dk · 70 ilan · 28 host yayında",
+  "Havalimanı saatine 15 sa 3 dk · 70 ilan · 28 host yayında",
   "İstanbul",
   "",
   "Senin uçuşunda 3 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
@@ -34,7 +38,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "18 sa 24 dk içinde",
+  "15 sa 33 dk içinde",
   "Telefonu doğrula",
   "",
   "M",
@@ -49,7 +53,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "18 sa 24 dk içinde",
+  "15 sa 33 dk içinde",
   "Telefonu doğrula",
   "",
   "N",
@@ -64,7 +68,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "14 sa 4 dk içinde",
+  "11 sa 13 dk içinde",
   "Telefonu doğrula",
   "",
   "N",
@@ -78,7 +82,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "20 sa 4 dk içinde",
+  "17 sa 13 dk içinde",
   "Telefonu doğrula",
   "",
   "T",
@@ -92,7 +96,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "16 sa 49 dk içinde",
+  "13 sa 58 dk içinde",
   "Telefonu doğrula",
   "",
   "T",

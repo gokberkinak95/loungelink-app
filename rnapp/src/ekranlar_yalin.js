@@ -791,6 +791,21 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
   // 5 Ekim (Gökberk md.1) — `null` = henüz bilinmiyor (yükleniyor). Eskiden `false` başlıyordu:
   // puanlanmış oturumda da "Oturum tamamlandı · Şimdi puanla" anı ilk çizimde açılıyordu.
   const [rated, setRated] = useState(null);
+  // 20 Ekim — oturum sonu kazanç satırı sabit "+500 / +200" yazıyordu (eski kural). SQL 337'den beri
+  // puan herkesin KENDİ planına göre (100/250/500); gösterilen sayı defterde bu oturum için bana
+  // yazılan tutar. Defter satırı yoksa (puan henüz yazılmadı / itiraz süresi) sayı gösterilmez.
+  const [kazanilanPuan, setKazanilanPuan] = useState(null);
+  useEffect(() => {
+    if (!sess || !sess.id || sess.status !== "completed" || !uid) return undefined;
+    let iptal = false;
+    supabase.from("points_ledger").select("delta").eq("user_id", uid).eq("ref_id", sess.id).gt("delta", 0)
+      .then(({ data, error }) => {
+        if (error) { logError("oturum_puani", error); return; }
+        const top = (data || []).reduce((a, x) => a + (x.delta || 0), 0);
+        if (!iptal) setKazanilanPuan(top > 0 ? top : null);
+      });
+    return () => { iptal = true; };
+  }, [sess && sess.id, sess && sess.status, uid]);
   const [rateBusy, setRateBusy] = useState(false);
   // 🔵 v2.100 (SQL 256) — KAPIDA ALINMADIM.
   // Kredi para karşılığı satılacaksa, satılan şeyin "erişim" değil "istek
@@ -2284,7 +2299,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
             {/* Kazanç: tek satır, iki mono sayı */}
             <View style={{ flexDirection: "row", backgroundColor: C.card, borderRadius: R.lg, marginTop: ARA[14], paddingVertical: ARA[14],
                            shadowColor: C.golgeRenk, shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 1 }}>
-              {[[isHost ? "+500" : "+200", t.loungePoints], ["+1", t.sessionWord]].map(([v, k], i) => (
+              {[[kazanilanPuan ? "+" + kazanilanPuan.toLocaleString() : "—", t.loungePoints], ["+1", t.sessionWord]].map(([v, k], i) => (
                 <View key={k} style={{ flex: 1, alignItems: "center", borderLeftWidth: i ? StyleSheet.hairlineWidth : 0, borderLeftColor: C.line2 || C.line }}>
                   <Text style={{ fontFamily: MONO[600], fontSize: FS.title, color: C.goldText }}>{v}</Text>
                   <Text style={{ fontSize: FS.micro, letterSpacing: 1.2, color: C.mut, marginTop: 2 }}>{BUYUK(k)}</Text>
@@ -2529,9 +2544,12 @@ export function KimlikDogrula({ t, session, onBack, onDone }) {
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
 
+  const [yukHata, setYukHata] = useState(false);
   const yukle = useCallback(async () => {
     const { data, error } = await supabase.rpc("kimlik_durumum");
-    if (error) { logError("kimlik_durumum", error); setDurum({ status: "none" }); return; }
+    // 20 Ekim — hata "belge yok" sayılıyordu: inceleme bekleyen/onaylı kullanıcıya yeniden yükletirdi.
+    if (error) { logError("kimlik_durumum", error); setYukHata(true); return; }
+    setYukHata(false);
     setDurum(data || { status: "none" });
   }, []);
   useEffect(() => { yukle(); }, [yukle]);
@@ -2571,6 +2589,7 @@ export function KimlikDogrula({ t, session, onBack, onDone }) {
   }
 
   const st = durum?.status;
+  if (yukHata) return <LoadFailPage t={t} title={t.kycTitle} onBack={onBack} onRetry={() => { setYukHata(false); setDurum(null); yukle(); }} />;
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.kycEyebrow} title={t.kycTitle} onBack={onBack} />
@@ -3547,7 +3566,10 @@ export function Plans({ t, session, onBack, lang }) {
             borderRadius: R.sm, padding: SP[4], marginBottom: SP[4],
           }}>
             <Text style={[T.label, { color: durum.ucretsiz_yukseltme ? C.teal : C.gold, marginBottom: SP[2] }]}>
-              {durum.ucretsiz_yukseltme ? t.planFreeUpgradeLabel : t.planHostLabel}
+              {/* 20 Ekim — "AĞIRLA, ÖDEME" ücretsiz plana söylenir; zaten ödeyen üyeye planının kazancı. */}
+              {durum.ucretsiz_yukseltme ? t.planFreeUpgradeLabel
+                : ((plans || []).find(x => x.plan === durum.satin_alinan) || {}).aylik_fiyat > 0 ? t.planKazancLabel
+                : t.planHostLabel}
             </Text>
             <Text style={{ fontSize: FS.lg, lineHeight: 24, fontWeight: "700", color: C.ink }}>
               {durum.ad}
@@ -5913,6 +5935,8 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
   // gecmiste temas ettigin kisileri listeliyoruz (oturum veya baglanti).
   const [pick, setPick] = useState({ id: targetId || null, name: targetName || null });
   const [contacts, setContacts] = useState(null);
+  const [kisiHata, setKisiHata] = useState(false);   // 20 Ekim — kişi listesi gelmedi
+  const [kisiDeneme, setKisiDeneme] = useState(0);
 
   useEffect(() => {
     if (targetId) return;                       // hedef zaten belli
@@ -5920,7 +5944,7 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
       const { data: reqs, error: hata11 } = await supabase.from("requests")
         .select("guest_id, host_id, availabilities(host_id)")
         .or(`guest_id.eq.${uid},host_id.eq.${uid}`).limit(50);
-        if (hata11) logError("ekranlar_yalin.js:3957", hata11);
+        if (hata11) { logError("ekranlar_yalin.js:3957", hata11); setKisiHata(true); return; }
       const ids = new Set();
       (reqs || []).forEach(r => {
         if (r.guest_id && r.guest_id !== uid) ids.add(r.guest_id);
@@ -5929,7 +5953,7 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
       const { data: conns, error: hata12 } = await supabase.from("connection_requests")
         .select("from_id, to_id").eq("status", "accepted")
         .or(`from_id.eq.${uid},to_id.eq.${uid}`).limit(50);
-        if (hata12) logError("ekranlar_yalin.js:3966", hata12);
+        if (hata12) { logError("ekranlar_yalin.js:3966", hata12); setKisiHata(true); return; }
       (conns || []).forEach(c => {
         if (c.from_id !== uid) ids.add(c.from_id);
         if (c.to_id !== uid) ids.add(c.to_id);
@@ -5937,10 +5961,11 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
       if (ids.size === 0) { setContacts([]); return; }
       const { data: ppl, error: hata13 } = await supabase.from("profiles")
         .select("user_id, name, photo_url").in("user_id", [...ids]);
-        if (hata13) logError("ekranlar_yalin.js:3975", hata13);
+        if (hata13) { logError("ekranlar_yalin.js:3975", hata13); setKisiHata(true); return; }
+      setKisiHata(false);
       setContacts(ppl || []);
     })();
-  }, [uid, targetId]);
+  }, [uid, targetId, kisiDeneme]);
 
   async function submit() {
     if (!pick.id) { setErr(t.repPickWho); return; }
@@ -6001,7 +6026,8 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
         ) : (
           <View style={{ marginBottom: ARA[14] }}>
             <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.mutedAA, letterSpacing: 1, marginBottom: SP[2] }}>{t.repPickWho}</Text>
-            {contacts === null ? <ActivityIndicator color={C.gold} />
+            {kisiHata ? <LoadFail t={t} onRetry={() => { setKisiHata(false); setContacts(null); setKisiDeneme(x => x + 1); }} />
+              : contacts === null ? <ActivityIndicator color={C.gold} />
               : contacts.length === 0 ? (
                 <View style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, padding: ARA[14] }}>
                   <Text style={{ fontSize: FS.sm, color: C.mutedAA, lineHeight: 18 }}>{t.repNoContacts}</Text>

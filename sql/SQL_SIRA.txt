@@ -1,3 +1,14 @@
+SQL SIRASI - 20 Ekim 2026 (11. tur) - YENI: 339 - 338'den SONRA (330-338 kosuldu, Gokberk 20 Ekim)
+
+  1) 339_odul_marka_adlari.sql
+       -> Odul adlarindan marka cikar (anlasma imzalanana kadar): Amazon -> "500 TL Alisveris Hediye Karti",
+          THY -> "1000 Havayolu Mili", Airalo -> "Yurt Disi eSIM", Marriott/Booking -> "Otel / Konaklama Kredisi".
+          Odulun kendisi, tedarikcisi ve puani DEGISMEZ. Anlasma imzalaninca BO > Oduller'den ad geri yazilir.
+       -> Odul alininca giden bildirimde tedarikci adi gecmiyor ("Amazon tarafindan hazirlaniyor" -> "Hazirlaniyor").
+       -> Plan ekrani hediye cumlesi: esik dolmusken "1 agirlama daha" demiyor.
+       Dogrulama: bes satir tamam = true. Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 20 Ekim 2026 (10. tur) - YENI: 338 - 337'den SONRA
 
 Sira: 335 -> 336 -> 337 -> 338 (hangisi kosulmadiysa oradan basla)

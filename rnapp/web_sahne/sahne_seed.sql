@@ -200,9 +200,10 @@ begin
   insert into credit_ledger (user_id, delta, reason, balance_after) values (g, 14, 'seed', 14), (hs, 6, 'seed', 6);
   insert into points_ledger (user_id, delta, reason, balance_after) values (g, 200, 'seed', 200);
   insert into points_ledger (user_id, delta, reason, balance_after, created_at)
-    values (hs, 120, 'session', 120, now() - interval '6 hours'),
-           (hs, 120, 'session', 240, now() - interval '3 hours'),
-           (hs, 120, 'session', 360, now() - interval '1 hour');
+    -- 20 Ekim — SQL 337: Selin Yolcu → buluşma başına 100 (eskiden sabit 120 yazılıydı).
+    values (hs, 100, 'session', 100, now() - interval '6 hours'),
+           (hs, 100, 'session', 200, now() - interval '3 hours'),
+           (hs, 100, 'session', 300, now() - interval '1 hour');
 
   -- ── ilanlar (tasarım: Deniz · TAV Primeclass IST 14:20–16:40 TK1979 · Mert · Comfort SAW 09:00–11:30)
   -- (yeniden koşulabilir: önce bağımlı satırlar temizlenir)
@@ -363,6 +364,10 @@ begin
     returning id into rq2;
   insert into sessions (request_id, status, started_at, completed_at, host_confirmed, guest_confirmed)
     values (rq2, 'completed', now() - interval '2 hours', now() - interval '1 hour', true, true) returning id into ses2;
+  -- 20 Ekim — oturum sonu ekranı kazancı DEFTERDEN okur (ref_id = oturum). Gerçekte confirm_session
+  -- yazar; tohum oturumu elle eklediği için son kaydı bu oturuma bağlıyoruz.
+  update points_ledger set ref_id = ses2
+   where user_id = hs and reason = 'session' and created_at > now() - interval '70 minutes';
   insert into requests (guest_id, host_id, avail_id, status, intro_message, created_at)
     values (ey, hs, av_s1, 'pending', 'Uçuştan önce kahve?', now() - interval '25 minutes');
   -- tasarım 12: "3 misafir ağırladın" — bu ay iki tamamlanmış oturum daha
@@ -444,7 +449,7 @@ begin
     return;   -- 338 yoksa sahne eski mağazayı çeker
   end if;
   insert into rewards (id, title, subtitle, category, cost_points, active, sort_order, supplier, teslim_sekli, teslim_saat, maliyet_turu)
-  values (v, 'Airalo eSIM 10 GB', 'Küresel veri · 30 gün', 'esim', 3000, true, 1, 'Airalo', 'manuel', 48, 'ortaklik')
+  values (v, 'Yurt Dışı eSIM · 10 GB', 'Küresel veri · 30 gün', 'esim', 3000, true, 1, 'eSIM ortağı', 'manuel', 48, 'ortaklik')
   on conflict (id) do update set active = true, cost_points = 3000, title = excluded.title, subtitle = excluded.subtitle;
   update rewards set is_featured = false, vitrin_bitis = null where is_featured and id <> v;
   update rewards set erken_erisim = true, acilis_at = now() - interval '1 hour', erken_erisim_gun = 2,
