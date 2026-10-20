@@ -35,7 +35,7 @@ import { yeniId } from "./cevrimdisi";
 import { bildirimAyarlariniAc, pushIzniIste, pushDurumOku } from "./push";
 import { ARA, C, ELEV, F, FS, R, SP, T, TAP, temaYenidenKur } from "./theme";
 import { MONO } from "./typography";
-import { Btn, Hdr, Sayfa, MarkaYukleyici, Serit } from "./ui";
+import { Btn, Hdr, Sayfa, MarkaYukleyici, Serit, LoadFail } from "./ui";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -290,6 +290,20 @@ export function Load({ t, title, onBack, gosterge: ozelGosterge, icerik }) {
     <Sayfa>
       <Hdr t={t} onBack={onBack} marka={false} title=" " />
       {gosterge}
+    </Sayfa>
+  );
+}
+
+// 20 Ekim (Gökberk: "tüm sayfalarda 'liste şu an gelmedi · yeniden yükle' görünümümüz ortak olmalı")
+// — SAYFANIN ASIL VERİSİ gelmediğinde tek kural: sayfa başlığı + ortak LoadFail, başka hiçbir şey.
+// Yarım veri (üstte kart, ortada hata, altta paketler) yok; ekran ya tam ya "gelmedi".
+// Başlık her zaman ekranın kendi bandı; itilmiş ekranda geri oku da çizilir.
+export function LoadFailPage({ t, title, onBack, onRetry }) {
+  return (
+    <Sayfa>
+      {/* Başlık her durumda: sekme ekranı (Profil) da kendi bandını çizer; geri oku yalnız itilmiş ekranda. */}
+      <Hdr t={t} onBack={onBack} title={title || " "} />
+      <LoadFail t={t} onRetry={onRetry} style={{ marginTop: ARA[40] }} />
     </Sayfa>
   );
 }

@@ -43,7 +43,7 @@ import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi } from "./ortak";
+import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi, LoadFailPage } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -2463,6 +2463,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   const filtersOpen = filtersOpenProp !== undefined ? filtersOpenProp : filtersOpenLocal;
   const setFiltersOpen = setFiltersOpenProp || setFiltersOpenLocal;
   const [people, setPeople] = useState(null);
+  const [kesHata, setKesHata] = useState(false);   // 20 Ekim — kişi listesi gelmedi
   const [conns, setConns] = useState([]);
   const [hostMap, setHostMap] = useState({});   // user_id -> keşif satırı (host bilgisi)
   const [incoming, setIncoming] = useState([]);
@@ -2519,12 +2520,15 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
       // 024'teki govde parametreyi zaten HIC kullanmiyordu; simdi kullaniyor.
       : supabase.rpc("discover_people", apFilter ? { p_airport: apFilter } : {});
     const bugun = new Date(); const gunStr = `${bugun.getFullYear()}-${String(bugun.getMonth() + 1).padStart(2, "0")}-${String(bugun.getDate()).padStart(2, "0")}`;
-    const [{ data: ppl }, { data: inc }, { count: sayi }] = await Promise.all([
+    const [{ data: ppl, error: ePpl }, { data: inc }, { count: sayi }] = await Promise.all([
       peopleQuery,
       supabase.from("connection_requests").select("*").eq("to_id", uid).eq("status", "pending"),
       supabase.from("visits").select("id", { count: "exact", head: true }).eq("user_id", uid).gte("visit_date", gunStr),
     ]);
     setSeyahatVar(typeof sayi === "number" ? sayi > 0 : null);
+    // 20 Ekim — liste gelmezse "kimse yok" boş durumu değil, ortak hata görünümü.
+    if (ePpl) { logError("tanis_kisiler", ePpl); setKesHata(true); setPeople([]); return; }
+    setKesHata(false);
     // 🔴 GELEN BAĞLANTI İSTEKLERİ KAYBOLUYORDU (Gökberk madde 1).
     // `inc` yukarıda çekiliyordu ama HİÇ KULLANILMIYORDU: liste yalnız
     // discover_people'dan türetiliyor ve o RPC keşif filtrelerini
@@ -2806,7 +2810,9 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
       )}
 
       {sub === "discover" ? (
-        people === null ? <Load icerik /> : (
+        people === null ? <Load icerik />
+        : kesHata ? <LoadFail t={t} onRetry={() => { setKesHata(false); setPeople(null); load(); }} style={{ marginTop: ARA[26] }} />
+        : (
           <>
             {/* v7.2 (Gökberk 4. tur: "arama çubuğu çok kaba") — yumuşak hap: tam yuvarlak, beyaz cam,
                 lacivert %5 gölge, küçük yazı ve sessiz ikon. Odak ışığı kabın kendisinde değil girişte. */}
@@ -3151,6 +3157,8 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
   const [bagHak, setBagHak] = useState(null);   // 334 · haftalık bağlantı hakkı
   const uid = session?.user?.id;
   const [d, setD] = useState(null);
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
   const [rel, setRel] = useState("none");
   // 🔴 30 Ağu · 7. tur — BAĞLANTIYI KALDIRMA (SQL 277).
   const [connId, setConnId] = useState(null);
@@ -3187,7 +3195,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
       // kadın" ve host rengi hiç çizilmiyordu — hata da vermeden.
       // Artık dar bir kart: `profil_karti` (SQL 300 §A5) — yalnız evet/hayır
       // bayrakları, ham iletişim ya da cinsiyet YOK.
-      const [{ data: p }, { data: ts }, { data: kart, error: eKart }, { data: cr }] = await Promise.all([
+      const [{ data: p, error: eP }, { data: ts }, { data: kart, error: eKart }, { data: cr }] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", targetId).maybeSingle(),
         supabase.from("trust_scores").select("*").eq("user_id", targetId).maybeSingle(),
         supabase.rpc("profil_karti", { p_user: targetId }),
@@ -3195,6 +3203,9 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
           .or(`and(from_id.eq.${uid},to_id.eq.${targetId}),and(from_id.eq.${targetId},to_id.eq.${uid})`).maybeSingle(),
       ]);
       if (eKart) logError("profil_karti", eKart);
+      // 20 Ekim — profilin kendisi gelmezse boş bir profil (adsız, rozetsiz) gösterilmez.
+      if (eP) { logError("pp_profil", eP); setYukHata(true); return; }
+      setYukHata(false);
       let r = "none";
       if (cr) r = cr.status === "accepted" ? "connected" : (cr.from_id === uid ? "sent" : "incoming");
       setRel(r);
@@ -3220,8 +3231,9 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
       // sayıyordu. Sayı artık karttan (sunucu, kişinin tüm tamamlanmış oturumları).
       setPpSessions(kart && typeof kart.oturum === "number" ? kart.oturum : null);
     })();
-  }, [targetId, uid]);
+  }, [targetId, uid, deneme]);
 
+  if (yukHata) return <LoadFailPage t={t} title={t.ccViewProfile} onBack={onBack} onRetry={() => { setYukHata(false); setD(null); setDeneme(x => x + 1); }} />;
   if (!d) return <Load t={t} title={t.ccViewProfile} onBack={onBack} />;
   const connected = rel === "connected";
   const accent = d.role === "host" ? C.gold : C.teal;
@@ -3522,6 +3534,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
   }, [onBack]);
   const uid = session?.user?.id;
   const [msgs, setMsgs] = useState(null);
+  const [msgHata, setMsgHata] = useState(false);
   const [txt, setTxt] = useState("");
   const klavye = useKlavyeAcik();               // 15 Ekim · iOS ev göstergesi payı
   const [peerId, setPeerId] = useState(null);   // karsi tarafin id'si (profil + bildir icin)
@@ -3546,7 +3559,9 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
 
   const load = useCallback(async () => {
     const { data, error: hata6 } = await supabase.from("messages").select("*").eq("channel_id", channelId).order("created_at");
-    if (hata6) logError("ekranlar_ana.js:2696", hata6);
+    // 20 Ekim — mesajlar gelmezse "henüz mesaj yok" denmiyor; ortak hata görünümü.
+    if (hata6) { logError("ekranlar_ana.js:2696", hata6); setMsgHata(true); setMsgs([]); return; }
+    setMsgHata(false);
     setMsgs(data || []);
   }, [channelId]);
 
@@ -3641,7 +3656,9 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
           </View>
         </View>
       )}
-      {msgs === null ? <Load icerik /> : (
+      {msgs === null ? <Load icerik />
+      : msgHata ? <LoadFail t={t} onRetry={() => { setMsgHata(false); setMsgs(null); load(); }} style={{ marginTop: ARA[40] }} />
+      : (
         <ScrollView ref={ref} onContentSizeChange={() => ref.current?.scrollToEnd({ animated: true })}
           contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[20] }}>
           {msgs.length === 0 && <Text style={{ color: C.mut, textAlign: "center", marginTop: ARA[30], fontSize: FS.sm }}>{t.ccEmpty}</Text>}
@@ -3964,10 +3981,14 @@ export function TrustVisual({ t, session, onBack }) {
   const uid = session?.user?.id;
   const [d, setD] = useState(null);
   const [isHost, setIsHost] = useState(false);   // "Lounge hakkı beyanı" yalnız host'a gösterilir
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
   useEffect(() => {
     (async () => {
       const { data, error: hata10 } = await supabase.from("trust_scores").select("score, components, badge").eq("user_id", uid).maybeSingle();
-      if (hata10) logError("ekranlar_ana.js:3000", hata10);
+      // 20 Ekim — hata dalı güven puanını 0 gösteriyordu ("puanım sıfırlandı" korkusu).
+      if (hata10) { logError("ekranlar_ana.js:3000", hata10); setYukHata(true); return; }
+      setYukHata(false);
       setD(data || { score: 0, components: {} });
       // Rolü oku: "Lounge hakkı beyanı" bileşeni MİSAFİRDE ANLAMSIZ —
       // misafir lounge hakkı beyan etmez, o yalnızca host'un verdiği bilgi.
@@ -3975,7 +3996,8 @@ export function TrustVisual({ t, session, onBack }) {
       if (hata11) logError("ekranlar_ana.js:3005", hata11);
       setIsHost(u?.role === "host");
     })();
-  }, [uid]);
+  }, [uid, deneme]);
+  if (yukHata) return <LoadFailPage t={t} title={t.trustTitle} onBack={onBack} onRetry={() => { setYukHata(false); setD(null); setDeneme(x => x + 1); }} />;
   if (!d) return <Load t={t} title={t.trustTitle} onBack={onBack} />;
   const comp = d.components || {};
   const score = d.score || 0;
@@ -4138,6 +4160,8 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
   // Cevap burası: puanlanmamış oturumlar (ertelenmişler DAHİL) 24 saat
   // boyunca "★ Puanla" rozetiyle Oturum sekmesinde durur (SQL 081).
   const [unrated, setUnrated] = useState({});
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
   useEffect(() => {
     (async () => {
       // Oturumlar + karşı taraf profilleri + puan — tek yükleme
@@ -4145,7 +4169,7 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
       // ve `connection_requests`in hiçbiri diğerinin sonucunu kullanmıyor;
       // yalnız `uid` ile parametreliler. Ekran üç tur beklerken yalnız
       // birini bekliyor.
-      const [{ data: ss }, ur, { data: cr }] = await Promise.all([
+      const [{ data: ss, error: eSs }, ur, { data: cr, error: eCr }] = await Promise.all([
         supabase.from("sessions")
           .select("id, status, started_at, request_id, requests!inner(id, guest_id, host_id, availabilities(lounge_name, airport_code, avail_date))")
           .order("started_at", { ascending: false }).limit(80),
@@ -4153,6 +4177,9 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
         supabase.from("connection_requests")
           .select("from_id, to_id, status").eq("status", "accepted").or(`from_id.eq.${uid},to_id.eq.${uid}`),
       ]);
+      // 20 Ekim — geçmiş gelmezse "hiç oturumun yok" denmez; ortak hata görünümü.
+      if (eSs || eCr) { logError("oturum_gecmisi", eSs || eCr); setYukHata(true); return; }
+      setYukHata(false);
       const mine = (ss || []).filter(x => x.requests?.guest_id === uid || x.requests?.host_id === uid);
       const completed = mine.filter(x => x.status === "completed");
       // 🔴 v1.77 + SQL 080: 'pending' (bir taraf başlatmış, diğeri bekleniyor)
@@ -4185,7 +4212,8 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
       if (hata12) logError("ekranlar_ana.js:3189", hata12);
       setData({ completed, active, conns: [...otherIds].map(id => ({ id, ...umap[id] })).filter(x => x.name), umap, points: bal?.points ?? 0 });
     })();
-  }, [uid]);
+  }, [uid, deneme]);
+  if (yukHata) return <LoadFailPage t={t} title={t.histTitle} onBack={onBack} onRetry={() => { setYukHata(false); setData(null); setDeneme(x => x + 1); }} />;
   if (!data) return <Load t={t} title={t.histTitle} onBack={onBack} />;
   const other = s => { const o = s.requests?.host_id === uid ? s.requests?.guest_id : s.requests?.host_id; return data.umap[o] || {}; };
   const tabs = [["sessions", t.histTabSessions, data.completed.length], ["active", t.histTabActive, data.active.length], ["connections", t.histTabConns, data.conns.length]];
@@ -4344,15 +4372,19 @@ export function Referral({ t, session, onBack }) {
   const [paylasiyor, setPaylasiyor] = useState(false);
   // v2.77 — BO'daki `referral` bayrağı artık GERÇEKTEN kapatıyor.
   const kapali = !bayrak("referral");
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
   useEffect(() => {
     if (kapali) return;
     (async () => {
       const { data, error: hata13 } = await supabase.rpc("my_referral");
-      if (hata13) logError("ekranlar_ana.js:3353", hata13);
+      // 20 Ekim — kod gelmezse paylaşılacak bir şey yok; ortak hata görünümü.
+      if (hata13) { logError("ekranlar_ana.js:3353", hata13); setYukHata(true); return; }
+      setYukHata(false);
       setCode(data?.code || null);
       setInvited(data?.invited || []);
     })();
-  }, [uid, kapali]);
+  }, [uid, kapali, deneme]);
 
   // 🔴 ERKEN RETURN, HOOK'LARDAN SONRA. İlk yazdığımda bayrak kontrolünü
   // fonksiyonun EN BAŞINA koymuştum; `useState`/`useEffect` o return'ün
@@ -4368,6 +4400,7 @@ export function Referral({ t, session, onBack }) {
       </View>
     </Sayfa>
   );
+  if (yukHata) return <LoadFailPage t={t} title={t.refTitle} onBack={onBack} onRetry={() => { setYukHata(false); setDeneme(x => x + 1); }} />;
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneGrow} title={t.refTitle} onBack={onBack} />
@@ -4506,10 +4539,15 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
+  // 20 Ekim — ön dolum gelmezse form varsayılan değerlerle açılıyordu; "Kaydet" mevcut erişim
+  // ayarını sessizce EZERDİ. Gelmezse ortak hata görünümü.
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
   useEffect(() => {
     (async () => {
       const { data, error: hata14 } = await supabase.rpc("my_host_access");
-      if (hata14) logError("ekranlar_ana.js:3512", hata14);
+      if (hata14) { logError("ekranlar_ana.js:3512", hata14); setYukHata(true); return; }
+      setYukHata(false);
       if (data?.access_source) setSrcs(erisimKaynaklari(data.access_source));
       if (data?.guest_capacity != null) setCap(data.guest_capacity);
       if (data?.guest_fee_expected != null) setFeePaid(!!data.guest_fee_expected);
@@ -4551,7 +4589,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
         } else setPlans([]);
       } catch (e) { setPlans([]); }
     })();
-  }, [uid]);
+  }, [uid, deneme]);
 
   // 🔴 KART LİSTESİ TEK KAYNAKTAN: `my_access_cards()`.
   // host_entitlements'ta app'e tablo GRANT'i YOK; doğrudan sorgu 42501
@@ -4652,6 +4690,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
   // ⚠️ Kapı bir DUVAR değil, bir KAVŞAK: misafirin kartı gerçekten
   // varsa host'a geçmesi bir tıklama. Ürün tasarımı zaten "kart hakkını
   // beyan eden host olur" diyor; bunu engellemiyoruz, ADLANDIRIYORUZ.
+  if (yukHata) return <LoadFailPage t={t} title={t.accessTitle} onBack={onBack || undefined} onRetry={() => { setYukHata(false); setDeneme(x => x + 1); }} />;
   if (role === "guest") {
     return (
       <Sayfa>

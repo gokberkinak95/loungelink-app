@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -9,7 +18,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 19 sa 7 dk · 70 ilan · 28 host yayında",
+  "Havalimanı saatine 18 sa 18 dk · 70 ilan · 28 host yayında",
   "IST · 21 Eki",
   "SAW · 21 Eki",
   "İstanbul",
@@ -27,7 +36,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "19 sa 27 dk içinde",
+  "18 sa 38 dk içinde",
   "İstek gönder",
   "",
   "M",
@@ -42,7 +51,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "19 sa 27 dk içinde",
+  "18 sa 38 dk içinde",
   "İstek gönder",
   "",
   "N",
@@ -57,7 +66,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "15 sa 7 dk içinde",
+  "14 sa 18 dk içinde",
   "İstek gönder",
   "",
   "N",
@@ -71,7 +80,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "21 sa 7 dk içinde",
+  "20 sa 18 dk içinde",
   "İstek gönder",
   "",
   "T",
@@ -85,7 +94,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "19 sa 22 dk içinde",
+  "18 sa 33 dk içinde",
   "İstek gönder",
   "",
   "N",
@@ -94,12 +103,6 @@
   "MİLES&SMİLES · ELİTE PLUS",
   "%64"
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 22,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

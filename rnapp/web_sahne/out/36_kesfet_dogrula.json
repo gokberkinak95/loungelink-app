@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -9,7 +18,7 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Havalimanı saatine 19 sa 4 dk · 70 ilan · 28 host yayında",
+  "Havalimanı saatine 17 sa 54 dk · 70 ilan · 28 host yayında",
   "İstanbul",
   "",
   "Senin uçuşunda 3 kişi daha var — en yüksek kabul oranı bu eşleşmelerde.",
@@ -25,7 +34,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "19 sa 34 dk içinde",
+  "18 sa 24 dk içinde",
   "Telefonu doğrula",
   "",
   "M",
@@ -40,7 +49,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "19 sa 34 dk içinde",
+  "18 sa 24 dk içinde",
   "Telefonu doğrula",
   "",
   "N",
@@ -55,7 +64,7 @@
   "Misafir ücretsiz",
   "TK1979 · AYNI UÇUŞ",
   "",
-  "15 sa 14 dk içinde",
+  "14 sa 4 dk içinde",
   "Telefonu doğrula",
   "",
   "N",
@@ -69,7 +78,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "21 sa 14 dk içinde",
+  "20 sa 4 dk içinde",
   "Telefonu doğrula",
   "",
   "T",
@@ -83,7 +92,7 @@
   "",
   "Misafir ücretsiz",
   "",
-  "17 sa 59 dk içinde",
+  "16 sa 49 dk içinde",
   "Telefonu doğrula",
   "",
   "T",
@@ -94,12 +103,6 @@
   "UYUM",
   "Primeclass Lounge"
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 22,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

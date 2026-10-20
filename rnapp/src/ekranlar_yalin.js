@@ -40,7 +40,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Linking, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { VitrinKarti, MiniErken, MiniFiyat, IndirimBandi, bantMetni } from "./odul_magaza";
@@ -3256,6 +3256,8 @@ export function Marketplace({ t, session, onBack, onPlans, lang }) {
     if (!error) load();
   }
 
+  // 20 Ekim — ödül listesi gelmezse ortak hata görünümü (eskiden üstte kırmızı bant + boş ızgara).
+  if (yukErr) return <LoadFailPage t={t} title={t.marketTitle} onBack={onBack} onRetry={() => { setYukErr(""); setRewards(null); load(); }} />;
   if (rewards === null) return <Load t={t} title={t.shopTitle} onBack={onBack} />;
   // 🔴 v3.7 — ÖDÜL KATEGORİSİ İKONLARI da emoji taşıyordu; beşi de
   // gövde fontunda yok. Anlam adlarına çevrildi.
@@ -3442,6 +3444,7 @@ export function Plans({ t, session, onBack, lang }) {
   // ============================================================
   const uid = session?.user?.id;
   const [plans, setPlans] = useState(null);
+  const [yukHata, setYukHata] = useState(false);
   const [durum, setDurum] = useState(null);       // my_plan()
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState("");
@@ -3468,8 +3471,10 @@ export function Plans({ t, session, onBack, lang }) {
       supabase.rpc("subscription_plans", { p_lang: lang || "tr" }),
       supabase.rpc("my_plan"),
     ]);
-    if (e1) console.warn("subscription_plans:", e1.message);
-    if (e2) console.warn("my_plan:", e2.message);
+    // 20 Ekim — plan listesi gelmezse sayfa boş kartlarla açılmaz; ortak hata görünümü.
+    if (e1) { logError("subscription_plans", e1); setYukHata(true); return; }
+    if (e2) logError("my_plan", e2);
+    setYukHata(false);
     setPlans(Array.isArray(pl) ? pl : []);
     setDurum(mp && mp.known ? mp : null);
   }, [uid, lang]);
@@ -3522,6 +3527,7 @@ export function Plans({ t, session, onBack, lang }) {
     setTimeout(load, 2500);
   }
 
+  if (yukHata) return <LoadFailPage t={t} title={t.plansTitle} onBack={onBack} onRetry={() => { setYukHata(false); setPlans(null); load(); }} />;
   if (plans === null) return <Load t={t} title={t.plansTitle} onBack={onBack} />;
 
   return (
@@ -4026,22 +4032,28 @@ export function LiveStatusPicker({ t, sess, isHost, uid }) {
 export function LiveStatus({ t, session, onBack, onGoSession }) {
   const uid = session?.user?.id;
   const [d, setD] = useState(null);
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
 
   useEffect(() => {
     (async () => {
       const today = yerelGun();
-      const [{ data: trip }, { data: avail }, { data: sess }] = await Promise.all([
+      const [{ data: trip, error: eT }, { data: avail, error: eA }, { data: sess, error: eS }] = await Promise.all([
         supabase.from("visits").select("*").eq("user_id", uid).gte("visit_date", today).order("visit_date").limit(1).maybeSingle(),
         // #19: host'un aktif ilani da "canli durum"un parcasi
         supabase.from("availabilities").select("id, airport_code, lounge_name, avail_date, time_from, time_to, slots, filled, active").eq("host_id", uid).eq("active", true).gte("avail_date", today).order("avail_date").limit(1).maybeSingle(),
         supabase.from("sessions").select("id, status, started_at, host_status, host_status_ts, guest_status, guest_status_ts, requests!inner(id, guest_id, host_id, availabilities(lounge_name, airport_code, avail_date, time_from, time_to))")
           .eq("status", "active").limit(5),
       ]);
+      // 20 Ekim — sorgulardan biri düşerse "seyahatin yok" gibi yanlış bir durum gösterilmez.
+      if (eT || eA || eS) { logError("canli_durum", eT || eA || eS); setYukHata(true); return; }
+      setYukHata(false);
       const mine = (sess || []).find(s => s.requests?.guest_id === uid || s.requests?.host_id === uid);
       setD({ trip, avail, session: mine, isHost: mine ? mine.requests?.host_id === uid : false });
     })();
-  }, [uid]);
+  }, [uid, deneme]);
 
+  if (yukHata) return <LoadFailPage t={t} title={t.liveTitle} onBack={onBack} onRetry={() => { setYukHata(false); setD(null); setDeneme(x => x + 1); }} />;
   if (!d) return <Load t={t} title={t.liveTitle} onBack={onBack} />;
   const { trip, avail, session: act, isHost } = d;
 
@@ -4237,18 +4249,24 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
   const [rows, setRows] = useState(null);
   // 1 Ekim — tam ekranda AÇIK başlar: kullanıcı "Soru"ya bilerek bastı, katlı kart boş sayfa gibi görünüyordu.
   const [acik, setAcik] = useState(!!onBack);
+  const [yukHata, setYukHata] = useState(false);
+  const [deneme, setDeneme] = useState(0);
 
   useEffect(() => {
     let iptal = false;
     (async () => {
       const { data, error } = await supabase.rpc("sorularim");
-      if (error) { logError("sorularim", error); return; }
-      if (!iptal) setRows(Array.isArray(data) ? data : []);
+      // 20 Ekim — hata dalı sonsuz yükleniyordu (rows null kalıyordu).
+      if (error) { logError("sorularim", error); if (!iptal) setYukHata(true); return; }
+      if (!iptal) { setYukHata(false); setRows(Array.isArray(data) ? data : []); }
     })();
     return () => { iptal = true; };
-  }, []);
+  }, [deneme]);
 
   const tamEkran = !!onBack;
+  if (yukHata) return tamEkran
+    ? <LoadFailPage t={t} title={t.flowQuestions} onBack={onBack} onRetry={() => { setYukHata(false); setRows(null); setDeneme(x => x + 1); }} />
+    : null;
 
   if (!rows) return tamEkran ? <Load t={t} title={t.flowQuestions} onBack={onBack} /> : null;
   if (rows.length === 0) {
@@ -5176,6 +5194,9 @@ export function Wallet({ t, session, onBack }) {
     return REASON[base] || t.ledOther;
   };
 
+  // 20 Ekim (Gökberk: "ortada 'liste gelmedi', altında üstünde veri var — saçma") — bakiye ve
+  // hareketler cüzdanın ASIL verisi; gelmezse sayfa yarım çizilmez, ortak hata görünümü.
+  if (loadErr) return <LoadFailPage t={t} title={t.walletTitle} onBack={onBack} onRetry={() => { setLoadErr(false); load(); }} />;
   return (
     <Sayfa>
     <Hdr t={t} tur="cuzdan" title={t.walletTitle} sub={t.walletSub} onBack={onBack} />
@@ -5201,7 +5222,6 @@ export function Wallet({ t, session, onBack }) {
           : bal == null ? null
           : String(t.walletCreditsMeans).replace("{n}", String(bal))} />
       </View>
-      {loadErr && <LoadFail t={t} onRetry={load} style={{ marginBottom: ARA[18] }} />}
 
       {/* 🔴 v6.1 (Gökberk md.27) — kredi talebi her girişte ekranın yarısını
           kaplıyordu; bakiyesi yeten kullanıcı için okunacak bir şey yok.
@@ -5302,8 +5322,7 @@ export function Wallet({ t, session, onBack }) {
       <HediyeBolumu t={t} onDone={load} />
 
       <Text style={[S.label, { marginTop: ARA[18] }]}>{t.walletHistory}</Text>
-      {loadErr ? <LoadFail t={t} onRetry={load} />
-      : led === null ? <Load icerik />
+      {led === null ? <Load icerik />
       : !led.length ? (
         <View style={S.card}><Text style={{ color: C.mutedAA, fontSize: FS.sm }}>{t.walletNoHistory}</Text></View>
       ) : led.map((r, i) => (

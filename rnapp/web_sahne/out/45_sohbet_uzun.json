@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -70,36 +79,30 @@
   "KAPI A12 ÖNÜ",
   "BULUŞMAYA",
   "1",
-  "9",
+  "8",
   ":",
-  "3",
-  "3",
+  "2",
+  "4",
   ":",
-  "3",
-  "2",
-  "3",
-  "2",
+  "0",
+  "1",
+  "0",
   "DURUM",
   "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "18:10",
+  "19:21",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "18:12",
+  "19:23",
   "Lounge girişindeyim",
-  "18:17",
+  "19:28",
   "Ben de yeni geçtim, kapıdayım.",
-  "18:17",
+  "19:29",
   "Süper. Kaç numaralı kapıdasın?",
-  "18:17",
+  "19:29",
   "A12. Primeclass girişi tam karşısı.",
-  "18:18"
+  "19:29",
+  "Anladım, yürüyen merdivenden çıkıyorum."
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 22,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

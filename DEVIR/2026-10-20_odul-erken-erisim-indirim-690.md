@@ -67,3 +67,23 @@ Gökberk'in kararları (20 Ekim):
 3. Ortaklık belgesi: kod havuzu 200 mü 50 mi (belgedeki yorum).
 4. 320 px'te üst bantta "LOUNGEL…" kısalıyor (bakiye hapı yer kaplıyor) — eski, ayrı iş.
 5. Firebase 10/10b, RevenueCat anahtarları, eas.json appleId + ascAppId.
+
+## Ek · 20 Ekim akşam — site menüsü, marka adı, ortak hata görünümü (app 6.9.1 → 6.9.2, site 0.72.0 → 0.72.2)
+- **Site mobil menü** (Gökberk: "kullandıktan sonra tekrar açınca kesik açıyor"): ÖLÇÜLDÜ — kaydırılmış sayfada çubuğun
+  cam efekti (`backdrop-filter`, 0.45 sn geçiş) tam ekran menünün kapsayıcısı oluyor, menü 136 px'e hapsoluyordu.
+  Menü `<header>` dışına taşındı (z 49), geçişten backdrop-filter çıktı, zemin ilk karede opak, içerik süzülür,
+  aynı sayfa çapalarında önce kilit kalkıp sonra kaydırılır, dokunma vurgusu kaldırıldı.
+  Ölçüm: aç → Nasıl çalışır → tekrar aç, 320/390/440 × 3 tur kare kare: menünün göründüğü 438 karede kesik/saydam kare 0.
+- **App üst bant marka adı** 320 px'te "LOUNGEL…" oluyordu: harf aralığı yalnız sığmadığında 4.6'dan aşağı iner
+  (en az 1.5, gerekirse 1 punto küçülür); 390/430 değişmedi. Görünmez ölçüm kabı `testID="olcum"` (cek.py taşma ölçümü sayar değil).
+- **Ortak hata görünümü** (`LoadFailPage` · ortak.js): sayfanın ASIL verisi gelmezse başlık + "Liste şu an gelmedi ·
+  Yeniden yükle", yarım veri yok. Bağlanan ekranlar: Planlar, LoungePuan, Cüzdan (iki ayrı hata kutusu + yarım sayfa
+  kalktı), Tanış, Profil, Planım (rol okunamazsa misafir görünümü yerine; sarı şerit kalktı), Oturum geçmişi, Güven puanı
+  (hata "0" gösteriyordu), Davet, Sorularım (sonsuz yükleniyordu), Canlı durum, Herkese açık profil, Lounge erişim ayarı
+  (ön dolum gelmezse form varsayılanla açılıp kaydedince EZERDİ), Arkadaş sohbeti.
+- **Ek bulgu:** profil sorgusu düşünce host'a "Lounge Erişim Kurulumu" zorla açılıyordu (App.js firstRunAccess) — hata = bilmiyoruz, form açılmaz.
+- Sahne tohumu: Kaan'ın seyahati saatten bağımsız (akşam 50_istek_gonder "Seyahat ekle" gösteriyordu — ürün doğru, veri bayat).
+- Yeni arıza sahneleri 49b–49h (plan, mağaza, tanış, geçmiş, güven, davet, profil).
+- Ortam: GTK3 Runtime kuruldu (Gökberk, winget) → cairosvg çalışıyor (`C:\Program Files\GTK3-Runtime Win64\bin`).
+- Testler: verify 77/77 · sahne 123, hata 0 (arıza sahneleri bilerek bozuk), dokunma yolu düşen 0 · akış e2e **224/224** · verify (GTK yoluyla) 77/77, ortam uyarısı 0.
+- APK 6.9.1 (marka): https://expo.dev/artifacts/eas/aYMWozrVThPIaMJdtGGIzfy-yv4pucvNgRpRORv_Z8o.apk · 6.9.2: APK692

@@ -14,7 +14,7 @@ import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
-import { SikkeDugme, CamSerit, ALTPAD, KlavyeKabi } from "./src/ui";
+import { SikkeDugme, CamSerit, ALTPAD, KlavyeKabi, LoadFail } from "./src/ui";
 import { Katman } from "./src/katman";
 import { odemeGiris, odemeCikis } from "./src/odeme";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
@@ -1145,7 +1145,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
         }
         const { data, error: hata2 } = await supabase.from("profiles")
           .select("access_source").eq("user_id", session.user.id).maybeSingle();
-          if (hata2) logError("App.js:814", hata2);
+        // 20 Ekim — ÖLÇÜLDÜ (49h_profil_ariza): profil sorgusu düşünce `access_source` BOŞ sanılıyor ve
+        // host'a "Lounge Erişim Kurulumu" zorla açılıyordu (kaydetse mevcut ayarını ezerdi). Hata =
+        // bilmiyoruz; bilmediğimiz şey için kullanıcıyı forma sokmuyoruz.
+        if (hata2) { logError("App.js:814", hata2); return; }
         // Yalnız hiç kaynak seçmemiş DAVET EDENE sorulur.
         if (alive && !data?.access_source) setFirstRunAccess(true);
         else await AsyncStorage.setItem("ll_access_asked", "1");
@@ -1925,18 +1928,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           Önbellekteki rol varsa o korunuyor (yukarıda) — bu şerit
           yalnız gerçekten bilinmeyen durumda çiziliyor.
           ══════════════════════════════════════════════════════════════ */}
-      {rolHatasi && (
-        <View style={{ backgroundColor: C.amberBg, borderBottomWidth: 1, borderBottomColor: C.amber,
-                       paddingVertical: ARA[10], paddingHorizontal: ARA[18],
-                       flexDirection: "row", alignItems: "center", gap: SP[3] }}>
-          <Text style={{ flex: 1, color: C.amberInk, fontSize: FS.sm, lineHeight: 18 }}>{t.roleLoadFail}</Text>
-          <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.retry}
-            onPress={() => { setRolHatasi(false); setRolTekrar(x => x + 1); }}
-            style={{ minHeight: TAP.minHeight, justifyContent: "center" }}>
-            <Text style={{ color: C.amberInk, fontWeight: "700", fontSize: FS.sm }}>{t.retry}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      {/* 20 Ekim (Gökberk: "Seyahatlerim'de yeniden yükle alanı diğer sayfalardaki gibi gelmemiş") —
+          rol okunamadığında üstteki sarı şerit kalktı; Planım rolüne göre çizildiği için (Seyahatlerim /
+          İlanlarım) rol bilinmeden misafir görünümü göstermek yanlıştı. Planım artık ortak hata
+          görünümünü gösteriyor; yeniden yükle rolü yeniden sorar. */}
       {tab === "meet" && <Hdr t={t} tur="tanis" kaydir={bntMeet.kaydir}
         onBack={sekmeGeri ? sekmeGeriDon : undefined}
         title={meetSub === "discover" ? t.meetTitle : meetSub === "reqs" ? t.connRequestsTitle : t.myConnections}
@@ -2019,7 +2014,10 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
             sessizce yanlış ekranı değil, MERDİVENİ açıyor.
             🆕 SINIF: "BİR KOŞULU İKİ KEZ SORMAK ONU GÜVENLİ YAPMAZ —
             İÇTEKİ SORUYU ANLAMSIZ, ONA BAĞLI DALI ÖLÜ YAPAR." */}
-        {tab === "trips" && (hostTripsSub === "ilan"
+        {tab === "trips" && rolHatasi && (
+          <LoadFail t={t} onRetry={() => { setRolHatasi(false); setRolTekrar(x => x + 1); }} style={{ marginTop: (bntTrips.ustBosluk || 0) + ARA[40] }} />
+        )}
+        {tab === "trips" && !rolHatasi && (hostTripsSub === "ilan"
           ? (role === "host"
               ? <Hosting key={"h" + reload} t={t} lang={lang} session={session} onOpenChat={setChat} onDiscover={() => setShowDisc({})} onAddAvail={() => setShowAddAvail(true)} onAddCard={() => setShowAccess(true)} onEditAvail={(a) => setEditAvail(a)} bnt={bntTrips}
                   focusAvailId={odakAvail} onFocusDone={() => setOdakAvail(null)} />

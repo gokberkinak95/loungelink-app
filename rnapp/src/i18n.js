@@ -2127,7 +2127,6 @@ export const D = {
     // 🔴 19 Eylül · derin denetim — rol okunamadığında. `role` ürünün hangi
     // yüzeylerinin var olduğuna karar veriyor; okunamadığında sessiz kalmak
     // host'a "sen host değilsin" demekti.
-    roleLoadFail: "Hesap bilgin şu an yüklenemedi; bazı bölümler eksik görünebilir.",
     namePh: "adın soyadın",
     hwExpiresIn: "{n} gün sonra yanıyor",
     ledSatinAlma: "Kredi satın alındı",
@@ -4355,7 +4354,6 @@ export const D = {
     errFill: "Please fill in all fields.",
     loading: "Loading…",
     retry: "Try again",
-    roleLoadFail: "We couldn't load your account details; some sections may be missing.",
     namePh: "your full name",
     hwExpiresIn: "expires in {n} days",
     ledSatinAlma: "Credits purchased",

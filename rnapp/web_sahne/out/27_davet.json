@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -91,12 +100,6 @@
   "Arkadaşın kodunu uyguladığında ikinize de",
   "+500 puan"
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 72,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

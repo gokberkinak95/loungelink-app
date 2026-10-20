@@ -70,36 +70,30 @@
   "KAPI A12 ÖNÜ",
   "BULUŞMAYA",
   "1",
-  "9",
+  "8",
   ":",
-  "3",
-  "4",
+  "2",
+  "5",
   ":",
-  "4",
   "2",
   "1",
+  "6",
+  "5",
   "DURUM",
   "OTURUMDA",
   "Merhaba! Primeclass girişinde buluşalım mı?",
-  "18:10",
+  "19:21",
   "Olur, güvenlikten yeni geçtim — 5 dakikaya oradayım.",
-  "18:12",
+  "19:23",
   "Lounge girişindeyim",
-  "18:17",
+  "19:28",
   "Ben de yeni geçtim, kapıdayım.",
-  "18:17",
+  "19:29",
   "Süper. Kaç numaralı kapıdasın?",
-  "18:17",
+  "19:29",
   "A12. Primeclass girişi tam karşısı.",
-  "18:18",
-  "Anladım, yürüyen merdivenden çıkıyorum."
+  "19:29"
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 22,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

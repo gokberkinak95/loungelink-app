@@ -1,14 +1,6 @@
 {
  "console": [
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
    "t": "warning",
    "s": "[sahne logError] discover_availabilities Network request failed "
   },
@@ -71,8 +63,8 @@
   "",
   "İSTANBUL · IST",
   "İstanbul",
-  "Seyahatine göre sıralandı: IST · 20 Ekim",
-  "IST · 20 Eki",
+  "Havalimanı saatine 18 sa 4 dk",
+  "IST · 21 Eki",
   "SAW · 21 Eki",
   "İstanbul",
   "",
@@ -92,12 +84,6 @@
   "",
   "Profil"
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 22,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

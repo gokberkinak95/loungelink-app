@@ -1,5 +1,14 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [
   {
@@ -85,28 +94,12 @@
   "",
   "LOUNGELINK",
   "LOUNGELINK",
-  "?",
   "Cüzdan",
-  "Kredilerin ve hareket geçmişin",
-  "LOUNGELINK",
-  "GÜVENİLİR HOST",
-  "BAKİYE",
-  "—",
-  "KREDİ",
-  "Bakiye şu an gelmedi — kredin duruyor.",
-  "Selin B.",
-  "LL 1284 7316",
   "",
   "Liste şu an gelmedi",
   "Bağlantı bir an koptu. Verilerin duruyor.",
   "Yeniden yükle"
  ],
- "tasan": [
-  {
-   "g": 1000,
-   "sol": 72,
-   "tx": "LOUNGELINK"
-  }
- ],
+ "tasan": [],
  "bitisik": []
 }

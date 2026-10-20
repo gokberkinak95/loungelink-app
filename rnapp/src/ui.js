@@ -1830,7 +1830,8 @@ export function FotoBant({ marka = "LOUNGELINK", ustBilgi, baslik, altBilgi,
           <View style={{ flex: 1, minWidth: 0, flexDirection: "row", alignItems: "center", overflow: "hidden" }}
                 onLayout={(e) => setMarkaAlan(Math.round(e.nativeEvent.layout.width))}>
             {/* Ölçüm: kelimenin harf aralıksız yalın genişliği (görünmez, yer kaplamaz). */}
-            <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
+            {/* testID="olcum": görünmez ölçüm kabı — sahne taşma denetimi (cek.py) bunu kutu saymaz. */}
+            <View testID="olcum" pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
               style={{ position: "absolute", left: 0, top: 0, width: 1000, opacity: 0, flexDirection: "row" }}>
               <Text onLayout={(e) => setMarkaYalin(Math.ceil(e.nativeEvent.layout.width))}
                 style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 0 }}>{marka}</Text>

@@ -127,7 +127,9 @@ def main():
     # yanlış dalında `HostDaveti` bulunmalı.
     # 🆕 SINIF: "BİR DENETİM KAYNAĞIN BİÇİMİNİ SINIYORSA, İYİLEŞTİRMEYİ
     # DE HATA SAYAR — SINANACAK ŞEY BİÇİM DEĞİL ÖZELLİKTİR."
-    t0 = app.find('{tab === "trips" && (hostTripsSub')
+    # 20 Ekim — rol okunamazsa Planım ortak hata görünümüne düşer (`!rolHatasi &&`); özellik aynı.
+    _m = re.search(r'\{tab === "trips" && (?:!rolHatasi && )?\(hostTripsSub', app)
+    t0 = _m.start() if _m else -1
     h0 = app.find("<Hosting", t0) if t0 >= 0 else -1
     if t0 < 0 or h0 < 0:
         print("     ✗ Planım gövde dalı bulunamadı (yapı değişmiş).")

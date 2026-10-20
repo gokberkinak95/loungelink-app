@@ -271,6 +271,15 @@ SAHNELER = {
     "47_ilanlarim_bos":   ("boshost", [("dokun", "Planım")]),                         # ekran: Hosting · boş
     "48_seyahat_bos_host":("boshost", [("dokun", "Planım"), ("dokun_a11y", "Seyahatlerim")]),  # ekran: Trips · boş host
     "49_planim_rol_kaybi":("selin",   [("dokun", "Planım")], "bozuk=users"),          # ekran: Trips · rol gelmedi
+    # 20 Ekim (Gökberk: "tüm sayfalarda 'liste şu an gelmedi · yeniden yükle' ortak olmalı") —
+    # her ekranın ASIL verisi düşürülür; ekran ya tam ya ortak LoadFail (yarım veri yok).
+    "49b_plan_ariza":     ("selin",   [("dokun", "Profil"), ("dokun", "Plan")], "bozuk=subscription_plans"),        # ekran: Plans · gelmedi
+    "49c_magaza_ariza":   ("selin",   [("dokun", "Profil"), ("dokun", "LoungePuan")], "bozuk=odul_magazasi,rewards"),  # ekran: Marketplace · gelmedi
+    "49d_tanis_ariza":    ("selin",   [("dokun", "Tanış"), ("bekle", 1200)], "bozuk=discover_people"),              # ekran: Meet · gelmedi
+    "49e_gecmis_ariza":   ("selin",   [("dokun", "Profil"), ("dokun", "Oturum Geçmişi")], "bozuk=sessions"),        # ekran: SessionHistory · gelmedi
+    "49f_guven_ariza":    ("selin",   [("dokun", "Profil"), ("dokun", "Güven Puanım")], "bozuk=trust_scores"),      # ekran: TrustVisual · gelmedi
+    "49h_profil_ariza":   ("selin",   [("dokun", "Profil"), ("bekle", 1200)], "bozuk=profiles"),                     # ekran: Profile · gelmedi
+    "49g_davet_ariza":    ("selin",   [("dokun", "Profil"), ("dokun", "Arkadaşını Davet Et")], "bozuk=my_referral"),  # ekran: Referral · gelmedi
 }
 
 class Sessiz(http.server.SimpleHTTPRequestHandler):
@@ -572,6 +581,8 @@ def cek(sahneler, tam=False):
                       document.querySelectorAll("*").forEach(e => {
                         const r = e.getBoundingClientRect();
                         if (r.width <= V + 0.5) return;
+                        // 20 Ekim — görünmez ölçüm kapları (testID="olcum", ör. FotoBant marka genişliği) kutu değil.
+                        if (e.closest('[data-testid="olcum"]')) return;
                         // yatay kaydırılan bir atanın içindeyse taşma değil
                         let q = e.parentElement, kaydirilir = false;
                         while (q && q !== document.body) { if (kaydirirMi(q)) { kaydirilir = true; break; } q = q.parentElement; }

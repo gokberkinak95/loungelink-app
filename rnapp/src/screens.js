@@ -17,7 +17,7 @@ import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Image, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ucusNo, ustIsik, ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto } from "./ortak";
+import { ucusNo, ustIsik, ACCESS_SOURCES, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, LoadFailPage } from "./ortak";
 
 export { C, F, ACCENT } from "./theme";
 
@@ -1425,6 +1425,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
   const [ts, setTs] = useState({});
   const [name, setName] = useState("");
   const [prof, setProf] = useState("");
+  const [yukHata, setYukHata] = useState(false);   // 20 Ekim — profil gelmedi (sonsuz yükleniyordu)
   const [bio, setBio] = useState("");
   // 🔴 v2.30 — SEYAHAT TARZI. Kayit akisina DEGIL profile koyuyoruz:
   // kaydolurken bir soru daha sormak, kaydolmayi zorlastirmaktan baska
@@ -1475,7 +1476,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
     // KENDİ HATA TOLERANSI DA TAŞINMALI — YOKSA HIZLANDIRDIĞIN EKRAN
     // İLK BOZUK SORGUDA TAMAMEN BOŞALIR."
     // ══════════════════════════════════════════════════════════════════
-    const [{ data: pr }, { data: ve }, { data: tsc }, { data: bal },
+    const [{ data: pr, error: ePr }, { data: ve }, { data: tsc }, { data: bal },
            cl, ss, rr, { data: u }, vs0, av0] = await Promise.all([
       supabase.from("profiles").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("verifications").select("*").eq("user_id", uid).maybeSingle(),
@@ -1502,6 +1503,8 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
         .gte("avail_date", yerelGun()).order("avail_date").limit(1)
         .then(r => r.data).catch(() => null),
     ]);
+    if (ePr) { logError("profil_yukle", ePr); setYukHata(true); return; }
+    setYukHata(false);
     {
       const v0 = (vs0 && vs0[0]) || (av0 && av0[0]);
       setSehir(v0 ? ((v0.airports && v0.airports.city) || v0.airport_code || "") : "");
@@ -1558,6 +1561,7 @@ export function Profile({ t, refresh, session, onManagePlan, onSafety, onTrust, 
     setErr("");
   }
 
+  if (yukHata) return <LoadFailPage t={t} title={t.navProfile} onRetry={() => { setYukHata(false); load(); }} />;
   if (!p) return <Load t={t} title={t.navProfile} />;
   const initial = (p.name || "?").charAt(0).toUpperCase();
 
