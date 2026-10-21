@@ -22,11 +22,12 @@
 // Tek yönlü; asla tersi. (`node check.js` yer tutucu kalmadığını denetler.)
 // ============================================================
 
-export const LEGAL_VERSION = "2026-10-20";
+export const LEGAL_VERSION = "2026-10-21";
 
 // Veri sorumlusu: gerçek kişi (bireysel geliştirici). Mağaza hesabındaki ad ile aynı.
 const COMPANY = "Gökberk İnak";
-const ADDRESS = "İstanbul, Türkiye — APA GIZ PLAZA";
+// 21 Ekim (Gökberk: bireysel hesap, adres yayınlanmıyor) — açık adres metinlerde yer almaz; posta
+// yoluyla yazılı başvuru için adres İSTEK ÜZERİNE e-postayla bildirilir (başvuru kanalı kapanmaz).
 // Tek alan adı (loungelink.co) — üç kopya (app · site · BO) aynı adresi taşır.
 const CONTACT = "kvkk@loungelink.co";
 const SUPPORT = "destek@loungelink.co";
@@ -44,7 +45,7 @@ LoungeLink, havalimanı lounge erişimi olan yolcular (host) ile lounge'a
 misafir olarak girmek isteyen yolcuları (misafir) buluşturan bir eşleştirme
 uygulamasıdır. LoungeLink bir şirket değildir; ${COMPANY} tarafından gerçek
 kişi sıfatıyla (bireysel geliştirici olarak) geliştirilir ve işletilir.
-Veri sorumlusu: ${COMPANY}, ${ADDRESS}. İletişim: ${CONTACT} · ${SITE}
+Veri sorumlusu: ${COMPANY}. İletişim: ${CONTACT} · ${SITE}
 
 2) LOUNGELINK LOUNGE ERİŞİMİ SATMAZ
 Uygulama, lounge girişi satmaz ve lounge işletmecisi adına hareket etmez.
@@ -143,8 +144,9 @@ durdurmaz.
 8) HAKLARIN (KVKK m.11)
 Verilerine erişme, düzeltme, silme, işlemeye itiraz etme, aktarım
 bilgisini isteme ve rızanı geri alma hakların vardır. Başvuru:
-${CONTACT} (uygulamaya kayıtlı e-posta adresinden). En geç 30 gün içinde
-yanıtlarız. Yanıtımızdan memnun kalmazsan Kişisel Verileri Koruma
+${CONTACT} (uygulamaya kayıtlı e-posta adresinden). Posta yoluyla yazılı
+başvurmak istersen posta adresimizi aynı adresten iste; 7 gün içinde
+bildiririz. En geç 30 gün içinde yanıtlarız. Yanıtımızdan memnun kalmazsan Kişisel Verileri Koruma
 Kurulu'na şikâyette bulunabilirsin.
 
 9) GÜVENLİK
@@ -172,7 +174,8 @@ uyarınca, veri sorumlusu sıfatıyla ${COMPANY} tarafından hazırlanmıştır.
 
 VERİ SORUMLUSU
 ${COMPANY} (gerçek kişi; LoungeLink uygulamasının geliştiricisi ve
-işleteni), ${ADDRESS}. İletişim: ${CONTACT}
+işleteni). İletişim: ${CONTACT}. Posta yoluyla yazılı başvuru için posta
+adresimizi bu adresten talep edebilirsin; 7 gün içinde bildirilir.
 
 HANGİ VERİLER, HANGİ AMAÇLA
 · Kimlik ve iletişim (ad-soyad, e-posta, telefon): hesabın oluşturulması,
@@ -210,7 +213,8 @@ yalnızca kimliksiz ve toplulaştırılmış istatistikler paylaşılır.
 
 HAKLARIN
 KVKK m.11 kapsamındaki tüm haklarını ${CONTACT} adresine yazarak
-kullanabilirsin.`,
+kullanabilirsin. Yazılı (posta) başvuru için posta adresimizi aynı adresten
+isteyebilirsin.`,
   },
 
   acikRiza: {

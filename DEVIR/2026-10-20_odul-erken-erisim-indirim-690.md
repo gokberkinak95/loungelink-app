@@ -108,3 +108,11 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   eas.json'da appleId + ascAppId hâlâ REPLACE.
 
 - APK 6.9.3 (296): https://expo.dev/artifacts/eas/7ag5ZHEXG96f64Pp3EcGGoi43GkvOq0WuVMC0WnXPwI.apk
+
+## Ek · 21 Ekim — yasal metin adres kararı (app 6.9.4 · BO 1.101.1 · site 0.72.4)
+- Gökberk: açık adres yayınlanmayacak (bireysel geliştiricilerin yaygın uygulaması). Metin: veri sorumlusu Gökberk İnak
+  (gerçek kişi) + kvkk@loungelink.co; posta yoluyla yazılı başvuru için posta adresi İSTEK ÜZERİNE 7 gün içinde bildirilir
+  (yazılı başvuru kanalı kapanmaz). LEGAL_VERSION 2026-10-21, üç kopya aynı. Site check.js: adres yoksa "istek üzerine"
+  cümlesi aranır. loungelink.co MX = Cloudflare Email Routing (kvkk@ yönlendirmesini bir test e-postasıyla doğrula).
+- `main` ← `v7-tema` ileri sarıldı (89 commit; çakışma yok). gh kurulu değil, PR yerine doğrudan ileri sarma.
+- App 6.9.4 yalnız yasal metin + sürüm; APK alınmadı (bir sonraki derlemeyle gider).
