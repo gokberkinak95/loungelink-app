@@ -103,10 +103,13 @@ export async function abonelikPaketleri() {
   const sonuc = {};
   tumPaketler(o).forEach(p => {
     const kod = urunKodu(p.product.identifier);
-    const m = /^ll_(sik_ucan|kahya)_(aylik|yillik)$/.exec(kod);
+    // 21 Ekim (SQL 340) — mağaza kimliği ll_jetset_*; uygulamanın plan kodu iç kod "kahya" kalır.
+    // Eski ll_kahya_* de tanınır (mağazada açılmadı; savunma için).
+    const m = /^ll_(sik_ucan|kahya|jetset)_(aylik|yillik)$/.exec(kod);
     if (!m) return;
-    sonuc[m[1]] = sonuc[m[1]] || {};
-    sonuc[m[1]][m[2]] = { fiyat: p.product.priceString, paket: p };
+    const plan = m[1] === "jetset" ? "kahya" : m[1];
+    sonuc[plan] = sonuc[plan] || {};
+    sonuc[plan][m[2]] = { fiyat: p.product.priceString, paket: p };
   });
   return sonuc;
 }

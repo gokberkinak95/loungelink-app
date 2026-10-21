@@ -1,3 +1,12 @@
+SQL SIRASI - 21 Ekim 2026 (12. tur) - YENI: 340 - 339'dan SONRA (339'u kosmadiysan once onu)
+
+  1) 340_jetset_urun_kimlikleri.sql
+       -> Magaza urun kimlikleri ll_jetset_aylik / ll_jetset_yillik (Apple) ve abonelik ll_jetset
+          (Google, temel planlar aylik/yillik) Jetset planina baglanir. Eski ll_kahya_* pasif.
+       -> Magaza rehberi 6d ve 9'da urunleri acmadan ONCE kos.
+       Dogrulama: uc satir tamam = true. Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 20 Ekim 2026 (11. tur) - YENI: 339 - 338'den SONRA (330-338 kosuldu, Gokberk 20 Ekim)
 
   1) 339_odul_marka_adlari.sql

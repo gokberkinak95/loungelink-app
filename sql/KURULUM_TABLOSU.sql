@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 383 dosya · son: 339 · 315-339 elle eklendi)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 384 dosya · son: 340 · 315-340 elle eklendi)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -594,6 +594,7 @@ select z.dosya, 'tespit'
   (372, '337_jetset_puan_kredi_kurulus.sql', 'fonksiyon', 'etkin_plan_ic'),
   (373, '338_odul_erken_erisim_plan_indirimi.sql', 'fonksiyon', 'odul_magazasi'),
   (374, '339_odul_marka_adlari.sql', 'satir', 'rewards.title=1000 Havayolu Mili'),
+  (375, '340_jetset_urun_kimlikleri.sql', 'satir', 'iap_urunleri.urun_kodu=ll_jetset_aylik'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -986,6 +987,7 @@ with imza(sira, dosya, tip, ad) as (
   (372, '337_jetset_puan_kredi_kurulus.sql', 'fonksiyon', 'etkin_plan_ic'),
   (373, '338_odul_erken_erisim_plan_indirimi.sql', 'fonksiyon', 'odul_magazasi'),
   (374, '339_odul_marka_adlari.sql', 'satir', 'rewards.title=1000 Havayolu Mili'),
+  (375, '340_jetset_urun_kimlikleri.sql', 'satir', 'iap_urunleri.urun_kodu=ll_jetset_aylik'),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

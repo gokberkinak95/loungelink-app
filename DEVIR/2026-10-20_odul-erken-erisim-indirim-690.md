@@ -116,3 +116,16 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   cümlesi aranır. loungelink.co MX = Cloudflare Email Routing (kvkk@ yönlendirmesini bir test e-postasıyla doğrula).
 - `main` ← `v7-tema` ileri sarıldı (89 commit; çakışma yok). gh kurulu değil, PR yerine doğrudan ileri sarma.
 - App 6.9.4 yalnız yasal metin + sürüm; APK alınmadı (bir sonraki derlemeyle gider).
+
+## 21 Ekim (öğleden sonra) — mağaza yolu baştan gözden geçirildi · app 6.9.5
+- **SQL 340** `340_jetset_urun_kimlikleri.sql` (yerelde 3/3): mağaza ürün kimlikleri `ll_jetset_aylik/yillik` (Apple),
+  abonelik `ll_jetset` (Google) → plan 'kahya' (iç kod). Eski `ll_kahya_*` pasif. Gökberk ürünleri henüz açmadı (6a'da);
+  App Store kimliği sonradan değişmediği için şimdi değişti. SQL_SIRA 12. tur, KURULUM_TABLOSU 375 (iki kopya), başlık "son: 340".
+- `rnapp/src/odeme.js`: `ll_jetset_*` (ve eski `ll_kahya_*`) → plan kahya. check.js temiz.
+- App **6.9.5** (versionCode 298, buildNumber 292). APK alınmadı.
+- Mağaza rehberi v17 (https://claude.ai/artifact/DRgmDDYaZeHkcYCcWx8oWS): 6d ve 9 jetset kimlikleri + "kimlik değişmez, Kopyala ile al";
+  11 entitlement `jetset`, paketler `jetset_*`, kredi teklifi `kredi_5` (eski metin kredi_6 diyordu — yanlıştı);
+  8 hedef API 36 (6.5.1'den beri, uzatma gereksiz) ve Play kontrolünde 36; 7'de APNs anahtar sınırı (ekip başına 2);
+  SQL listesine 340; 14'te 8 kare; mağaza metni PLANLAR/PLANS'a ödül mağazası + plan indirimi + erken erişim; "Benim tarafımda" güncel sürümler.
+- Yerel inceleme ajanı `.claude/agents/inceleyici.md` (teknik + ürün + QA; kod değiştirmez). `.claude/` gitignore'da → yalnız bu makinede.
+- Gökberk'ten: SQL 339 ve 340'ı koş (340, 6d/9'da ürün açmadan önce). Apple ID e-postası + ascAppId; ilk iOS build (§7); Firebase 10/10b; RevenueCat anahtarları.
