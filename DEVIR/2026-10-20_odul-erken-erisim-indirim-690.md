@@ -137,3 +137,13 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - `website/app/llms.txt/route.js`: SSS + 72 rehber + 144 kart sayfası veriden; fiyat/oran bilerek yok. Build'de statik, 316 satır.
 - Site check 19 sayfa temiz, verify 7/7, build temiz. Betik: scratchpad seo_denetim.py.
 - Gökberk'ten: Google Search Console ve Bing Webmaster Tools'a loungelink.co ekleyip sitemap.xml gönderme (DNS TXT ile, Cloudflare).
+
+## 22 Ekim — app 1.0.0: iOS kimliği co.loungelink.app
+- `com.loungelink.app` Apple'da başka geliştiricide kayıtlı çıktı ("not available"). Gökberk iOS için `co.loungelink.app`'i
+  kaydetti (Sign in with Apple + Push). `rnapp/app.json` ios.bundleIdentifier değişti; Android `com.loungelink.app` AYNI.
+  Koddaki diğer `com.loungelink.app` geçişleri yalnız Android (odeme.js abonelik yönetimi, push.js bildirim ayarı) → dokunulmadı.
+- Sürüm adı mağazalar için **1.0.0** (Gökberk sordu; uygulama hiçbir mağazada yayımlanmadı). versionCode 299, buildNumber 293
+  (iç sayaçlar artmaya devam). Kodda sürüme bakan tek yer hata kaydı (app_errors.app_version, BO yalnız gösteriyor).
+  Telefondaki 6.9.x APK'nın üstüne kurulur (Android yalnız versionCode'a bakar).
+- Rehber v20: Supabase Apple Client IDs, 6b, Firebase iOS, RevenueCat iOS → co.loungelink.app; 6b'de iki kimlik uyarısı.
+- Bundan sonra: sürüm 1.0.x / 1.x olarak devam.
