@@ -129,3 +129,11 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   SQL listesine 340; 14'te 8 kare; mağaza metni PLANLAR/PLANS'a ödül mağazası + plan indirimi + erken erişim; "Benim tarafımda" güncel sürümler.
 - Yerel inceleme ajanı `.claude/agents/inceleyici.md` (teknik + ürün + QA; kod değiştirmez). `.claude/` gitignore'da → yalnız bu makinede.
 - Gökberk'ten: SQL 339 ve 340'ı koş (340, 6d/9'da ürün açmadan önce). Apple ID e-postası + ascAppId; ilk iOS build (§7); Firebase 10/10b; RevenueCat anahtarları.
+
+## 22 Ekim — site 0.72.5: llms.txt (GEO) + canlı SEO denetimi
+- Canlı denetim (290 sitemap URL'i, hepsi 200): tekrarlanan title 0; canonical, og:image, h1, JSON-LD hepsinde var ve geçerli; noindex yok.
+  Uyarı düzeyinde: 274 sayfada title > 65 karakter (soru biçimi bilerek uzun; Google kırpar, hata değil), 241 sayfada description > 170,
+  /en sayfaları `<div lang="en">` ile (kök html tr; Next kısıtı, hreflang var). Eksik olan tek şey llms.txt'ydi.
+- `website/app/llms.txt/route.js`: SSS + 72 rehber + 144 kart sayfası veriden; fiyat/oran bilerek yok. Build'de statik, 316 satır.
+- Site check 19 sayfa temiz, verify 7/7, build temiz. Betik: scratchpad seo_denetim.py.
+- Gökberk'ten: Google Search Console ve Bing Webmaster Tools'a loungelink.co ekleyip sitemap.xml gönderme (DNS TXT ile, Cloudflare).
