@@ -39,6 +39,15 @@ SAHNELER = {
                                    ("dokun_a11y", "Lounge'a girmek istiyorum"), ("dokun", "Devam Et"),
                                    ("dokun_a11y", "Kabul ediyorum: Kullanım"), ("dokun_a11y", "Kabul ediyorum: Topluluk"), ("dokun_a11y", "Kabul ediyorum: Bu uygulama"), ("dokun_a11y", "Kabul ediyorum: Havalimanı"), ("dokun_a11y", "Kabul ediyorum: Platform")]),   # ekran: CompleteOnboarding
     "15_tanitim":      ("",        [("dokun", "Başla")]),   # ekran: Onboarding
+    # 24 Ekim — rehber görselleri: kayıttaki rol seçimi (misafir / host seçili)
+    "17b_rol_misafir": ("",        [("dokun", "Başla"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Başla"),
+                                   ("yaz", "adın soyadın", "Gökberk İnak"), ("yaz", "ad@ornek.com", "gokberk@ornek.com"),
+                                   ("yaz", "En az 8 karakter", "sahne-sifre-1"), ("dokun", "Devam Et"),
+                                   ("dokun_a11y", "Lounge'a girmek istiyorum"), ("bekle", 600)]),   # ekran: CompleteOnboarding
+    "17c_rol_host":    ("",        [("dokun", "Başla"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Başla"),
+                                   ("yaz", "adın soyadın", "Gökberk İnak"), ("yaz", "ad@ornek.com", "gokberk@ornek.com"),
+                                   ("yaz", "En az 8 karakter", "sahne-sifre-1"), ("dokun", "Devam Et"),
+                                   ("dokun_a11y", "Kartımda misafir hakkı var"), ("bekle", 600)]),   # ekran: CompleteOnboarding
     "15b_tanitim3":    ("",        [("dokun", "Başla"), ("dokun", "Devam"), ("dokun", "Devam")]),   # ekran: Onboarding
     "15c_tanitim_kart": ("",       [("dokun", "Başla"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"), ("dokun", "Devam"),
                                     ("dokun", "Priority Pass")]),   # ekran: Onboarding

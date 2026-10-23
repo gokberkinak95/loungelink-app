@@ -170,3 +170,14 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - Site 0.72.7: kayıt çağrısı "Ön kayıt ol" (eskisi "Erken erişime katıl"; "erken erişim" uygulamada ödül özelliği), ana sayfa
   başlık etiketi "Ön kayıt", form onay cümlesi "yayın duyurusu ve ön kayıt bilgilendirmesi". check 19 sayfa + verify 7/7 + build.
 - Açık: 18 sn kısa kesit (öneri), 4:5 gönderi + kapak, yayından sonra resmi mağaza rozetleri.
+
+## 24 Ekim — rehber revizyonu sırasında bulunan iki ürün hatası (app 1.0.0 içine) · site 0.72.8
+- LOUNGE SOHBETİNDE güvenlik şeridi YOKTU: "⚠ Lounge satışı yok · Platform dışı ödeme yok · …" (`safetyBar`) ilk sürümden beri
+  yalnız Tanış sohbetindeydi (CompanionChat). `ekranlar_yalin.js` Chat'e aynı şerit eklendi (klavye açıkken gizli). Sahne 06_sohbet'te görüldü.
+- KURUCU HOST vaadi gerçek değildi: "İlanların keşifte önce görünür" (app fcModalB1 TR/EN + site ana sayfa). `founding_host_no`
+  hiçbir keşif/sıralama fonksiyonunda kullanılmıyor (ETKIN_TANIMLAR'da ölçüldü). App: rozet = "ilk kuranlardan olduğunu gösterir;
+  ek hak/öncelik sağlamaz". Site: madde kaldırıldı + "* Rozet bir teşekkürdür…" dipnotu.
+- Doğrulandı (hata DEĞİL): "Host başvurusu yap" yalnız myRole === "guest" iken görünüyor.
+- Yeni sahneler: 17b_rol_misafir, 17c_rol_host (kayıttaki rol seçimi).
+- Denetim: app check temiz · site check 19 sayfa + verify 7/7 + derleme OK; yerel statik üretim RAM yetersizliğinden (0.9/8 GB boş) yarıda —
+  Vercel build'i doğrulayacak.

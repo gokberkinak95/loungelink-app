@@ -1576,6 +1576,14 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           </View>
         </View>
       )}
+      {/* 24 Ekim (Gökberk) — LOUNGE SOHBETİNDE SATIŞ/ÖDEME UYARISI YOKTU. `safetyBar` yalnız Tanış
+          sohbetindeydi (CompanionChat); asıl risk — "hakkını sat / dışarıdan öde" teklifi — bu sohbette.
+          Aynı şerit, aynı metin (TR+EN hazır). Klavye açıkken yer kaplamasın diye gizlenir. */}
+      {!klavye && (
+        <View accessibilityRole="text" style={{ backgroundColor: C.goldTint, paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
+          <Text style={{ color: C.goldInk, fontSize: FS.xs, textAlign: "center" }}>{t.safetyBar}</Text>
+        </View>
+      )}
       {/* Mesajlar — tasarım: ilk balon 150pt'te (132 + 18) */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[18] }}
         /* ══════════════════════════════════════════════════════════

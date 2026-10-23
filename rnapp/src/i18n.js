@@ -1984,8 +1984,9 @@ export const D = {
     // rozeti kaçırdığında bize kızar. Önce anlat, sonra sor.
     fcModalTitle: "İlk 100 host kurucu çemberde",
     fcModalBody: "Host başvurun onaylanırsa ve ilk 100 içindeysen Kurucu Host rozetini kalıcı olarak alırsın.",
-    fcModalB1: "İlanların keşifte önce görünür",
-    fcModalB2: "Rozet profilinde kalıcı durur, sonradan alınamaz",
+    // 24 Ekim — ÖLÇÜLDÜ: founding_host_no hiçbir keşif/sıralama fonksiyonunda kullanılmıyor; "keşifte önce görünür" tutulmayan bir vaatti.
+    fcModalB1: "Rozet, LoungeLink'i ilk kuranlardan olduğunu gösterir",
+    fcModalB2: "Profilinde kalıcı durur, sonradan alınamaz; uygulamada ek bir hak ya da öncelik sağlamaz",
     fcModalApply: "Host başvurusu yap",
     fcModalLater: "Şimdi değil",
     carrierLabel: "HAVAYOLU",
@@ -4247,8 +4248,8 @@ export const D = {
     foundingFull: "Founding spots are full — you can continue as a regular host.",
     fcModalTitle: "The first 100 hosts form the founding circle",
     fcModalBody: "If your host application is approved and you are among the first 100, the Founding Host badge is yours permanently.",
-    fcModalB1: "Your listings surface first in discovery",
-    fcModalB2: "The badge stays on your profile and cannot be earned later",
+    fcModalB1: "The badge shows you were among the people who built LoungeLink",
+    fcModalB2: "It stays on your profile, cannot be earned later, and grants no extra rights or priority in the app",
     fcModalApply: "Apply to host",
     fcModalLater: "Not now",
     carrierLabel: "AIRLINE",
