@@ -186,7 +186,11 @@ function telefon(sc, i, t) {
   $("sSimdi").style.transform = `translateX(${(1 - gp) * 528}px)`;
   $("sSimdi").style.boxShadow = gp < 1 ? "-20px 0 40px rgba(0,0,0,.18)" : "none";
   $("imgSimdi").style.transform = "translateY(0)";
-  if (gp < 1) return;
+  const kapilar = (acik, dx) => `<div style="position:absolute;left:0;top:0;width:528px;height:1180px;transform:translateX(${dx}px);overflow:hidden">
+      <div style="position:absolute;left:0;top:0;width:528px;height:1180px;background:radial-gradient(circle at 50% 45%,rgba(255,226,170,.85),rgba(255,226,170,0) 60%);opacity:${Math.sin(acik * Math.PI) * .9}"></div>
+      <div style="position:absolute;left:0;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-right:2px solid #C9A86E;transform:translateX(${-acik * 264}px)"></div>
+      <div style="position:absolute;left:264px;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-left:2px solid #C9A86E;transform:translateX(${acik * 264}px)"></div></div>`;
+  if (gp < 1) { if (sc.ek === "87_oturum_canli") ust.innerHTML = kapilar(0, (1 - gp) * 528); return; }
   const h = g - 0.65;      // sayfa yerleştikten sonra geçen süre
   if (sc.ek === "02_kesfet" && h > 0.6) {   // ilk host kartı ve "İstek gönder" düğmesi sırayla parlar
     const pa = 0.55 + 0.45 * Math.sin((h - 0.6) * 5);
@@ -210,12 +214,7 @@ function telefon(sc, i, t) {
     ust.innerHTML = `<div style="position:absolute;left:0;top:${lerp(200, 1180, p)}px;width:528px;height:1180px;background:#F7F4EE"></div>`;
     if (h > 2.0) { const pa = 0.55 + 0.45 * Math.sin((h - 2) * 5); ust.innerHTML += `<div style="position:absolute;left:6px;top:838px;width:516px;height:46px;border-radius:12px;box-shadow:0 0 0 3px rgba(201,168,110,${pa}),0 0 24px rgba(226,184,103,${pa * .5})"></div>`; }
   }
-  if (sc.ek === "87_oturum_canli") {
-    const p = es(ar(h, 0.2, 1.6));
-    ust.innerHTML = `<div style="position:absolute;left:0;top:0;width:528px;height:1180px;background:radial-gradient(circle at 50% 45%,rgba(255,226,170,.85),rgba(255,226,170,0) 60%);opacity:${Math.sin(p * Math.PI) * .9}"></div>
-      <div style="position:absolute;left:0;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-right:2px solid #C9A86E;transform:translateX(${-p * 264}px)"></div>
-      <div style="position:absolute;left:264px;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-left:2px solid #C9A86E;transform:translateX(${p * 264}px)"></div>`;
-  }
+  if (sc.ek === "87_oturum_canli") ust.innerHTML = kapilar(es(ar(h, 0.35, 1.8)), 0);
   if (sc.ek === "12_ana_host") {
     // bu ay ağırlanan misafirler ve kazanılan puan satırı, ardından "1 istek bekliyor"
     const pa = 0.55 + 0.45 * Math.sin(h * 5);
@@ -368,7 +367,7 @@ function kapanis(t) {
   $("rozet").innerHTML = `<div class="yakinda" style="opacity:${p1};transform:translateY(${(1 - p1) * 16}px)">YAKINDA</div>
     <div class="ikili"><div class="ro" style="opacity:${cl(p2)};transform:scale(${p2})"><svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#1A2B4C"/></svg>App Store</div>
     <div class="ro" style="opacity:${cl(p3)};transform:scale(${p3})"><svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#1A2B4C"/></svg>Google Play</div></div>
-    <div style="margin-top:34px;font-size:30px;color:#41557E;opacity:${p4}">Bekleme listesi: <b style="color:#1A2B4C">loungelink.co</b></div>`;
+    <div style="margin-top:34px;font-size:30px;color:#41557E;opacity:${p4}">Ön kayıt listesine katıl · <b style="color:#1A2B4C">loungelink.co</b></div>`;
 }
 
 // ------------------------------------------------------------------ ANA
