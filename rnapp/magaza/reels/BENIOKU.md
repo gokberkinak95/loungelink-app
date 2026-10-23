@@ -16,3 +16,11 @@ Video tarayıcıda kare kare çizilir (HTML + SVG), ffmpeg ile MP4 olur. Ekranla
   Yeniden üretmek: `kalem_uret.py` (pip: Hershey-Fonts).
 - İşaret kutuları (istek, sohbet, +100) ekran görüntüsünde ÖLÇÜLDÜ (528 px genişlikte): ekran değişirse yeniden ölç.
 - Yayından sonra: sade simgeler yerine Apple/Google resmi rozetleri.
+
+## 23 Ekim gece — ikinci format + gönderiler
+- `videoL2.html` (44.4 sn): üstte sabit logo, iki satırlık başlık (ikinci satır bölüm renginde), telefonun arkasında
+  bölüm bölüm renk değiştiren dalga şeridi, telefon yukarı çıkar / yenisi alttan gelir, sonda lacivert zeminde logo kurulur.
+  9 bölüm: Ana sayfa, Keşfet, Tanış, Kural motoru, İstek, Sohbet, Lounge (kapı), Puan→Mağaza, Host.
+- `posts.html?p=…` + `post_cek.py` → `_gorseller/postlar/`:
+  1 lounge masası (üstten çekim), 2 #yalnızbekleme, 3 #loungedabuluşalım (cam pano), 4 host, 5 marka (el yazısı),
+  m1–m8 misafir rehberi (kaydırmalı), h1–h7 host rehberi (kaydırmalı). Kesitler gerçek ekranlardan.

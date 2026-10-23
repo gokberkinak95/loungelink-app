@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#s{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:J;color:#1A2B4C;background:#F7F4EE}
+.k{position:absolute;left:0;top:0}
+#logo{position:absolute;left:0;width:1080px;top:200px;display:flex;justify-content:center;align-items:center;gap:20px}
+#baslik{position:absolute;left:60px;width:960px;top:300px;text-align:center}
+.s1,.s2{font-size:62px;line-height:1.16;letter-spacing:-.015em;text-wrap:balance}
+.kel{display:inline-block;white-space:pre}
+.tel{position:absolute;left:260px;top:610px;width:560px;height:1212px;border-radius:78px;background:#0E1220;
+     box-shadow:0 50px 100px rgba(26,43,76,.32),0 0 0 2px rgba(255,255,255,.25) inset;transform-origin:50% 60%}
+.ekr{position:absolute;left:16px;top:16px;width:528px;height:1180px;border-radius:64px;overflow:hidden;background:#F7F4EE}
+.ekr img{position:absolute;left:0;top:0;width:528px}
+.ust{position:absolute;left:0;top:0;width:528px;height:1180px}
+.ada{position:absolute;left:204px;top:30px;width:152px;height:42px;border-radius:21px;background:#05070D;z-index:5}
+.kart{position:absolute;border-radius:30px;background-repeat:no-repeat;box-shadow:0 24px 60px rgba(26,43,76,.28)}
+#son{position:absolute;left:0;top:0;width:1080px;height:1920px}
+.ro{display:flex;align-items:center;gap:14px;height:84px;padding:0 34px;border-radius:42px;background:rgba(255,255,255,.12);
+    border:2px solid rgba(255,255,255,.55);font-size:30px;color:#F7F4EE}
+.ro svg{width:36px;height:36px}
+</style></head><body>
+<div id="s">
+  <svg id="dalga" class="k" width="1080" height="1920"></svg>
+  <div id="logo"></div>
+  <div id="baslik"></div>
+  <div id="kartlar" class="k"></div>
+  <div class="tel" id="telA"><div class="ekr"><img id="imgA"><div class="ust" id="ustA"></div></div><div class="ada"></div></div>
+  <div class="tel" id="telB"><div class="ekr"><img id="imgB"><div class="ust" id="ustB"></div></div><div class="ada"></div></div>
+  <div id="son"></div>
+</div>
+<script src="veri.js"></script>
+<script>
+const $ = (i) => document.getElementById(i);
+const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ar = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const es = (x) => -(Math.cos(Math.PI * x) - 1) / 2;
+const eio = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const geri = (x) => { const c = 1.1; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+
+// Renkler: altın, yeşil, lacivert, gök mavisi — şerit rengi ve vurgu kelimesi (okunur ton)
+const R = { altin: ["#D9BF8C", "#A87B32"], yesil: ["#7FCDB9", "#23806C"], lac: ["#2C4374", "#1A2B4C"], gok: ["#9DBBE3", "#3D69AD"] };
+const D = 4.0;
+const SAH = [];
+let tt = 0;
+const ekle = (o) => { SAH.push({ ...o, a: tt, b: tt + (o.sure || D) }); tt += (o.sure || D); };
+ekle({ ek: "11_ana_misafir", r: "altin", s1: "Uçuşuna 3 saat mi var?", s2: "Lounge'da buluşalım." });
+ekle({ ek: "02_kesfet", r: "yesil", s1: "Lounge'a misafir götürebilecek", s2: "yolcuları keşfet." });
+ekle({ ek: "05_tanis", r: "lac", s1: "Aynı uçuştaki yolcularla", s2: "tanış." });
+ekle({ ek: "03_kural", r: "gok", s1: "Kartın o salona girer mi?", s2: "Kural motoru önceden söyler." });
+ekle({ ek: "50_istek_gonder", r: "altin", s1: "Beğendiğin host'a", s2: "tek dokunuşla istek gönder." });
+ekle({ ek: "06_sohbet", r: "yesil", s1: "Kapıda nerede buluşacağınızı", s2: "sohbetten ayarlayın." });
+ekle({ ek: "87_oturum_canli", r: "lac", s1: "Kapılar açılır,", s2: "kalkışa kadar lounge senin." });
+ekle({ ek: "88_oturum_puanla", r: "altin", s1: "Her buluşma LoungePuan kazandırır,", s2: "puanların hediyeye dönüşür.", sure: 4.8 });
+ekle({ ek: "12_ana_host", r: "yesil", s1: "Kartında misafir hakkın mı var?", s2: "Ağırla, puan ve kredi kazan.", sure: 4.4 });
+const KAP = tt, SON = KAP + 7.2;
+const G = 0.85;   // bölüm geçişi süresi
+
+// ------------------------------------------------------------------ ŞERİT (dalga)
+function dalgaYol(ofs, yuk, t) {   // ofs: soldan giriş kayması (0 = tam yerinde), yuk: üst kenar yüksekliği
+  const w = Math.sin(t * 0.8) * 18;
+  const y0 = yuk, y1 = yuk + 220;
+  return `M ${ofs - 260} 1920 L ${ofs} ${y1 + w} C ${ofs + 300} ${y1 + 40 + w} ${ofs + 620} ${y0 + 160 - w} ${ofs + 1080} ${y0 - w} L ${ofs + 1080} 1920 Z`;
+}
+function serit(t) {
+  const i = Math.min(SAH.length - 1, SAH.findIndex(s => t < s.b));
+  const sc = i < 0 ? SAH[SAH.length - 1] : SAH[i];
+  let h = "";
+  const idx = i < 0 ? SAH.length - 1 : i;
+  const once = SAH[idx - 1];
+  const p = once ? es(ar(t - sc.a, 0, G + 0.15)) : es(ar(t, 0, 0.9));
+  if (once) h += `<path d="${dalgaYol(0, 1000, t)}" fill="${R[once.r][0]}"/>`;
+  // yeni renk sağdan süpürür (önde hafif koyu kenar)
+  const ofs = lerp(1440, 0, p);
+  h += `<path d="${dalgaYol(ofs, once ? 1000 : lerp(1500, 1000, p), t)}" fill="${R[sc.r][0]}"/>`;
+  if (!once) h = `<path d="${dalgaYol(0, lerp(1700, 1000, p), t)}" fill="${R[sc.r][0]}"/>`;
+  // kapanış: lacivert zemin ekranı aşağıdan doldurur
+  const k = es(ar(t, KAP - 0.2, KAP + 0.9));
+  if (k > 0) h += `<path d="${dalgaYol(0, lerp(1000, -260, k), t)}" fill="#1A2B4C"/>`;
+  $("dalga").innerHTML = h;
+}
+
+// ------------------------------------------------------------------ LOGO + BAŞLIK
+function logo(t) {
+  const p = eo(ar(t, 0.1, 0.8)), k = ar(t, KAP + 0.2, KAP + 0.7);
+  $("logo").style.opacity = p * (1 - k);
+  $("logo").innerHTML = `<svg width="86" height="42" viewBox="76 117.5 62 29"><path d="${VERI.kanat}" fill="#1A2B4C"/></svg>
+    <span style="font-size:34px;letter-spacing:.46em;color:#1A2B4C;margin-right:-.46em">LOUNGELINK</span>`;
+}
+function baslik(t) {
+  const i = SAH.findIndex(s => t >= s.a && t < s.b);
+  if (i < 0) { $("baslik").innerHTML = ""; return; }
+  const sc = SAH[i], g = t - sc.a, cik = ar(t, sc.b - 0.35, sc.b);
+  let k = 0;
+  const kel = (metin) => metin.split(" ").map(w => {
+    const p = eo(ar(g, 0.35 + k * 0.07, 0.8 + k++ * 0.07));
+    return `<span class="kel" style="opacity:${p * (1 - cik)};transform:translateY(${(1 - p) * 34 - cik * 24}px)">${w} </span>`;
+  }).join("");
+  $("baslik").innerHTML = `<div class="s1">${kel(sc.s1)}</div><div class="s2" style="color:${R[sc.r][1]}">${kel(sc.s2)}</div>`;
+}
+
+// ------------------------------------------------------------------ TELEFONLAR
+// Her bölümün telefonu alttan gelir; sonraki bölüm başlarken yukarı çıkar, yenisi 0.15 sn arayla alttan girer.
+function halka(x, y, w, h, r, p) { return `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:${r}px;box-shadow:0 0 0 4px rgba(201,168,110,${p}),0 0 28px rgba(226,184,103,${p * .5})"></div>`; }
+const nabiz = (h, f = 5) => 0.55 + 0.45 * Math.sin(h * f);
+function kapilar(acik) {
+  return `<div style="position:absolute;left:0;top:0;width:528px;height:1180px;background:radial-gradient(circle at 50% 45%,rgba(255,226,170,.85),rgba(255,226,170,0) 60%);opacity:${Math.sin(acik * Math.PI) * .9}"></div>
+    <div style="position:absolute;left:0;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-right:2px solid #C9A86E;transform:translateX(${-acik * 264}px)"></div>
+    <div style="position:absolute;left:264px;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-left:2px solid #C9A86E;transform:translateX(${acik * 264}px)"></div>`;
+}
+function ekranUst(sc, h) {   // h: telefon yerleştikten sonra geçen süre (sn)
+  let u = "";
+  switch (sc.ek) {
+    case "11_ana_misafir":
+      if (h > 0.3) u += halka(22, 604, 484, 278, 26, h < 1.8 ? nabiz(h) : .3);
+      if (h > 1.6) u += halka(343, 800, 136, 58, 29, nabiz(h - 1.6));
+      break;
+    case "02_kesfet":
+      if (h > 0.3) u += halka(28, 510, 472, 336, 28, h < 1.8 ? nabiz(h) : .3);
+      if (h > 1.6) u += halka(316, 777, 162, 48, 24, nabiz(h - 1.6));
+      break;
+    case "03_kural":
+      [[57, 588, 418, 140, "79,182,160"], [57, 800, 418, 120, "217,96,80"], [57, 990, 418, 130, "79,182,160"]].forEach(([x, y, w, hh, c], j) => {
+        const p = ar(h, 0.3 + j * 0.6, 0.6 + j * 0.6);
+        if (p > 0) u += `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${hh}px;border-radius:16px;box-shadow:0 0 0 4px rgba(${c},${p * (j === Math.min(2, Math.floor((h - 0.3) / 0.6)) ? 1 : .45)})"></div>`;
+      });
+      break;
+    case "50_istek_gonder": {
+      const r = ar(h, 0.4, 1.2);
+      if (r > 0 && r < 1) u += `<div style="position:absolute;left:${91 - r * 110}px;top:${924 - r * 110}px;width:${r * 220}px;height:${r * 220}px;border-radius:50%;border:5px solid rgba(201,168,110,${1 - r})"></div>`;
+      if (h > 0.4) u += halka(22, 905, 140, 38, 19, cl((h - 0.4) * 3));
+      if (h > 1.4) u += `<div style="position:absolute;left:45px;top:440px;width:64px;height:64px;border-radius:50%;box-shadow:0 0 0 ${4 + 2 * nabiz(h)}px rgba(201,168,110,.95),0 0 30px rgba(226,184,103,.5)"></div>`;
+      break; }
+    case "06_sohbet": {
+      const p = eo(ar(h, 0, 1.6));
+      u += `<div style="position:absolute;left:0;top:${lerp(200, 1180, p)}px;width:528px;height:1180px;background:#F7F4EE"></div>`;
+      if (h > 1.7) u += halka(6, 838, 516, 46, 12, nabiz(h - 1.7));
+      break; }
+    case "87_oturum_canli": u += kapilar(es(ar(h, 0.25, 1.6))); break;
+    case "88_oturum_puanla":
+      if (h > 0.3 && h < 2.2) u += halka(20, 942, 246, 88, 20, nabiz(h));
+      break;
+    case "12_ana_host":
+      if (h > 0.3) u += halka(14, 598, 500, 86, 16, h < 1.8 ? nabiz(h) : .3);
+      if (h > 1.6) u += halka(330, 978, 160, 40, 20, nabiz(h - 1.6));
+      break;
+  }
+  return u;
+}
+let yuklu = { A: "", B: "" };
+function telCiz(harf, sc, t, mod) {   // mod: {gir, cik} 0..1
+  const tel = $("tel" + harf);
+  if (!sc) { tel.style.opacity = 0; return; }
+  const g = t - sc.a;
+  let ek = sc.ek, rotY = 0;
+  if (sc.ek === "88_oturum_puanla") {
+    const f = ar(g - G, 2.3, 2.9);
+    if (f >= 0.5) ek = "22c_market_jetset";
+    if (f > 0 && f < 1) rotY = Math.sin(f * Math.PI) * 75;
+  }
+  if (yuklu[harf] !== ek) { $("img" + harf).src = `ekran/${ek}.jpg`; yuklu[harf] = ek; }
+  const gir = eio(mod.gir), cik = es(mod.cik);
+  const y = (1 - gir) * 1500 - cik * 2100 + Math.sin(t * 1.2) * 6;
+  const rot = (1 - gir) * 6 - cik * 7 + Math.sin(t * 0.8) * 0.4;
+  tel.style.opacity = 1;
+  tel.style.transform = `translateY(${y}px) rotate(${rot}deg)` + (rotY ? ` perspective(1600px) rotateY(${rotY}deg)` : "");
+  const h = g - G;
+  let u = "";
+  if (sc.ek === "87_oturum_canli" && h < 0.25) u = kapilar(0);   // kapılar geçiş boyunca kapalı
+  else if (h >= 0) u = ekranUst(sc, h);
+  if (ek === "22c_market_jetset") u = "";
+  $("ust" + harf).innerHTML = u;
+  $("img" + harf).style.transform = ek === "22c_market_jetset" ? `translateY(${-es(ar(h, 2.9, 4.0)) * 140}px)` : "none";
+}
+function telefonlar(t) {
+  const i = SAH.findIndex(s => t >= s.a && t < s.b);
+  const harfOf = (n) => n % 2 === 0 ? "A" : "B";
+  if (i < 0) {   // kapanış: son telefon çıkar
+    const son = SAH.length - 1;
+    telCiz(harfOf(son), SAH[son], t, { gir: 1, cik: ar(t, KAP - 0.2, KAP + 0.7) });
+    telCiz(harfOf(son + 1), null, t, {});
+    return;
+  }
+  const sc = SAH[i];
+  telCiz(harfOf(i), sc, t, { gir: ar(t - sc.a, 0.15, G + 0.1), cik: i === SAH.length - 1 ? ar(t, KAP - 0.2, KAP + 0.7) : 0 });
+  if (i > 0) telCiz(harfOf(i - 1), SAH[i - 1], t, { gir: 1, cik: ar(t - sc.a, 0, G) });
+  else telCiz("B", null, t, {});
+}
+function kartlar(t) {
+  const k = $("kartlar"), i = SAH.findIndex(s => t >= s.a && t < s.b), sc = SAH[i];
+  if (!sc || sc.ek !== "05_tanis") { k.innerHTML = ""; return; }
+  const g = t - sc.a - G, cik = ar(t, sc.b - 0.4, sc.b);
+  const kesit = [[505, 200], [722, 200], [944, 200]];
+  let h = "";
+  kesit.forEach(([y0, hh], j) => {
+    const p = geri(ar(g, 0.2 + j * 0.25, 1.1 + j * 0.25));
+    const aci = (j - 1) * 8 * p, x = 270 + (j - 1) * 150 * p, y = 1170 - p * (320 + (j === 1 ? 60 : 0)) - es(cik) * 2100;
+    h += `<div class="kart" style="left:${x - 10}px;top:${y}px;width:${492 * 1.15}px;height:${hh * 1.15}px;background-image:url(ekran/05_tanis.jpg);
+      background-size:${528 * 1.15}px auto;background-position:${-18 * 1.15}px ${-y0 * 1.15}px;
+      transform:rotate(${aci}deg) scale(${j === 1 ? 1.06 : 1});opacity:${cl(p * 2)};z-index:${j === 1 ? 3 : 1}"></div>`;
+  });
+  k.innerHTML = h;
+}
+
+// ------------------------------------------------------------------ KAPANIŞ: lacivert zeminde logo kurulur
+function kapanis(t) {
+  const g = t - KAP;
+  if (g < 0.5) { $("son").innerHTML = ""; return; }
+  const cx = 540, cy = 760;
+  const ciz = es(ar(g, 0.6, 1.8)), dol = ar(g, 1.5, 2.0), hale = ar(g, 1.4, 2.4);
+  const harfler = "LOUNGELINK".split("");
+  const ap = es(ar(g, 1.9, 2.9));
+  const yazi = harfler.map((c, i) => {
+    const p = eo(ar(g, 1.9 + Math.abs(i - 4.5) * 0.06, 2.5 + Math.abs(i - 4.5) * 0.06));
+    return `<span style="display:inline-block;opacity:${p};transform:translateY(${(1 - p) * 20}px)">${c}</span>`;
+  }).join("");
+  const sl = eo(ar(g, 3.0, 3.6)), yk = eo(ar(g, 3.5, 3.9)), r1 = geri(ar(g, 3.7, 4.2)), r2 = geri(ar(g, 3.85, 4.35)), ok = eo(ar(g, 4.3, 4.8));
+  $("son").innerHTML = `
+    <svg class="k" width="1080" height="1920"><defs>
+      <radialGradient id="hl"><stop offset="0" stop-color="#FFF1D4" stop-opacity=".55"/><stop offset="1" stop-color="#FFF1D4" stop-opacity="0"/></radialGradient>
+      <linearGradient id="km" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#FFF8EA"/><stop offset=".5" stop-color="#E7D3AC"/><stop offset="1" stop-color="#C2A36C"/></linearGradient>
+      <filter id="pr" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <circle cx="${cx}" cy="${cy}" r="${320 * hale}" fill="url(#hl)" opacity="${hale}"/>
+      <g transform="translate(${cx},${cy}) scale(${lerp(5.4, 5.0, ap)}) translate(-107,-132)" filter="url(#pr)">
+        <path d="${VERI.kanat}" fill="none" stroke="#F2E2BF" stroke-width="0.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - ciz}"/>
+        <path d="${VERI.kanat}" fill="url(#km)" opacity="${dol}"/></g></svg>
+    <div style="position:absolute;left:0;width:1080px;top:${cy + 150 - ap * 10}px;text-align:center;font-size:${64}px;letter-spacing:${lerp(.9, .42, ap)}em;color:#F7F4EE;margin-right:-.42em">${yazi}</div>
+    <div style="position:absolute;left:0;width:1080px;top:${cy + 270}px;text-align:center;font-size:40px;color:#E7D3AC;opacity:${sl};transform:translateY(${(1 - sl) * 18}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</div>
+    <div style="position:absolute;left:0;width:1080px;top:${cy + 420}px;text-align:center">
+      <div style="font-size:30px;letter-spacing:.32em;color:#9FB2D2;opacity:${yk}">YAKINDA</div>
+      <div style="display:flex;justify-content:center;gap:26px;margin-top:26px">
+        <div class="ro" style="opacity:${cl(r1)};transform:scale(${r1})"><svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#F7F4EE"/></svg>App Store</div>
+        <div class="ro" style="opacity:${cl(r2)};transform:scale(${r2})"><svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#F7F4EE"/></svg>Google Play</div></div>
+      <div style="margin-top:34px;font-size:30px;color:#C9D4E6;opacity:${ok}">Ön kayıt listesine katıl · <b style="color:#F2D59A">loungelink.co</b></div></div>`;
+}
+
+window.ciz = function (t) { serit(t); logo(t); baslik(t); telefonlar(t); kartlar(t); kapanis(t); };
+window.SURE = SON;
+window.ciz(0);
+</script>
+</body></html>
