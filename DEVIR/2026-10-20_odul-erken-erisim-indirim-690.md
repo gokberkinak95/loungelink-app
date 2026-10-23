@@ -161,3 +161,12 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - Yasal metin 2026-10-23: Seyahat verileri maddesine konum cümlesi (üç kopya) + site /en/privacy. BO ve site sürüm artışı.
 - Sahne: 40b_konum_bulundu · 40c_konum_red · 40d_konum_uzak (cek.py `konum=lat,lon` / `konum=red`). Önizleme _gorseller/onizleme_konum_1.0.png.
 - Denetim: app check temiz · BO check temiz + build · site check 19 sayfa + verify 7/7 + build.
+
+## 23 Ekim akşam — Instagram tanıtım videosu + site 0.72.7
+- Reels motoru `rnapp/magaza/reels/` (BENIOKU). Gökberk C'yi seçti → `videoC3.html` (48.2 sn): açılış panosu KAPI B12 · 3 SAAT VAR →
+  LOUNGE'DA BULUŞALIM, iki pin (Misafir/Host) lounge'da buluşur + eşleşme kesmesi, KEŞFET/TANIŞ/İSTEK/SOHBET/LOUNGE/PUAN/HOST,
+  kapanışta kanat "loungelink" yazar + Yakında + App Store/Google Play + "Ön kayıt listesine katıl · loungelink.co".
+  Çıktı `_gorseller/reels/LoungeLink_reels_C3.mp4` (A, B, C, C2 alternatifleri de orada).
+- Site 0.72.7: kayıt çağrısı "Ön kayıt ol" (eskisi "Erken erişime katıl"; "erken erişim" uygulamada ödül özelliği), ana sayfa
+  başlık etiketi "Ön kayıt", form onay cümlesi "yayın duyurusu ve ön kayıt bilgilendirmesi". check 19 sayfa + verify 7/7 + build.
+- Açık: 18 sn kısa kesit (öneri), 4:5 gönderi + kapak, yayından sonra resmi mağaza rozetleri.
