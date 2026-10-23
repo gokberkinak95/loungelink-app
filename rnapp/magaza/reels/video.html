@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+@font-face{font-family:JB;src:url(jakarta-semibold.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#s{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:J;color:#1A2B4C}
+.k{position:absolute;left:0;top:0}
+#zemin{width:1080px;height:1920px}
+#bulutlar{width:1080px;height:1920px}
+.bulut{position:absolute;border-radius:50%;background:#fff;filter:blur(30px)}
+#baslik{position:absolute;left:70px;width:940px;top:190px;text-align:center}
+.satir{font-size:60px;line-height:1.18;letter-spacing:-.01em;text-wrap:balance}
+.kelime{display:inline-block;white-space:pre}
+.alt{font-family:JR;font-size:40px;line-height:1.35;margin-top:22px;color:#2C4374;text-wrap:balance}
+.altin{color:#B8873A}
+#tel{position:absolute;left:260px;top:640px;width:560px;height:1212px;border-radius:78px;background:#0E1220;
+     box-shadow:0 40px 90px rgba(26,43,76,.35),0 0 0 2px rgba(255,255,255,.25) inset;transform-origin:50% 50%}
+#ekr{position:absolute;left:16px;top:16px;width:528px;height:1180px;border-radius:64px;overflow:hidden;background:#F7F4EE}
+#ekr img{position:absolute;left:0;top:0;width:528px}
+#ada{position:absolute;left:204px;top:30px;width:152px;height:42px;border-radius:21px;background:#05070D;z-index:5}
+.kart{position:absolute;width:520px;height:190px;border-radius:30px;background-repeat:no-repeat;box-shadow:0 24px 60px rgba(26,43,76,.28)}
+#dalga{position:absolute;border-radius:50%;border:6px solid #C9A86E}
+#kapiL,#kapiR{position:absolute;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D)}
+#kapiL{left:0;border-right:2px solid #C9A86E}#kapiR{left:264px;border-left:2px solid #C9A86E}
+#isik{position:absolute;left:0;top:0;width:528px;height:1180px;background:radial-gradient(circle at 50% 45%,rgba(255,226,170,.85),rgba(255,226,170,0) 60%)}
+#sayac{position:absolute;left:0;width:1080px;top:505px;display:flex;justify-content:center;gap:16px}
+#sayac .et{padding:14px 26px;border-radius:30px;background:rgba(255,255,255,.72);border:2px solid rgba(201,168,110,.7);font-size:30px;color:#1A2B4C;white-space:nowrap}
+#sayac .et b{color:#B8873A;font-weight:600}
+.pano{position:absolute;display:flex;gap:6px}
+.kap{position:relative;width:62px;height:92px;border-radius:8px;background:#24272E;color:#F4EFE6;font-size:62px;line-height:92px;text-align:center;overflow:hidden}
+.kap:after{content:"";position:absolute;left:0;right:0;top:45px;height:2px;background:#0E0F12}
+.kap i{position:absolute;left:0;right:0;top:0;height:46px;background:#30343C;transform-origin:50% 100%}
+#rozet{position:absolute;left:0;width:1080px;top:1290px;text-align:center}
+.yakinda{font-size:30px;letter-spacing:.32em;color:#41557E}
+.ikili{display:flex;justify-content:center;gap:26px;margin-top:26px}
+.ro{display:flex;align-items:center;gap:14px;height:84px;padding:0 34px;border-radius:42px;background:rgba(255,255,255,.62);
+    border:2px solid rgba(26,43,76,.35);font-size:30px;color:#1A2B4C}
+.ro svg{width:36px;height:36px}
+#slogan{position:absolute;left:0;width:1080px;top:1180px;text-align:center;font-size:42px}
+</style></head><body>
+<div id="s">
+  <div id="zemin" class="k"></div>
+  <div id="bulutlar" class="k"></div>
+  <svg id="harita" class="k" width="1080" height="1920"></svg>
+  <div id="kartlar" class="k"></div>
+  <div id="tel"><div id="ekr"><img id="img"><div id="ekrUst" class="k"></div></div><div id="ada"></div></div>
+  <div id="sayac"></div>
+  <div id="baslik"></div>
+  <div id="panoK" class="k"></div>
+  <svg id="kalem" class="k" width="1080" height="1920"></svg>
+  <div id="slogan"></div>
+  <div id="rozet"></div>
+  <svg id="ust" class="k" width="1080" height="1920"></svg>
+</div>
+<script src="veri.js"></script>
+<script>
+const TEMA = (new URLSearchParams(location.search).get("tema") || "A").toUpperCase();
+const $ = (i) => document.getElementById(i);
+const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ar = (t, a, b) => cl((t - a) / (b - a));           // a..b aralığında 0..1
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const eio = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const geri = (x) => { const c = 1.70158; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+function rnd(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+// ------------------------------------------------------------------ SAHNELER
+const SAH = [
+  { a: 0,  b: 3,  ek: null, an: "03:00",   s: ["Uçuşuna 3 saat var."], alt: "Kapı önünde mi bekleyeceksin, <span class=altin>lounge'da</span> mı?" },
+  { a: 3,  b: 6,  ek: null, an: "IST",     s: ["Bu havalimanında, kartıyla seni lounge'a misafir götürebilecek biri var."] },
+  { a: 6,  b: 9,  ek: "02_kesfet", an: "KEŞFET", s: ["Aynı saatte aynı havalimanında olan doğrulanmış yolcuları keşfet."] },
+  { a: 9,  b: 12, ek: "05_tanis", an: "TANIŞ",  s: ["Aynı uçuşu paylaştığın insanlarla tanış."], alt: "Bir kahve, yeni bir iş bağlantısı, bir yol arkadaşı." },
+  { a: 12, b: 15, ek: "50_istek_gonder", an: "İSTEK", s: ["Tek dokunuşla istek gönder, gerisini host'a bırak."] },
+  { a: 15, b: 18, ek: "06_sohbet", an: "SOHBET", s: ["Kapıda nerede buluşacağınızı sohbetten ayarlayın."] },
+  { a: 18, b: 21, ek: "87_oturum_canli", an: "LOUNGE", s: ["Rahat bir koltuk, sıcak bir kahve, sessiz bir köşe."], alt: "Kalkışa kadar keyfini çıkar." },
+  { a: 21, b: 24, ek: "88_oturum_puanla", an: "PUAN", s: ["Her buluşma LoungePuan kazandırır."], alt: "Puanların eSIM'e, otel konaklamasına, hediye kartına dönüşsün." },
+];
+const SON = TEMA === "C" ? 29.5 : 28.5;
+
+// ------------------------------------------------------------------ ZEMİN
+function zemin(t) {
+  const z = $("zemin");
+  if (TEMA === "B") {
+    const k = 0.5 + 0.5 * Math.sin(t * 0.25);
+    z.style.background = `linear-gradient(180deg, #E9EEF5 0%, #F6EFE6 ${55 + k * 6}%, #EADFCF 100%)`;
+    let h = "";
+    [[200, 90, .10], [420, 40, .08], [760, 140, .10], [1100, 60, .07], [-80, 120, .06]].forEach(([x, w, o], i) => {
+      const dx = ((t * 18 + i * 40) % 260) - 130;
+      h += `<div style="position:absolute;left:${x + dx}px;top:-100px;width:${w}px;height:2200px;background:#fff;opacity:${o};transform:skewX(-14deg)"></div>`;
+    });
+    $("bulutlar").innerHTML = h; return;
+  }
+  // A ve C: gün batımına doğru akan gökyüzü
+  const g = ar(t, 0, SON);
+  const ust = `hsl(${lerp(214, 222, g)}, ${lerp(52, 44, g)}%, ${lerp(64, 58, g)}%)`;
+  const ort = `hsl(${lerp(214, 230, g)}, ${lerp(48, 38, g)}%, ${lerp(78, 80, g)}%)`;
+  const ufk = `hsl(${lerp(32, 24, g)}, ${lerp(70, 85, g)}%, ${lerp(86, 82, g)}%)`;
+  z.style.background = `radial-gradient(circle at 72% ${lerp(76, 70, g)}%, rgba(255,240,214,.95), rgba(255,226,184,.0) 26%), linear-gradient(180deg, ${ust} 0%, ${ort} 46%, ${ufk} 78%, #FBEADB 100%)`;
+  let h = "";
+  [[180, 1380, 380, 70, .55, 10], [900, 1460, 420, 80, .5, 14], [560, 1640, 600, 110, .65, 6], [820, 520, 260, 40, .35, 22], [230, 640, 220, 34, .3, 18], [600, 300, 300, 36, .25, 26]]
+    .forEach(([x, y, rx, ry, o, v]) => {
+      const xx = ((x + t * v + 400) % 1880) - 400;
+      h += `<div class="bulut" style="left:${xx - rx}px;top:${y - ry}px;width:${rx * 2}px;height:${ry * 2}px;opacity:${o}"></div>`;
+    });
+  $("bulutlar").innerHTML = h;
+}
+
+// ------------------------------------------------------------------ BAŞLIK
+function baslikA(sc, t) {           // kelimeler alttan yükselerek
+  const g = t - sc.a, cik = ar(t, sc.b - 0.35, sc.b);
+  let h = "", i = 0;
+  sc.s.forEach(sat => {
+    h += `<div class="satir">` + sat.split(" ").map(w => {
+      const p = eo(ar(g, 0.08 + i++ * 0.07, 0.55 + i * 0.07));
+      return `<span class="kelime" style="opacity:${p * (1 - cik)};transform:translateY(${(1 - p) * 46 - cik * 30}px)">${w} </span>`;
+    }).join("") + `</div>`;
+  });
+  if (sc.alt) { const p = eo(ar(g, 0.9, 1.5)); h += `<div class="alt" style="opacity:${p * (1 - cik)};transform:translateY(${(1 - p) * 24}px)">${sc.alt}</div>`; }
+  $("baslik").innerHTML = h;
+}
+function kapaklar(metin, x, y, bas, t, opt = {}) {   // kalkış panosu satırı
+  const hw = opt.hw || 62, hh = opt.hh || 92, fs = opt.fs || 62, renk = opt.renk || "#F4EFE6", zem = opt.zem || "#24272E";
+  const HARF = "ABCDEFGHIJKLMNOPRSTUVYZÇĞİÖŞÜ0123456789";
+  let h = `<div class="pano" style="left:${x}px;top:${y}px">`;
+  [...metin].forEach((ch, i) => {
+    const dur = bas + 0.12 + i * 0.06 + rnd(i * 7 + bas) * 0.35;
+    let c = ch, kapak = "";
+    if (t < bas) c = " ";
+    else if (t < dur) {
+      c = HARF[Math.floor(rnd(Math.floor(t * 22) + i * 13) * HARF.length)];
+      const f = (t * 22) % 1;
+      kapak = `<i style="transform:scaleY(${1 - f});background:${opt.kapak || "#30343C"}"></i>`;
+    }
+    h += `<div class="kap" style="width:${hw}px;height:${hh}px;line-height:${hh}px;font-size:${fs}px;color:${renk};background:${zem}">${c === " " ? "&nbsp;" : c}${kapak}</div>`;
+  });
+  return h + `</div>`;
+}
+function baslikB(sc, t, acik) {      // üstte kapak satırı (anahtar kelime), altında cümle
+  const g = t - sc.a, cik = ar(t, sc.b - 0.3, sc.b);
+  const n = [...sc.an].length, hw = 70, w = n * (hw + 6);
+  const kap = kapaklar(sc.an, (1080 - w) / 2, 150, sc.a + 0.05, t,
+    acik ? { hw, hh: 100, fs: 64, zem: "rgba(255,255,255,.78)", renk: "#1A2B4C", kapak: "rgba(214,224,238,.95)" } : { hw, hh: 100, fs: 64 });
+  $("panoK").innerHTML = `<div style="opacity:${1 - cik}">${kap}</div>`;
+  let h = "", i = 0;
+  sc.s.forEach(sat => {
+    h += `<div class="satir" style="font-size:52px">` + sat.split(" ").map(w => {
+      const p = eo(ar(g, 0.45 + i++ * 0.05, 0.85 + i * 0.05));
+      return `<span class="kelime" style="opacity:${p * (1 - cik)};transform:translateY(${(1 - p) * 30}px)">${w} </span>`;
+    }).join("") + `</div>`;
+  });
+  if (sc.alt) { const p = eo(ar(g, 1.1, 1.6)); h += `<div class="alt" style="opacity:${p * (1 - cik)}">${sc.alt}</div>`; }
+  const b = $("baslik"); b.style.top = "300px"; b.innerHTML = h;
+}
+
+// ------------------------------------------------------------------ TELEFON
+let simdikiEk = "";
+function telefon(sc, t) {
+  const tel = $("tel"), img = $("img"), ust = $("ekrUst");
+  if (!sc.ek) { tel.style.opacity = 0; return; }
+  if (simdikiEk !== sc.ek) { img.src = `ekran/${sc.ek}.jpg`; simdikiEk = sc.ek; }
+  const g = t - sc.a, gir = ar(g, 0, 0.7), cik = ar(t, sc.b - 0.35, sc.b);
+  let tr = "", op = 1;
+  if (TEMA === "B") {           // kapak gibi devrilerek gelir/gider
+    tr = `perspective(1800px) rotateX(${(1 - eo(gir)) * -80 + cik * 80}deg)`;
+    op = cl(gir * 3) * (1 - cik);
+  } else {                       // alttan kayar, hafif süzülür
+    const y = (1 - geri(gir)) * 700 + cik * -60 + Math.sin(t * 1.6) * 6;
+    tr = `translateY(${y}px) rotate(${(1 - eo(gir)) * 4 + Math.sin(t * 1.1) * 0.6}deg)`;
+    op = cl(gir * 2.5) * (1 - cik);
+  }
+  tel.style.opacity = op; tel.style.transform = tr;
+  img.style.transform = "translateY(0)"; ust.innerHTML = "";
+  // sahneye özgü hareket
+  if (sc.ek === "02_kesfet") {      // kartlar şelale gibi: ekranın alt kısmı aşağıdan sırayla açılır
+    const p = eo(ar(g, 0.4, 1.6));
+    ust.innerHTML = `<div style="position:absolute;left:0;top:${lerp(360, 1180, p)}px;width:528px;height:1180px;background:#F7F4EE"></div>`;
+    img.style.transform = `translateY(${-ar(g, 1.6, 3) * 120}px)`;
+  }
+  if (sc.ek === "50_istek_gonder") { // dokunma dalgası + kalkan mini kanat
+    const r = ar(g, 1.0, 1.7);
+    if (r > 0 && r < 1) ust.innerHTML += `<div id="dalga" style="left:${264 - r * 140}px;top:${1050 - r * 140}px;width:${r * 280}px;height:${r * 280}px;opacity:${1 - r}"></div>`;
+    const u = eio(ar(g, 1.3, 2.4));
+    if (u > 0 && u < 1) {
+      const x = lerp(264, 60, u), y = lerp(1050, 300, u) - Math.sin(u * Math.PI) * 160;
+      ust.innerHTML += `<svg style="position:absolute;left:0;top:0" width="528" height="1180"><g transform="translate(${x},${y}) rotate(${-70 + u * 40}) scale(1.6) translate(-107,-132)"><path d="${VERI.kanat}" fill="#C9A86E"/></g></svg>`;
+    }
+    const k = ar(g, 2.3, 2.6);
+    if (k > 0) ust.innerHTML += `<div style="position:absolute;left:18px;top:250px;width:90px;height:90px;border-radius:50%;box-shadow:0 0 0 ${8 * (1 - k) + 2}px rgba(201,168,110,${1 - k * .6})"></div>`;
+  }
+  if (sc.ek === "06_sohbet") {       // mesajlar sırayla belirir (alt perde yukarı açılır), kapı satırı parlar
+    const p = eo(ar(g, 0.3, 1.9));
+    ust.innerHTML = `<div style="position:absolute;left:0;top:${lerp(220, 1180, p)}px;width:528px;height:1180px;background:#F7F4EE"></div>`;
+    const pa = 0.5 + 0.5 * Math.sin(g * 6);
+    if (g > 2) ust.innerHTML += `<div style="position:absolute;left:10px;top:880px;width:508px;height:44px;border-radius:14px;box-shadow:0 0 0 3px rgba(201,168,110,${pa})"></div>`;
+  }
+  if (sc.ek === "87_oturum_canli") { // otomatik kapı açılır, içeriden sıcak ışık
+    const p = eio(ar(g, 0.55, 1.6));
+    ust.innerHTML = `<div id="isik" style="opacity:${Math.sin(p * Math.PI) * .9}"></div>
+      <div id="kapiL" style="transform:translateX(${-p * 264}px)"></div><div id="kapiR" style="transform:translateX(${p * 264}px)"></div>`;
+  }
+  if (sc.ek === "88_oturum_puanla") {
+    if (g > 1.6) { if (simdikiEk !== "22c_market_jetset") { img.src = "ekran/22c_market_jetset.jpg"; simdikiEk = "22c_market_jetset"; } }
+    const f = ar(g, 1.45, 1.75);
+    if (f > 0 && f < 1) tel.style.transform += ` perspective(1600px) rotateY(${Math.sin(f * Math.PI) * 70}deg)`;
+  }
+}
+function kartlar(sc, t) {           // Tanış: profil kartları yelpaze açar
+  const k = $("kartlar");
+  if (sc.ek !== "05_tanis") { k.innerHTML = ""; return; }
+  const g = t - sc.a, cik = ar(t, sc.b - 0.35, sc.b);
+  // 05_tanis görüntüsünden üç profil kartı (ekran pikselinde, 528 genişliğe göre)
+  const kesit = [[505, 200], [722, 200], [944, 200]];
+  let h = "";
+  kesit.forEach(([y0, hh], i) => {
+    const p = geri(ar(g, 0.5 + i * 0.18, 1.3 + i * 0.18));
+    const aci = (i - 1) * 9 * p, x = 280 + (i - 1) * 150 * p, y = 1180 - p * (300 + (i === 1 ? 60 : 0));
+    h += `<div class="kart" style="left:${x - 10}px;top:${y}px;width:${492 * 1.15}px;height:${hh * 1.15}px;background-image:url(ekran/05_tanis.jpg);
+      background-size:${528 * 1.15}px auto;background-position:${-18 * 1.15}px ${-y0 * 1.15}px;
+      transform:rotate(${aci}deg) scale(${i === 1 ? 1.06 : 1});opacity:${cl(p * 2) * (1 - cik)};z-index:${i === 1 ? 3 : 1}"></div>`;
+  });
+  k.innerHTML = h;
+}
+
+// ------------------------------------------------------------------ ÖZEL SAHNELER (0, 1, 7)
+function acilis(sc, t) {
+  const h = $("harita");
+  if (sc === SAH[1]) {               // havalimanı planı + nabız gibi atan altın noktalar
+    const g = t - sc.a, cik = ar(t, sc.b - 0.35, sc.b);
+    const kor = ["M 140 1720 L 140 1300 L 540 1080", "M 940 1720 L 940 1300 L 540 1080", "M 540 1080 L 540 820",
+                 "M 140 1300 L 60 1300", "M 940 1300 L 1020 1300", "M 340 1190 L 340 1520", "M 740 1190 L 740 1520"];
+    const ciz = eo(ar(g, 0, 1.2));
+    let s = kor.map(d => `<path d="${d}" stroke="${TEMA === "B" ? "#D9CDBB" : "rgba(255,255,255,.7)"}" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - ciz}"/>`).join("");
+    [[140, 1450], [340, 1400], [540, 960], [740, 1350], [940, 1500], [60, 1300], [1020, 1300], [540, 1180]].forEach(([x, y], i) => {
+      const p = ar(g, 0.9 + i * 0.12, 1.2 + i * 0.12), nb = (Math.sin((g - i * .2) * 5) + 1) / 2;
+      if (p > 0) s += `<circle cx="${x}" cy="${y}" r="${(16 + nb * 34) * p}" fill="#E2B867" opacity="${0.25 * (1 - nb)}"/><circle cx="${x}" cy="${y}" r="${14 * eo(p)}" fill="#C9A86E"/>`;
+    });
+    s += `<rect x="470" y="760" width="140" height="80" rx="18" fill="#fff" stroke="#C9A86E" stroke-width="3" opacity="${ciz}"/><text x="540" y="810" text-anchor="middle" font-family="J" font-size="22" fill="#8A6D3B" letter-spacing="3" opacity="${ciz}">LOUNGE</text>`;
+    h.innerHTML = `<g opacity="${1 - cik}">${s}</g>`;
+  } else if (sc !== SAH[0] || TEMA !== "A") h.innerHTML = "";
+}
+function sayac(sc, t) {             // planlara göre puan etiketleri telefonun ÜSTÜNDE; ekrandaki gerçek +100 kutusu parlar
+  const s = $("sayac");
+  if (sc !== SAH[7]) { s.innerHTML = ""; return; }
+  const g = t - sc.a, cik = ar(t, sc.b - 0.35, sc.b) + ar(g, 1.45, 1.6);
+  s.style.opacity = 1 - cl(cik);
+  s.innerHTML = [["Yolcu", 100], ["Sık Uçan", 250], ["Jetset", 500]].map(([ad, n], i) => {
+    const p = geri(ar(g, 0.35 + i * 0.22, 0.75 + i * 0.22));
+    return `<div class="et" style="opacity:${cl(p)};transform:translateY(${(1 - cl(p)) * 20}px) scale(${0.8 + 0.2 * p})">${ad} <b>+${n}</b></div>`;
+  }).join("");
+  const ust = $("ekrUst"), pa = 0.5 + 0.5 * Math.sin(g * 7);
+  if (g > 0.3 && g < 1.45) ust.innerHTML += `<div style="position:absolute;left:14px;top:918px;width:250px;height:84px;border-radius:18px;box-shadow:0 0 0 4px rgba(201,168,110,${0.4 + 0.6 * pa}),0 0 30px rgba(226,184,103,${0.5 * pa})"></div>`;
+}
+function saat(sc, t) {               // açılış: "03:00" kalkış saati gibi döner
+  if (sc !== SAH[0]) return;
+  const g = t - sc.a, cik = ar(t, sc.b - 0.3, sc.b);
+  const n = "03:00", w = 5 * 150;
+  const renkli = TEMA !== "B";
+  $("panoK").innerHTML = `<div style="opacity:${1 - cik}">` + kapaklar(n, (1080 - w) / 2, 820, 0.1, t,
+    renkli ? { hw: 140, hh: 210, fs: 150, zem: "rgba(255,255,255,.72)", renk: "#1A2B4C", kapak: "rgba(214,224,238,.95)" } : { hw: 140, hh: 210, fs: 150 }) + `</div>`;
+}
+
+function halka(t) {                 // A açılışı: "3 saat" kadranı çizilir, akrep döner
+  const g = t, p = eio(ar(g, 0.1, 1.6)), cik = ar(t, 2.7, 3);
+  const r = 250, cx = 540, cy = 900, L = 2 * Math.PI * r;
+  const akrep = -90 + p * 90;
+  $("harita").innerHTML = `<g opacity="${1 - cik}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="rgba(255,255,255,.55)" stroke="rgba(26,43,76,.12)" stroke-width="14"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#C9A86E" stroke-width="14" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - p * .25)}" transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy + 60}" text-anchor="middle" font-family="J" font-size="200" fill="#1A2B4C">3</text>
+    <text x="${cx}" y="${cy + 125}" text-anchor="middle" font-family="J" font-size="44" fill="#41557E" letter-spacing="10">SAAT</text>
+    <line x1="${cx}" y1="${cy}" x2="${cx + Math.cos(akrep * Math.PI / 180) * (r - 40)}" y2="${cy + Math.sin(akrep * Math.PI / 180) * (r - 40)}" stroke="#B8873A" stroke-width="8" stroke-linecap="round" opacity=".55"/></g>`;
+}
+// ------------------------------------------------------------------ KAPANIŞLAR
+const K = VERI.kont;
+const kUz = K.map(c => { let s = 0; for (let i = 1; i < c.length; i++) s += Math.hypot(c[i][0] - c[i - 1][0], c[i][1] - c[i - 1][1]); return s; });
+const kTop = kUz.reduce((a, b) => a + b, 0);
+function kalemKesit(p) {
+  let hedef = p * kTop, d = "", uc = K[0][0], aci = 0;
+  for (let j = 0; j < K.length && hedef > 0; j++) {
+    const c = K[j];
+    let parca = `M${c[0][0]},${c[0][1]}`;
+    for (let i = 1; i < c.length; i++) {
+      const s = Math.hypot(c[i][0] - c[i - 1][0], c[i][1] - c[i - 1][1]);
+      if (hedef >= s) { parca += ` L${c[i][0]},${c[i][1]}`; hedef -= s; uc = c[i]; aci = Math.atan2(c[i][1] - c[i - 1][1], c[i][0] - c[i - 1][0]); }
+      else { const f = s ? hedef / s : 0; uc = [lerp(c[i - 1][0], c[i][0], f), lerp(c[i - 1][1], c[i][1], f)];
+             parca += ` L${uc[0]},${uc[1]}`; aci = Math.atan2(c[i][1] - c[i - 1][1], c[i][0] - c[i - 1][0]); hedef = 0; break; }
+    }
+    d += parca + " ";
+  }
+  return { d, uc, aci: aci * 180 / Math.PI };
+}
+let yumAci = null;
+function kanatG(x, y, aci, olcek, renk = "url(#lac)") {
+  return `<g transform="translate(${x},${y}) rotate(${aci + 10.9}) scale(${olcek}) translate(-76,-129.6)" filter="url(#golge)"><path d="${VERI.kanat}" fill="${renk}"/></g>`;
+}
+const DEFS = `<defs><linearGradient id="lac" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A5486"/><stop offset=".55" stop-color="#1A2B4C"/><stop offset="1" stop-color="#C9A86E"/></linearGradient>
+  <linearGradient id="mur" x1="0" x2="1"><stop offset="0" stop-color="#1A2B4C"/><stop offset="1" stop-color="#2C4374"/></linearGradient>
+  <filter id="golge" x="-50%" y="-80%" width="200%" height="260%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#1A2B4C" flood-opacity=".35"/></filter>
+  <filter id="iz" x="-5%" y="-30%" width="110%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1A2B4C" flood-opacity=".18"/></filter></defs>`;
+
+function kalemSahne(t0, t, dy = 0) {   // kanat kalem gibi yazar (t0: başlangıç)
+  const g = t - t0;
+  if (g < 0) return "";
+  const giris = ar(g, 0, 0.35), yaz = eio(ar(g, 0.3, 2.75)), kalk = eio(ar(g, 2.75, 3.25));
+  const { d, uc, aci } = kalemKesit(yaz);
+  if (yumAci === null) yumAci = aci;
+  let fark = ((aci - yumAci + 540) % 360) - 180; yumAci += fark * 0.35;
+  let s = `<g transform="translate(0,${dy})"><path d="${d}" fill="none" stroke="url(#mur)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" filter="url(#iz)"/>`;
+  const son = K[K.length - 1][K[K.length - 1].length - 1];
+  if (g < 0.3) {                    // sol alttan süzülerek ilk harfe iner
+    const x = lerp(-120, K[0][0][0], eo(giris)), y = lerp(1500, K[0][0][1], eo(giris));
+    s += kanatG(x, y, -40, 3.2);
+  } else if (kalk <= 0) {
+    s += kanatG(uc[0], uc[1], yumAci, 3.2);
+  } else {                           // k'nın kuyruğundan noktalı izle havalanıp kelimenin üstüne konar
+    const px = son[0] - 70, py = son[1] - 150;
+    const x = lerp(son[0], px, kalk) + Math.sin(kalk * Math.PI) * 40, y = lerp(son[1], py, kalk);
+    s += `<path d="M ${son[0]} ${son[1]} Q ${son[0] + 40} ${son[1] - 80} ${x} ${y}" fill="none" stroke="#1A2B4C" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 16" opacity="${.55 * kalk}"/>`;
+    s += kanatG(x, y, lerp(-80, -12, kalk), lerp(3.2, 2.5, kalk));
+  }
+  return s + "</g>";
+}
+const IKON_A = () => `<svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#1A2B4C"/></svg>`;
+const IKON_G = () => `<svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#1A2B4C"/></svg>`;
+function rozetler(t, bas, top = 1290, koyu = false) {
+  const p1 = eo(ar(t, bas, bas + 0.4)), p2 = geri(ar(t, bas + 0.25, bas + 0.75)), p3 = geri(ar(t, bas + 0.4, bas + 0.9));
+  const r = $("rozet"); r.style.top = top + "px";
+  r.innerHTML = `<div class="yakinda" style="opacity:${p1};transform:translateY(${(1 - p1) * 16}px)">YAKINDA</div>
+    <div class="ikili"><div class="ro" style="opacity:${cl(p2)};transform:scale(${p2})">${IKON_A()}App Store</div>
+    <div class="ro" style="opacity:${cl(p3)};transform:scale(${p3})">${IKON_G()}Google Play</div></div>`;
+}
+function slogan(t, bas, top = 1180) {
+  const p = eo(ar(t, bas, bas + 0.6)); const s = $("slogan"); s.style.top = top + "px";
+  s.innerHTML = `<span style="display:inline-block;opacity:${p};transform:translateY(${(1 - p) * 20}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</span>`;
+}
+function kapanisA(t) {
+  $("kalem").innerHTML = DEFS + kalemSahne(24.1, t);
+  slogan(t, 27.0); rozetler(t, 27.4);
+}
+function kapanisB(t) {
+  const g = t - 24;
+  const satir = ["LOUNGELINK", "LOUNGE'DA", "BULUŞALIM"], n = 12, hw = 72, w = n * (hw + 6);
+  const giris = eo(ar(g, 0, 0.5));
+  let h = `<div style="position:absolute;left:40px;top:${520 + (1 - giris) * 80}px;width:1000px;height:560px;border-radius:26px;background:#16181D;opacity:${giris};box-shadow:0 40px 90px rgba(0,0,0,.25)">
+    <div style="position:absolute;left:44px;top:30px;font-size:30px;letter-spacing:.2em;color:#E7C98F">GİDİŞ · DEPARTURES</div></div>`;
+  satir.forEach((m, i) => {
+    const bosluk = Math.floor((n - m.length) / 2);
+    const metin = " ".repeat(bosluk) + m + " ".repeat(n - m.length - bosluk);
+    h += `<div style="opacity:${giris}">` + kapaklar(metin, (1080 - w) / 2, 620 + (1 - giris) * 80 + i * 136, 24.35 + i * 0.35, t,
+      { hw, hh: 110, fs: 70, renk: i === 0 ? "#F2D59A" : i === 2 ? "#8FD3B6" : "#F4EFE6" }) + `</div>`;
+  });
+  const parla = Math.max(0, Math.sin(ar(g, 2.0, 2.6) * Math.PI)) * .18;
+  h += `<div style="position:absolute;left:40px;top:520px;width:1000px;height:560px;border-radius:26px;background:#F2D59A;opacity:${parla}"></div>`;
+  $("panoK").innerHTML = h;
+  slogan(t, 26.6, 1170); rozetler(t, 27.0, 1270);
+}
+function kapanisC(t) {
+  const g = t - 24;
+  // 1) gökyüzünde açık renk pano: LOUNGE'DA / BULUŞALIM
+  const n = 10, hw = 78, w = n * (hw + 6);
+  const dagil = ar(g, 1.7, 2.3);
+  let h = "";
+  ["LOUNGE'DA ", "BULUŞALIM "].forEach((m, i) => {
+    const sat = kapaklar(m.padEnd(n, " "), (1080 - w) / 2, 780 + i * 140, 24.1 + i * 0.3, t,
+      { hw, hh: 120, fs: 74, zem: "rgba(255,255,255,.8)", renk: "#1A2B4C", kapak: "rgba(214,224,238,.95)" });
+    h += `<div style="opacity:${1 - dagil};transform:translateY(${dagil * 120}px) scale(${1 - dagil * .1});transform-origin:50% 0">${sat}</div>`;
+  });
+  $("panoK").innerHTML = h;
+  // 2) kapakların arasından kanat çıkar ve kalem gibi loungelink'i yazar
+  $("kalem").innerHTML = DEFS + (g > 2.0 ? kalemSahne(26.0, t) : "");
+  slogan(t, 28.9 - 0.9 + 0, 1180); rozetler(t, 28.4);
+}
+
+// ------------------------------------------------------------------ GEÇİŞ (A, C): kanat ekranı çaprazlama keser
+function gecis(t) {
+  if (TEMA === "B") { $("ust").innerHTML = ""; return; }
+  let s = "";
+  SAH.forEach((sc, i) => {
+    if (i === 0) return;
+    const p = ar(t, sc.a - 0.45, sc.a + 0.35);
+    if (p <= 0 || p >= 1) return;
+    const e = eio(p), x = lerp(-200, 1300, e), y = lerp(1500, 300, e) + Math.sin(e * Math.PI) * -80;
+    s += `<path d="M ${x - 900} ${y + 360} Q ${x - 400} ${y + 240} ${x} ${y}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="${10 + 8 * Math.sin(e * Math.PI)}" stroke-linecap="round" opacity="${Math.sin(e * Math.PI)}"/>`;
+    s += kanatG(x, y, -20, 3.6, "url(#lac)");
+  });
+  $("ust").innerHTML = DEFS + s;
+}
+
+// ------------------------------------------------------------------ ANA
+window.ciz = function (t) {
+  zemin(t);
+  const sc = SAH.find(s => t >= s.a && t < s.b);
+  $("kalem").innerHTML = ""; $("slogan").innerHTML = ""; $("rozet").innerHTML = ""; $("panoK").innerHTML = "";
+  if (sc) {
+    if (TEMA === "A") baslikA(sc, t); else baslikB(sc, t, TEMA === "C");
+    if (TEMA === "A" && sc === SAH[0]) { $("baslik").style.top = "1260px"; halka(t); }
+    else if (TEMA === "A") $("baslik").style.top = "190px";
+    if (sc === SAH[0] && TEMA !== "A") $("baslik").style.top = "1120px";
+    telefon(sc, t); kartlar(sc, t); acilis(sc, t); sayac(sc, t);
+    if (TEMA !== "A") { if (sc === SAH[0]) saat(sc, t); }
+  } else {
+    $("baslik").innerHTML = ""; $("tel").style.opacity = 0; $("kartlar").innerHTML = ""; $("harita").innerHTML = ""; $("sayac").innerHTML = "";
+    if (TEMA === "A") kapanisA(t); else if (TEMA === "B") kapanisB(t); else kapanisC(t);
+  }
+  gecis(t);
+};
+window.SURE = SON;
+window.ciz(0);
+</script>
+</body></html>

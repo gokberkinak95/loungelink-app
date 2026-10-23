@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#s{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:J;color:#1A2B4C}
+.k{position:absolute;left:0;top:0}
+#zemin{width:1080px;height:1920px}
+#bulutlar{width:1080px;height:1920px}
+.bulut{position:absolute;border-radius:50%;background:#fff;filter:blur(30px)}
+#baslik{position:absolute;left:70px;width:940px;top:300px;text-align:center}
+.satir{font-size:54px;line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
+.kelime{display:inline-block;white-space:pre}
+.alt{font-family:JR;font-size:40px;line-height:1.35;margin-top:20px;color:#2C4374;text-wrap:balance}
+.altin{color:#B8873A}
+#tel{position:absolute;left:260px;top:660px;width:560px;height:1212px;border-radius:78px;background:#0E1220;
+     box-shadow:0 40px 90px rgba(26,43,76,.35),0 0 0 2px rgba(255,255,255,.25) inset;transform-origin:50% 50%}
+#ekr{position:absolute;left:16px;top:16px;width:528px;height:1180px;border-radius:64px;overflow:hidden;background:#F7F4EE}
+.sayfa{position:absolute;left:0;top:0;width:528px;height:1180px;overflow:hidden;background:#F7F4EE}
+.sayfa img{position:absolute;left:0;top:0;width:528px}
+#ada{position:absolute;left:204px;top:30px;width:152px;height:42px;border-radius:21px;background:#05070D;z-index:5}
+.kart{position:absolute;border-radius:30px;background-repeat:no-repeat;box-shadow:0 24px 60px rgba(26,43,76,.28)}
+.pano{position:absolute;display:flex;gap:6px}
+.kap{position:relative;border-radius:10px;text-align:center;overflow:hidden;box-shadow:0 6px 14px rgba(26,43,76,.12)}
+.kap:after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:rgba(26,43,76,.14)}
+.kap i{position:absolute;left:0;right:0;top:0;height:50%;transform-origin:50% 100%}
+#sayac{position:absolute;left:0;width:1080px;top:540px;display:flex;justify-content:center;gap:16px}
+#sayac .et{padding:14px 26px;border-radius:30px;background:rgba(255,255,255,.72);border:2px solid rgba(201,168,110,.7);font-size:30px;color:#1A2B4C;white-space:nowrap}
+#sayac .et b{color:#B8873A;font-weight:600}
+#rozet{position:absolute;left:0;width:1080px;top:1290px;text-align:center}
+.yakinda{font-size:30px;letter-spacing:.32em;color:#41557E}
+.ikili{display:flex;justify-content:center;gap:26px;margin-top:26px}
+.ro{display:flex;align-items:center;gap:14px;height:84px;padding:0 34px;border-radius:42px;background:rgba(255,255,255,.62);
+    border:2px solid rgba(26,43,76,.35);font-size:30px;color:#1A2B4C}
+.ro svg{width:36px;height:36px}
+#slogan{position:absolute;left:0;width:1080px;top:1180px;text-align:center;font-size:42px}
+#cam{position:absolute;border-radius:40px;background:rgba(255,255,255,.42);border:2px solid rgba(255,255,255,.75);
+     box-shadow:0 40px 100px rgba(26,43,76,.22), inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(18px)}
+</style></head><body>
+<div id="s">
+  <div id="zemin" class="k"></div>
+  <div id="bulutlar" class="k"></div>
+  <svg id="harita" class="k" width="1080" height="1920"></svg>
+  <div id="kartlar" class="k"></div>
+  <div id="tel"><div id="ekr"><div id="sOnce" class="sayfa"><img id="imgOnce"></div><div id="sSimdi" class="sayfa"><img id="imgSimdi"></div><div id="ekrUst" class="k"></div></div><div id="ada"></div></div>
+  <div id="sayac"></div>
+  <div id="baslik"></div>
+  <div id="panoK" class="k"></div>
+  <svg id="kalem" class="k" width="1080" height="1920"></svg>
+  <div id="slogan"></div>
+  <div id="rozet"></div>
+</div>
+<script src="veri.js"></script>
+<script>
+const $ = (i) => document.getElementById(i);
+const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ar = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const es = (x) => -(Math.cos(Math.PI * x) - 1) / 2;              // yumuşak sinüs
+const eio = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const geri = (x) => { const c = 1.2; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+function rnd(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+// ------------------------------------------------------------------ ZAMAN ÇİZELGESİ (okunabilir tempo)
+// Her telefon sahnesi 4.3 sn: 0.6 sn sayfa geçişi · ~1.6 sn okuma · hareket · 0.4 sn çıkış.
+const D = 4.3;
+const SAH = [];
+let tt = 0;
+const ekle = (o, sure) => { SAH.push({ ...o, a: tt, b: tt + sure }); tt += sure; };
+ekle({ ek: null, an: "03:00", s: ["Uçuşuna 3 saat var."], alt: "Kapı önünde mi bekleyeceksin, <span class=altin>lounge'da</span> mı?" }, 3.6);
+ekle({ ek: null, an: "IST", s: ["Bu havalimanında, kartıyla seni lounge'a misafir götürebilecek biri var."] }, 4.0);
+ekle({ ek: "02_kesfet", an: "KEŞFET", s: ["Aynı saatte aynı havalimanında olan doğrulanmış yolcuları keşfet."] }, D);
+ekle({ ek: "05_tanis", an: "TANIŞ", s: ["Aynı uçuşu paylaştığın insanlarla tanış."], alt: "Bir kahve, yeni bir iş bağlantısı, bir yol arkadaşı." }, D);
+ekle({ ek: "50_istek_gonder", an: "İSTEK", s: ["Tek dokunuşla istek gönder, gerisini host'a bırak."] }, D);
+ekle({ ek: "06_sohbet", an: "SOHBET", s: ["Kapıda nerede buluşacağınızı sohbetten ayarlayın."] }, D);
+ekle({ ek: "87_oturum_canli", an: "LOUNGE", s: ["Rahat bir koltuk, sıcak bir kahve, sessiz bir köşe."], alt: "Kalkışa kadar keyfini çıkar." }, D);
+ekle({ ek: "88_oturum_puanla", an: "PUAN", s: ["Her buluşma LoungePuan kazandırır."], alt: "Puanların eSIM'e, otel konaklamasına, hediye kartına dönüşsün." }, 5.2);
+const KAP = tt;                    // kapanış başlangıcı
+const SON = KAP + 8.6;
+const ILK_TEL = SAH.findIndex(s => s.ek), SON_TEL = SAH.length - 1;
+
+// ------------------------------------------------------------------ ZEMİN: gün batımına akan gökyüzü
+function zemin(t) {
+  const g = ar(t, 0, SON);
+  const ust = `hsl(${lerp(214, 224, g)}, ${lerp(52, 42, g)}%, ${lerp(64, 57, g)}%)`;
+  const ort = `hsl(${lerp(214, 232, g)}, ${lerp(48, 36, g)}%, ${lerp(78, 80, g)}%)`;
+  const ufk = `hsl(${lerp(32, 22, g)}, ${lerp(70, 86, g)}%, ${lerp(86, 81, g)}%)`;
+  $("zemin").style.background = `radial-gradient(circle at 72% ${lerp(78, 70, g)}%, rgba(255,240,214,.95), rgba(255,226,184,0) 26%), linear-gradient(180deg, ${ust} 0%, ${ort} 46%, ${ufk} 78%, #FBEADB 100%)`;
+  let h = "";
+  [[180, 1380, 380, 70, .55, 6], [900, 1460, 420, 80, .5, 9], [560, 1640, 600, 110, .65, 4], [820, 520, 260, 40, .35, 14], [230, 640, 220, 34, .3, 11], [600, 300, 300, 36, .25, 16]]
+    .forEach(([x, y, rx, ry, o, v]) => {
+      const xx = ((x + t * v + 400) % 1880) - 400;
+      h += `<div class="bulut" style="left:${xx - rx}px;top:${y - ry}px;width:${rx * 2}px;height:${ry * 2}px;opacity:${o}"></div>`;
+    });
+  $("bulutlar").innerHTML = h;
+}
+
+// ------------------------------------------------------------------ KAPAKLAR (açık tema)
+const HARF = "ABCDEFGHIJKLMNOPRSTUVYZÇĞİÖŞÜ0123456789";
+function kapaklar(metin, x, y, bas, t, o = {}) {
+  const hw = o.hw || 70, hh = o.hh || 100, fs = o.fs || 64, hiz = o.hiz || 16;
+  let h = `<div class="pano" style="left:${x}px;top:${y}px;gap:${o.gap || 6}px">`;
+  [...metin].forEach((ch, i) => {
+    const dur = bas + 0.15 + i * (o.ara || 0.07) + rnd(i * 7 + Math.floor(bas * 10)) * 0.3;
+    let c = ch, kapak = "";
+    if (t < bas) c = " ";
+    else if (t < dur && ch !== " ") {
+      c = HARF[Math.floor(rnd(Math.floor(t * hiz) + i * 13) * HARF.length)];
+      kapak = `<i style="transform:scaleY(${1 - (t * hiz) % 1});background:rgba(214,224,238,.95)"></i>`;
+    }
+    const bos = ch === " " && o.bosSaydam;
+    h += `<div class="kap" style="width:${hw}px;height:${hh}px;line-height:${hh}px;font-size:${fs}px;color:#1A2B4C;
+      background:${bos ? "rgba(255,255,255,.28)" : "rgba(255,255,255,.86)"}">${c === " " ? "&nbsp;" : c}${kapak}</div>`;
+  });
+  return h + `</div>`;
+}
+
+// ------------------------------------------------------------------ BAŞLIK: kapaklı anahtar kelime + cümle
+function baslik(sc, t, i) {
+  const g = t - sc.a, cik = ar(t, sc.b - 0.45, sc.b);
+  const n = [...sc.an].length;
+  if (i === 0) {   // açılış: büyük saat
+    const hw = 150, w = 5 * (hw + 10);
+    $("panoK").innerHTML = `<div style="opacity:${1 - cik};transform:translateY(${-cik * 20}px)">` +
+      kapaklar("03:00", (1080 - w) / 2, 700, 0.15, t, { hw, hh: 220, fs: 160, gap: 10, ara: 0.12, hiz: 12 }) + `</div>`;
+  } else {
+    const hw = 70, w = n * (hw + 6);
+    $("panoK").innerHTML = `<div style="opacity:${1 - cik}">` + kapaklar(sc.an, (1080 - w) / 2, 150, sc.a + 0.05, t, { hw }) + `</div>`;
+  }
+  let h = "", k = 0;
+  const bas0 = i === 0 ? 1.0 : 0.5;
+  sc.s.forEach(sat => {
+    h += `<div class="satir">` + sat.split(" ").map(w => {
+      const p = eo(ar(g, bas0 + k * 0.09, bas0 + 0.5 + k++ * 0.09));
+      return `<span class="kelime" style="opacity:${p * (1 - cik)};transform:translateY(${(1 - p) * 28 - cik * 16}px)">${w} </span>`;
+    }).join("") + `</div>`;
+  });
+  if (sc.alt) { const p = eo(ar(g, bas0 + 1.0, bas0 + 1.6)); h += `<div class="alt" style="opacity:${p * (1 - cik)};transform:translateY(${(1 - p) * 18}px)">${sc.alt}</div>`; }
+  const b = $("baslik"); b.style.top = (i === 0 ? 1010 : 300) + "px"; b.innerHTML = h;
+}
+
+// ------------------------------------------------------------------ TELEFON: bir kez girer, sayfalar uygulamadaki gibi sağdan kayar
+let yuklu = { Once: "", Simdi: "" };
+function resim(yer, ek) { if (yuklu[yer] !== ek) { $("img" + yer).src = `ekran/${ek}.jpg`; yuklu[yer] = ek; } }
+function telefon(sc, i, t) {
+  const tel = $("tel"), ust = $("ekrUst");
+  ust.innerHTML = "";
+  if (!sc.ek) { tel.style.opacity = 0; return; }
+  const g = t - sc.a;
+  // giriş (ilk telefon sahnesi) ve çıkış (son telefon sahnesi sonunda)
+  const gir = i === ILK_TEL ? ar(g, 0, 1.1) : 1;
+  const cik = i === SON_TEL ? ar(t, sc.b - 0.5, sc.b + 0.3) : 0;
+  const yuz = Math.sin(t * 1.3) * 7;
+  tel.style.opacity = cl(gir * 2) * (1 - cik);
+  tel.style.transform = `translateY(${(1 - eo(gir)) * 760 + es(cik) * 900 + yuz}px) rotate(${(1 - eo(gir)) * 5 + Math.sin(t * 0.9) * 0.5}deg) scale(${1 - cik * .08})`;
+  // sayfa geçişi
+  const onceki = SAH[i - 1] && SAH[i - 1].ek;
+  const gp = (i === ILK_TEL || !onceki) ? 1 : es(ar(g, 0, 0.65));
+  const pf = sc.ek === "88_oturum_puanla" ? ar(g - 0.65, 2.5, 3.1) : 0;
+  resim("Simdi", pf >= 0.5 ? "22c_market_jetset" : sc.ek);
+  if (onceki) resim("Once", onceki === "88_oturum_puanla" ? "22c_market_jetset" : onceki);
+  $("sOnce").style.display = gp < 1 ? "block" : "none";
+  $("sOnce").style.transform = `translateX(${-gp * 150}px)`; $("sOnce").style.filter = `brightness(${1 - gp * .25})`;
+  $("sSimdi").style.transform = `translateX(${(1 - gp) * 528}px)`;
+  $("sSimdi").style.boxShadow = gp < 1 ? "-20px 0 40px rgba(0,0,0,.18)" : "none";
+  $("imgSimdi").style.transform = "translateY(0)";
+  if (gp < 1) return;
+  const h = g - 0.65;      // sayfa yerleştikten sonra geçen süre
+  if (sc.ek === "02_kesfet") {
+    const p = eo(ar(g, i === ILK_TEL ? 0.9 : 0.7, 2.2));
+    ust.innerHTML = `<div style="position:absolute;left:0;top:${lerp(360, 1180, p)}px;width:528px;height:1180px;background:#F7F4EE"></div>`;
+    $("imgSimdi").style.transform = `translateY(${-es(ar(g, 2.4, 3.8)) * 110}px)`;
+  }
+  if (sc.ek === "50_istek_gonder") {
+    // "Lounge arkadaşı" seçilir (dokunma dalgası), küçük kanat Tuna'nın fotoğrafına süzülür, fotoğraf altınla çevrelenir
+    const cx = 91, cy = 924, r = ar(h, 0.9, 1.7);
+    if (r > 0 && r < 1) ust.innerHTML += `<div style="position:absolute;left:${cx - r * 110}px;top:${cy - r * 110}px;width:${r * 220}px;height:${r * 220}px;border-radius:50%;border:5px solid rgba(201,168,110,${1 - r})"></div>`;
+    if (h > 0.9) ust.innerHTML += `<div style="position:absolute;left:22px;top:905px;width:140px;height:38px;border-radius:19px;box-shadow:0 0 0 3px rgba(201,168,110,${cl((h - 0.9) * 3)})"></div>`;
+    const u = es(ar(h, 1.5, 2.8));
+    if (u > 0 && u < 1) {
+      const x = lerp(cx, 77, u) + Math.sin(u * Math.PI) * 120, y = lerp(cy, 472, u);
+      ust.innerHTML += `<svg style="position:absolute;left:0;top:0" width="528" height="1180"><g transform="translate(${x},${y}) rotate(${-95 + u * 50}) scale(1.4) translate(-107,-132)"><path d="${VERI.kanat}" fill="#C9A86E"/></g></svg>`;
+    }
+    const k = ar(h, 2.7, 3.1);
+    if (k > 0) ust.innerHTML += `<div style="position:absolute;left:${77 - 32}px;top:${472 - 32}px;width:64px;height:64px;border-radius:50%;box-shadow:0 0 0 ${6 - k * 2}px rgba(201,168,110,.95),0 0 ${30 * k}px rgba(226,184,103,.6)"></div>`;
+  }
+  if (sc.ek === "06_sohbet") {
+    const p = eo(ar(h, 0.1, 1.9));
+    ust.innerHTML = `<div style="position:absolute;left:0;top:${lerp(200, 1180, p)}px;width:528px;height:1180px;background:#F7F4EE"></div>`;
+    if (h > 2.0) { const pa = 0.55 + 0.45 * Math.sin((h - 2) * 5); ust.innerHTML += `<div style="position:absolute;left:6px;top:838px;width:516px;height:46px;border-radius:12px;box-shadow:0 0 0 3px rgba(201,168,110,${pa}),0 0 24px rgba(226,184,103,${pa * .5})"></div>`; }
+  }
+  if (sc.ek === "87_oturum_canli") {
+    const p = es(ar(h, 0.2, 1.6));
+    ust.innerHTML = `<div style="position:absolute;left:0;top:0;width:528px;height:1180px;background:radial-gradient(circle at 50% 45%,rgba(255,226,170,.85),rgba(255,226,170,0) 60%);opacity:${Math.sin(p * Math.PI) * .9}"></div>
+      <div style="position:absolute;left:0;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-right:2px solid #C9A86E;transform:translateX(${-p * 264}px)"></div>
+      <div style="position:absolute;left:264px;top:0;width:264px;height:1180px;background:linear-gradient(180deg,#22365F,#14213D);border-left:2px solid #C9A86E;transform:translateX(${p * 264}px)"></div>`;
+  }
+  if (sc.ek === "88_oturum_puanla") {
+    // 1) ekrandaki gerçek +100 kutusu parlar  2) telefon döner, ödül mağazası
+    if (h < 2.6) { const pa = 0.55 + 0.45 * Math.sin(h * 5);
+      if (h > 0.4) ust.innerHTML = `<div style="position:absolute;left:20px;top:942px;width:246px;height:88px;border-radius:20px;box-shadow:0 0 0 4px rgba(201,168,110,${pa}),0 0 30px rgba(226,184,103,${pa * .55})"></div>`; }
+    const f = ar(h, 2.5, 3.1);
+    if (f > 0 && f < 1) tel.style.transform += ` perspective(1600px) rotateY(${Math.sin(f * Math.PI) * 75}deg)`;
+    if (f >= 1) $("imgSimdi").style.transform = `translateY(${-es(ar(h, 3.2, 4.4)) * 140}px)`;
+  }
+}
+function kartlar(sc, t) {
+  const k = $("kartlar");
+  if (sc.ek !== "05_tanis") { k.innerHTML = ""; return; }
+  const g = t - sc.a - 0.65, cik = ar(t, sc.b - 0.45, sc.b);
+  const kesit = [[505, 200], [722, 200], [944, 200]];
+  let h = "";
+  kesit.forEach(([y0, hh], i) => {
+    const p = geri(ar(g, 0.5 + i * 0.25, 1.4 + i * 0.25));
+    const aci = (i - 1) * 8 * p, x = 270 + (i - 1) * 150 * p, y = 1220 - p * (320 + (i === 1 ? 60 : 0));
+    h += `<div class="kart" style="left:${x - 10}px;top:${y}px;width:${492 * 1.15}px;height:${hh * 1.15}px;background-image:url(ekran/05_tanis.jpg);
+      background-size:${528 * 1.15}px auto;background-position:${-18 * 1.15}px ${-y0 * 1.15}px;
+      transform:rotate(${aci}deg) scale(${i === 1 ? 1.06 : 1});opacity:${cl(p * 2) * (1 - cik)};z-index:${i === 1 ? 3 : 1}"></div>`;
+  });
+  k.innerHTML = h;
+}
+function sayac(sc, t) {
+  const s = $("sayac");
+  if (sc.ek !== "88_oturum_puanla") { s.innerHTML = ""; return; }
+  const h = t - sc.a - 0.65, cik = cl(ar(t, sc.b - 0.45, sc.b) + ar(h, 2.4, 2.7));
+  s.style.opacity = 1 - cik;
+  s.innerHTML = [["Yolcu", 100], ["Sık Uçan", 250], ["Jetset", 500]].map(([ad, n], i) => {
+    const p = geri(ar(h, 0.5 + i * 0.3, 0.95 + i * 0.3));
+    return `<div class="et" style="opacity:${cl(p)};transform:translateY(${(1 - cl(p)) * 20}px) scale(${0.85 + 0.15 * p})">${ad} <b>+${n}</b></div>`;
+  }).join("");
+}
+
+// ------------------------------------------------------------------ KANAT
+function kanatG(x, y, aci, olcek, renk = "url(#lac)", op = 1) {
+  return `<g opacity="${op}" transform="translate(${x},${y}) rotate(${aci + 10.9}) scale(${olcek}) translate(-76,-129.6)" filter="url(#golge)"><path d="${VERI.kanat}" fill="${renk}"/></g>`;
+}
+const DEFS = `<defs><linearGradient id="lac" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A5486"/><stop offset=".55" stop-color="#1A2B4C"/><stop offset="1" stop-color="#C9A86E"/></linearGradient>
+  <linearGradient id="mur" x1="0" x2="1"><stop offset="0" stop-color="#1A2B4C"/><stop offset="1" stop-color="#2C4374"/></linearGradient>
+  <filter id="golge" x="-50%" y="-80%" width="200%" height="260%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#1A2B4C" flood-opacity=".3"/></filter>
+  <filter id="iz" x="-5%" y="-30%" width="110%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1A2B4C" flood-opacity=".18"/></filter></defs>`;
+
+// Harita sahnesi: tek, yavaş bir süzülüş — kanat havalimanının üstünden geçip lounge'a iner
+function harita(sc, t) {
+  const h = $("harita");
+  if (sc !== SAH[1]) { h.innerHTML = ""; return; }
+  const g = t - sc.a, cik = ar(t, sc.b - 0.45, sc.b);
+  const kor = ["M 140 1720 L 140 1300 L 540 1080", "M 940 1720 L 940 1300 L 540 1080", "M 540 1080 L 540 860",
+               "M 140 1300 L 60 1300", "M 940 1300 L 1020 1300", "M 340 1190 L 340 1520", "M 740 1190 L 740 1520"];
+  const ciz = es(ar(g, 0, 1.4));
+  let s = kor.map(d => `<path d="${d}" stroke="rgba(255,255,255,.72)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - ciz}"/>`).join("");
+  [[140, 1450], [340, 1400], [540, 960], [740, 1350], [940, 1500], [60, 1300], [1020, 1300], [540, 1180]].forEach(([x, y], i) => {
+    const p = ar(g, 1.0 + i * 0.14, 1.4 + i * 0.14), nb = (Math.sin((g - i * .25) * 3.2) + 1) / 2;
+    if (p > 0) s += `<circle cx="${x}" cy="${y}" r="${(16 + nb * 34) * p}" fill="#E2B867" opacity="${0.25 * (1 - nb)}"/><circle cx="${x}" cy="${y}" r="${14 * eo(p)}" fill="#C9A86E"/>`;
+  });
+  s += `<rect x="470" y="790" width="140" height="80" rx="18" fill="#fff" stroke="#C9A86E" stroke-width="3" opacity="${ciz}"/><text x="540" y="840" text-anchor="middle" font-family="J" font-size="22" fill="#8A6D3B" letter-spacing="3" opacity="${ciz}">LOUNGE</text>`;
+  const u = es(ar(g, 0.6, 3.4));
+  if (u > 0 && u < 1) {
+    const x = lerp(-120, 540, u), y = lerp(1560, 830, u) - Math.sin(u * Math.PI) * 260;
+    s += `<path d="M -160 1600 Q ${lerp(-160, x, .5) - 40} ${lerp(1600, y, .5) - 220 * u} ${x} ${y}" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="6" stroke-linecap="round" opacity="${.8 * (1 - u)}"/>`;
+    s += kanatG(x, y, lerp(-40, -5, u), lerp(3.0, 1.2, u), "url(#lac)", 1 - ar(u, .85, 1));
+  }
+  h.innerHTML = DEFS + `<g opacity="${1 - cik}">${s}</g>`;
+}
+
+// ------------------------------------------------------------------ KAPANIŞ: cam pano → kanat yazar
+const K = VERI.kont;
+const kTop = K.reduce((a, c) => { for (let i = 1; i < c.length; i++) a += Math.hypot(c[i][0] - c[i - 1][0], c[i][1] - c[i - 1][1]); return a; }, 0);
+function kalemKesit(p) {
+  let hedef = p * kTop, d = "", uc = K[0][0], aci = 0;
+  for (let j = 0; j < K.length && hedef > 0; j++) {
+    const c = K[j]; let parca = `M${c[0][0]},${c[0][1]}`;
+    for (let i = 1; i < c.length; i++) {
+      const s = Math.hypot(c[i][0] - c[i - 1][0], c[i][1] - c[i - 1][1]);
+      aci = Math.atan2(c[i][1] - c[i - 1][1], c[i][0] - c[i - 1][0]);
+      if (hedef >= s) { parca += ` L${c[i][0]},${c[i][1]}`; hedef -= s; uc = c[i]; }
+      else { const f = s ? hedef / s : 0; uc = [lerp(c[i - 1][0], c[i][0], f), lerp(c[i - 1][1], c[i][1], f)]; parca += ` L${uc[0]},${uc[1]}`; hedef = 0; break; }
+    }
+    d += parca + " ";
+  }
+  return { d, uc, aci: aci * 180 / Math.PI };
+}
+let yumAci = null;
+const PANO = { x: 90, y: 600, w: 900, h: 470 };
+function kapanis(t) {
+  const g = t - KAP;
+  // 1) cam pano süzülerek gelir (telefon aşağı inerken)
+  const gir = es(ar(g, -0.3, 0.7));
+  const kapan = es(ar(g, 3.6, 4.3));             // pano bir çizgiye kapanır
+  const ph = PANO.h * (1 - kapan * 0.985), py = PANO.y + (PANO.h - ph) / 2 + (1 - gir) * 120;
+  let h = "";
+  if (g < 4.4) {
+    h += `<div id="cam" style="left:${PANO.x}px;top:${py}px;width:${PANO.w}px;height:${ph}px;opacity:${gir}">`;
+    if (kapan < 0.5) {
+      // başlık satırı: uygulamanın üst çubuğu gibi kanat + LOUNGELINK
+      h += `<div style="position:absolute;left:52px;top:44px;display:flex;align-items:center;gap:18px;opacity:${1 - kapan * 2}">
+        <svg width="74" height="36" viewBox="76 117.5 62 29"><path d="${VERI.kanat}" fill="#1A2B4C"/></svg>
+        <span style="font-size:30px;letter-spacing:.46em;color:#1A2B4C">LOUNGELINK</span></div>
+        <div style="position:absolute;right:52px;top:50px;display:flex;align-items:center;gap:12px;font-size:24px;letter-spacing:.2em;color:#8A6D3B;opacity:${(1 - kapan * 2) * ar(g, 1.9, 2.3)}">
+        <span style="width:14px;height:14px;border-radius:50%;background:#4FB6A0;box-shadow:0 0 0 ${4 + 3 * Math.sin(g * 4)}px rgba(79,182,160,.25)"></span>ŞİMDİ</div>
+        <div style="position:absolute;left:52px;right:52px;top:118px;height:2px;background:rgba(26,43,76,.12)"></div>`;
+    }
+    h += `</div>`;
+    if (kapan < 0.35) {
+      const n = 10, hw = 74, w = n * (hw + 6);
+      ["LOUNGE'DA ", "BULUŞALIM "].forEach((m, i) => {
+        const metin = i === 0 ? "LOUNGE'DA " : "BULUŞALIM ";
+        h += `<div style="opacity:${gir * (1 - kapan * 3)}">` + kapaklar(metin, (1080 - w) / 2 + 4, py + 168 + i * 134, KAP + 0.4 + i * 0.35, t,
+          { hw, hh: 112, fs: 70, ara: 0.08, hiz: 14, bosSaydam: true }) + `</div>`;
+      });
+    }
+  }
+  $("panoK").innerHTML = h;
+  // 2) kanat panonun kapandığı çizgiden çıkar, kalem gibi yazar
+  const t0 = KAP + 4.1;
+  let s = "";
+  if (t >= t0) {
+    const k = t - t0, giris = es(ar(k, 0, 0.6)), yaz = es(ar(k, 0.55, 3.75)), kalk = es(ar(k, 3.75, 4.35));
+    const { d, uc, aci } = kalemKesit(yaz);
+    if (yumAci === null) yumAci = aci;
+    yumAci += (((aci - yumAci + 540) % 360) - 180) * 0.25;
+    s += `<path d="${d}" fill="none" stroke="url(#mur)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" filter="url(#iz)"/>`;
+    const son = K[K.length - 1][K[K.length - 1].length - 1];
+    if (k < 0.55) s += kanatG(lerp(540, K[0][0][0], giris), lerp(PANO.y + PANO.h / 2, K[0][0][1], giris), lerp(-10, -60, giris), lerp(2.2, 3.0, giris));
+    else if (kalk <= 0) s += kanatG(uc[0], uc[1], yumAci, 3.0);
+    else {
+      const px = son[0] - 70, py2 = son[1] - 150, x = lerp(son[0], px, kalk) + Math.sin(kalk * Math.PI) * 30, y = lerp(son[1], py2, kalk);
+      s += `<path d="M ${son[0]} ${son[1]} Q ${son[0] + 30} ${son[1] - 80} ${x} ${y}" fill="none" stroke="#1A2B4C" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 16" opacity="${.5 * kalk}"/>`;
+      s += kanatG(x, y, lerp(-80, -12, kalk), lerp(3.0, 2.5, kalk));
+    }
+  } else yumAci = null;
+  $("kalem").innerHTML = DEFS + s;
+  // 3) slogan, Yakında, mağazalar
+  const sp = eo(ar(t, t0 + 3.9, t0 + 4.5));
+  $("slogan").innerHTML = `<span style="display:inline-block;opacity:${sp};transform:translateY(${(1 - sp) * 20}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</span>`;
+  const rb = t0 + 4.3, p1 = eo(ar(t, rb, rb + 0.4)), p2 = geri(ar(t, rb + 0.25, rb + 0.75)), p3 = geri(ar(t, rb + 0.4, rb + 0.9));
+  $("rozet").innerHTML = `<div class="yakinda" style="opacity:${p1};transform:translateY(${(1 - p1) * 16}px)">YAKINDA</div>
+    <div class="ikili"><div class="ro" style="opacity:${cl(p2)};transform:scale(${p2})"><svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#1A2B4C"/></svg>App Store</div>
+    <div class="ro" style="opacity:${cl(p3)};transform:scale(${p3})"><svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#1A2B4C"/></svg>Google Play</div></div>`;
+}
+
+// ------------------------------------------------------------------ ANA
+window.ciz = function (t) {
+  zemin(t);
+  const i = SAH.findIndex(s => t >= s.a && t < s.b);
+  ["kalem", "slogan", "rozet", "panoK", "baslik"].forEach(x => $(x).innerHTML = "");
+  if (i >= 0) {
+    const sc = SAH[i];
+    baslik(sc, t, i); telefon(sc, i, t); kartlar(sc, t); sayac(sc, t); harita(sc, t);
+    if (t > KAP - 0.3) kapanis(t);
+  } else {
+    // son telefon sahnesinin çıkışı kapanışın ilk 0.3 sn'sine taşar
+    const son = SAH[SON_TEL];
+    if (t < KAP + 0.3) telefon(son, SON_TEL, t); else $("tel").style.opacity = 0;
+    $("kartlar").innerHTML = ""; $("harita").innerHTML = ""; $("sayac").innerHTML = "";
+    kapanis(t);
+  }
+};
+window.SURE = SON;
+window.ciz(0);
+</script>
+</body></html>
