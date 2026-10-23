@@ -12,7 +12,7 @@ BEKLE = "Promise.all([...document.images].filter(i=>i.src).map(i=>i.complete&&i.
 with sync_playwright() as p:
     b = p.chromium.launch()
     pg = b.new_page(viewport={"width": 1080, "height": 1920})
-    pg.goto((KOK / ("videoC2.html" if tema == "C2" else "video.html")).as_uri() + f"?tema={tema}")
+    pg.goto((KOK / (f"video{tema}.html" if (KOK / f"video{tema}.html").exists() else "video.html")).as_uri() + f"?tema={tema}")
     pg.wait_for_timeout(800)
     hatalar = []
     pg.on("pageerror", lambda e: hatalar.append(str(e)))

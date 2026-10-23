@@ -2,7 +2,10 @@
 
 Video tarayıcıda kare kare çizilir (HTML + SVG), ffmpeg ile MP4 olur. Ekranlar uygulamanın gerçek sahne çekimleri (`web_sahne/out`).
 
-- `videoC2.html` — SEÇİLEN tema (C revize): gün batımı göğü, açık renk kapaklı başlıklar, telefon bir kez girer ve
+- `videoC3.html` — GÜNCEL (23 Ekim akşam): açılışta kalkış panosu (KAPI B12 · 3 SAAT VAR → LOUNGE'DA BULUŞALIM), iki pin
+  (Misafir/Host) koridorları izleyip lounge'da buluşur, lounge kutusu telefona dönüşür (eşleşme kesmesi), HOST sahnesi,
+  kapanışta tek marka anı (kalem yazısı) + Yakında + mağazalar + loungelink.co. ~48.2 sn. Reels güvenli alanı gözetildi.
+- `videoC2.html` — önceki C revize: gün batımı göğü, açık renk kapaklı başlıklar, telefon bir kez girer ve
   sayfalar uygulamadaki gibi sağdan kayar; kanat yalnız harita sahnesinde ve kapanışta (kalem gibi "loungelink" yazar).
   Kapanışta cam pano: başlık "LOUNGELINK", kapaklar "LOUNGE'DA / BULUŞALIM". ~42.9 sn.
 - `video.html?tema=A|B|C` — ilk üç seçenek (A kalem kanat, B kalkış panosu, C karışım).
