@@ -26,7 +26,9 @@
       ],
       "blockedPermissions": [
         "android.permission.ACTIVITY_RECOGNITION",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE_LOCATION"
       ]
     },
     "extra": {
@@ -107,6 +109,15 @@
         "expo-sensors",
         {
           "motionPermission": "Kart ekranındaki ışık efekti için telefonunun eğimi okunur. Hareket verisi cihazından çıkmaz ve kaydedilmez."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Bulunduğun havalimanını seyahat formunda seçebilmek için yaklaşık konumun okunur. Konumun telefonundan çıkmaz ve kaydedilmez.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
         }
       ]
     ],

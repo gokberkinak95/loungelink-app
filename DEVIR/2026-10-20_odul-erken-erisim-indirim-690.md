@@ -147,3 +147,17 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   Telefondaki 6.9.x APK'nın üstüne kurulur (Android yalnız versionCode'a bakar).
 - Rehber v20: Supabase Apple Client IDs, 6b, Firebase iOS, RevenueCat iOS → co.loungelink.app; 6b'de iki kimlik uyarısı.
 - Bundan sonra: sürüm 1.0.x / 1.x olarak devam.
+
+## 23 Ekim — app 1.0.0 içine "Bulunduğum havalimanı" (Gökberk önizlemeyi onayladı) · BO 1.101.2 · site 0.72.6
+- `expo-location ~18.0.10`. Yalnız ön plan izni; arka plan kapalı (plugin) + Android'de ACCESS_BACKGROUND_LOCATION ve
+  FOREGROUND_SERVICE_LOCATION blockedPermissions. İzin metni app.json'da (TR).
+- `rnapp/src/konum.js`: izin YALNIZ düğmeye basınca; son bilinen konum (10 dk) yoksa düşük doğrulukla anlık konum, 12 sn zaman aşımı;
+  en yakın havalimanı TELEFONDA (haversine), eşik 25 km; konum sunucuya gitmez → App Privacy / Data safety'de konum YOK.
+- `rnapp/src/havalimani_konum.js`: 222 havalimanının koordinatı (airportsdata; FRU, PNH elle). Katalogda yeni havalimanı
+  açılıp burada yoksa düğme onu önermez (form elle çalışır) — yeni havalimanı eklenince bu tabloya da satır.
+- `ekranlar_ana.js` SeyahatFormu: `BulundugumHavalimani` (yalnız mod="ekle", havalimanı seçicisinin üstünde); sonuç satırı
+  accessibilityLiveRegion. i18n konum* (TR+EN).
+- HATA DÜZELTİLDİ: `ucusGeldi` `a.key` arıyordu, katalog `{code}` veriyor → uçuş bulunsa da kalkış/varış hiç seçilmiyordu.
+- Yasal metin 2026-10-23: Seyahat verileri maddesine konum cümlesi (üç kopya) + site /en/privacy. BO ve site sürüm artışı.
+- Sahne: 40b_konum_bulundu · 40c_konum_red · 40d_konum_uzak (cek.py `konum=lat,lon` / `konum=red`). Önizleme _gorseller/onizleme_konum_1.0.png.
+- Denetim: app check temiz · BO check temiz + build · site check 19 sayfa + verify 7/7 + build.

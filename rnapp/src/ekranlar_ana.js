@@ -32,6 +32,7 @@ import { LEGAL_DOCS, LEGAL_ORDER } from "./legal";
 import { bayrak } from "./runtime";
 import { logError, onPlanda, supabase } from "./supabase";
 import { havalimanlariniGetir, carrierlariGetir } from "./katalog";
+import { bulundugumHavalimani, konumAyarlariniAc } from "./konum";
 import { ARA, ELEV, C, F, FS, R, SATIR, SP, T, TAP, temaModu } from "./theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // 🔴 30 Ağu · Gece sistemi — DEĞİŞEN/KARŞILAŞTIRILAN SAYILAR MONO AİLEDE.
@@ -6416,6 +6417,43 @@ export function KisiSayisi({ t, kisi, cocuk, onKisi, onCocuk, stil }) {
 // Kural koşulu durumu → ikon (R1 katlanır özet).
 const KURAL_IKON = { ok: "tamam", yok: "kapat" };
 
+// 23 Ekim (1.0) — "Bulunduğum havalimanı". İzin YALNIZ bu düğmeye basınca sorulur; konum
+// telefondan çıkmaz (konum.js). Sonuç düğmenin altında tek satır; reddedilirse form elle çalışır.
+function BulundugumHavalimani({ t, airports, onBul }) {
+  const [busy, setBusy] = useState(false);
+  const [sonuc, setSonuc] = useState(null);
+  const bas = async () => {
+    setBusy(true); setSonuc(null);
+    const r = await bulundugumHavalimani((airports || []).map(a => a.code || a.key));
+    setBusy(false); setSonuc(r);
+    if (r.durum === "bulundu") onBul(r.kod);
+  };
+  const ad = sonuc && sonuc.kod ? ((airports || []).find(a => (a.code || a.key) === sonuc.kod) || {}) : {};
+  const metin = !sonuc ? null
+    : sonuc.durum === "bulundu" ? (t.konumBulundu || "").replace("{ap}", `${ad.city || ad.name || sonuc.kod} (${sonuc.kod})`).replace("{km}", String(sonuc.km))
+    : sonuc.durum === "uzak" ? t.konumUzak
+    : sonuc.durum === "reddedildi" ? t.konumRed
+    : sonuc.durum === "kapali" ? t.konumKapali : t.konumHata;
+  const iyi = sonuc && sonuc.durum === "bulundu";
+  return (
+    <View style={{ marginBottom: ARA[12] }}>
+      <Btn v="ghost" sm full solAd="konum" label={busy ? t.konumAliniyor : t.konumDugme} disabled={busy} onPress={bas} />
+      {!!metin && (
+        <View accessibilityLiveRegion="polite" accessible
+              style={{ flexDirection: "row", alignItems: "flex-start", marginTop: ARA[6] }}>
+          <Ikon ad={iyi ? "tamam" : "bilgi"} boy={13} renk={iyi ? C.goldText : C.mut} stil={{ marginRight: ARA[6], marginTop: 2 }} />
+          <Text style={{ flex: 1, color: iyi ? C.goldText : C.mut, fontSize: FS.xs + 0.5, lineHeight: 17 }}>
+            {metin}
+            {sonuc.durum === "reddedildi" && sonuc.tekrar === false ? (
+              <Text onPress={konumAyarlariniAc} style={{ color: C.goldText, fontWeight: "600" }}>{" " + t.konumAyarlar}</Text>
+            ) : null}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
 export function SeyahatFormu({ t, f, set, airports, carriers, kilitli, mod, adim }) {
   // v6.3 · PANO F1–F3 (Gökberk onayı) — `adim` verilirse SİHİRBAZ: 1 uçuş/havalimanı,
   // 2 zaman ve kişi, 3 amaç. Verilmezse eskisi gibi tek sayfa (geriye uyumlu).
@@ -6426,8 +6464,11 @@ export function SeyahatFormu({ t, f, set, airports, carriers, kilitli, mod, adim
     setUcusBilgi(info);
     if (!info) return;
     const kod = (x) => String(x || "").toUpperCase().trim();
-    if (info.dep_iata && airports.some(a => a.key === kod(info.dep_iata))) set("airport", kod(info.dep_iata));
-    if (info.arr_iata && airports.some(a => a.key === kod(info.arr_iata))) set("destination", kod(info.arr_iata));
+    // 🔴 23 Ekim — `a.key` arıyordu ama iki çağıran da (AddVisit, EditTrip) katalogdan `{ code }`
+    // veriyor: uçuş bulunsa da havalimanı HİÇ seçilmiyordu ("UÇUŞ BULUNDU" kartı + boş seçici).
+    const var_ = (c) => airports.some(a => (a.code || a.key) === c);
+    if (info.dep_iata && var_(kod(info.dep_iata))) set("airport", kod(info.dep_iata));
+    if (info.arr_iata && var_(kod(info.arr_iata))) set("destination", kod(info.arr_iata));
     const hy = info.operating_iata || info.airline_iata;
     if (hy && !f.carrier) set("carrier", kod(hy));
   };
@@ -6475,6 +6516,7 @@ export function SeyahatFormu({ t, f, set, airports, carriers, kilitli, mod, adim
         {/* Kodsuz yol ya da uçuş havalimanı bulamadıysa: havalimanını ARAYARAK seç. */}
         {(kodsuz || !ucusBilgi || !f.airport) && (
           <View style={{ marginTop: ARA[14] }}>
+            {mod === "ekle" && <BulundugumHavalimani t={t} airports={airports} onBul={v => set("airport", v)} />}
             <AirportPicker t={t} airports={airports} value={f.airport} onSelect={v => set("airport", v)} />
             <AirportPicker t={t} label={t.avDestLabel} airports={airports} value={f.destination} onSelect={v => set("destination", v)} />
           </View>

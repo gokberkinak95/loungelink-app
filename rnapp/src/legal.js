@@ -22,7 +22,7 @@
 // Tek yönlü; asla tersi. (`node check.js` yer tutucu kalmadığını denetler.)
 // ============================================================
 
-export const LEGAL_VERSION = "2026-10-21";
+export const LEGAL_VERSION = "2026-10-23";
 
 // Veri sorumlusu: gerçek kişi (bireysel geliştirici). Mağaza hesabındaki ad ile aynı.
 const COMPANY = "Gökberk İnak";
@@ -62,7 +62,9 @@ b) Profil verileri: meslek/sektör, biyografi, konuşulan diller, profil
    fotoğrafı, LinkedIn adresi, cinsiyet (yalnızca kadın güvenlik modunun
    çalışması için).
 c) Seyahat verileri: havalimanı, tarih, saat aralığı, uçuş numarası,
-   seyahat amacı.
+   seyahat amacı. Seyahat formunda "Bulunduğum havalimanı"na basarsan
+   cihazının yaklaşık konumu yalnız o an, en yakın havalimanını cihazında
+   bulmak için okunur; konumun bize gönderilmez ve saklanmaz.
 d) Host verileri: lounge erişim kaynağı beyanı (ör. Priority Pass),
    misafir hakkı sayısı, açılan ilanlar, host başvurusu.
 e) Doğrulama verileri: kimlik doğrulamayı seçersen yüklediğin kimlik

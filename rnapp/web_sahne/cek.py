@@ -232,6 +232,10 @@ SAHNELER = {
     # Seyahati HİÇ olmayan kullanıcı: ürün açılışta seyahat formunu
     # açıyor (App.js:835). Bu, hiç çekilmemiş bir İLK GÜN ekranı.
     "40_ilk_seyahat":    ("bos",   []),                      # ekran: AddVisit · ilk gün
+    # 23 Ekim — "Bulunduğum havalimanı": İstanbul Havalimanı terminali · izin yok · Ankara Kızılay (en yakın ESB ~28 km → uzak)
+    "40b_konum_bulundu": ("bos",   [("dokun", "Bulunduğum havalimanı"), ("bekle", 1500)], "konum=41.262,28.742"),  # ekran: AddVisit
+    "40c_konum_red":     ("bos",   [("dokun", "Bulunduğum havalimanı"), ("bekle", 1500)], "konum=red"),            # ekran: AddVisit
+    "40d_konum_uzak":    ("bos",   [("dokun", "Bulunduğum havalimanı"), ("bekle", 1500)], "konum=39.920,32.854"),  # ekran: AddVisit
     "41_bildirim_bos":   ("hazir", [("dokun", "Profil"), ("dokun", "Bildirimler")]),  # ekran: Notifications · boş
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · GECE — ÜRÜNÜN KÖTÜ GÜNÜ.
@@ -533,9 +537,15 @@ def cek(sahneler, tam=False):
                 # 20 Ekim — `gen=NNN` ek sorgusu: dar/geniş telefon genişliği (320 · 375 · 430) ölçülür.
                 _g = re.search(r"gen=(\d+)", ek or "")
                 GEN = int(_g.group(1)) if _g else 390
+                # 23 Ekim — `konum=lat,lon` ek sorgusu: tarayıcıya konum izni + sahte konum (expo-location web'de
+                # navigator.geolocation okur). `konum=red`: izin verilmez (başsız Chromium reddeder).
+                _k = re.search(r"konum=([-0-9.]+),([-0-9.]+)", ek or "")
+                _kon = dict(geolocation={"latitude": float(_k.group(1)), "longitude": float(_k.group(2))},
+                            permissions=["geolocation"]) if _k else {}
                 ctx = b.new_context(viewport={"width": GEN, "height": 844}, device_scale_factor=3,
                                     is_mobile=True, has_touch=True, locale="tr-TR",
-                                    user_agent="Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
+                                    user_agent="Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36",
+                                    **_kon)
                 pg = ctx.new_page()
                 kayit = {"console": [], "errors": []}
                 pg.on("console", lambda m: kayit["console"].append({"t": m.type, "s": m.text[:400]})
