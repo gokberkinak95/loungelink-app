@@ -181,3 +181,10 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - Yeni sahneler: 17b_rol_misafir, 17c_rol_host (kayıttaki rol seçimi).
 - Denetim: app check temiz · site check 19 sayfa + verify 7/7 + derleme OK; yerel statik üretim RAM yetersizliğinden (0.9/8 GB boş) yarıda —
   Vercel build'i doğrulayacak.
+
+## 24 Ekim — APK 1.0.0 (versionCode 299)
+- https://expo.dev/artifacts/eas/b1PZ-d86tL0BNVxJUmIXo-A5s_pj-Z4Fu0_IylTQ1K4.apk
+- İçinde: Bulunduğum havalimanı (expo-location), uçuş bulununca havalimanı seçimi düzeltmesi, lounge sohbeti güvenlik şeridi
+  (yeni metin: "Burada misafirlik paylaşılır, satılmaz · Ödeme konuşulmaz · Salon ve havayolu kuralları her zaman geçerli"),
+  Kurucu Host metni, co.loungelink.app (iOS). google-services.json yok → Android push bu build'de çalışmaz (bilinen).
+- Telefonda denenecek: konum izni penceresi ve 3 hâl, sohbet şeridi, Kurucu Host penceresi (misafir hesabında Profil'de).
