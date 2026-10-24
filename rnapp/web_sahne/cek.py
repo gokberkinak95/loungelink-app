@@ -182,9 +182,9 @@ SAHNELER = {
     "28_kampanyalar":  ("selin",   [("dokun", "Profil"), ("dokun", "Kampanyalar")]),       # ekran: Campaigns
     "29_plan":         ("selin",   [("dokun", "Profil"), ("dokun", "Plan")]),              # ekran: Plans
     # 24 Ekim — App Store "Review Screenshot": mağaza fiyatı + Satın al düğmesi (odeme.js ?odeme=sahte, yalnız web)
-    "21r_cuzdan_inceleme": ("gokberk", [("dokun", "Profil"), ("dokun_a11y", "Cüzdan"), ("bekle", 1200), ("gor", "KREDİ PAKETLERİ"), ("bekle", 600)], "odeme=sahte"),   # ekran: Wallet
+    "21r_cuzdan_inceleme": ("gokberk", [("dokun", "Profil"), ("dokun_a11y", "Cüzdan"), ("bekle", 1200), ("ust", "KREDİ PAKETLERİ", 225), ("bekle", 600)], "odeme=sahte&boy=1150"),   # ekran: Wallet
     "29r_plan_inceleme":   ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200)], "odeme=sahte"),   # ekran: Plans
-    "29s_plan_inceleme_alt": ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200), ("gor", "Sık Uçan"), ("bekle", 700)], "odeme=sahte"),   # ekran: Plans · ücretli kartlar
+    "29s_plan_inceleme_alt": ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200), ("ust", "Sık Uçan", 245), ("bekle", 700)], "odeme=sahte&boy=1600"),   # ekran: Plans · ücretli kartlar
     "29b_plan_jetset": ("deniz",   [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 900), ("gor", "MEVCUT PLANIN"), ("bekle", 700)]),              # ekran: Plans · Jetset (mağaza görseli)
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile
@@ -368,6 +368,12 @@ def adim_uygula(pg, adim, kayit):
             # 2 Ekim — sayfanın ORTASINDAKİ bir bölümü kadraja getir (kaydir yalnız sona gider).
             loc = pg.get_by_text(re.compile(r"^\s*" + re.escape(adim[1]) + r"\s*$", re.I))
             loc.first.scroll_into_view_if_needed(timeout=4000)
+        elif tur == "ust":
+            # 24 Ekim — bölümü ekranın ÜSTÜNE (başlık bandının hemen altına) getir: kesik görünmesin.
+            loc = pg.get_by_text(re.compile(r"^\s*" + re.escape(adim[1]) + r"\s*$", re.I)).first
+            loc.evaluate("""(e, ofs) => { e.scrollIntoView({block: 'start'}); let p = e.parentElement;
+                while (p && !(p.scrollHeight > p.clientHeight + 4 && /(auto|scroll)/.test(getComputedStyle(p).overflowY))) p = p.parentElement;
+                if (p) p.scrollTop = Math.max(0, p.scrollTop - ofs); }""", adim[2] if len(adim) > 2 else 230)
         elif tur == "kaydir":
             # ══════════════════════════════════════════════════════════
             # 🔴 20 EYLÜL — "UZUN İÇERİK" SAHNELERİ UZUNU HİÇ GÖSTERMİYORDU.
@@ -557,7 +563,9 @@ def cek(sahneler, tam=False):
                 _k = re.search(r"konum=([-0-9.]+),([-0-9.]+)", ek or "")
                 _kon = dict(geolocation={"latitude": float(_k.group(1)), "longitude": float(_k.group(2))},
                             permissions=["geolocation"]) if _k else {}
-                ctx = b.new_context(viewport={"width": GEN, "height": 844}, device_scale_factor=3,
+                _b = re.search(r"boy=(\d+)", ek or "")   # 24 Ekim — uzun ekran (inceleme görseli)
+                BOY = int(_b.group(1)) if _b else 844
+                ctx = b.new_context(viewport={"width": GEN, "height": BOY}, device_scale_factor=3,
                                     is_mobile=True, has_touch=True, locale="tr-TR",
                                     user_agent="Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36",
                                     **_kon)
