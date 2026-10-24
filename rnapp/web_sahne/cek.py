@@ -155,6 +155,8 @@ SAHNELER = {
     "84_akis_nehir_bildirim":("nehir", [("dokun", "Profil"), ("dokun", "Bildirimler"), ("bekle", 1200)]),   # ekran: Notifications
     "85_akis_arda_neden":    ("arda",  [("dokun", "Keşfet"), ("bekle", 1800), ("dokun", "Neden?"), ("bekle", 900)]),   # ekran: Discovery
     "06_sohbet":       ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200)]),   # ekran: Chat
+    "06c_sohbet_serit_acik": ("gokberk", [("dokun_a11y", "Sohbet:"), ("bekle", 1500), ("dokun_a11y", "Sohbeti Aç"), ("bekle", 1200),
+                                          ("dokun", "Ayrıntı"), ("bekle", 500)]),   # 24 Ekim · paylaşım şeridi açık   # ekran: Chat
     # ══════════════════════════════════════════════════════════════
     # 🔴 12 EYLÜL · KAPSAM TURU — 15 SAHNE DAHA.
     # `ekran_kapsam_check.py` saydı: ana akıştaki 26 ekranın 10'unun
@@ -179,6 +181,10 @@ SAHNELER = {
     "27_davet":        ("selin",   [("dokun", "Profil"), ("dokun", "Arkadaşını Davet Et")]),  # ekran: Referral
     "28_kampanyalar":  ("selin",   [("dokun", "Profil"), ("dokun", "Kampanyalar")]),       # ekran: Campaigns
     "29_plan":         ("selin",   [("dokun", "Profil"), ("dokun", "Plan")]),              # ekran: Plans
+    # 24 Ekim — App Store "Review Screenshot": mağaza fiyatı + Satın al düğmesi (odeme.js ?odeme=sahte, yalnız web)
+    "21r_cuzdan_inceleme": ("gokberk", [("dokun", "Profil"), ("dokun_a11y", "Cüzdan"), ("bekle", 1200), ("gor", "KREDİ PAKETLERİ"), ("bekle", 600)], "odeme=sahte"),   # ekran: Wallet
+    "29r_plan_inceleme":   ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200)], "odeme=sahte"),   # ekran: Plans
+    "29s_plan_inceleme_alt": ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200), ("gor", "Sık Uçan"), ("bekle", 700)], "odeme=sahte"),   # ekran: Plans · ücretli kartlar
     "29b_plan_jetset": ("deniz",   [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 900), ("gor", "MEVCUT PLANIN"), ("bekle", 700)]),              # ekran: Plans · Jetset (mağaza görseli)
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile

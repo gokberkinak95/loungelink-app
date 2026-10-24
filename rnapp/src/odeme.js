@@ -27,7 +27,16 @@ function anahtar() {
   return "";
 }
 
+// 24 Ekim — YALNIZ WEB SAHNESİ: `?odeme=sahte` ile mağaza teklifleri taklit edilir (App Store inceleme
+// ekran görüntüsü gerçek satın alma arayüzünü göstersin diye). Telefonda Platform.OS web değil → hiç çalışmaz.
+function sahneOdeme() {
+  try { return Platform.OS === "web" && typeof window !== "undefined" && !!window.location && /[?&]odeme=sahte/.test(window.location.search); } catch (e) { return false; }
+}
+const SAHTE_FIYAT = { ll_kredi_1: "₺79,99", ll_kredi_3: "₺199,99", ll_kredi_5: "₺299,99",
+  ll_sik_ucan_aylik: "₺99,99", ll_sik_ucan_yillik: "₺899,99", ll_jetset_aylik: "₺199,99", ll_jetset_yillik: "₺1.799,99" };
+
 export function odemeVar() {
+  if (sahneOdeme()) return true;
   return Platform.OS !== "web" && !!anahtar();
 }
 
@@ -68,6 +77,7 @@ export async function odemeCikis() {
 }
 
 async function teklifler() {
+  if (sahneOdeme()) return { all: { sahne: { availablePackages: Object.keys(SAHTE_FIYAT).map(id => ({ product: { identifier: id, priceString: SAHTE_FIYAT[id] } })) } } };
   if (!(await kur())) return null;
   try { return await P.getOfferings(); } catch (e) { return null; }
 }
