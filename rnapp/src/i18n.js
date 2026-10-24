@@ -1686,7 +1686,8 @@ export const D = {
     confirmDone: "Tamamlandığını Onayla ✓",
     sessDone: "Oturum tamamlandı",
     submitRating: "Puanı Gönder →",
-    safetyBar: "⚠ Lounge satışı yok · Platform dışı ödeme yok · Lounge ve havayolu kurallarına uy",
+    // 24 Ekim (Gökberk) — emir kipi yerine davet: aynı üç kural, daha sıcak bir dille.
+    safetyBar: "Burada misafirlik paylaşılır, satılmaz · Ödeme konuşulmaz · Salon ve havayolu kuralları her zaman geçerli",
     verifyPhone: "Telefonu Doğrula",
     // 18 Ekim — telefon doğrulama sayfası (src/telefon.js · SQL 335)
     tvKayitEtiket: "HESABIN HAZIR · SON ADIM",
@@ -3986,7 +3987,7 @@ export const D = {
     confirmDone: "Confirm Completed ✓",
     sessDone: "Session completed",
     submitRating: "Submit Rating →",
-    safetyBar: "⚠ No lounge sales · No off-platform payment · Follow lounge and airline rules",
+    safetyBar: "Guest passes are shared here, never sold · No payments · Lounge and airline rules always apply",
     verifyPhone: "Verify Phone",
     tvKayitEtiket: "ACCOUNT READY · LAST STEP",
     tvTelEtiket: "PHONE",
