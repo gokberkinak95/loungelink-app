@@ -3669,13 +3669,8 @@ export function Plans({ t, session, onBack, lang }) {
             }}>
               <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink }}>{p.ad}</Text>
-                {isCur ? <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "700", letterSpacing: 1 }}>{t.currentPlan}</Text>
-                  : p.kurulus ? (
-                    /* 19 Ekim (SQL 337) — kuruluş fiyatı rozeti; tarih sunucudan (beta_settings.kurulus_fiyat_bitis) */
-                    <View style={{ backgroundColor: C.goldSoft, borderRadius: R.full, paddingHorizontal: ARA[8], paddingVertical: ARA[2] }}>
-                      <Text style={{ color: C.goldText, fontSize: FS.micro, fontWeight: "700", letterSpacing: 0.8 }}>{t.kurulusRozet}</Text>
-                    </View>
-                  ) : null}
+                {/* 25 Ekim (Gökberk) — kart başındaki "Kuruluş fiyatı" rozeti kaldırıldı; açıklama kutusu (üstte) kalıyor. */}
+                {isCur ? <Text style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "700", letterSpacing: 1 }}>{t.currentPlan}</Text> : null}
               </View>
 
               <Text style={{ marginTop: SP[1], color: C.goldText, fontSize: FS.title, fontWeight: "700" }}>

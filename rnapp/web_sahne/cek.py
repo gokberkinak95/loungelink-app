@@ -185,6 +185,7 @@ SAHNELER = {
     "21r_cuzdan_inceleme": ("gokberk", [("dokun", "Profil"), ("dokun_a11y", "Cüzdan"), ("bekle", 1200), ("ust", "KREDİ PAKETLERİ", 225), ("bekle", 600)], "odeme=sahte&boy=1150"),   # ekran: Wallet
     "29r_plan_inceleme":   ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200)], "odeme=sahte"),   # ekran: Plans
     "29s_plan_inceleme_alt": ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200), ("ust", "Sık Uçan", 245), ("bekle", 700)], "odeme=sahte&boy=1600"),   # ekran: Plans · ücretli kartlar
+    "29t_plan_inceleme_yillik": ("gokberk", [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 1200), ("dokun", "Yıllık"), ("bekle", 600), ("ust", "Sık Uçan", 245), ("bekle", 700)], "odeme=sahte&boy=1600"),   # ekran: Plans · yıllık
     "29b_plan_jetset": ("deniz",   [("dokun", "Profil"), ("dokun", "Plan"), ("bekle", 900), ("gor", "MEVCUT PLANIN"), ("bekle", 700)]),              # ekran: Plans · Jetset (mağaza görseli)
     "30_yayin_davet":  ("selin",   [("dokun", "Profil"), ("dokun", "Yayın & Davet")]),     # ekran: HostBroadcast
     "31_profil_duzenle":("selin",  [("dokun", "Profil"), ("dokun_a11y", "Profilini tamamla")]),  # ekran: EditProfile
