@@ -439,7 +439,7 @@ export const D = {
     // ana sayfa bölgeleri
     // madde 1 — kredi paketleri
     walletPacksIntro: "Paketler üyeliğin yerine geçmez; plan kredin bittiğinde tek seferlik ek haktır.",
-    walletPackCredits: "{n} lounge isteği",
+    walletPackCredits: "{n} ilan başvurusu",
     walletPerCredit: "kredi başına {n} ₺",
     walletSubHint: "Düzenli seyahat ediyorsan {plan} planı aylık {fiyat} ₺ ile {kredi} kredi veriyor — kredi başına {birim} ₺. Paketler bilerek daha pahalı: tek seferlik ihtiyaç içindir.",
     // madde 14
@@ -1686,8 +1686,15 @@ export const D = {
     confirmDone: "Tamamlandığını Onayla ✓",
     sessDone: "Oturum tamamlandı",
     submitRating: "Puanı Gönder →",
-    // 24 Ekim (Gökberk) — emir kipi yerine davet: aynı üç kural, daha sıcak bir dille.
-    safetyBar: "Burada misafirlik paylaşılır, satılmaz · Ödeme konuşulmaz · Salon ve havayolu kuralları her zaman geçerli",
+    // 24 Ekim (Gökberk) — Paylaşım şeridi: kapalıyken tek satır, dokununca üç madde (ortak.js PaylasimSeridi).
+    paylasimKisa: "LoungeLink bir paylaşım platformudur; lounge hakkı satılmaz",
+    paylasimDetay: "Ayrıntı",
+    paylasimKapat: "Kapat",
+    paylasimMaddeler: [
+      "LoungeLink, misafirlik hakkının paylaşıldığı bir platformdur; lounge erişimi burada satılmaz, satın alınmaz.",
+      "Lounge hakkı satışı ya da platform dışı ödeme teklifi gelirse kabul etme; Bildir'e dokunman yeterli.",
+      "Salonun ve havayolunun kuralları her zaman geçerlidir; kapıdaki son söz salonundur.",
+    ],
     verifyPhone: "Telefonu Doğrula",
     // 18 Ekim — telefon doğrulama sayfası (src/telefon.js · SQL 335)
     tvKayitEtiket: "HESABIN HAZIR · SON ADIM",
@@ -2195,9 +2202,10 @@ export const D = {
     chatNudgeDismiss: "Kapat",
     ledPlanExpire: "Kullanılmayan aylık plan kredisi",
     planNoRollover: "Aylık plan kredisi bir sonraki aya devretmez. Satın aldığın paket kredisi ve ağırlayarak kazandığın kredi süresizdir.",
-    planVisitsMonth: "Ayda {n} lounge girişi",
-    planPerVisit: "giriş başına ≈ {p}",
-    planFreeCredit: "Kayıtta 1 kredi: ilk lounge girişin bizden",
+    // 25 Ekim (Gökberk) — "lounge girişi" giriş hakkı satılıyor gibi okunuyordu; kredi bir ilana BAŞVURMA hakkıdır.
+    planVisitsMonth: "Ayda {n} ilan başvurusu",
+    planPerVisit: "başvuru başına ≈ {p}",
+    planFreeCredit: "Kayıtta 1 kredi: ilk ilan başvurun bizden",
     // 15 Ekim (SQL 332) — mağaza ödemesi (RevenueCat)
     odemeSatinAl: "Satın al",
     odemeIsleniyor: "Ödemen alındı, hesabına işleniyor…",
@@ -2974,7 +2982,7 @@ export const D = {
     connAwaiting: "Waiting for a reply.",
     connDeclinedNote: "This request was declined.",
     walletPacksIntro: "Packs don't replace a membership; they're a one-off top-up when your plan credits run out.",
-    walletPackCredits: "{n} lounge request(s)",
+    walletPackCredits: "{n} listing request(s)",
     walletPerCredit: "{n} TRY per credit",
     walletSubHint: "If you travel often, the {plan} plan gives {kredi} credits for {fiyat} TRY a month — {birim} TRY per credit. Packs are deliberately pricier: they're for one-off needs.",
     editAirportLocked: "The airport can't be changed — open a new listing for a different airport.",
@@ -3987,7 +3995,14 @@ export const D = {
     confirmDone: "Confirm Completed ✓",
     sessDone: "Session completed",
     submitRating: "Submit Rating →",
-    safetyBar: "Guest passes are shared here, never sold · No payments · Lounge and airline rules always apply",
+    paylasimKisa: "LoungeLink is a sharing platform; lounge access is never sold",
+    paylasimDetay: "Details",
+    paylasimKapat: "Close",
+    paylasimMaddeler: [
+      "LoungeLink is a platform for sharing guest allowances; lounge access is never sold or bought here.",
+      "If someone offers to sell access or asks for payment outside the app, decline and tap Report.",
+      "Lounge and airline rules always apply; the lounge has the final say at the door.",
+    ],
     verifyPhone: "Verify Phone",
     tvKayitEtiket: "ACCOUNT READY · LAST STEP",
     tvTelEtiket: "PHONE",
@@ -4427,9 +4442,9 @@ export const D = {
     chatNudgeDismiss: "Dismiss",
     ledPlanExpire: "Unused monthly plan credits",
     planNoRollover: "Monthly plan credits don't roll over to the next month. Credits you buy in packs or earn by hosting never expire.",
-    planVisitsMonth: "{n} lounge visits a month",
-    planPerVisit: "≈ {p} per visit",
-    planFreeCredit: "1 credit on sign-up: your first lounge visit is on us",
+    planVisitsMonth: "{n} listing requests a month",
+    planPerVisit: "≈ {p} per request",
+    planFreeCredit: "1 credit on sign-up: your first listing request is on us",
     odemeSatinAl: "Buy",
     odemeIsleniyor: "Payment received, adding it to your account…",
     odemeKrediYuklendi: "{n} credits added to your wallet.",

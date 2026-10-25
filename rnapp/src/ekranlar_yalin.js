@@ -40,7 +40,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Linking, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage } from "./ortak";
+import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { VitrinKarti, MiniErken, MiniFiyat, IndirimBandi, bantMetni } from "./odul_magaza";
@@ -1579,11 +1579,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
       {/* 24 Ekim (Gökberk) — LOUNGE SOHBETİNDE SATIŞ/ÖDEME UYARISI YOKTU. `safetyBar` yalnız Tanış
           sohbetindeydi (CompanionChat); asıl risk — "hakkını sat / dışarıdan öde" teklifi — bu sohbette.
           Aynı şerit, aynı metin (TR+EN hazır). Klavye açıkken yer kaplamasın diye gizlenir. */}
-      {!klavye && (
-        <View accessibilityRole="text" style={{ backgroundColor: C.goldTint, paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
-          <Text style={{ color: C.goldInk, fontSize: FS.xs, textAlign: "center" }}>{t.safetyBar}</Text>
-        </View>
-      )}
+      {!klavye && <PaylasimSeridi t={t} />}
       {/* Mesajlar — tasarım: ilk balon 150pt'te (132 + 18) */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[18] }}
         /* ══════════════════════════════════════════════════════════

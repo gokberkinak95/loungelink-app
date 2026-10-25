@@ -44,7 +44,7 @@ import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi, LoadFailPage } from "./ortak";
+import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -3636,9 +3636,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
           </View>
         </TouchableOpacity>
       )}
-      <View style={{ backgroundColor: C.goldTint, paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
-        <Text style={{ color: C.goldInk, fontSize: FS.xs, textAlign: "center" }}>{t.safetyBar}</Text>
-      </View>
+      <PaylasimSeridi t={t} />
       {/* 16 Ekim (SQL 334) — LOUNGE YÖNLENDİRMESİ. Sohbette birlikte lounge'a girme konuşulursa
           resmi yol hatırlatılır: misafire iade güvencesi, host'a kredi + puan + Sık Uçan hediyesi.
           Konuşmayı ENGELLEMEZ; kapatılabilir ve kanal başına bir kez kapatılınca bir daha çıkmaz. */}

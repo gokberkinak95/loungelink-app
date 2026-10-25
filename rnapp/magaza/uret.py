@@ -41,7 +41,7 @@ KARELER = [
     ("06", "88_oturum_puanla","Güven her buluşmayla<br>büyür.",          "Karşılıklı puan, bildir ve engelle, kadın güvenlik modu."),
     # 20 Ekim (6.9.2) — Jetset, plana göre puan, ödül indirimi ve erken erişim görünür olsun.
     ("07", "22c_market_jetset","Her buluşma<br>puan kazandırır.",       "LoungePuan'ı seyahatte işine yarayan ödüllere çevir."),
-    ("08", "29b_plan_jetset", "Sık Uçan ve<br>Jetset.",                  "Aylık lounge girişi, ödül indirimi ve yeni ödüllere erken erişim."),
+    ("08", "29b_plan_jetset", "Sık Uçan ve<br>Jetset.",                  "Her ay ilan başvurusu, ödül indirimi ve yeni ödüllere erken erişim."),
 ]
 
 

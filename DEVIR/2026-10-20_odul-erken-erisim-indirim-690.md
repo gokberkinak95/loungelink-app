@@ -188,3 +188,15 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   (yeni metin: "Burada misafirlik paylaşılır, satılmaz · Ödeme konuşulmaz · Salon ve havayolu kuralları her zaman geçerli"),
   Kurucu Host metni, co.loungelink.app (iOS). google-services.json yok → Android push bu build'de çalışmaz (bilinen).
 - Telefonda denenecek: konum izni penceresi ve 3 hâl, sohbet şeridi, Kurucu Host penceresi (misafir hesabında Profil'de).
+
+## 25 Ekim — "lounge girişi" → "ilan başvurusu" · paylaşım şeridi · inceleme görselleri
+- Gökberk: "Ayda 7 lounge girişi" giriş hakkı satılıyormuş gibi okunuyor. Her yerde "ilan başvurusu":
+  app i18n (planVisitsMonth, planPerVisit, planFreeCredit, walletPackCredits; TR+EN), site PlanKartlari, BO kredi paketleri notu,
+  **SQL 341** (plan_catalog.perks/perks_en + kredi_paketleri 'tek' açıklaması; yerelde 4/4). Mağaza rehberi 6d IAP/abonelik açıklamaları.
+- Sohbet şeridi: `ortak.js PaylasimSeridi` — kapalıyken tek satır ("LoungeLink bir paylaşım platformudur; lounge hakkı satılmaz" + Ayrıntı),
+  dokununca 3 madde; klavye açıkken gizli; lounge sohbeti + Tanış sohbeti. safetyBar anahtarı kalktı. (Önizleme gönderildi; onay bekliyor.)
+- App Store inceleme görselleri 1290×2796: _gorseller/appstore_inceleme (kredi · Sık Uçan · Jetset). Mağaza kareleri yeniden üretildi
+  (08 alt yazı "Her ay ilan başvurusu…"); eskiler _arsiv/magaza_cikti_1.0_onceki.
+- Sahne: odeme=sahte (yalnız web), "ust" adımı, boy= parametresi; 06c, 21r, 29r, 29s.
+- Sürümler: site 0.72.9, BO 1.101.3, app 1.0.0 (299) — yeni APK alınmadı.
+- Gökberk'ten: SQL 341'i koş; App Store'da açıklamaları yeni metinle gir (rehber 6d).

@@ -1483,3 +1483,33 @@ export function YasOnayi({ t }) {
     </View>
   );
 }
+
+// 24 Ekim (Gökberk) — PAYLAŞIM ŞERİDİ (lounge sohbeti + Tanış sohbeti).
+// Kural metni uzun; sohbetin üstünde kalıcı yer kaplamamalı. Kapalıyken TEK satır (kalkan + kısa cümle +
+// "Ayrıntı"); dokununca üç madde açılır. Akış içinde durur (mesajların üstüne binmez); çağıran klavye
+// açıkken hiç çizmez. Dokunma alanı hitSlop ile 44 pt'ye tamamlanır, görünür yükseklik ~30 pt.
+export function PaylasimSeridi({ t }) {
+  const [acik, setAcik] = useState(false);
+  return (
+    <View style={{ backgroundColor: C.goldTint, borderBottomWidth: 1, borderColor: C.goldLine || C.line }}>
+      <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: acik }}
+        accessibilityLabel={t.paylasimKisa + ". " + (acik ? t.paylasimKapat : t.paylasimDetay)}
+        onPress={() => setAcik(a => !a)} activeOpacity={0.75} hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
+        style={{ flexDirection: "row", alignItems: "center", paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
+        <Ikon ad="guvenlik" boy={14} renk={C.goldInk} stil={{ marginRight: ARA[6] }} />
+        <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, color: C.goldInk, fontSize: FS.xs, fontWeight: "600" }}>{t.paylasimKisa}</Text>
+        <Text style={{ color: C.goldInk, fontSize: FS.xs, marginLeft: ARA[8], textDecorationLine: "underline" }}>{acik ? t.paylasimKapat : t.paylasimDetay}</Text>
+      </TouchableOpacity>
+      {acik && (
+        <View accessibilityLiveRegion="polite" style={{ paddingHorizontal: ARA[14], paddingBottom: ARA[10] }}>
+          {(t.paylasimMaddeler || []).map((m, i) => (
+            <View key={i} style={{ flexDirection: "row", marginTop: i ? ARA[4] : 0 }}>
+              <Text style={{ color: C.goldInk, fontSize: FS.xs, lineHeight: 17, marginRight: ARA[6] }}>•</Text>
+              <Text style={{ flex: 1, minWidth: 0, color: C.goldInk, fontSize: FS.xs, lineHeight: 17 }}>{m}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}

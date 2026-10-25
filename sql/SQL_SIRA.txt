@@ -1,3 +1,11 @@
+SQL SIRASI - 25 Ekim 2026 (13. tur) - YENI: 341 - 340'tan SONRA
+
+  1) 341_ilan_basvurusu_dili.sql
+       -> Plan maddelerinde "lounge girisi" yerine "ilan basvurusu" (TR + EN), 1 kredi paketinin aciklamasi.
+          Kredi bir ilana BASVURMA hakkidir; giris hakki satiliyormus gibi okunmasin.
+       Dogrulama: dort satir tamam = true. Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 21 Ekim 2026 (12. tur) - YENI: 340 - 339'dan SONRA (339'u kosmadiysan once onu)
 
   1) 340_jetset_urun_kimlikleri.sql
