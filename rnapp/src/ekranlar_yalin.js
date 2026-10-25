@@ -5312,20 +5312,8 @@ export function Wallet({ t, session, onBack }) {
           <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 19 }}>{odemeMsg}</Text>
         </View>
       )}
-      {/* 🔴 DÜRÜSTLÜK ŞERİDİ. Paket bilerek abonelikten pahalı. Bunu
-          kullanıcı hesaplayıp bulmasın diye BİZ söylüyoruz. Gizlenen bir
-          fiyat farkı, bulunduğu gün güveni bitirir. */}
-      {!!paket?.abonelik_ipucu && (
-        <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent", borderRadius: R.sm, padding: SP[3], marginTop: SP[1] }}>
-          <Text style={{ color: C.tealInk, fontSize: FS.sm, lineHeight: 18, fontWeight: "600" }}>
-            {String(t.walletSubHint)
-              .replace("{plan}", String(paket.abonelik_ipucu.plan || ""))
-              .replace("{fiyat}", String(paket.abonelik_ipucu.fiyat_try))
-              .replace("{kredi}", String(paket.abonelik_ipucu.aylik_kredi))
-              .replace("{birim}", String(paket.abonelik_ipucu.kredi_basina))}
-          </Text>
-        </View>
-      )}
+      {/* 25 Ekim (Gökberk) — "Düzenli seyahat ediyorsan Sık Uçan…" şeridi kaldırıldı: üstteki giriş cümlesi
+          ("Kredi paketleri üyeliğin yerine geçmez…") aynı şeyi söylüyor. */}
 
       {/* ════════════════════════════════════════════════════════════
           MİSAFİR HAKKI HEDİYESİ (v2.96 · eleştiri A1 — yeni fikir)

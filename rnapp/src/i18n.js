@@ -438,7 +438,7 @@ export const D = {
     connDeclinedNote: "Bu istek kabul edilmedi.",
     // ana sayfa bölgeleri
     // madde 1 — kredi paketleri
-    walletPacksIntro: "Paketler üyeliğin yerine geçmez; plan kredin bittiğinde tek seferlik ek haktır.",
+    walletPacksIntro: "Kredi paketleri üyeliğin yerine geçmez; plan kredin bittiğinde tek seferlik ek haktır.",
     walletPackCredits: "{n} ilan başvurusu",
     walletPerCredit: "kredi başına {n} ₺",
     walletSubHint: "Düzenli seyahat ediyorsan {plan} planı aylık {fiyat} ₺ ile {kredi} kredi veriyor — kredi başına {birim} ₺. Paketler bilerek daha pahalı: tek seferlik ihtiyaç içindir.",
@@ -2981,7 +2981,7 @@ export const D = {
     connAccept: "Accept",
     connAwaiting: "Waiting for a reply.",
     connDeclinedNote: "This request was declined.",
-    walletPacksIntro: "Packs don't replace a membership; they're a one-off top-up when your plan credits run out.",
+    walletPacksIntro: "Credit packs don't replace a membership; they're a one-off top-up when your plan credits run out.",
     walletPackCredits: "{n} listing request(s)",
     walletPerCredit: "{n} TRY per credit",
     walletSubHint: "If you travel often, the {plan} plan gives {kredi} credits for {fiyat} TRY a month — {birim} TRY per credit. Packs are deliberately pricier: they're for one-off needs.",
