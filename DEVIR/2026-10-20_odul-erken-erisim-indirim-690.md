@@ -200,3 +200,10 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - Sahne: odeme=sahte (yalnız web), "ust" adımı, boy= parametresi; 06c, 21r, 29r, 29s.
 - Sürümler: site 0.72.9, BO 1.101.3, app 1.0.0 (299) — yeni APK alınmadı.
 - Gökberk'ten: SQL 341'i koş; App Store'da açıklamaları yeni metinle gir (rehber 6d).
+
+## 25 Ekim — APK 1.0.0 (versionCode 300, iOS build 294)
+- https://expo.dev/artifacts/eas/uVSYucooOgdWYPv9CZYGAdsVd9XFM6TxkV5oq4kqWao.apk
+- İçinde: katlanır paylaşım şeridi (onaylandı), "ilan başvurusu" dili, Cüzdan'da Sık Uçan ipucu kaldırıldı,
+  plan kartında "Kuruluş fiyatı" rozeti kaldırıldı (açıklama kutusu ve yasal güvence duruyor). Site 0.73.0 rozetsiz.
+- App Store inceleme görselleri: kredi + abonelik başına ayrı (sik_ucan/jetset × aylik/yillik), 1290×2796.
+- Gökberk'ten: SQL 341.
