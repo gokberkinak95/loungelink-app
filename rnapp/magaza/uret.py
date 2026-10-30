@@ -140,3 +140,16 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# 30 Ekim — App Store Connect artık "iPhone with Dynamic Island (medium display)" alanında 6,1"/6,3" boyut istiyor
+# (1206×2622 · 1179×2556). 6,9" kareler bundan küçültülür (oran farkı 1 px; sağdan kırpılır).
+def _orta_ekran():
+    from PIL import Image
+    hedef = CIKTI / "appstore_6.3" if "CIKTI" in globals() else Path(__file__).parent / "cikti" / "appstore_6.3"
+    hedef.mkdir(parents=True, exist_ok=True)
+    for f in sorted((hedef.parent / "appstore").glob("0*.png")):
+        im = Image.open(f).convert("RGB").resize((1207, 2622), Image.LANCZOS).crop((0, 0, 1206, 2622))
+        im.save(hedef / f.name)
+        print("appstore_6.3\\" + f.name, im.size)
+
+_orta_ekran()
