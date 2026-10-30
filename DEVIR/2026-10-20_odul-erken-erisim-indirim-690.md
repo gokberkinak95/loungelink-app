@@ -207,3 +207,15 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   plan kartında "Kuruluş fiyatı" rozeti kaldırıldı (açıklama kutusu ve yasal güvence duruyor). Site 0.73.0 rozetsiz.
 - App Store inceleme görselleri: kredi + abonelik başına ayrı (sik_ucan/jetset × aylik/yillik), 1290×2796.
 - Gökberk'ten: SQL 341.
+
+## 30 Ekim — İLK iOS BUILD App Store Connect'te (1.0.0 · build 294)
+- 1. deneme: Apple girişi "iTunes service key is empty" → eas-cli 23 → 27.2.0 (npm i -g eas-cli@latest).
+- 2. deneme (d75a9691): ARCHIVE FAILED — Xcode 27 SDK 15.0 altı pod hedefini reddediyor (AsyncStorage 13.4, RevenueCat/
+  PurchasesHybridCommon 13.0). app.config.js `podHedefi`: Podfile post_install'da bütün pod hedefleri ≥ 15.1.
+- 3. deneme: fmt 11.0.2 consteval hatası (Apple clang 21, fmtlib/fmt#4740). Aynı post_install'da fmt/base.h'de
+  FMT_USE_CONSTEVAL 1 → 0. 4. deneme BAŞARILI: .ipa → `eas submit` (App Store Connect API anahtarı APP_MANAGER, EAS'ta kayıtlı).
+- Kimlik: co.loungelink.app · ascAppId 6825816456 · Team D57RLX67QJ. Sertifika/profil/APNs EAS'ta.
+- Mağaza görselleri: App Store artık 6,3" (1206×2622) istiyor → cikti/appstore_6.3 (9 kare); Play 8 kare (06 hariç).
+  Plan kareleri 08 Sık Uçan aylık · 09 Jetset yıllık (magaza/plan_kareleri.py ile).
+- App Store Connect İngilizce ad: "LoungeLink" başka uygulamada kayıtlı → EN Name "LoungeLink: Lounge Companion".
+- Sıradaki: TestFlight (7-4), 6e Build + 7 ürün, Play hesabı (8) sürüyor, RevenueCat iOS (11).
