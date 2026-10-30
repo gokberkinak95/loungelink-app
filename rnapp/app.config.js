@@ -71,7 +71,33 @@ function firebaseEkle(config) {
   return config;
 }
 
-module.exports = ({ config }) => firebaseEkle(geriTusuEski(iosPlist(hazirla(config))));
+// 30 Ekim — İLK iOS BUILD'İ DÜŞTÜ: EAS'ın güncel Xcode'u (image: latest) 15.0 altındaki hedefleri hata sayıyor;
+// AsyncStorage (13.4) ve RevenueCat / PurchasesHybridCommon (13.0) pod'larının kaynak paketleri kendi hedeflerini
+// taşıyor ve expo-build-properties'in deploymentTarget'ı (15.1) onlara inmiyor. Podfile post_install'da 15.1'in
+// altındaki BÜTÜN pod hedefleri 15.1'e çekilir. (ölçüm: build d75a9691 xcode günlüğü, "ARCHIVE FAILED")
+const { withDangerousMod } = require("expo/config-plugins");
+function podHedefi(config) {
+  return withDangerousMod(config, ["ios", async (c) => {
+    const yol = path.join(c.modRequest.platformProjectRoot, "Podfile");
+    if (!fs.existsSync(yol)) return c;
+    let s = fs.readFileSync(yol, "utf8");
+    if (s.includes("LL_POD_HEDEFI")) return c;
+    const kanca = "post_install do |installer|";
+    if (!s.includes(kanca)) return c;
+    s = s.replace(kanca, kanca + `
+    # LL_POD_HEDEFI — Xcode 15.0 altını kabul etmiyor (app.config.js podHedefi)
+    installer.pods_project.targets.each do |t|
+      t.build_configurations.each do |bc|
+        v = bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+        bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1' if v.nil? || v.to_f < 15.1
+      end
+    end`);
+    fs.writeFileSync(yol, s);
+    return c;
+  }]);
+}
+
+module.exports = ({ config }) => podHedefi(firebaseEkle(geriTusuEski(iosPlist(hazirla(config)))));
 
 function hazirla(config) {
   const easYol = process.env.GOOGLE_SERVICES_JSON;
