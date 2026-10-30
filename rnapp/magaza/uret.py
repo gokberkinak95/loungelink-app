@@ -41,7 +41,9 @@ KARELER = [
     ("06", "88_oturum_puanla","Güven her buluşmayla<br>büyür.",          "Karşılıklı puan, bildir ve engelle, kadın güvenlik modu."),
     # 20 Ekim (6.9.2) — Jetset, plana göre puan, ödül indirimi ve erken erişim görünür olsun.
     ("07", "22c_market_jetset","Her buluşma<br>puan kazandırır.",       "LoungePuan'ı seyahatte işine yarayan ödüllere çevir."),
-    ("08", "29b_plan_jetset", "Sık Uçan ve<br>Jetset.",                  "Her ay ilan başvurusu, ödül indirimi ve yeni ödüllere erken erişim."),
+    # 30 Ekim — plan karesi ikiye ayrıldı: kartlar kesik görünmesin, aylık ve yıllık ikisi de görünsün.
+    ("08", "29u_plan_sik_ucan", "Sık Uçan ve<br>Jetset.",                "Aylık ya da yıllık: her ay ilan başvurusu, ödül indirimi, erken erişim."),
+    ("09", "29v_plan_jetset_yillik", "Yıllık planda<br>daha avantajlı.",  "Jetset yıllıkta %25 indirimli: her ay 7 ilan başvurusu."),
 ]
 
 
@@ -104,6 +106,7 @@ def main():
         for hedef, (w, h, olcu) in (("appstore", (1320, 2868, APPSTORE)), ("play", (1080, 1920, PLAY))):
             pg = b.new_page(viewport={"width": w, "height": h}, device_scale_factor=1)
             for no, sahne, baslik, alt in KARELER:
+                if hedef == "play" and no == "06": continue   # Play en çok 8 kare alır; puanlama karesi 07 ile örtüşüyor
                 tmp.write_text(kare_html(w, h, olcu, sahne, baslik, alt), encoding="utf-8")
                 pg.goto(uri(tmp)); pg.wait_for_timeout(500)
                 out = CIKTI / hedef / f"{no}_{sahne}.png"
