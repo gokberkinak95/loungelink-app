@@ -75,6 +75,7 @@ function firebaseEkle(config) {
 // AsyncStorage (13.4) ve RevenueCat / PurchasesHybridCommon (13.0) pod'larının kaynak paketleri kendi hedeflerini
 // taşıyor ve expo-build-properties'in deploymentTarget'ı (15.1) onlara inmiyor. Podfile post_install'da 15.1'in
 // altındaki BÜTÜN pod hedefleri 15.1'e çekilir. (ölçüm: build d75a9691 xcode günlüğü, "ARCHIVE FAILED")
+// 30 Ekim (2) — ikinci iOS build: fmt consteval hatası (Xcode 26.4+). Aynı post_install'da base.h yaması.
 const { withDangerousMod } = require("expo/config-plugins");
 function podHedefi(config) {
   return withDangerousMod(config, ["ios", async (c) => {
@@ -85,11 +86,25 @@ function podHedefi(config) {
     const kanca = "post_install do |installer|";
     if (!s.includes(kanca)) return c;
     s = s.replace(kanca, kanca + `
-    # LL_POD_HEDEFI — Xcode 15.0 altını kabul etmiyor (app.config.js podHedefi)
+    # LL_POD_HEDEFI - Xcode rejects deployment targets below 15.0 (app.config.js podHedefi)
     installer.pods_project.targets.each do |t|
       t.build_configurations.each do |bc|
         v = bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
         bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1' if v.nil? || v.to_f < 15.1
+      end
+    end
+    # LL_FMT_CONSTEVAL - Xcode 26.4+ (Apple clang 21) rejects fmt 11.0.2 consteval path
+    # (fmtlib/fmt#4740). -DFMT_USE_CONSTEVAL=0 is not enough: base.h redefines the macro.
+    fmt_base = File.join(installer.sandbox.root.to_s, 'fmt', 'include', 'fmt', 'base.h')
+    if File.exist?(fmt_base)
+      icerik = File.read(fmt_base)
+      yeni = icerik.gsub('define FMT_USE_CONSTEVAL 1', 'define FMT_USE_CONSTEVAL 0')
+      if yeni != icerik
+        File.chmod(0644, fmt_base)
+        File.write(fmt_base, yeni)
+        Pod::UI.puts "[LoungeLink] fmt: FMT_USE_CONSTEVAL 0"
+      else
+        Pod::UI.warn "[LoungeLink] fmt base.h kalibi bulunamadi; consteval yamasi uygulanmadi"
       end
     end`);
     fs.writeFileSync(yol, s);
