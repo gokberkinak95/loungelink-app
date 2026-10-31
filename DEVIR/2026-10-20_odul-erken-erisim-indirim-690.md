@@ -219,3 +219,18 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
   Plan kareleri 08 Sık Uçan aylık · 09 Jetset yıllık (magaza/plan_kareleri.py ile).
 - App Store Connect İngilizce ad: "LoungeLink" başka uygulamada kayıtlı → EN Name "LoungeLink: Lounge Companion".
 - Sıradaki: TestFlight (7-4), 6e Build + 7 ürün, Play hesabı (8) sürüyor, RevenueCat iOS (11).
+
+## 31 Ekim — GitHub CI tekrar yeşile (render testleri) + NSUserTrackingUsageDescription
+- CI (app-ci.yml: check.js + npm run render) 25 Ekim'den beri kırmızıydı. Bulunan ve giderilen:
+  · tasma: sohbet paylaşım şeridi 2 satır (numberOfLines 2), "Nasıl çalışır?" balonu genişliği (tur.js)
+  · screens_test: "ilan başvurusu" beklentileri
+  · taklitler: useWindowDimensions, Keyboard.addListener, expo-location, async-storage __esModule, onPlanda
+  · mount_test Tanış'ta ASILI kalıyordu: react-native taklidi her erişimde YENİ bileşen döndürüyordu → her render
+    tüm ağaç baştan kuruluyor, BaglantiHakki her kurulumda onDurum→setBagHak → sonsuz döngü. Taklit artık önbellekli.
+    Üründe sorun yok (gerçek RN'de bileşen türü sabit); ölçüm: V8 profili + useState/useEffect sayacı.
+- Sayılar: check.js temiz · yoga 9/9 · taşma 0 · screens 77/0 · deeplink 13/0 · mount 56/0 (koyu 56 + açık 56).
+- app.json: NSUserTrackingUsageDescription (App Store uyarısı 90683, RevenueCat kaynaklı) → build 295'e girecek.
+- Commit 2d2546d → v7-tema + main.
+- TestFlight: dahili davet e-postası gelmiyor; harici "Arkadaslar" grubu public link "beta bulunamadı" (build harici
+  incelemeden geçmedi / gruba eklenmedi). Gökberk telefon Apple ID'sini (Ayarlar › App Store) kontrol ediyor.
+- Açık: RevenueCat iOS anahtarı (appl_…) → build 295; SQL 341; inceleme hesabı; Play doğrulama.
