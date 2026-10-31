@@ -27,9 +27,11 @@
       }
     },
     "preview-device": {
+      "environment": "production",
       "distribution": "internal",
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "image": "latest"
       }
     },
     "production": {
