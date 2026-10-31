@@ -68,6 +68,24 @@ import { yerelGun } from "./src/zaman";
 // sürümsüz koşar; olması test ortamında zararsız, üründe erişilmez.
 setAppVersion(Constants?.expoConfig?.version || "2.46.0");
 
+// 31 Ekim — iOS ad hoc build girişten hemen sonra kapanıyordu ve elimizde HİÇ iz yoktu:
+// yayın derlemesinde yakalanmamış JS hatası uygulamayı sessizce öldürür. Ölümcül hata
+// önce app_errors'a yazılır (ekran "js_olumcul"), sonra RN'in kendi işleyicisine verilir.
+// 1,5 sn bekleme yalnız ölümcül hatada: isteğin çıkmasına zaman tanır.
+try {
+  const EU = global.ErrorUtils;
+  const eski = EU && EU.getGlobalHandler && EU.getGlobalHandler();
+  if (EU && EU.setGlobalHandler && eski) {
+    EU.setGlobalHandler((e, olumcul) => {
+      try {
+        const msj = String((e && e.message) || e) + " | " + String((e && e.stack) || "").slice(0, 380);
+        logError(olumcul ? "js_olumcul" : "js_hata", msj);
+      } catch (x) { /* yut */ }
+      if (olumcul) setTimeout(() => eski(e, olumcul), 1500); else eski(e, olumcul);
+    });
+  }
+} catch (x) { /* işleyici kurulamadı: eski davranış */ }
+
 function AppInner() {
   const [lang, setLangState] = useState("tr");
   // ══════════════════════════════════════════════════════════════════
@@ -2886,6 +2904,7 @@ function SocialAuthButtons({ t, onBusyChange, onError }) {
     const res = kind === "google" ? await signInWithGoogle() : await signInWithApple();
     setBusy(null); onBusyChange && onBusyChange(false);
     if (!res.ok && res.code !== "cancelled") {
+      logError("sosyal_giris_" + kind, String(res.code || "?"));   // 31 Ekim: kullanıcı genel mesaj görür, asıl sebep buraya
       // Sağlayıcı Supabase'de açılmadıysa bu hata gelir — kullanıcıya
       // teknik mesaj değil, anlaşılır bir açıklama göster.
       const provNotSet = /provider is not enabled|unsupported provider|oauth_no_url/i.test(res.code || "");
