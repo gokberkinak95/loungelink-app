@@ -1497,7 +1497,7 @@ export function PaylasimSeridi({ t }) {
         onPress={() => setAcik(a => !a)} activeOpacity={0.75} hitSlop={{ top: 8, bottom: 8, left: 0, right: 0 }}
         style={{ flexDirection: "row", alignItems: "center", paddingVertical: ARA[6], paddingHorizontal: ARA[14] }}>
         <Ikon ad="guvenlik" boy={14} renk={C.goldInk} stil={{ marginRight: ARA[6] }} />
-        <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, color: C.goldInk, fontSize: FS.xs, fontWeight: "600" }}>{t.paylasimKisa}</Text>
+        <Text numberOfLines={2} style={{ flex: 1, minWidth: 0, color: C.goldInk, fontSize: FS.xs, fontWeight: "600" }}>{t.paylasimKisa}</Text>
         <Text style={{ color: C.goldInk, fontSize: FS.xs, marginLeft: ARA[8], textDecorationLine: "underline" }}>{acik ? t.paylasimKapat : t.paylasimDetay}</Text>
       </TouchableOpacity>
       {acik && (

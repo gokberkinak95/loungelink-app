@@ -293,7 +293,7 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
   // Alan adları SQL 220'nin ETKİN tanımından: aylik_fiyat / yillik_fiyat /
   // aylik_kredi. (Ekran eskiden 210'un fiyat_try adını okuyordu — kusur buydu.)
   globalThis.__DATA.rpc.subscription_plans = [
-    { plan: "explorer", ad: "Yolcu", aylik_fiyat: 0, aylik_kredi: 2, haklar: ["Ayda 2 istek"] },
+    { plan: "explorer", ad: "Yolcu", aylik_fiyat: 0, aylik_kredi: 0, haklar: ["Kayıtta 1 kredi"] },   // SQL 334: Yolcu aylık kredi almaz
     { plan: "steward", ad: "Kâhya", aylik_fiyat: 249, yillik_fiyat: 2490, aylik_kredi: 12,
       yillik_indirim_yuzde: 17, haklar: ["Öncelikli eşleşme"] },
   ];
@@ -302,8 +302,9 @@ function data({ sessions = [], messages = [], extra = {} } = {}) {
     t, lang: "tr", session, onBack: () => {} }));
   check(r.name, r.ok, r.ok ? "çökmeden açılıyor" : "ÇÖKTÜ: " + r.err);
   check(r.name, has(r.texts, "₺249"), "ücretli plan FİYATIYLA görünüyor — 'ücretsiz' değil");
-  check(r.name, has(r.texts, "Ayda 12 kredi"), "aylık kredi hakkı ekranda (madde 8)");
-  check(r.name, has(r.texts, "Ayda 2 kredi"), "ücretsiz planın kredi hakkı da yazıyor");
+  // 30 Ekim — ürün değişti (SQL 334/341): ücretli plan "Ayda N ilan başvurusu", Yolcu "Kayıtta 1 kredi".
+  check(r.name, has(r.texts, "Ayda 12 ilan başvurusu"), "aylık başvuru hakkı ekranda (madde 8)");
+  check(r.name, has(r.texts, "Kayıtta 1 kredi"), "ücretsiz planın kredi hakkı da yazıyor");
 
   // ---------- 18) PLAN: fiyat alanı hiç gelmezse "ücretsiz" DENMEZ ----------
   // Kök neden buydu: okunamayan fiyat `!ucret` ile "Ücretsiz"e dönüşüyordu.

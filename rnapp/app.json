@@ -129,6 +129,7 @@
         "NSPhotoLibraryUsageDescription": "Biniş kartı ekran görüntünü seçebilmen için galeri erişimi gerekiyor. Seçtiğin görsel cihazından çıkmaz; okunduktan sonra kopyası silinir.",
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleAllowMixedLocalizations": true,
+        "NSUserTrackingUsageDescription": "LoungeLink seni başka uygulama ve web sitelerinde takip etmez; bu izin istenmez.",
         "NSCameraUsageDescription": "Biniş kartındaki barkodu okumak için kamera gerekiyor. Görüntü cihazından çıkmaz, hiçbir sunucuya gönderilmez."
       },
       "usesAppleSignIn": true,

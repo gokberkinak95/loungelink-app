@@ -90,7 +90,9 @@ export function TurDugmesi({ t, sayfa, etiketli = false }) {
                                             backgroundColor: C.amberMikro || C.amber, borderWidth: 2, borderColor: TUR.noktaKenar }} />
       )}
       {yeni && etiketli && (
-        <View pointerEvents="none" style={{ position: "absolute", top: 44, right: -6, backgroundColor: C.card, borderRadius: R.sm,
+        /* 30 Ekim — mutlak konumlu balon 38 pt'lik düğmenin genişliğine sıkışıyordu (taşma ölçümü: 61.5 pt gerekiyor, 18 var;
+           CI app-ci 20 Ekim'den beri bu yüzden kırmızı). Genişlik içerikten bağımsız sabitlendi. */
+        <View pointerEvents="none" style={{ position: "absolute", top: 44, right: -6, width: 124, alignItems: "flex-end", backgroundColor: C.card, borderRadius: R.sm,
                                             paddingHorizontal: ARA[10], paddingVertical: ARA[6], shadowColor: "#000", shadowOpacity: 0.22,
                                             shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 6 }}>
           <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.xs, fontWeight: "700" }}>{t.turNasil}</Text>

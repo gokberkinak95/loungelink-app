@@ -62,5 +62,6 @@ module.exports = {
   supabase,
   setAppVersion: () => {},
   logError: () => {},
+  onPlanda: () => false,   // 31 Ekim: periyodik yenileme taklitte kapali
   pickAndUploadPhoto: async () => null,
 };

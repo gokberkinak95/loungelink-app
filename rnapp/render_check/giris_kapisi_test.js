@@ -64,6 +64,15 @@ const STUBS = {
   "expo-device": { isDevice: true, brand: "test", modelName: "test" },
   "expo-linking": { createURL: () => "loungelink://", addEventListener: () => ({ remove() {} }), getInitialURL: async () => null },
   "expo-image-picker": { launchImageLibraryAsync: async () => ({ canceled: true }) },
+  // 30 Ekim — konum.js (Bulunduğum havalimanı) expo-location kullanıyor; gerçeği expo-modules-core (TS) çeker.
+  "expo-location": {
+    Accuracy: { Low: 2 },
+    getForegroundPermissionsAsync: async () => ({ status: "denied", canAskAgain: true }),
+    requestForegroundPermissionsAsync: async () => ({ status: "denied", canAskAgain: false }),
+    hasServicesEnabledAsync: async () => true,
+    getLastKnownPositionAsync: async () => null,
+    getCurrentPositionAsync: async () => ({ coords: { latitude: 41.26, longitude: 28.74 } }),
+  },
   "expo-clipboard": { setStringAsync: async () => {} },
   "expo-status-bar": { StatusBar: () => null },
   "expo-web-browser": { openAuthSessionAsync: async () => ({ type: "cancel" }), maybeCompleteAuthSession: () => {} },

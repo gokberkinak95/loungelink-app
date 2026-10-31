@@ -53,13 +53,15 @@ module.exports = {
   StyleSheet: { create: (o) => o, flatten: (o) => o, hairlineWidth: 1, absoluteFill: {} },
   Platform: { OS: "android", select: (o) => (o.android !== undefined ? o.android : o.default) },
   Dimensions: { get: () => ({ width: 390, height: 844 }) },
+  // 30 Ekim — açılış sahnesi (acilis.js) ve App:Main useWindowDimensions kullanıyor; stub'da yoktu → ErrorBoundary.
+  useWindowDimensions: () => ({ width: 390, height: 844, scale: 3, fontScale: 1 }),
   BackHandler: { addEventListener: () => ({ remove() {} }), removeEventListener: () => {} },
   AppState: { addEventListener: () => ({ remove() {} }), currentState: "active" },
   Linking: { openURL: async () => true, canOpenURL: async () => true },
   Share: { share: async () => ({ action: "sharedAction" }) },
   Alert: { alert: () => {} },
   Clipboard: { setString: () => {} },
-  Keyboard: { dismiss: () => {} },
+  Keyboard: { dismiss: () => {}, addListener: () => ({ remove() {} }), removeAllListeners: () => {} },
   RefreshControl: host("RefreshControl"),
   StatusBar: { currentHeight: 24, setBarStyle: () => {} },
   // 🔴 v3.4 — `NativeModules` STUB'DA YOKTU VE BU BİR ÜRÜN HATASI GİBİ

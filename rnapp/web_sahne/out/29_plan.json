@@ -5,12 +5,12 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -103,9 +103,9 @@
   "Yolcu",
   "MEVCUT PLANIN",
   "Ücretsiz",
-  "Kayıtta 1 kredi: ilk lounge girişin bizden",
+  "Kayıtta 1 kredi: ilk ilan başvurun bizden",
   "",
-  "Kayıtta 1 kredi: ilk lounge girişin bizden"
+  "Kayıtta 1 kredi: ilk ilan başvurun bizden"
  ],
  "tasan": [],
  "bitisik": []

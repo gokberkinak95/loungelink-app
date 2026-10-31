@@ -151,9 +151,18 @@ const STUBS = {
                                     setUpdateInterval: () => {},
                                     addListener: () => ({ remove: () => {} }),
                                     removeAllListeners: () => {} } },
+  // 30 Ekim — konum.js (Bulunduğum havalimanı) expo-location kullanıyor; gerçeği expo-modules-core (TS) çeker.
+  "expo-location": {
+    Accuracy: { Low: 2 },
+    getForegroundPermissionsAsync: async () => ({ status: "denied", canAskAgain: true }),
+    requestForegroundPermissionsAsync: async () => ({ status: "denied", canAskAgain: false }),
+    hasServicesEnabledAsync: async () => true,
+    getLastKnownPositionAsync: async () => null,
+    getCurrentPositionAsync: async () => ({ coords: { latitude: 41.26, longitude: 28.74 } }),
+  },
   "expo-clipboard": { setStringAsync: async () => {} },
   "expo-status-bar": { StatusBar: () => null },
-  "@react-native-async-storage/async-storage": {
+  "@react-native-async-storage/async-storage": { __esModule: true,
     default: { getItem: async () => null, setItem: async () => {}, removeItem: async () => {} },
   },
   "@react-native-community/datetimepicker": { default: () => null },
@@ -177,8 +186,17 @@ const h = (tag) => {
 };
 // (STUBS yukarıda kuruldu; ikon taklidi `h` tanımlandıktan SONRA
 // eklenmeli — `h` bu satırların altında `const` ile tanımlı.)
+const RN_BILESEN = {};
 STUBS["react-native"] = new Proxy({}, {
   get(_, k) {
+    if (k in RN_BILESEN) return RN_BILESEN[k];
+    const v = rnTaklit(k);
+    if (k !== "Dimensions" && k !== "Platform") RN_BILESEN[k] = v;
+    return v;
+  },
+});
+function rnTaklit(k) {
+  {
     if (k === "StyleSheet") return { create: (o) => o, flatten: (o) => o, hairlineWidth: 1, absoluteFill: {} };
     if (k === "Platform") return { OS: "android", select: (o) => o.android ?? o.default };
     if (k === "Dimensions") return { get: () => ({ width: 390, height: 844 }) };
@@ -230,9 +248,13 @@ STUBS["react-native"] = new Proxy({}, {
     if (k === "Appearance") return { getColorScheme: () => "light", addChangeListener: () => ({ remove() {} }) };
     if (k === "__esModule") return true;
     if (k === "default") return undefined;
+    // 31 Ekim: bilesen taklidi ONBELLEKTEN. Her erisimde yeni `h(k)` donunce
+    // her render'da View/Text/Modal TURU degisiyordu ve React butun alt agaci
+    // bastan kuruyordu (Animated.View de ayni). Tanis'ta BaglantiHakki her kurulusta onDurum ile
+    // ebeveyni guncelleyince bu sonsuz bir donguye dondu (CI asili kaldi).
     return h(String(k));      // View, Text, TouchableOpacity, ScrollView...
-  },
-});
+  }
+}
 
 STUBS["@expo/vector-icons/Ionicons"] = { __esModule: true, default: h("Ionicons") };
 // 🔴 31 AĞUSTOS · 8. TUR — AYNI TAKLİT ÜÇÜNCÜ KEZ, ÜÇÜNCÜ DOSYADA.
@@ -318,7 +340,7 @@ require.cache[require.resolve("../src/supabase.js")] = {
       channel: () => ({ on: () => ({ subscribe: () => ({}) }), subscribe: () => ({}) }),
       removeChannel: () => {},
     },
-    logError: () => {},
+    logError: () => {}, onPlanda: () => false,
     setAppVersion: () => {},
     SUPABASE_URL: "https://test.supabase.co",
   },
@@ -704,7 +726,11 @@ let ok = 0;
 const bad = [];
 
 async function run() {
+// 30 Ekim — tek vaka çalıştırma (teşhis): LL_YALNIZ=Meet node render_check/mount_test.js
+const _YALNIZ = process.env.LL_YALNIZ ? process.env.LL_YALNIZ.split(",") : null;
 for (const [name, Comp, props, bekle] of CASES) {
+  if (_YALNIZ && !_YALNIZ.includes(name)) continue;
+  if (process.env.LL_IZ) console.log("  … " + name);
   if (typeof Comp !== "function") {
     bad.push([name, "bileşen dışa aktarılmamış (export eksik)"]);
     console.log(`  ✗ ${name} — export yok`);
