@@ -13,7 +13,8 @@
 // ve çağıran eski e-posta yoluna düşer.
 // ============================================================
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Constants from "expo-constants";
+import { ActivityIndicator, KeyboardAvoidingView, Modal, NativeModules, Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { ARA, C, F, FS, R, SP, TAP } from "./theme";
 import { Btn, POPUP_YUZEY } from "./ui";
 import { Ikon } from "./ikon";
@@ -25,6 +26,11 @@ let _auth = undefined;   // undefined = denenmedi · null = yok
 function firebaseAuth() {
   if (_auth !== undefined) return _auth;
   if (Platform.OS === "web") { _auth = null; return null; }
+  // 31 Ekim — iOS ad hoc build girişten sonra kapanıyordu (app_errors: "Native module
+  // RNFBAppModule not found", RNFBNativeEventEmitter). Firebase o platformda bağlı değilse
+  // paketi HİÇ yükleme: require'ın kendisi yerel modülü arıyor ve hata try/catch'e düşmüyor.
+  const fb = (Constants.expoConfig && Constants.expoConfig.extra && Constants.expoConfig.extra.firebase) || {};
+  if (!fb[Platform.OS] || !NativeModules.RNFBAppModule) { _auth = null; return null; }
   try {
     const m = require("@react-native-firebase/auth");
     const a = m && (m.default || m);

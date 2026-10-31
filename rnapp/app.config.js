@@ -56,6 +56,10 @@ function firebaseEkle(config) {
   const androidOk = !!(config.android && config.android.googleServicesFile);
   const iosOk = !!(config.ios && config.ios.googleServicesFile);
   const hazir = platform === "android" ? androidOk : platform === "ios" ? iosOk : (androidOk || iosOk);
+  // 31 Ekim: uygulama Firebase'in o platformda bağlı olup olmadığını buradan okur (telefon.js).
+  // iOS'ta plist yokken JS `require("@react-native-firebase/auth")` yerel modülü arıyor ve
+  // try/catch DIŞINDA fırlatıyordu → girişten hemen sonra uygulama kapanıyordu.
+  config.extra = { ...(config.extra || {}), firebase: { android: androidOk, ios: iosOk } };
   if (!hazir) return config;
   config.plugins = [...(config.plugins || []), "@react-native-firebase/app", "@react-native-firebase/auth"];
   if (iosOk) {
