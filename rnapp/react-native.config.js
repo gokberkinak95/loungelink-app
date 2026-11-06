@@ -23,9 +23,19 @@ const platformlar = {
   ...(androidHazir ? {} : { android: null }),
   ...(iosHazir ? {} : { ios: null }),
 };
+// 🔴 6 Kasım — İLK FIREBASE'Lİ ANDROID BUILD DÜŞTÜ: PackageList.java "cannot find symbol
+// io.invertase.firebase.ReactNativeFirebaseAppPackage". Proje düzeyinde `platforms` verilince
+// kütüphanenin kendi react-native.config.js'indeki `packageImportPath` (…firebase.app.…) yok sayılıyor,
+// autolinking yanlış paket yolunu tahmin ediyordu. Açık platformda yol artık açıkça yazılı.
+const uygulamaPlatform = {
+  ...(androidHazir
+    ? { android: { packageImportPath: "import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;" } }
+    : { android: null }),
+  ...(iosHazir ? {} : { ios: null }),
+};
 module.exports = {
   dependencies: {
-    "@react-native-firebase/app": { platforms: platformlar },
+    "@react-native-firebase/app": { platforms: uygulamaPlatform },
     "@react-native-firebase/auth": { platforms: platformlar },
   },
 };
