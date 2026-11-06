@@ -35,6 +35,8 @@ ios/
 !debug.keystore
 google-services.json
 GoogleService-Info.plist
+fcm-v1-anahtar.json
+*-firebase-adminsdk-*.json
 
 # Araç çıktıları
 # 🔴 25 Eyl — burada `render_check/` yazıyordu: KLASÖRÜN TAMAMI. Oysa
