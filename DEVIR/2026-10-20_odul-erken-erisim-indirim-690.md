@@ -234,3 +234,27 @@ Gökberk: SQL 330–338 Supabase'de koşuldu, hepsi true. Bireysel hesap kesin.
 - TestFlight: dahili davet e-postası gelmiyor; harici "Arkadaslar" grubu public link "beta bulunamadı" (build harici
   incelemeden geçmedi / gruba eklenmedi). Gökberk telefon Apple ID'sini (Ayarlar › App Store) kontrol ediyor.
 - Açık: RevenueCat iOS anahtarı (appl_…) → build 295; SQL 341; inceleme hesabı; Play doğrulama.
+
+## 31 Ekim – 6 Kasım — iOS ad hoc test turu, oturum penceresi, Android paket adı, UX turu
+- iOS girişte kapanma: app_errors ölçümü "RNFBAppModule not found" → Firebase bağlı olmayan platformda paket
+  hiç yüklenmiyor (app.config extra.firebase + NativeModules kontrolü). Ölümcül JS hatası artık app_errors'a
+  yazılıyor (js_olumcul), sosyal giriş hata kodu da (sosyal_giris_apple/google). Apple girişi: Supabase
+  Apple Client IDs'e co.loungelink.app eklendi (Gökberk) → çalışıyor.
+- TestFlight dahili daveti gelmiyor (Apple tarafı, destek talebi açıldı). Test: eas.json preview-device (ad hoc).
+- SQL 342 oturum başlatma penceresi (ilan bitişi + 2 sa; aktif oturum kapanışı havalimanı saatiyle). 343 kaynakta
+  olmayan 4 salon (SAW Aeroport vb.; Excel: Downloads\kural tabloları.xlsx). 344 uçuş önbelleği temizliği.
+- BO 1.101.4: aviationstack doğru kayıt (data[0] kod paylaşımı kopyasıydı), ücretsiz planda tek istek.
+  Ücretli plana geçince: Vercel AVIATIONSTACK_TARIHLI=1 (geçmiş/bugün tarihli); İLERİ tarih için ayrıca
+  /flightsFuture uç noktası gerekir (kod işi).
+- Site 0.73.1: Aeroport/Anatolia rehberden ve salon verisinden çıktı.
+- Android paket com.loungelink.app Play'de doluydu → co.loungelink.app (Play'de uygulama oluşturuldu).
+  Firebase Android uygulaması ve google-services.json YENİ paketle gerekli, yoksa Android build kırılır.
+- App: klavye (53 kaydırma alanı), iOS kenardan geri, tarih/saat seçici dokununca açılır, serif tam boy rakam,
+  76 metin düzeltmesi, onaylı tasarımlar (seyahat tarzı, sayı rozeti, ince Tanış sohbet başlığı, Sohbet et).
+- Testler: render screens 77/0 · mount 56/0 · giriş 39/39 · sosyal 5/5 · taşma 0; SQL 342 3/3 + davranış 2/2,
+  343 ve 344 yerelde tamam = true; BO check temiz; site verify 7/7.
+- Supabase sırası: 341 (koşmadıysa), 342, 343, 344.
+- Açık: RevenueCat iOS appl_ anahtarı → iOS 295; Firebase (Android yeni paket + iOS plist + APNs anahtarı);
+  Play 9 formları + ürünler; kapalı test 12+ kişi; oturumun en erken başlatılabileceği an kararı (öneri: ilan
+  saatinden 1 sa önce); listede olmayan yabancı salonlar (LHR No1/Plaza, AMS Aspire 26, DXB Ahlan, FRA Luxx/Sky,
+  CDG Extime, JFK Primeclass) kalsın mı; AYT "FTA CIP Salonları" şemsiye kaydı seçicide.
