@@ -13,3 +13,6 @@ node_modules/
 
 # Python derleme onbellegi
 __pycache__/
+
+# Magaza paketleri (EAS ciktisi)
+_aab/
