@@ -147,7 +147,7 @@ export async function geriYukle() {
 export function abonelikYonet() {
   const url = Platform.OS === "ios"
     ? "https://apps.apple.com/account/subscriptions"
-    : "https://play.google.com/store/account/subscriptions?package=com.loungelink.app";
+    : "https://play.google.com/store/account/subscriptions?package=co.loungelink.app";
   Linking.openURL(url).catch(() => {});
 }
 

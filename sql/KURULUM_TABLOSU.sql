@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 385 dosya · son: 342 · 315-342 elle eklendi)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-10-19 · 385 dosya · son: 344 · 315-344 elle eklendi)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -597,6 +597,8 @@ select z.dosya, 'tespit'
   (375, '340_jetset_urun_kimlikleri.sql', 'satir', 'iap_urunleri.urun_kodu=ll_jetset_aylik'),
   (376, '341_ilan_basvurusu_dili.sql', 'satir', 'kredi_paketleri.aciklama=Tek bir ilan başvurusu için.'),
   (377, '342_oturum_baslatma_penceresi.sql', 'govde', 'start_session_request|session_window_closed'),
+  (378, '343_olmayan_salonlari_gizle.sql', 'satir', 'lounges.name=Elite Lounge — Dış Hat (T1)'),
+  (379, '344_ucus_onbellegi_temizligi.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -992,6 +994,8 @@ with imza(sira, dosya, tip, ad) as (
   (375, '340_jetset_urun_kimlikleri.sql', 'satir', 'iap_urunleri.urun_kodu=ll_jetset_aylik'),
   (376, '341_ilan_basvurusu_dili.sql', 'satir', 'kredi_paketleri.aciklama=Tek bir ilan başvurusu için.'),
   (377, '342_oturum_baslatma_penceresi.sql', 'govde', 'start_session_request|session_window_closed'),
+  (378, '343_olmayan_salonlari_gizle.sql', 'satir', 'lounges.name=Elite Lounge — Dış Hat (T1)'),
+  (379, '344_ucus_onbellegi_temizligi.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

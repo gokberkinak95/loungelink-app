@@ -13,7 +13,7 @@
       "backgroundColor": "#DCE3EF"
     },
     "android": {
-      "package": "com.loungelink.app",
+      "package": "co.loungelink.app",
       "versionCode": 300,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

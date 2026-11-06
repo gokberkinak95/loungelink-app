@@ -25,7 +25,7 @@
 // dogruluyor ve dongusel cekirdegin BUYUMESINI de engelliyor.
 // ============================================================================
 import { AramaKutusu, Katlanir, eslesir } from "./Pickers";
-import { fmtLongDate, mapErr, BUYUK, gorunur } from "./i18n";
+import { fmtLongDate, mapErr, BUYUK, gorunur, etkinDil } from "./i18n";
 import { LEGAL_DOCS, LEGAL_ORDER, LEGAL_VERSION } from "./legal";
 import { bayrak } from "./runtime";
 // `ui.js` ortak.js'i içe AKTARMIYOR — yön tek, döngü yok (bagimlilik_check ölçüyor).
@@ -37,7 +37,7 @@ import { ARA, C, ELEV, F, FS, R, SP, T, TAP, temaYenidenKur } from "./theme";
 import { MONO } from "./typography";
 import { Btn, Hdr, Sayfa, MarkaYukleyici, Serit, LoadFail } from "./ui";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 // ══════════════════════════════════════════════════════════════════════
 // 🔴 28 EYLÜL (Gökberk: "keşfetteki alanların çerçeveleri dar ve dikdörtgen,
@@ -1123,6 +1123,47 @@ export function VenuePrices({ venueId, t }) {
 // çağıran vermezse bileşen yine çizilir (prop düşmesi ekran bozmaz).
 export let _DTP = null;
 try { _DTP = require("@react-native-community/datetimepicker").default; } catch (e) { _DTP = null; }
+
+// 6 Kasım (Gökberk) — TARİH/SAAT ALANINA DOKUNUNCA SEÇİCİ AÇILIR.
+// Önce iOS'ta `display="default"` alanın ALTINA küçük bir "6 Kas 2026 / 14:00" hapı çiziyordu;
+// kullanıcı takvimi açmak için ikinci kez o hapa dokunması gerektiğini anlamıyordu.
+// Artık: iOS → alttan açılan kart (tarih: takvim, saat: tekerlek) + Vazgeç / Tamam.
+//        Android → sistemin kendi tarih/saat penceresi (zaten tek dokunuşta açılıyordu).
+// Bir kez yazıldı; ilan, seyahat, haber ver ve diğer bütün tarih/saat alanları bunu kullanır.
+export function TarihSaatPenceresi({ acik, mod = "date", deger, enAz, onTamam, onKapat }) {
+  const [gecici, setGecici] = useState(deger || new Date());
+  useEffect(() => { if (acik) setGecici(deger || new Date()); }, [acik]);
+  if (!_DTP || !acik) return null;
+  if (Platform.OS !== "ios") {
+    return (
+      <_DTP value={deger || new Date()} mode={mod} display="default" is24Hour={true}
+        minimumDate={enAz || undefined}
+        onChange={(ev, d) => { if (d && ev?.type !== "dismissed") onTamam(d); else onKapat(); }} />
+    );
+  }
+  return (
+    <Modal visible transparent animationType="slide" onRequestClose={onKapat}>
+      <Pressable style={{ flex: 1, backgroundColor: "rgba(10,18,32,0.35)" }} onPress={onKapat} accessibilityRole="button" accessibilityLabel={gorunur("Vazgeç")} />
+      <View style={{ backgroundColor: C.card, borderTopLeftRadius: R.lg, borderTopRightRadius: R.lg,
+                     paddingBottom: ARA[28], paddingTop: SP[2] }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+                       paddingHorizontal: SP[4], minHeight: TAP.minHeight }}>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onKapat}>
+            <Text style={{ color: C.mut, fontSize: FS.base }}>{gorunur("Vazgeç")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onTamam(gecici)}>
+            <Text style={{ color: C.goldText || C.gold, fontSize: FS.base, fontWeight: "700" }}>{gorunur("Tamam")}</Text>
+          </TouchableOpacity>
+        </View>
+        <_DTP value={gecici} mode={mod} display={mod === "date" ? "inline" : "spinner"} is24Hour={true}
+          locale={etkinDil() === "en" ? "en-GB" : "tr-TR"} themeVariant="light" accentColor={C.goldText || C.gold}
+          minimumDate={enAz || undefined} minuteInterval={mod === "time" ? 5 : undefined}
+          onChange={(ev, d) => { if (d) setGecici(d); }}
+          style={{ alignSelf: "center" }} />
+      </View>
+    </Modal>
+  );
+}
 export const TR_DAYS = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
 export const TR_MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
                    "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];

@@ -44,7 +44,7 @@ import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState, useMemo} from "react";
 import { ActivityIndicator, BackHandler, Image, Linking, Modal, Platform, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Amenities, BaglantiIstekleri, Chat, DateInput, HaberVer, LiveStatus, Picker, Plans, ProfileCompletionWidget, ReportUser, RequestsPanel, VerifyPhone, profOpts, timeOk } from "./ekranlar_yalin";
-import { ucusNo, ustIsik, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
+import { ucusNo, ustIsik, TarihSaatPenceresi, ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AirportPicker, CarrierChip, FieldReportPrompt, LANG_OPTS, LegalDoc, Load, PURPOSES, Pill, PromiseBox, RefCodeEntry, ReqStateBadge, S, SECTOR_OPTS, Sayac, TrustRing, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, greeting, intentLabel, pickAndUploadPhoto, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { yerelGun } from "./zaman";
 
@@ -3044,9 +3044,13 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
             {conns.map(p => {
               const h = hostMap[p.user_id] || {};
               return (
+                // 6 Kasım (Gökberk, onaylı önizleme): kart "Profili görüntüle" diyordu ama dokununca
+                // SOHBET açılıyordu; kullanıcı sohbetin nerede olduğunu anlamıyordu. Artık kart → profil,
+                // sağdaki altın hap → sohbet (uygulamanın küçük altın düğmesi; kart boyu değişmez).
                 <PersonCard key={p.user_id} p={{ ...p, ...h, profession: t.ccViewProfile, airport: null, flight_number: null, visit_date: null }}
-                  onAc={() => openCompanionChat(p.user_id, p.name)}
-                  ikinci={<Cip etiket={t.connActive} ton="teal" />} action={<View />} />
+                  ikinci={<Cip etiket={t.connActive} ton="teal" />}
+                  action={<Btn v="gold" sm cip label={t.connChatBtn} a11yLabel={t.connChatBtn} solAd="sohbet"
+                    onPress={() => openCompanionChat(p.user_id, p.name)} style={{ paddingHorizontal: ARA[12] }} />} />
               );
             })}
             <Text style={{ color: C.mut, fontSize: FS.xs, marginTop: ARA[12], lineHeight: 16 }}>{t.connSub}</Text>
@@ -3619,23 +3623,33 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
 
   return (
     <Sayfa>
-      {/* MVP paritesi: isim -> profil · sag ustte BILDIR · altinda guvenlik bandi.
-          Bunlarin hicbiri yoktu (Gokberk: "bilgiler MVP'ye gore cok cok az"). */}
-      <Hdr t={t} ustBilgi={t.sceneMeet} title={otherName || t.ccTitle} onBack={onBack} right={
-        onReport ? (
-          <Btn v="redSoft" mini label={t.ppReport2} onPress={() => onReport(peerId, otherName)} />
-        ) : null
-      } />
-      {onOpenProfile && peerId && (
-        <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onOpenProfile(peerId)}
-          style={{ backgroundColor: C.card, paddingVertical: SP[2], paddingHorizontal: ARA[14], borderBottomWidth: 1, borderColor: C.line }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ikon ad="kisi" boy={14} renk={C.purple} stil={{ marginRight: SP[1] }} />
-            <Text style={{ color: C.purple, fontSize: FS.sm, fontWeight: "600" }}>{t.ccViewProfile}</Text>
-            <Ikon ad="sag" boy={13} renk={C.purple} stil={{ marginLeft: SP[1] }} />
-          </View>
-        </TouchableOpacity>
-      )}
+      {/* 6 Kasım (Gökberk, onaylı önizleme) — İNCE SOHBET BAŞLIĞI. Büyük fotoğraflı bant ekranın
+          ~%30'unu yiyordu; mesaj alanı daralıyordu. Artık lounge sohbetiyle (Chat) aynı tek satır:
+          geri · avatar + ad + "Profili görüntüle" · Bildir. Profil satırı başlığın içine girdi. */}
+      <View style={{ backgroundColor: C.surface, paddingTop: TOPPAD, paddingBottom: ARA[10] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", minHeight: 44, marginTop: ARA[12], paddingHorizontal: ARA[18] }}>
+          <Btn v={temaModu() === "v7" ? "ustAcik" : "ust"} daire a11yLabel={t.back || "Geri"} onPress={onBack}
+            sol={<Ikon ad="sol" boy={20} renk={temaModu() === "v7" ? C.ink : C.foto.baslik} />} />
+          <TouchableOpacity hitSlop={TAP.slop} disabled={!(onOpenProfile && peerId)}
+            onPress={() => onOpenProfile && peerId && onOpenProfile(peerId)}
+            accessibilityRole="button" accessibilityLabel={t.ccViewProfile}
+            style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0, marginLeft: ARA[10] }}>
+            <View style={{ width: 36, height: 36, borderRadius: R.full, backgroundColor: C.avatarBg || C.goldSoft, marginRight: ARA[10],
+                           borderWidth: 1, borderColor: C.line2 || C.line, alignItems: "center", justifyContent: "center" }}>
+              <Text style={{ fontSize: FS.lg, fontWeight: "600", color: C.goldText, fontFamily: F.serif }}>{(otherName || "?").charAt(0).toUpperCase()}</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.lg - 1, fontWeight: "700" }}>{otherName || t.ccTitle}</Text>
+              {onOpenProfile && peerId ? (
+                <Text numberOfLines={1} style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600", marginTop: 1 }}>{t.ccViewProfile} ›</Text>
+              ) : null}
+            </View>
+          </TouchableOpacity>
+          {onReport ? (
+            <Btn v="redSoft" mini label={t.ppReport2} onPress={() => onReport(peerId, otherName)} />
+          ) : null}
+        </View>
+      </View>
       <PaylasimSeridi t={t} />
       {/* 16 Ekim (SQL 334) — LOUNGE YÖNLENDİRMESİ. Sohbette birlikte lounge'a girme konuşulursa
           resmi yol hatırlatılır: misafire iade güvencesi, host'a kredi + puan + Sık Uçan hediyesi.
@@ -5770,8 +5784,10 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
         {styleOpts.map(o => {
           const on = form.travel_style === o.code;
           return (
-            <Secim key={o.code} bicim="kart" ton="gold" zemin="yok" secili={on}
-              etiket={o.label} alt={o.sub} stil={{ marginBottom: ARA[6] }}
+            // 6 Kasım (Gökberk, onaylı önizleme): çerçevesiz düz metin "bozuk" duruyordu →
+            // her seçenek bir kart + seçim halkası (tek seçim; tekrar dokununca kalkar).
+            <Secim key={o.code} bicim="radyo" ton="gold" secili={on}
+              etiket={o.label} alt={o.sub} stil={{ marginBottom: ARA[8] }}
               onPress={() => set("travel_style", on ? null : o.code)} />
           );
         })}
@@ -6231,22 +6247,18 @@ export function TimeInput({ label, value, onChange }) {
             </Text>
             <Ikon ad="saat" boy={22} renk={C.mutedAA} />
           </TouchableOpacity>
-          {open && (
-            <_DTP
-              value={(() => {
-                const d = new Date();
-                if (ok) { d.setHours(+value.slice(0, 2), +value.slice(3, 5), 0, 0); }
-                return d;
-              })()}
-              mode="time" display="default" is24Hour={true}
-              onChange={(ev, d) => {
-                setOpen(false);
-                if (d && ev?.type !== "dismissed") {
-                  const p = n => String(n).padStart(2, "0");
-                  onChange(`${p(d.getHours())}:${p(d.getMinutes())}`);
-                }
-              }} />
-          )}
+          <TarihSaatPenceresi acik={open} mod="time"
+            deger={(() => {
+              const d = new Date();
+              if (ok) { d.setHours(+value.slice(0, 2), +value.slice(3, 5), 0, 0); }
+              return d;
+            })()}
+            onTamam={(d) => {
+              setOpen(false);
+              const p = n => String(n).padStart(2, "0");
+              onChange(`${p(d.getHours())}:${p(d.getMinutes())}`);
+            }}
+            onKapat={() => setOpen(false)} />
         </>
       ) : (
         <TextInput value={value}

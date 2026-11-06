@@ -117,8 +117,16 @@ export function sansUygula() {
     // her Text için bir `cloneElement` daha yapılmıyor.
     Bilesen.render = function (props, ...rest) {
       const d = StyleSheet.flatten(props && props.style) || {};
-      // Elle seçilmiş font (serif başlıklar) DOKUNULMAZ.
-      if (d.fontFamily) return eski.call(this, props, ...rest);
+      // Elle seçilmiş font (serif başlıklar) DOKUNULMAZ — tek istisna rakam biçimi:
+      // 6 Kasım (Gökberk): Cormorant'ın varsayılan rakamları "eski usul" (onum); "0" küçük
+      // harf "o" gibi duruyordu ("o misafir · +o LoungePuan"). Serifte rakamlar artık
+      // tam boy (lnum). Ekran kendi fontVariant'ını verdiyse ona dokunulmaz. iOS ve Android aynı.
+      if (d.fontFamily) {
+        if (!d.fontVariant && String(d.fontFamily).indexOf("Cormorant") === 0) {
+          return eski.call(this, { ...props, style: [props.style, { fontVariant: ["lining-nums"] }] }, ...rest);
+        }
+        return eski.call(this, props, ...rest);
+      }
       const yeni = { ...props, style: [{ fontFamily: sansFor(d.fontWeight) }, props.style] };
       return eski.call(this, yeni, ...rest);
     };

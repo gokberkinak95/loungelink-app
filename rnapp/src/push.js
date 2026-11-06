@@ -236,7 +236,7 @@ export async function bildirimAyarlariniAc() {
   // sayfasını açar; bildirim anahtarı ilk satırdadır).
   try {
     if (Platform.OS === "android" && Linking && typeof Linking.sendIntent === "function") {
-      const paket = (Constants?.expoConfig?.android?.package) || "com.loungelink.app";
+      const paket = (Constants?.expoConfig?.android?.package) || "co.loungelink.app";
       try {
         await Linking.sendIntent("android.settings.APP_NOTIFICATION_SETTINGS", [
           { key: "android.provider.extra.APP_PACKAGE", value: paket },

@@ -40,7 +40,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Linking, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, ekSureBitti, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
+import { ACCESS_SOURCES, ekSureBitti, TarihSaatPenceresi, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { VitrinKarti, MiniErken, MiniFiyat, IndirimBandi, bantMetni } from "./odul_magaza";
@@ -4203,10 +4203,12 @@ export function HaberVer({ t, lang, airport, date }) {
           value={ap}
           onSelect={(kod) => setAp(kod || "")} />
       </View>
-      <TextInput value={d1} onChangeText={setD1} placeholder="YYYY-AA-GG" placeholderTextColor={C.dim}
-        style={[S.input, { minHeight: TAP.minHeight }]} />
-      <TextInput value={d2} onChangeText={setD2} placeholder={t.notifyUntil} placeholderTextColor={C.dim}
-        style={[S.input, { marginTop: SP[2], minHeight: TAP.minHeight }]} />
+      {/* 6 Kasım (Gökberk): tarihler elle "YYYY-AA-GG" yazılıyordu; artık alana dokununca takvim. */}
+      <View style={{ marginTop: SP[3] }}>
+        <DateInput label={t.notifyFromLbl} value={d1} onChange={(v) => { setD1(v); if (!d2 || d2 < v) setD2(v); }} hizli={false} />
+        <DateInput label={t.notifyUntil} value={d2} onChange={setD2} hizli={false}
+          enAz={dateOk(d1) ? new Date(d1 + "T12:00:00") : undefined} />
+      </View>
 
       {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
 
@@ -5844,7 +5846,7 @@ export function humanDate(iso) {
 export function addDays(n) {
   const d = new Date(); d.setDate(d.getDate() + n); return isoOf(d);
 }
-export function DateInput({ label = "TARİH", value, onChange }) {
+export function DateInput({ label = "TARİH", value, onChange, hizli = true, enAz, bos }) {
   const [open, setOpen] = useState(false);
   const human = humanDate(value);
   // Hızlı seçim: bugün, yarın ve sonraki iki gün. Havalimanı planları
@@ -5859,7 +5861,7 @@ export function DateInput({ label = "TARİH", value, onChange }) {
     <View style={{ marginBottom: ARA[14] }}>
       <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.muted, marginBottom: SP[1], letterSpacing: 1 }}>{gorunur(label)}</Text>
 
-      <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: SP[2] }}>
+      {hizli && <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: SP[2] }}>
         {quick.map(([iso, lb]) => {
           const sel = value === iso;
           return (
@@ -5867,7 +5869,7 @@ export function DateInput({ label = "TARİH", value, onChange }) {
               stil={{ marginRight: ARA[6], marginBottom: ARA[6] }} />
           );
         })}
-      </View>
+      </View>}
 
       {_DTP ? (
         <>
@@ -5876,19 +5878,15 @@ export function DateInput({ label = "TARİH", value, onChange }) {
                      borderRadius: R.xs, padding: SP[3], flexDirection: "row",
                      justifyContent: "space-between", alignItems: "center" }}>
             <Text style={{ color: human ? C.ink : C.dim, fontSize: FS.base, fontWeight: human ? "600" : "400" }}>
-              {human || gorunur("Tarih seç")}
+              {human || bos || gorunur("Tarih seç")}
             </Text>
             <Ikon ad="takvim" boy={22} renk={C.mutedAA} />
           </TouchableOpacity>
-          {open && (
-            <_DTP
-              value={value && value.length === 10 ? new Date(value + "T12:00:00") : new Date()}
-              mode="date" display="default" minimumDate={new Date()}
-              onChange={(ev, d) => {
-                setOpen(false);
-                if (d && ev?.type !== "dismissed") onChange(isoOf(d));
-              }} />
-          )}
+          <TarihSaatPenceresi acik={open} mod="date"
+            deger={value && value.length === 10 ? new Date(value + "T12:00:00") : new Date()}
+            enAz={enAz === null ? undefined : (enAz || new Date())}
+            onTamam={(d) => { setOpen(false); onChange(isoOf(d)); }}
+            onKapat={() => setOpen(false)} />
         </>
       ) : (
         <TextInput value={value}

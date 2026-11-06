@@ -1,4 +1,4 @@
-SQL SIRASI - 6 Kasim 2026 (14. tur) - YENI: 342 - 341'den SONRA (341'i kosmadiysan once onu)
+SQL SIRASI - 6 Kasim 2026 (14. tur) - YENI: 342, 343, 344 - 341'den SONRA (341'i kosmadiysan once onu)
 
   1) 342_oturum_baslatma_penceresi.sql
        -> Ilan saati + 2 saat ek sure gectiyse "Oturumu Baslat" sunucuda reddedilir (session_window_closed).
@@ -6,6 +6,18 @@ SQL SIRASI - 6 Kasim 2026 (14. tur) - YENI: 342 - 341'den SONRA (341'i kosmadiys
        -> Aktif oturumlarin otomatik kapanisi havalimaninin saat dilimiyle; ek surede baslayan
           oturum en az 2 saat acik kalir.
        Dogrulama: uc satir tamam = true. Tekrar kosulabilir.
+
+  2) 343_olmayan_salonlari_gizle.sql
+       -> Kaynakta olmayan 4 salon gizlenir (SAW Aeroport, ESB Anatolia, LHR THY T2, DOH Oryx North Node
+          ikinci kaydi); ESB/AYT eski adlar ve DXB Marhaba terminali duzelir; kaynaksiz erisim yazilari
+          bosalir; SAW Marmara ve IST iGA Pop-up gorunur olur. Bu salonlardaki acik ilanlar kapanir,
+          sahibine bildirim gider (kabul edilmis basvurulu ilana dokunulmaz). Silme yok.
+       Dogrulama: tamam = true. Tekrar kosulabilir.
+
+  3) 344_ucus_onbellegi_temizligi.sql
+       -> Ucus onbelleginden baska ucusun / baska gunun kayitlari (kod paylasimi kopyasi) silinir,
+          havayolu kodlari buyuk harfe cekilir. BO 1.101.4 ile birlikte.
+       Dogrulama: iki satir tamam = true. Tekrar kosulabilir.
 
 ---------------------------------------------------------------------------
 SQL SIRASI - 25 Ekim 2026 (13. tur) - YENI: 341 - 340'tan SONRA

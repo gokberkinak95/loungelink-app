@@ -278,10 +278,14 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
                    paddingVertical: ARA[14], paddingLeft: seffaf ? ARA[2] : SP[3] + 2, paddingRight: SP[2], minHeight: 48 }}>
           {!!ikon && <View style={{ marginRight: ARA[10] }}>{ikon}</View>}
           <View style={{ flex: 1, paddingRight: SP[2] }}>
-            <Text style={buyukBaslik
+            {/* 6 Kasım (Gökberk, onaylı önizleme): sayı başlığın sonuna "· 20" diye eklenince uzun
+                başlıklarda alt satıra kayıyordu. Sayı artık sağda ayrı bir rozet; küçük başlık tek
+                satırda kalır (dar ekranda yazı kendini en fazla %20 küçültür). */}
+            <Text numberOfLines={buyukBaslik ? undefined : 1} adjustsFontSizeToFit={!buyukBaslik} minimumFontScale={0.8}
+              style={buyukBaslik
               ? { fontSize: FS.base, fontWeight: "600", color: C.ink }
               : { fontSize: FS.xs, fontWeight: "600", color: C.muted, letterSpacing: 1 }}>
-              {baslik}{typeof sayi === "number" ? `  ·  ${sayi}` : ""}
+              {baslik}
             </Text>
             {/* Kapalıyken bilgi kaybolmasın diye özet HER ZAMAN çizilir. */}
             {!!ozet && (
@@ -291,6 +295,12 @@ export function Katlanir({ baslik, sayi, ozet, tint, cizgi, children, acikBasla 
               </Text>
             )}
           </View>
+          {typeof sayi === "number" && (
+            <View style={{ backgroundColor: C.goldTint || C.bgAlt, borderRadius: R.full, minWidth: 26,
+                           paddingHorizontal: ARA[8], paddingVertical: ARA[2], marginRight: ARA[8], alignItems: "center" }}>
+              <Text style={{ fontSize: FS.xs, fontWeight: "700", color: C.goldText || C.ink, fontVariant: ["tabular-nums"] }}>{sayi}</Text>
+            </View>
+          )}
           <Ikon ad={acik ? "yukari" : "asagi"} boy={14} renk={C.muted} />
         </TouchableOpacity>
         {!!bilgi && (
