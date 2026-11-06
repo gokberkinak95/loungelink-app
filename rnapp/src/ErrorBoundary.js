@@ -68,7 +68,7 @@ export class ErrorBoundary extends React.Component {
     const stuck = this.state.count >= 2;
 
     return (
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: ARA[26] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: ARA[26] }}>
         {/* 🔴 30 AĞUSTOS · 3. TUR — EMOJİ GİTTİ, AMA `Ikon` DA GELMEDİ.
             `⚠️` emojisi bu ekranda da yanlıştı (çizimi cihaza ait). Ama
             yerine `<Ikon>` koymak bu dosyanın İLK KURALINI çiğnerdi:

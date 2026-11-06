@@ -1995,7 +1995,7 @@ export function HostBroadcast({ t, session, onBack, onVerify, embedded, lang }) 
   return (
     <Sayfa>
       {!embedded && <Hdr t={t} ustBilgi={t.sceneHost} title={t.bcTitle} onBack={onBack} />}
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[3] }}>{t.bcSub}</Text>
 
         {!verified && <PhoneGate t={t} onVerify={onVerify} />}
@@ -2339,7 +2339,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneAccount} title={t.settingsTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[40] }}>
         <Head>{t.stAccount}</Head>
         <View style={{ backgroundColor: C.card, borderRadius: R.sm, borderWidth: 1, borderColor: C.line, marginBottom: SP[4], overflow: "hidden" , ...ELEV.card }}>
           <Row label={t.stEditProfile} right={<Ikon ad="sag" boy={FS.sm} renk={C.tealInk} />} onPress={onEditProfile} />
@@ -2657,7 +2657,7 @@ export function AddVisit({ t, session, onBack, onDone, suggest }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.scenePlan} title={t.addVisitTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ fontSize: FS.sm, color: C.mutedAA, marginBottom: SP[4], lineHeight: 19 }}>
           {t.avIntro}
         </Text>
@@ -2833,7 +2833,7 @@ export function EditAvailability({ t, avail, onBack, onDone }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneListing} title={t.editAvail} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {kilitli ? (
           <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.editLockedTitle}</Text>
@@ -3373,7 +3373,7 @@ export function HostAvailability({ t, session, onBack, onDone, onVerify }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneListing} title={t.addAvailTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {/* v6.3 · PANO İ1–İ3 (Gökberk onayı) — İLAN SİHİRBAZI: 1 salon + kural ·
             2 zaman, uçuş, misafir · 3 kimler görür + önizleme + yayınla. Yayın
             kapısı (telefon, kural onayı, tarih) publish() içinde AYNEN duruyor. */}

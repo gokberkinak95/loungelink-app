@@ -14,7 +14,7 @@ import Constants from "expo-constants";
 import { applyAuthUrl, isAuthUrl } from "./src/deeplink";
 import { D, getLang, setLang, badgeLabel, mapErr, BUYUK, dilAyarla, shortName, fmtLongDate } from "./src/i18n";
 import { ustIsik } from "./src/ortak";
-import { SikkeDugme, CamSerit, ALTPAD, KlavyeKabi, LoadFail } from "./src/ui";
+import { SikkeDugme, CamSerit, ALTPAD, KlavyeKabi, KenarGeri, LoadFail } from "./src/ui";
 import { Katman } from "./src/katman";
 import { odemeGiris, odemeCikis } from "./src/odeme";
 import { Hdr, BrandBar, TOPPAD, Sayfa, Tanecik, FotoSahne, FotoBant, Btn, Secim, Cip, KararCipi, CuzdanSeridi, MarkaYukleyici, AkanBaslik, useDaralanBant, PerdeBulanik, POPUP_YUZEY } from "./src/ui";
@@ -604,7 +604,7 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneAccount} title={t.onbCompleteTitle} />
-      <ScrollView contentContainerStyle={{ padding: ARA[22], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[22], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 20, marginBottom: SP[4] }}>{t.onbCompleteBody}</Text>
 
         <Text style={st.label}>{t.roleTitle}</Text>
@@ -686,7 +686,7 @@ export function SetNewPassword({ t, onDone }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneAccount} title={t.setNewPassTitle} />
-      <ScrollView contentContainerStyle={{ padding: ARA[22] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[22] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 20, marginBottom: SP[4] }}>{t.setNewPassBody}</Text>
         {ok ? (
           <View style={{ backgroundColor: C.tealTint2, borderRadius: R.xs, padding: ARA[14] }}>
@@ -1566,7 +1566,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     istekler: () => (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowRequests} onBack={() => setShowIstekler(false)} marka={false} />
-        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           {/* ⚠️ `onOpenChat`/`onOpenProfile` BURADA YOK — bunlar `Home`un
               propları. Overlay `AppInner` kapsamında çiziliyor, yani
               state'i doğrudan kullanmalı. İlk yazımda `Home`daki adları
@@ -1581,7 +1581,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     davetler: () => (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowInvitesTitle} onBack={() => setShowDavetler(false)} marka={false} />
-        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           {/* ⚠️ `tazele` `Home`un kendi state'i; bu katmanlar `Main`
               kapsamında çiziliyor. Ortak anahtar `reload` — ve katmanda
               verilen cevap `setReload` ile ana sayfayı da tazeliyor. */}
@@ -1593,7 +1593,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     sohbetler: () => (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowChatsTitle} onBack={() => setShowSohbetler(false)} marka={false} />
-        <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
           {/* 1 Ekim (Gökberk) — "oturumuma nereden ulaşırım?": kabul edilmiş buluşmalar
               OTURUMLAR sekmesinde (durumuyla), bağlantı sohbetleri BAĞLANTILAR sekmesinde. */}
           <SekmeSeridi secili={sohbetSekme} onSec={setSohbetSekme} secenekler={[
@@ -1881,7 +1881,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     // 🔴 SEKME KABUĞU ATMOSFERİ TAŞIYOR — ve bu bir ÖLÇÜMÜN sonucu.
     // 38 ekran kökünü <Sayfa>'ya çevirdikten sonra nöbetçi üç ekranı
     // kırmızıya boyadı: Trips, LoungeGuide, BaglantiIstekleri. Sebep şuydu:
-    // bu üçü sekme İÇERİĞİ ve kökleri <View> değil <ScrollView> — yani
+    // bu üçü sekme İÇERİĞİ ve kökleri <View> değil <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets> — yani
     // kendi sayfalarını hiç boyamıyorlar, kabuğun zeminini kullanıyorlar.
     //
     // Doğru cevap onlara zorla <Sayfa> giydirmek değildi (ScrollView'ın
@@ -2284,7 +2284,8 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           }}>
           {/* 15 Ekim (iOS) — klavye açılınca iOS pencereyi küçültmüyor: sohbet ve formlardaki
               girdi klavyenin ALTINDA kalıyordu. Katmanın tamamı klavyeden kaçar (Android'de düz View). */}
-          <KlavyeKabi>{OVERLAY_VIEWS[topOverlay]()}</KlavyeKabi>
+          {/* 6 Kasım — iOS'ta sol kenardan kaydırınca geri (KenarGeri · ui.js): geri tuşuyla aynı iş. */}
+          <KenarGeri key={topOverlay} onGeri={OVERLAYS[topOverlay][1]}><KlavyeKabi>{OVERLAY_VIEWS[topOverlay]()}</KlavyeKabi></KenarGeri>
         </View>
       ) : null}
       <TelefonDogrulamaSayfasi t={t} session={session} acik={!!telTeklif} ilkNumara={telTeklif?.tel || ""}
@@ -2962,6 +2963,8 @@ function SocialAuthButtons({ t, onBusyChange, onError }) {
 }
 
 function Auth({ mode, t, go, lang, toggleLang }) {
+  // 6 Kasım (Gökberk): e-postadan sonra "İleri" şifreye geçer; klavyeyi kapatmak gerekmez.
+  const sifreAlani = useRef(null);
   // v1.72: giriş/kayıt ekranının altında sözleşme bağlantıları (KVKK + mağaza
   // şartı). Tıklanınca metin tam ekran açılır; ayrıca geri tuşu da kapatır.
   const [legal, setLegal] = useState(null);
@@ -3332,7 +3335,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
       <View style={{ flex: 1 }}>
         <Hdr t={t} brandRight={<LangBtn lang={lang} toggleLang={toggleLang} />}
           title={t.verifySentTitle} onBack={() => { setVerifyWait(false); go("login"); }} />
-        <ScrollView contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
           <View style={{ backgroundColor: C.tealTint, borderWidth: 1, borderColor: "transparent",
                          borderRadius: R.sm, padding: SP[4] }}>
             <Ikon ad="eposta" boy={FS.hero} renk={C.mut} />
@@ -3371,7 +3374,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
           kahraman tekSatir={!forgot} ustBilgi={forgot ? undefined : t.login}
           title={forgot ? t.forgotTitle : t.welcomeBack} onBack={() => forgot ? (setForgot(false), setFSent(false), setErr("")) : go("splash")} />
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
           {forgot ? (
             <>
               {fSent ? (
@@ -3415,11 +3418,12 @@ function Auth({ mode, t, go, lang, toggleLang }) {
               <IconField icon={<Ikon ad="eposta" boy={15} renk={C.muted} />}><TextInput style={st.inputBare} value={email} onChangeText={setEmail}
                 placeholder={t.emailPh} placeholderTextColor={C.dim}
                 autoCapitalize="none" autoCorrect={false} keyboardType="email-address"
-                autoComplete="email" textContentType="emailAddress" returnKeyType="next" /></IconField>
+                autoComplete="email" textContentType="emailAddress" returnKeyType="next"
+                blurOnSubmit={false} onSubmitEditing={() => sifreAlani.current && sifreAlani.current.focus()} /></IconField>
               <Text style={st.label}>{t.pass}</Text>
               <IconField icon={<Ikon ad="kilit" boy={15} renk={C.muted} />}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TextInput style={[st.inputBare, { flex: 1 }]} value={pass}
+                  <TextInput ref={sifreAlani} style={[st.inputBare, { flex: 1 }]} value={pass}
                     onChangeText={(x) => { setPass(x); if (err) setErr(""); }}
                     placeholder="••••••••" placeholderTextColor={C.dim}
                     secureTextEntry={!showPw} autoCapitalize="none" autoCorrect={false}
@@ -3480,7 +3484,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         title={step === 2 ? t.roleTitle : step === 3 ? t.consentTitle : t.register}
         onBack={() => step > 1 ? setStep(step - 1) : go("splash")} />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ padding: SP[5], paddingTop: ARA[18] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[5], paddingTop: ARA[18] }}>
         {/* 3 Eylül — ilerleme çubuğu ve "Adım x/3 · …" satırı kalktı: düğüm
             (başlığın üstü) adımı söylüyor; tasarım 17'de ikinci bir gösterge yok. */}
         {/* 4 Eylül — tasarım 17 (adım 3): başlığın altında ikinci satır YOK;
@@ -3890,7 +3894,7 @@ export function Home({ t, lang, session, onOpenChat, onOpenCompanion, onVerify, 
                  backgroundColor: C.paper, zIndex: 30,
                  opacity: kaydirY.interpolate({ inputRange: [0, 60, 140], outputRange: [0, 0, 1], extrapolate: "clamp" }) }} />
     )}
-    <ScrollView contentContainerStyle={{ paddingBottom: ARA[40] }}
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ paddingBottom: ARA[40] }}
       scrollEventThrottle={16}
       onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: kaydirY } } }], { useNativeDriver: false })}>
       {/* ══════════════════════════════════════════════════════════════

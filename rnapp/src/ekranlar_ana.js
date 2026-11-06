@@ -1081,7 +1081,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
       foto={{ ustBilgi: basKonum.dugum, olc: bnt.olc, tam: bnt.tam,
               altIcerik: !scope?.sortTrip && ucuslar.length >= 2 ? (
                 <View {...turHedef("kesfet_cipler")} style={{ marginTop: ARA[14], marginHorizontal: -ARA[22] }}>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                  <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets horizontal showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ paddingHorizontal: ARA[22], gap: ARA[6] }}>
                     {ucuslar.map((u, k) => {
                       let gun = String(u.date || "").slice(0, 10);
@@ -1879,7 +1879,7 @@ export function Discovery({ t, session, scope, onOpenProfile, onBack, onMeet, on
         {/* #32: MVP Istek Gonder — tam ekran, Hdr'li */}
         <Sayfa>
           <Hdr t={t} scene="İSTEK" title={t.reqTitle} onBack={() => setTarget(null)} />
-          <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[34] }}>
+          <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[34] }}>
             {/* ══════════════════════════════════════════════════════════
                 🔴 v3.4 — TAAHHÜT ANINDA GÜVENLİK TEK KELİME BİLE YAZMIYORDU.
 
@@ -2787,7 +2787,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
           {airports.length > 0 && (
             <>
               <Text style={{ fontSize: FS.sm, color: C.body, marginBottom: ARA[6] }}>{t.filterAirport}</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: ARA[10] }} contentContainerStyle={{ gap: SP[2] }}>
+              <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: ARA[10] }} contentContainerStyle={{ gap: SP[2] }}>
                 {[null, ...airports].map(code => (
                   <Secim key={code || "all"} ton="purple" secili={apFilter === code}
                     etiket={code || t.catAll} onPress={() => setApFilter(code)} />
@@ -3084,7 +3084,7 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
         {/* #31: MVP Baglanti Kur — tam ekran */}
         <Sayfa>
           <Hdr t={t} ustBilgi={t.sceneConnect} title={`${t.connTitle}: ${abbrevName(target?.name)}`} onBack={() => setTarget(null)} />
-          <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[34] }}>
+          <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[34] }}>
             <View style={[S.card, { flexDirection: "row", alignItems: "center" }]}>
               <View style={{ width: 46, height: 46, borderRadius: R.full, backgroundColor: C.purpleBg, alignItems: "center", justifyContent: "center", marginRight: SP[3], overflow: "hidden" }}>
                 {target?.photo ? <Image source={{ uri: target.photo }} style={{ width: 46, height: 46 }} />
@@ -3263,7 +3263,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneProfile} title={t.ppTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <View style={[S.card, { alignItems: "center" }]}>
           <View style={{ width: 72, height: 72, borderRadius: R.full, backgroundColor: canSeePhoto ? "transparent" : C.goldSoft, alignItems: "center", justifyContent: "center", overflow: "hidden", marginBottom: ARA[10] }}>
             {canSeePhoto ? <Image source={{ uri: d.photo_url }} style={{ width: 72, height: 72 }} />
@@ -3658,7 +3658,7 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
       {msgs === null ? <Load icerik />
       : msgHata ? <LoadFail t={t} onRetry={() => { setMsgHata(false); setMsgs(null); load(); }} style={{ marginTop: ARA[40] }} />
       : (
-        <ScrollView ref={ref} onContentSizeChange={() => ref.current?.scrollToEnd({ animated: true })}
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets ref={ref} onContentSizeChange={() => ref.current?.scrollToEnd({ animated: true })}
           contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[20] }}>
           {msgs.length === 0 && <Text style={{ color: C.mut, textAlign: "center", marginTop: ARA[30], fontSize: FS.sm }}>{t.ccEmpty}</Text>}
           {msgs.map(m => {
@@ -3783,14 +3783,6 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
   }, [uid]);
   useEffect(() => { load(); }, [load]);
 
-  async function toggleWsm() {
-    const next = !me.wsm;
-    setMe(m => ({ ...m, wsm: next }));                 // iyimser
-    const { error } = await supabase.from("profiles")
-      .update({ women_safety_mode: next }).eq("user_id", uid);
-    if (error) load();                                  // basarisizsa geri al
-  }
-
   async function fireSos() {
     setSosBusy(true);
     const { data, error } = await supabase.rpc("sos_alert", { p_note: note.trim() || null });
@@ -3816,7 +3808,7 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
   return (
     <Sayfa>
       <Hdr t={t} scene="GÜVENLİK" title={t.safetyTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[3] }}>{t.safetySub}</Text>
 
         <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => { setSosDone(null); setNote(""); setSos(true); }}
@@ -3825,43 +3817,8 @@ export function Safety({ t, lang, session, onBack, onReport, onTrust, onEditProf
           <Text style={{ color: C.redInk, fontSize: FS.sm, marginTop: SP[1], lineHeight: 17 }}>{t.safetySOSBody}</Text>
         </TouchableOpacity>
 
-        {/* Kadin guvenlik modu — SUNUCUDA da zorlaniyor (012/030) */}
-        {me.gender === "female" ? (
-          <View style={[S.card, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
-            <View style={{ flex: 1, marginRight: ARA[10] }}>
-              {/* 🔴 13 EYLÜL (Gökberk md.12) — "text object falan yazıyor".
-                    Ölçüldü: ekranda "Kadın Güvenlik Modu stilMetin=[object
-                    Object]" yazıyordu. Sebep bir şablon dizesi kazası:
-                    `stilMetin` PROP olacakken `metin={`...`}` dizesinin
-                    İÇİNE girmiş, JS de nesneyi "[object Object]" diye
-                    yazıya çevirmiş. Aynı kaza ÜÇ yerde vardı (bu, PhoneGate,
-                    seyahatsiz istek uyarısı) — yani kullanıcı üç ayrı
-                    ekranda ham kod görüyordu.
-                    🆕 SINIF: "BİR PROP'U DİZENİN İÇİNE YAZARSAN JS HATA
-                    VERMEZ — NESNEYİ SESSİZCE METNE ÇEVİRİR." */}
-                <IkonMetin ad="guvenlik" boy={15} renk={C.purple} metin={t.safetyWSM}
-                stilMetin={{ color: C.ink, fontSize: FS.base, fontWeight: "600" }} />
-              <Text style={{ color: C.mut, fontSize: FS.sm, marginTop: ARA[2] }}>{t.safetyWSMBody}</Text>
-            </View>
-            {/* 🔴 Bu bir ANAHTAR ama ekran okuyucuya "düğme" diyordu ve
-                AÇIK/KAPALI olduğunu hiç söylemiyordu — yani kadın güvenlik
-                modunun durumu görme engelli bir kullanıcı için okunamazdı.
-                Rol `switch`, durum `checked`. */}
-            <TouchableOpacity hitSlop={TAP.slop} onPress={toggleWsm}
-              accessibilityRole="switch"
-              accessibilityState={{ checked: !!me.wsm }}
-              accessibilityLabel={t.safetyWSM}
-              style={{ width: 42, height: 24, borderRadius: R.full, backgroundColor: me.wsm ? C.purple : C.bgAlt,
-                       borderWidth: 1, borderColor: me.wsm ? C.purple : C.line, justifyContent: "center" }}>
-              <View style={{ width: 18, height: 18, borderRadius: R.full, backgroundColor: "#fff", marginLeft: me.wsm ? 21 : 2 }} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          // v1.79 (MVP paritesi): kapalıyken MVP önce ÖZELLİK LİSTESİNİ gösterir,
-          // altında nasıl açılacağını söyler. Canlıda yalnız tek satır vardı.
-          <Row icon="guvenlik" title={t.safetyWSM} body={t.safetyWSMFeatures + "\n" + t.safetyWSMOff}
-            onPress={onEditProfile} accent={C.purple} />
-        )}
+        {/* 6 Kasım (Gökberk): "yalnızca kadınlar görsün" ayarı Güvenlik Merkezi'nden kalktı;
+            tek yeri Ayarlar › Gizlilik (ve Profili Düzenle). İki yerde iki farklı anahtar vardı. */}
 
         <Row icon="bayrak" title={t.safetyReport} body={t.safetyRules} accent={C.amber}
           onPress={onReport} />
@@ -4017,7 +3974,7 @@ export function TrustVisual({ t, session, onBack }) {
   return (
     <Sayfa>
       <Hdr t={t} scene="GÜVEN" title={t.trustTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {/* Halka */}
         <View style={{ alignItems: "center", marginBottom: ARA[22] }}>
           {/* 🔴 v1.71 (Gokberk: "dairesel bar dolmuyor"): eski halka kenarlık
@@ -4250,7 +4207,7 @@ export function SessionHistory({ t, lang, session, onBack, onOpenChat, onOpenPro
           </TouchableOpacity>
         ))}
       </View>
-      <ScrollView contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[40] }}>
         <FieldReportPrompt t={t} session={session} />
         {tab === "sessions" && (data.completed.length === 0 ? <Empty ikon="takvim" label={t.histEmpty} /> :
           data.completed.map(s => {
@@ -4403,7 +4360,7 @@ export function Referral({ t, session, onBack }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneGrow} title={t.refTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: ARA[14] }}>{t.refSub}</Text>
         {/* v1.64 (MVP paritesi): kayit Adim 1'deki REFERANS KODU alani MVP'de
             yok — kaldirildi. Islev kaybolmasin diye kod girisi BURAYA tasindi:
@@ -4694,7 +4651,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
     return (
       <Sayfa>
         <Hdr t={t} ustBilgi={t.sceneHost} title={t.accessTitle} onBack={onBack || undefined} />
-        <ScrollView contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[40] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[40] }}>
           <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5 }]}>
             <Text style={{ fontWeight: "700", color: C.ink, fontSize: FS.base }}>{t.hostOnly}</Text>
             <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18, marginTop: ARA[6] }}>{t.hostOnlyBody}</Text>
@@ -4724,7 +4681,7 @@ export function HostAccessSource({ t, session, onDone, onBack, role, onBecomeHos
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneHost} title={t.accessTitle} onBack={onBack || undefined} />
-      <ScrollView contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[40] }}>
         {/* MVP: "• Host Kurulumu · Adım 1/2" pill'i (müsaitlik ekle = Adım 2/2) */}
         <View style={{ alignSelf: "flex-start", backgroundColor: C.goldBg, borderRadius: R.sm, paddingVertical: SP[1], paddingHorizontal: SP[3], marginBottom: SP[3] }}>
           <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>• {t.hostSetupStep1}</Text>
@@ -5747,7 +5704,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneAccount} title={t.editProfTitle} onBack={onBack} />
-      <ScrollView ref={scRef} contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets ref={scRef} contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {/* MVP: avatar + kamera rozeti (fotoğraf yükleme cihazda ayrı akış) */}
         <View style={{ alignItems: "center", marginBottom: SP[3] }}>
           {/* MVP: avatarin altinda "Fotoğraf yükle" — canlida kamera ikonu vardi
@@ -6185,7 +6142,7 @@ export function LoungePicker({ lounges, value, onSelect, emptyNote, t = {} }) {
               </View>
             );
           })()}
-          <ScrollView nestedScrollEnabled>
+          <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets nestedScrollEnabled>
             {lounges.filter(l => inTab(l, term)).map(l => (
               <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={l.id} onPress={() => { onSelect(l.id); setOpen(false); }}
                 style={{ paddingVertical: SP[3], paddingHorizontal: SP[3], borderBottomWidth: 1, borderBottomColor: C.line,
@@ -6756,7 +6713,7 @@ export function EditTrip({ t, visit, onBack, onDone }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.scenePlan} title={t.editTrip} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {kilitli ? (
           <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5, marginBottom: SP[3] }]}>
             <Text style={{ color: C.mut, fontSize: FS.sm, lineHeight: 18 }}>{t.editTripLocked}</Text>
@@ -6951,7 +6908,7 @@ export function Campaigns({ t, onBack }) {   // v2.65: ölü `session` kaldırı
   if (detail) return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneGuide} title={detail.title} onBack={() => setDetail(null)} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <View style={S.card}>
           {!!detail.description && <Text style={{ color: C.body, fontSize: FS.base, lineHeight: 22 }}>{detail.description}</Text>}
           {!!detail.ends_at && <IkonMetin ad="bekliyor" renk={C.amber} stilMetin={{ color: C.amber, fontSize: FS.sm, marginTop: ARA[10] }} metin={`${t.campEnds}: ${detail.ends_at}`} />}
@@ -6979,7 +6936,7 @@ export function Campaigns({ t, onBack }) {   // v2.65: ölü `session` kaldırı
           </TouchableOpacity>
         ))}
       </View>
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {tab === "code" ? (
           <View style={S.card}>
             <Text style={S.label}>{t.promoLabel}</Text>
@@ -7707,7 +7664,7 @@ export function KuralKarari({ t, avail, skor, onBack, onSend, kapi, sonaErdi, is
           dilinden kopuk bir "ara sayfa" gibi duruyordu. Artık Keşfet/Planım ile
           AYNI bant: kaş "KURAL MOTORU · SAW", serif başlık "neden %X?", altında
           salonun adı. Bant sayfayla birlikte kayar; geri oku bandın içinde. */}
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: ARA[34] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ flexGrow: 1, paddingBottom: ARA[34] }}>
         <FotoBant marka="LOUNGELINK" geri={onBack} turSlot={<TurDugmesi t={t} sayfa="kural" />}
           ustBilgi={BUYUK([t.ruleEyebrow, avail?.airport_code].filter(Boolean).join(" · "))}
           baslik={String(t.ruleWhyTitle || "").replace("{n}", String(gosterilenSkor))}

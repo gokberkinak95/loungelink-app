@@ -495,6 +495,19 @@ export function zamanKisa(ts, t) {
 //
 // 🆕 SINIF: "BİR SAYACIN ÖLÇEĞİ, SAYDIĞI ŞEYE DEĞİL SORULDUĞU YERE
 // GÖRE SEÇİLİR."
+// 6 Kasım — "Oturumu Başlat görünüyor ama durum: Sona erdi" (Gökberk). Sunucu, ilan saati
+// bittikten sonra 2 SAAT daha başlatmaya izin veriyor (süpürge: yerel_an(time_to) + 2 sa).
+// Pencere kapandı ama ek süre sürüyorsa durum "Ek süre"dir; ek süre de bittiyse başlatılamaz.
+// Kural sunucuyla aynı sayı: EK_SURE_DK.
+export const EK_SURE_DK = 120;
+export function ekSureBitti(availDate, timeTo, simdi) {
+  if (!availDate || !timeTo) return false;
+  const bit = new Date(`${String(availDate).slice(0, 10)}T${String(timeTo).slice(0, 5)}:00`);
+  if (isNaN(bit.getTime())) return false;
+  const now = simdi == null ? Date.now() : simdi;
+  return now > bit.getTime() + EK_SURE_DK * 60000;
+}
+
 export function geriSayim(availDate, timeFrom, timeTo, t, simdi, secenek) {
   if (!availDate || !timeFrom) return null;
   const gun = String(availDate).slice(0, 10);
@@ -837,7 +850,7 @@ export function LegalDoc({ docKey, onBack, onOpen, t }) {
   return (
     <Sayfa>
       <Hdr t={t} title={d.title} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[44] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[18], paddingBottom: ARA[44] }}>
         <Text style={{ color: C.mut, fontSize: FS.sm, marginBottom: SP[3] }}>{d.short}</Text>
         <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 21 }}>{d.body}</Text>
         <View style={{ height: 1, backgroundColor: C.line, marginVertical: ARA[18] }} />

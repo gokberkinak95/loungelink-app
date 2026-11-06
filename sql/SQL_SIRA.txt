@@ -1,3 +1,13 @@
+SQL SIRASI - 6 Kasim 2026 (14. tur) - YENI: 342 - 341'den SONRA (341'i kosmadiysan once onu)
+
+  1) 342_oturum_baslatma_penceresi.sql
+       -> Ilan saati + 2 saat ek sure gectiyse "Oturumu Baslat" sunucuda reddedilir (session_window_closed).
+          Once yalniz supurge (5 dk'da bir) kapatiyordu; arada dugme calisiyordu.
+       -> Aktif oturumlarin otomatik kapanisi havalimaninin saat dilimiyle; ek surede baslayan
+          oturum en az 2 saat acik kalir.
+       Dogrulama: uc satir tamam = true. Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 25 Ekim 2026 (13. tur) - YENI: 341 - 340'tan SONRA
 
   1) 341_ilan_basvurusu_dili.sql

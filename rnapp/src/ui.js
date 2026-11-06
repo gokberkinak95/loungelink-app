@@ -11,7 +11,7 @@
 // ============================================================
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BUYUK, gorunur } from "./i18n";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal, StyleSheet, KeyboardAvoidingView, Keyboard } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, Platform, Animated, Easing, Image, Dimensions, ActivityIndicator, Modal, StyleSheet, KeyboardAvoidingView, Keyboard, PanResponder } from "react-native";
 // 🔴 `BTN` adı bu dosyada ZATEN VAR (varyant haritası). Tema tarafındaki
 // ölçüler ayrı adla giriyor; aynı adı ikinci kez bağlamak sessiz bir
 // gölgeleme değil, doğrudan çalışma anı hatası verdi.
@@ -1426,7 +1426,7 @@ export function FotoSahne({ children, perdeBas = 0.36, perdeGuc = 0.58, odak, od
 // sanırım. Bu yüzden de aşağıda görmem gereken asıl alanları daha zor
 // görüyorum."
 //
-// Doğruydu: bant `<ScrollView>`in DIŞINDA duruyordu, yani sabitti.
+// Doğruydu: bant `<ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>`in DIŞINDA duruyordu, yani sabitti.
 // Profil ekranının gerçek render'ında ölçtüm (390×844):
 //
 //     bandın alt kenarı        198.7 pt
@@ -1464,7 +1464,7 @@ export function bantYuksekligi() {
 /* Ekran tarafının tek satırlık bağlantısı:
      const bnt = useDaralanBant();
      <Hdr … foto={{…}} kaydir={bnt.kaydir} />
-     <ScrollView {...bnt.scrollProps} contentContainerStyle={{ paddingTop: bnt.ustBosluk }}>
+     <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets {...bnt.scrollProps} contentContainerStyle={{ paddingTop: bnt.ustBosluk }}>
    `ustBosluk` bandın yüksekliği kadar: bant artık MUTLAK konumlu, yani
    akışta yer kaplamıyor; o yeri içeriğin dolgusu açıyor. */
 export function useDaralanBant() {
@@ -1536,7 +1536,7 @@ export function useDaralanBant() {
 // yamalamak yerine KURAL: daralan bantlı her liste MONTAJDA bandı sıfırlar.
 export const Kaydirma = React.forwardRef(function Kaydirma({ bantSifirla, ...rest }, ref) {
   useEffect(() => { if (bantSifirla) bantSifirla(); }, []);   // yalnız montajda
-  return <Animated.ScrollView ref={ref} {...rest} />;
+  return <Animated.ScrollView ref={ref} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets {...rest} />;
 });
 
 export function DaralanBant({ kaydir, olc, tam: tamProp, kompaktBaslik, kompaktSag, children }) {
@@ -2985,6 +2985,40 @@ export function useKlavyeAcik() {
     return () => { a.remove(); b.remove(); };
   }, []);
   return acik;
+}
+
+// 6 Kasım (Gökberk) — iOS'ta SOL KENARDAN SAĞA KAYDIRINCA GERİ. Yalnız bir katman (iç sayfa)
+// açıkken çalışır ve geri düğmesiyle AYNI işi yapar: en üstteki katmanı kapatır, bir önceki
+// sayfaya döner (ana sayfaya atlamaz). Sekmelerde yoktur. Android'de sistemin kendi geri
+// hareketi var; orada bu bileşen yalnız çocuklarını çizer.
+// Kenar şeridi 18pt: içerik kenar boşluğu 20+, dokunuşları yemez. Sayfa parmakla gelir;
+// ekranın üçte birini geçince ya da hızlı fırlatılınca kapanır, yoksa yerine yaylanır.
+export function KenarGeri({ onGeri, children }) {
+  const x = useRef(new Animated.Value(0)).current;
+  const geri = useRef(onGeri);
+  geri.current = onGeri;
+  const pr = useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponder: (_, g) => g.dx > 8 && Math.abs(g.dx) > Math.abs(g.dy) * 1.5,
+    onPanResponderMove: (_, g) => x.setValue(Math.max(0, g.dx)),
+    onPanResponderRelease: (_, g) => {
+      const W = Dimensions.get("window").width;
+      if (g.dx > W / 3 || g.vx > 0.6) {
+        Animated.timing(x, { toValue: W, duration: 180, easing: Easing.out(Easing.quad), useNativeDriver: true })
+          .start(() => { if (geri.current) geri.current(); x.setValue(0); });
+      } else {
+        Animated.spring(x, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
+      }
+    },
+    onPanResponderTerminate: () => Animated.spring(x, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start(),
+  })).current;
+  if (Platform.OS !== "ios" || !onGeri) return children;
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.View style={{ flex: 1, transform: [{ translateX: x }] }}>{children}</Animated.View>
+      <View {...pr.panHandlers} style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 18 }} />
+    </View>
+  );
 }
 
 export function KlavyeKabi({ children, stil }) {

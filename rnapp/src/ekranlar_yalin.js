@@ -40,7 +40,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, ActivityIndicator, BackHandler, FlatList, Image, Keyboard, Linking, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BinisKartiPanel } from "./BinisKarti";
 import { kuyrugaAkit, kuyrugaBak, kuyrukDinle, kuyruguYenidenDene, mesajKuyruga, onbellegeYaz, onbellektenOku } from "./cevrimdisi";
-import { ACCESS_SOURCES, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
+import { ACCESS_SOURCES, ekSureBitti, erisimKaynaklari, erisimEtiketi, AMENITY_ICONS, AMENITY_TR, AirportPicker, Load, PROF_KEYS, Pill, REPORT_TYPES, ReqStateBadge, reqDurumOgesi, ustIsik, S, Sayac, TR_DAYS, TR_MONTHS, VenuePrices, _DTP, abbrevName, dateOk, geriSayim, getProfileCompletion, intentLabel, isoOf, zamanKisa, useAkisGoruldu, yeniMi, LoadFailPage, PaylasimSeridi } from "./ortak";
 import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { VitrinKarti, MiniErken, MiniFiyat, IndirimBandi, bantMetni } from "./odul_magaza";
@@ -1277,6 +1277,9 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     || ["cancelled", "declined", "expired"].includes(reqDurum);
   // Bu kullanıcı "başlat" dedi mi (çift onaylı başlatmanın kendi tarafı)
   const iStarted = !!(sess && (isHost ? sess.host_started_at : sess.guest_started_at));
+  // 6 Kasım: ilan saati + 2 sa ek süre geçtiyse kimse başlatmamış oturum artık başlatılamaz
+  // (süpürge isteği iptal edip krediyi iade eder). Düğme yerine durum cümlesi.
+  const baslatmaKapandi = !iStarted && ekSureBitti(_a.avail_date, _a.time_to);
   // v6.3 · PANO E — KARŞI TARAFIN BİNİŞ KARTI. SQL 294 atlamayı/başarısızlığı
   // yalnız bildirim olarak düşürüyordu; sohbette görünmüyordu. Artık karşı
   // taraf doğrulamayı atladıysa ya da doğrulayamadıysa, sohbetin üstünde
@@ -1531,7 +1534,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
               // Pano hücresi dar: durum KISA söylenir (tam cümle panelde).
               const durum = sess && sess.status === "completed" ? t.fidsDone
                 : sess && sess.status === "active" ? t.fidsActive
-                : gs && gs.tur === "bitti" ? t.cdEnded
+                : gs && gs.tur === "bitti" ? (ekSureBitti(av.avail_date, av.time_to) ? t.cdEnded : t.cdGrace)
                 : gs && gs.tur === "acik" ? t.cdNow
                 : t.fidsPlanned;
               const hucre = (etiket, icerik, esnek) => (
@@ -1581,7 +1584,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
           Aynı şerit, aynı metin (TR+EN hazır). Klavye açıkken yer kaplamasın diye gizlenir. */}
       {!klavye && <PaylasimSeridi t={t} />}
       {/* Mesajlar — tasarım: ilk balon 150pt'te (132 + 18) */}
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[18] }}
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[18] }}
         /* ══════════════════════════════════════════════════════════
            🔴 12 EYLÜL · GECE — UZUN SOHBET EN BAŞTAN AÇILIYORDU.
            Kusur ancak 21 mesajlık bir sahne çekilince göründü: ekran
@@ -1924,8 +1927,12 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                       ? String(t.startOtherReady).replace("{ad}", shortName(otherName || "")) : null,
                   ].filter(Boolean).join(" · ")}
                 </Text>
-                <Btn v="gold" onPress={baslatIstegi}
-                  label={t.startSessionBtn} a11yLabel={t.startSessionBtn} />
+                {baslatmaKapandi ? (
+                  <Text style={{ alignSelf: "center", textAlign: "center", color: C.mut, fontSize: FS.sm, paddingHorizontal: SP[3] }}>{t.startExpired}</Text>
+                ) : (
+                  <Btn v="gold" onPress={baslatIstegi}
+                    label={t.startSessionBtn} a11yLabel={t.startSessionBtn} />
+                )}
               </View>
             )
           ) : (
@@ -1979,7 +1986,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
                  : sess && (sess.status === "cancelled" || sess.status === "expired") ? t.sessClosedTitle
                  : t.sessInProgress}
                onBack={panelKapat} />
-        <ScrollView contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[30] }}>
+        <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[14], paddingBottom: ARA[30] }}>
         {sess === undefined ? null : (sess && (sess.status === "cancelled" || sess.status === "expired")) ? (
           /* 🔴 23 EYLÜL — İPTAL/SÜRESİ DOLMUŞ OTURUM "TAMAMLANDI" PANELİNİ AÇIYORDU.
              Bu üçlü yalnız pending → active → (geri kalan her şey = tamamlandı)
@@ -2597,7 +2604,7 @@ export function KimlikDogrula({ t, session, onBack, onDone }) {
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.kycEyebrow} title={t.kycTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         <Text style={{ color: C.body, fontSize: FS.sm, lineHeight: 20, marginBottom: ARA[14] }}>{t.kycBody}</Text>
         {durum === null ? <Load icerik /> : st === "approved" ? (
           <View style={[S.card, { borderColor: "transparent", borderWidth: 1.5 }]}>
@@ -3353,7 +3360,7 @@ export function Marketplace({ t, session, onBack, onPlans, lang }) {
           )}
         </View>
       )}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: ARA[14] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: ARA[14] }}>
         {kategoriCipleri.map(([k, lb]) => (
           <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} key={k} onPress={() => setCat(k)}
             style={{ paddingVertical: SP[2], paddingHorizontal: SP[3], borderBottomWidth: 2.5, borderBottomColor: cat === k ? C.gold : "transparent" }}>
@@ -3363,7 +3370,7 @@ export function Marketplace({ t, session, onBack, onPlans, lang }) {
       </ScrollView>
     </View>
     )}
-    <ScrollView contentContainerStyle={{ padding: ARA[10], paddingBottom: ARA[40] }}>
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[10], paddingBottom: ARA[40] }}>
       {/* MVP: 2 sütunlu ürün gridi */}
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
       {/* 🔴 v1.93 — KAHRAMAN KART.
@@ -3556,7 +3563,7 @@ export function Plans({ t, session, onBack, lang }) {
   return (
     <Sayfa>
       <Hdr t={t} scene="PLAN" title={t.plansTitle} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
 
         {/* 🔴 EN ÜSTTE: AĞIRLARSAN ÖDEMEZSİN.
             Bu kart, fiyat listesinden ÖNCE geliyor ve sırası bir tez:
@@ -3847,7 +3854,7 @@ export function Degerlendirmeler({ t, lang, session, onBack, onRate, onOpenProfi
           </TouchableOpacity>
         ))}
       </View>
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
         {/* 🔴 "Ağırlaman nasıl geçti?" (bir cümle) ile "Oturumu puanla"
             AYNI SORUNUN iki yarısı: biten bir oturumun senden hâlâ
@@ -4084,7 +4091,7 @@ export function LiveStatus({ t, session, onBack, onGoSession }) {
       {/* 🔴 29 EYLÜL (Gökberk) — "OTURUMA GİT" EKRANIN ALTINDA KESİLİYORDU.
           Gövde kaydırılmıyordu: halka + durum listesi ekrana sığmayınca düğme
           dışarıda kalıyordu. Gövde artık kayar; düğme altta SABİT kabında. */}
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: ARA[22] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: ARA[22] }}>
       {/* v6.2 (K7) — salon penceresinin ne kadarı kaldı: Güven halkasıyla
           aynı noktalı dil; son 15 dakikada kehribar. */}
       {act && (() => {
@@ -4423,7 +4430,7 @@ export function MyQuestions({ t, lang, onOpenProfile, onOpenCompanion, onIlanaGi
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowQuestions} onBack={onBack} marka={false} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {govde}
       </ScrollView>
     </Sayfa>
@@ -4626,7 +4633,7 @@ export function SoruEkrani({ t, lang, onBack, onOpenProfile, onOpenCompanion, on
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneRequests} title={t.flowQuestions} onBack={onBack} marka={false} />
-      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ flexGrow: 1, padding: ARA[20], paddingBottom: ARA[40] }}>
         <SekmeSeridi secili={aktif} onSec={setSekme} secenekler={[
           ["gelen", t.qTabIn, gelenBekleyen],
           ["giden", t.qTabOut, gidenBekleyen],
@@ -5221,7 +5228,7 @@ export function Wallet({ t, session, onBack }) {
   return (
     <Sayfa>
     <Hdr t={t} tur="cuzdan" title={t.walletTitle} sub={t.walletSub} onBack={onBack} />
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
       {/* 🔴 12 Eylül · gece — ETİKET GİTTİ, KART GELDİ.
           Eskisi: ortalanmış üç satır, `goldBg` dolgu, 12pt köşe.
           Yenisi: `GecisKarti` — eğime tepki veren tek yüzey. Bakiye
@@ -5499,7 +5506,7 @@ export function HostApply({ t, session, onBack, onDone }) {
   return (
     <Sayfa>
     <Hdr t={t} ustBilgi={t.sceneHost} title={t.hostApplyTitle} sub={t.hostApplySub} onBack={onBack} />
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1 }} contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
       {app.status === "pending" ? (
         <View style={[S.card, { backgroundColor: C.goldSoft, borderColor: C.goldLine }]}>
           <IkonMetin ad="bekliyor" renk={C.goldInk} stilMetin={{ fontWeight: "700", color: C.goldInk, fontSize: FS.base }} metin={t.hostApplyPendingTitle} />
@@ -5721,8 +5728,10 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
   const V = { yes: C.green, paid: C.amber, self_only: C.mut, no: C.red, info: C.teal };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: ARA[20], paddingBottom: ARA[40] }}>
-      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onBack}><IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.base }} metin={t.back} /></TouchableOpacity>
+    // 6 Kasım (Gökberk): geri düğmesi saat/çentik alanına biniyordu (üst güvenli alan yoktu;
+    // onBack alan ekranlar içinde Hdr/TOPPAD kullanmayan TEK ekran buydu) ve "‹" iki kez çiziliyordu.
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[20], paddingTop: TOPPAD + ARA[12], paddingBottom: ARA[40] }}>
+      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onBack} style={{ alignSelf: "flex-start", minHeight: TAP.minHeight, justifyContent: "center" }}><IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.base }} metin={String(t.back).replace(/^[‹<]\s*/, "")} /></TouchableOpacity>
       <Text style={{ ...S.h1, color: C.ink, marginTop: SP[3] }}>{t.guideTitle}</Text>
       <Text style={{ fontSize: FS.sm, color: C.mut, lineHeight: 19, marginBottom: SP[4] }}>{t.guideSub}</Text>
 
@@ -5996,7 +6005,7 @@ export function ReportUser({ t, session, targetId, targetName, sessionId, onBack
   return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneTrust} title={t.safetyReport} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
         {pick.id ? (
           <View style={{ backgroundColor: C.bgAlt, borderRadius: R.xs, padding: SP[3], marginBottom: ARA[14],
                          flexDirection: "row", alignItems: "center" }}>
@@ -6144,7 +6153,7 @@ export function HostDaveti({ t, onBecomeHost, onBack }) {
   if (hata) return (
     <Sayfa>
       <Hdr t={t} ustBilgi={t.sceneHost} title={t.hdTitle || t.subTabListings} onBack={onBack} />
-      <ScrollView contentContainerStyle={{ padding: SP[4] }}>
+      <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4] }}>
         <LoadFail t={t} onRetry={yukle} />
       </ScrollView>
     </Sayfa>
@@ -6155,7 +6164,7 @@ export function HostDaveti({ t, onBecomeHost, onBack }) {
   const basamaklar = Array.isArray(d.basamaklar) ? d.basamaklar : [];
 
   return (
-    <ScrollView contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[4], paddingBottom: ARA[40] }}>
       {/* EN ÜSTTE ÇERÇEVE — ödül değil, KARAR. */}
       <View style={{ backgroundColor: C.tealBg, borderWidth: 1, borderColor: "transparent",
                      borderRadius: R.sm, padding: SP[4], marginBottom: ARA[14] }}>
