@@ -55,7 +55,10 @@ function firebaseEkle(config) {
   const platform = process.env.EAS_BUILD_PLATFORM;
   const androidOk = !!(config.android && config.android.googleServicesFile);
   const iosOk = !!(config.ios && config.ios.googleServicesFile);
-  const hazir = platform === "android" ? androidOk : platform === "ios" ? iosOk : (androidOk || iosOk);
+  // 7 Kasım: platform bilinmiyorken (yerel `eas credentials`, `expo config`) iki dosya da yoksa eklenti
+  // EKLENMEZ. Önce "biri varsa yeter" idi: yalnız google-services.json varken iOS yapılandırması
+  // "@react-native-firebase/auth: ios.googleServicesFile eksik" diye düşüyordu.
+  const hazir = platform === "android" ? androidOk : platform === "ios" ? iosOk : (androidOk && iosOk);
   // 31 Ekim: uygulama Firebase'in o platformda bağlı olup olmadığını buradan okur (telefon.js).
   // iOS'ta plist yokken JS `require("@react-native-firebase/auth")` yerel modülü arıyor ve
   // try/catch DIŞINDA fırlatıyordu → girişten hemen sonra uygulama kapanıyordu.
