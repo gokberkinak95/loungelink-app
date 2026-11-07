@@ -51,6 +51,37 @@ function iosPlist(config) {
   if (yol) { config.ios = config.ios || {}; config.ios.googleServicesFile = yol; }
   return config;
 }
+// 7 Kasım — @react-native-firebase/auth'un KENDİ eklentisi yerine bu. Onun iOS adımı plist'te
+// REVERSED_CLIENT_ID arıyor; o alan yalnız Firebase'de Google ile giriş açıkken üretiliyor ve
+// bizim plist'te yok (Google girişi Supabase üzerinden) → `expo config` "Failed to parse your
+// GoogleService-Info.plist" ile düşüyordu. Firebase'in belgesine göre böyle bir uygulamada SMS
+// doğrulamasının reCAPTCHA dönüşü için URL şeması KODLANMIŞ UYGULAMA KİMLİĞİDİR:
+// GOOGLE_APP_ID "1:123:ios:abc" → "app-1-123-ios-abc". REVERSED_CLIENT_ID varsa o da eklenir.
+// Eklentinin ikinci adımı (AppDelegate openURL düzeltmesi) olduğu gibi kullanılır.
+function firebaseAuthEklentisi(config) {
+  const { withInfoPlist } = require("expo/config-plugins");
+  let rnfbIos = null;
+  try { rnfbIos = require("@react-native-firebase/auth/plugin/build/ios"); } catch (e) { rnfbIos = null; }
+  config = withInfoPlist(config, (c) => {
+    const yol = c.ios && c.ios.googleServicesFile;
+    if (!yol) return c;
+    const tam = path.resolve(c.modRequest.projectRoot, yol);
+    if (!fs.existsSync(tam)) return c;
+    const plist = require("plist").parse(fs.readFileSync(tam, "utf8"));
+    const semalar = [];
+    if (plist.REVERSED_CLIENT_ID) semalar.push(plist.REVERSED_CLIENT_ID);
+    if (plist.GOOGLE_APP_ID) semalar.push("app-" + String(plist.GOOGLE_APP_ID).replace(/:/g, "-"));
+    c.modResults.CFBundleURLTypes = c.modResults.CFBundleURLTypes || [];
+    for (const sema of semalar) {
+      const var_ = c.modResults.CFBundleURLTypes.some((u) => (u.CFBundleURLSchemes || []).includes(sema));
+      if (!var_) c.modResults.CFBundleURLTypes.push({ CFBundleURLSchemes: [sema] });
+    }
+    return c;
+  });
+  if (rnfbIos && rnfbIos.withIosCaptchaOpenUrlFix) config = rnfbIos.withIosCaptchaOpenUrlFix(config, {});
+  return config;
+}
+
 function firebaseEkle(config) {
   const platform = process.env.EAS_BUILD_PLATFORM;
   const androidOk = !!(config.android && config.android.googleServicesFile);
@@ -64,7 +95,7 @@ function firebaseEkle(config) {
   // try/catch DIŞINDA fırlatıyordu → girişten hemen sonra uygulama kapanıyordu.
   config.extra = { ...(config.extra || {}), firebase: { android: androidOk, ios: iosOk } };
   if (!hazir) return config;
-  config.plugins = [...(config.plugins || []), "@react-native-firebase/app", "@react-native-firebase/auth"];
+  config.plugins = [...(config.plugins || []), "@react-native-firebase/app", firebaseAuthEklentisi];
   if (iosOk) {
     config.plugins = config.plugins.map((p) => {
       if (Array.isArray(p) && p[0] === "expo-build-properties") {
