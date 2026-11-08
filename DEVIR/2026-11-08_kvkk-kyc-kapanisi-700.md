@@ -81,3 +81,54 @@ GüvenKalkan 3. satır "Biniş kartı doğrulandı"; plan kartları "yalnız do�
 - Play 9.5/9.6 ürünleri tamam, RevenueCat iOS appl_ anahtarı → iOS 296 production build + gönderim.
 - App Store açıklamasında "Kural motoru" ve "Kadın güvenlik modu" ifadeleri 296 gönderiminde değiştirilecek.
 - Mağaza rehberi: veri güvenliği / App Privacy'den "kimlik belgesi" çıkarıldı (v34).
+
+---
+## 8–9 Kasım gece · güvenlik denetimi ve canlı eşitleme
+
+**Güvenlik denetimi** (3 ajan: Vercel/BO/site · Supabase/fraud · app/Firebase/Expo/RevenueCat), bulgular doğrulanıp düzeltildi:
+- **BO 1.103.0 / 1.103.1:**
+  - KRİTİK: middleware eşleşme deseni `.png/.txt` biten yolları dışarıda bırakıyordu; `/users/x.png` girişsiz render ediliyordu, `x-ll-uid` sahtelenebiliyordu. Düzeltme: başlık her yolda silinir, HMAC imzalı (`lib/kimlikImza.js`), matcher yalnız gerçek statik dosyaları dışarıda bırakır. Canlıda ölçüldü: 307.
+  - `/api/flight` admin yetkisi + girdi doğrulaması + zaman aşımı; `images.unoptimized`; güvenlik başlıkları; çıkış yalnız POST; BO adresi sabit; hesap-sil biçim/uzunluk; modül yetkileri.
+  - Ekip/partner daveti `app_metadata`.
+- **Site 0.74.1:** bilinmeyen `/kart`, `/rehber` slug'ı 404 (`dynamicParams=false`); görsel optimizasyonu kapalı.
+- **App (iOS 298 / Android 305):**
+  - Firebase App Check (Play Integrity / DeviceCheck; Firebase'de iki uygulama kayıtlı, **Enforce henüz kapalı**).
+  - Derin bağlantı başka hesabın oturumunu açamaz.
+  - `satinAl` öncesi RevenueCat girişi garanti.
+  - `.easignore` gizli anahtarları dışlar (önceki build arşivlerine `gizli/` girmiş olabilir; Gökberk anahtar yenilemeyi istemedi).
+  - errMap: 347'nin 8 kodu + `reward_inactive` + `dl*`.
+- **SQL 347** (21 düzeltme):
+  - davet ödülü kapıları
+  - sahte oturum / kapıda iade
+  - oturum 15 dk + 1 saat önce başlatma
+  - plan hediyesi farklı misafir + 60 gün
+  - plan kredisi kilidi
+  - abonelik TRANSFER / SANDBOX / bitiş cron'u
+  - staff bayrağı
+  - ödül talebi sınırı
+  - foto adresi
+  - kova sınırları
+  - tanı fonksiyonları kapalı
+  - mesaj kolonları
+  - Gmail özeti
+  - hız sınırları
+- **SQL 346 düzeltildi:** canlıda hedef venue pasifti (23505).
+- **SQL 348:** DENETIM_TAM farkları: 9 gövde + 36 yetki eşitlendi, `connection_test` istemci yazması kapandı.
+- **`sql/denetim_tam_uret.py` → `DENETIM_TAM.sql`:** 001–348 canlı parmak izi. Canlıda koşuldu; kalan yalnız bilinçli farklar: `schema_migrations.kaynak` null; FAZLA `connection_test`, `sql_migration_durumu`, `test_hesabi_kaydi`, `kurulum_imzasi_var`.
+- **Yerel kurulum düzeltmeleri:**
+  - pg_run sıralaması (teşhis dosyaları ana dosyadan sonra)
+  - 337 CRLF
+  - 17 eski dosya tekrar koşulabilir (pg_run 391 dosya + tekrar kurulum temiz)
+- **Gradle dağıtımı:** GitHub 504 → Tencent aynası + SHA-256 (`app.config.js` `gradleIndirme`).
+
+**Testler (son):** app `npm run verify` 77/77 (dokunma 9/9, tip_check temiz) · `check.js` 0 · BO check + build · site 7/7 + build.
+
+**Mağazalar:** iOS 298 App Store Connect'e, Android 305 Play dahili teste (taslak) yüklendi. 294–297 / 301–304 kullanılmayacak.
+
+**Gökberk'ten beklenenler:**
+- **App Store:** 298 seç, 7 ürünü bağla, App Privacy, açıklama (rehber v35), inceleme hesabı (kayıt + `inceleme_hesabi_hazirla`), Submit.
+- **Play:** 305 dahili → kapalı test (12+ kişi / 14 gün), Veri güvenliği.
+- **Testler:** SMS + push + sandbox satın alma; sonra App Check **Enforce**.
+- **Panel:** Expo 2FA; Vercel BO `/api/` hız sınırı kuralı (Deny).
+
+**Açık:** `npm run e2e` Windows'ta çalışmıyor (psql stderr None / auth.users şeması; 347'den bağımsız harness sorunu).
