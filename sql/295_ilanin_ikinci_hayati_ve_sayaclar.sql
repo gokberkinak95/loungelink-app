@@ -523,6 +523,22 @@ begin
      and pr.guest_capacity is not null
      and a.slots <= pr.guest_capacity
      and public.is_contact_verified(a.host_id)
+     -- 8 Kasım, tekrar kurulum: ikinci koşuda tohum verisi (SEED'ler kapıdan
+     -- geçmeden yazar) aynı host'a aynı gün ÇAKIŞAN iki aktif ilan bırakıyor;
+     -- sınama onlardan birini seçince `ilani_yeniden_yayinla` DOĞRU olarak
+     -- 'kendi_ilanlarin_cakisiyor' diyordu — kapı çalışıyordu, sınama temsili
+     -- değildi (yukarıdaki guest_capacity notuyla aynı sınıf). Seçim artık
+     -- fonksiyonun kendi çakışma kuralını geçen ilanla yapılıyor. İlk kurulumda
+     -- seçilen ilan zaten bu kuralı geçiyordu (sınama yeşildi).
+     and not exists (select 1 from availabilities a2
+                      where a2.host_id = a.host_id and a2.id <> a.id and a2.active
+                        and a2.avail_date = a.avail_date
+                        and a2.time_from < a.time_to and a.time_from < a2.time_to)
+     -- 8 Kasım, tekrar kurulum: aynı sınıf — tohum verisinde iki tarafın da
+     -- başlattığı (active) oturumu olan ilan seçilince `cancel_availability`
+     -- (313'ün tek tanımı) DOĞRU olarak 'session_started' diyordu.
+     and not exists (select 1 from sessions s join requests q on q.id = s.request_id
+                      where q.avail_id = a.id and s.status = 'active')
    limit 1;
   if av is null then raise notice '295 sinama: kapilardan gecen ilan yok, atlandi'; return; end if;
 

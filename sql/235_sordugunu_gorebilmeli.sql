@@ -39,7 +39,24 @@
 -- ----------------------------------------------------------------------------
 -- 1) SORULARIM — takip yüzeyi
 -- ----------------------------------------------------------------------------
-drop function if exists public.sorularim();
+-- 8 Kasım, tekrar kurulum: sorularim() sonradan büyüdü (248: 16, 313/314/331:
+-- 18 kolon). Bu dosya ikinci kez koşunca drop + create ile onu 11 kolona
+-- GERİ düşürüyordu (pg_run GERILEME: 18 -> 16) ve ardından gelen 331'in
+-- `create or replace`ı 42P13 veriyordu. Daha geniş (yeni) hâl kuruluysa eski
+-- tanım ATLANIR. İlk kurulumda mevcut hâl bu dosyanınkinden geniş değil →
+-- drop + create eskisi gibi.
+do $g235s$
+declare v_kolon int;
+begin
+  select count(*) into v_kolon
+    from pg_proc p, unnest(p.proargmodes) m
+   where p.oid = to_regprocedure('public.sorularim()') and m = 't';
+  if v_kolon > 11 then
+    raise notice '235: sorularim % kolonlu YENI hali kurulu — 11 kolonlu eski tanim atlandi (tekrar kurulum)', v_kolon;
+    return;
+  end if;
+  drop function if exists public.sorularim();
+  execute $c235s$
 create or replace function public.sorularim()
 returns table (
   id uuid, host_id uuid, host_name text, salon text, airport_code text,
@@ -96,6 +113,8 @@ begin
    order by e.created_at desc
    limit 30;
 end $sr$;
+$c235s$;
+end $g235s$;
 grant execute on function public.sorularim() to authenticated;
 
 comment on function public.sorularim() is

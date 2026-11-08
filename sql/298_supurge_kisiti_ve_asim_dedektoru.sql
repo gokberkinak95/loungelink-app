@@ -54,6 +54,20 @@ create table if not exists public.supurge_damgasi (
 alter table public.supurge_damgasi enable row level security;
 revoke all on table public.supurge_damgasi from anon, authenticated;
 
+-- 8 Kasım, tekrar kurulum: 299 bu argümansız imzayı düşürüp yerine
+-- expire_stale_sessions(p_kaynak text default 'uygulama') kurdu. İkinci koşuda
+-- argümansız hâl yeniden kurulunca iki aşırı yükleme oluşuyor ve
+-- `expire_stale_sessions()` çağrısı "is not unique" ile düşüyordu (aşağıdaki
+-- sınama dahil; App.js da argümansız çağırıyor). Yeni hâl varsa eski tanım ve
+-- grant'i ATLANIR; sınama argümansız çağrıyla 299'un hâlini ölçer (aynı fren).
+-- İlk kurulumda (text) imzası yok → eskisi gibi kurulur.
+do $g298$
+begin
+  if to_regprocedure('public.expire_stale_sessions(text)') is not null then
+    raise notice '298: expire_stale_sessions(text) (299+) kurulu — argumansiz tanim atlandi (tekrar kurulum)';
+    return;
+  end if;
+  execute $c298$
 create or replace function public.expire_stale_sessions()
 returns jsonb
 language plpgsql
@@ -116,8 +130,9 @@ begin
   return jsonb_build_object('ok', true, 'durum', 'kosuldu',
                             'iptal_edilen', v_req, 'suresi_dolan', v_sess);
 end $function$;
-
-grant execute on function public.expire_stale_sessions() to authenticated;
+$c298$;
+  grant execute on function public.expire_stale_sessions() to authenticated;
+end $g298$;
 
 -- ══ 2 · SLOT AŞIMI DEDEKTÖRÜ ═══════════════════════════════════════════
 -- Kırpılan farkı GÖRÜNÜR kılan tek kaynak. BO bunu okuyor (service_role),

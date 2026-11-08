@@ -36237,6 +36237,10 @@
    ],
    [
     "govde",
+    "cron_isi_var|if to_regclass('cron.job') is null then return true; end if;"
+   ],
+   [
+    "govde",
     "profil_dogrulandi_hesapla|from public.verifications v"
    ],
    [
@@ -36273,6 +36277,10 @@
    ],
    [
     "govde",
+    "cron_isi_var|execute 'select exists (select 1 from cron.job where jobname = $1)' into v using p_ad;"
+   ],
+   [
+    "govde",
     "profil_dogrulandi_hesapla|where v.user_id = p_user), false)"
    ],
    [
@@ -36290,14 +36298,6 @@
    [
     "govde",
     "grant_consents|update users set pazarlama_izni = true, pazarlama_izni_at = now() where id = v_uid;"
-   ],
-   [
-    "govde",
-    "bildirim_tercihlerim|select pazarlama_izni into v_pz from users where id = v_uid;"
-   ],
-   [
-    "govde",
-    "send_campaign|and u.pazarlama_izni"
    ]
   ]
  ]

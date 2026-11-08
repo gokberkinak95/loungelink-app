@@ -240,6 +240,14 @@ begin
    where p.proname = 'ilan_kurali_sor' and p.pronamespace = 'public'::regnamespace limit 1;
   if v_tanim is null then raise notice '335: ilan_kurali_sor yok — atlandi.'; return; end if;
   if v_tanim like '%iletisim_dogrulandi_gevsek%' then raise notice '335: ilan_kurali_sor zaten guncel.'; return; end if;
+  -- 8 Kasım, tekrar kurulum: gövde ile aranan metin farklı satır sonuyla
+  -- gelebiliyor (bu dosya CRLF; gövdeyi kuran dosya LF olabilir ya da editör
+  -- CR'yi atabilir) ve birebir arama tutmuyordu. Önce birebir aranır (ilk
+  -- kurulumda tutuyordu, davranış aynı); tutmazsa ikisi de chr(13)'ten
+  -- arındırılıp yeniden aranır (337'deki düzeltmenin aynısı).
+  if position(v_eski in v_tanim) = 0 then
+    v_tanim := replace(v_tanim, chr(13), ''); v_eski := replace(v_eski, chr(13), '');
+  end if;
   if position(v_eski in v_tanim) = 0 then raise exception '335: ilan_kurali_sor govdesi beklenenden farkli — elle bak.'; end if;
   v_tanim := replace(v_tanim, v_eski, 'if not public.iletisim_dogrulandi_gevsek(v_uid) then raise exception ''contact_not_verified''; end if;');
   execute v_tanim;

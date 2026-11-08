@@ -82,7 +82,12 @@ select v.title, v.subtitle, v.category, v.cost_points, v.sort_order
     ('Airalo eSIM 10GB',      'Küresel veri',  'esim',  4000, 9),
     ('Booking.com 50$ Kredi', 'Her konaklama', 'hotel', 5000, 10)
   ) as v(title, subtitle, category, cost_points, sort_order)
- where not exists (select 1 from rewards r where r.title = v.title);
+ where not exists (select 1 from rewards r where r.title = v.title)
+   -- 8 Kasım, tekrar kurulum: 244'ün ekonomi kapısı kuruluysa katalog artık
+   -- 244/245'in (maliyetli) listesidir ve 339 bu iki başlığı markasız adlara
+   -- çevirdi; eski başlıkla maliyetsiz AKTIF satır eklemek kapıya çarpıyordu
+   -- (odul_maliyeti_yazilmamis). İlk kurulumda 228 anında kapı yok → eklenir.
+   and to_regprocedure('public.trg_odul_ekonomi_kapisi()') is null;
 
 -- Aynı hatanın geçmişte bıraktığı çiftleri de topla: 017/022 birden
 -- çok kez koşulduysa katalogda kopyalar duruyor olabilir. En eskisini

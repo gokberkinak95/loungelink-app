@@ -56,7 +56,19 @@
 -- ----------------------------------------------------------------------------
 -- 1) İLAN DÜZENLE
 -- ----------------------------------------------------------------------------
-drop function if exists public.update_availability(uuid, date, time, time, smallint, uuid, text, text, text);
+-- 8 Kasım, tekrar kurulum: update_availability sonradan genişledi (248, 13 parametre) ve eski
+-- imzayı düşürdü. İkinci koşuda bu dosya 9 parametreli imzayı yeniden
+-- kurunca iki aşırı yükleme doğuyor ve adlı argümanlı çağrılar "is not unique"
+-- ile düşüyordu. Yeni hâl varsa eski tanım ATLANIR. İlk kurulumda yeni imza
+-- yok → drop + create + grant eskisi gibi.
+do $g237a$
+begin
+  if to_regprocedure('public.update_availability(uuid,date,time,time,smallint,uuid,text,text,text,text,text,boolean,integer)') is not null then
+    raise notice '237: update_availability yeni hali (248, 13 parametre) kurulu — 9 parametreli tanim atlandi (tekrar kurulum)';
+    return;
+  end if;
+  drop function if exists public.update_availability(uuid, date, time, time, smallint, uuid, text, text, text);
+  execute $c237a$
 create or replace function public.update_availability(
   p_id          uuid,
   p_date        date     default null,
@@ -241,12 +253,26 @@ begin
                             'bildirilen', v_bekle + v_kabul,
                             'kural_sifirlandi', (v_yeni_l is distinct from v_a.lounge_id));
 end $ua$;
-grant execute on function public.update_availability(uuid, date, time, time, smallint, uuid, text, text, text) to authenticated;
+$c237a$;
+  grant execute on function public.update_availability(uuid, date, time, time, smallint, uuid, text, text, text) to authenticated;
+end $g237a$;
 
 -- ----------------------------------------------------------------------------
 -- 2) SEYAHAT DÜZENLE
 -- ----------------------------------------------------------------------------
-drop function if exists public.update_visit(uuid, text, text, date, time, time, text, text);
+-- 8 Kasım, tekrar kurulum: update_visit sonradan genişledi (262, 9 parametre) ve eski
+-- imzayı düşürdü. İkinci koşuda bu dosya 8 parametreli imzayı yeniden
+-- kurunca iki aşırı yükleme doğuyor ve adlı argümanlı çağrılar "is not unique"
+-- ile düşüyordu. Yeni hâl varsa eski tanım ATLANIR. İlk kurulumda yeni imza
+-- yok → drop + create + grant eskisi gibi.
+do $g237b$
+begin
+  if to_regprocedure('public.update_visit(uuid,text,text,date,time,time,text,text,text)') is not null then
+    raise notice '237: update_visit yeni hali (262, 9 parametre) kurulu — 8 parametreli tanim atlandi (tekrar kurulum)';
+    return;
+  end if;
+  drop function if exists public.update_visit(uuid, text, text, date, time, time, text, text);
+  execute $c237b$
 create or replace function public.update_visit(
   p_id          uuid,
   p_airport     text default null,
@@ -333,7 +359,9 @@ begin
 
   return jsonb_build_object('ok', true, 'degisen', v_degisen);
 end $uv$;
-grant execute on function public.update_visit(uuid, text, text, date, time, time, text, text) to authenticated;
+$c237b$;
+  grant execute on function public.update_visit(uuid, text, text, date, time, time, text, text) to authenticated;
+end $g237b$;
 
 -- ----------------------------------------------------------------------------
 -- 3) APP'İN ATLADIĞI KORUMAYI ATLANAMAZ YAP
@@ -462,7 +490,19 @@ end $n237$;
 -- yazdım ama GRANT vermedim → "yuzeyde yazili ama istemci CAGIRAMIYOR".
 -- App bugüne kadar tabloyu doğrudan yazdığı için grant hiç gerekmemiş.
 -- Artık RPC'yi çağıracak; grant şart.
-grant execute on function public.cancel_availability(uuid) to authenticated;
+-- 8 Kasım, tekrar kurulum: 291 imzayı (uuid, boolean default false) yaptı,
+-- 293 eski (uuid) imzayı düşürdü. İkinci koşuda tek argümanlı imza yok;
+-- grant yeni imzaya verilir (aynı çağrı `cancel_availability(id)` ona gider).
+-- İlk kurulumda (uuid) imzası var → eskisi gibi ona verilir.
+do $g237$
+begin
+  if to_regprocedure('public.cancel_availability(uuid)') is not null then
+    grant execute on function public.cancel_availability(uuid) to authenticated;
+  elsif to_regprocedure('public.cancel_availability(uuid,boolean)') is not null then
+    grant execute on function public.cancel_availability(uuid, boolean) to authenticated;
+    raise notice '237: cancel_availability(uuid) 293 ile kalkti — grant (uuid, boolean) imzasina (tekrar kurulum)';
+  end if;
+end $g237$;
 
 insert into rpc_client_surface (fn_name, client, note) values
   ('update_availability','app','Ilan duzenleme — kabul edilmis basvuru varsa tarih/saat/salon kilitli (237)'),

@@ -483,8 +483,15 @@ begin
       insert into visits (user_id, airport_code, visit_date, time_from, time_to,
                           flight_number, carrier_code, purpose)
       values (g.id, r.airport_code, r.avail_date,
-              greatest(time '00:00', r.time_from - interval '1 hour')::time,
-              least(time '23:59', r.time_to + interval '1 hour')::time,
+              -- 8 Kasım, tekrar kurulum: `time ± interval` gece yarısında SARAR
+              -- (00:30 - 1 saat = 23:30), greatest/least bunu yakalamıyordu ve
+              -- 00:xx başlayan ya da 23:xx biten ilanda visits_check
+              -- (time_from < time_to) patlıyordu. Sarma artık önceden kesiliyor;
+              -- 01:00-23:00 arasındaki ilanlarda sonuç birebir aynı.
+              case when r.time_from < time '01:00' then time '00:00'
+                   else (r.time_from - interval '1 hour')::time end,
+              case when r.time_to > time '22:59' then time '23:59'
+                   else (r.time_to + interval '1 hour')::time end,
               r.flight_number, public.carrier_from_flight(r.flight_number),
               'leisure');
       v_n := v_n + 1;

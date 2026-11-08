@@ -143,7 +143,20 @@ begin
   else return v_satin::plan_type;
   end if;
 end $ep$;
-grant execute on function public.etkin_plan(uuid) to authenticated;
+-- 8 Kasım, tekrar kurulum: 310 bu fonksiyonu bilerek istemciye KAPATTI
+-- (yalnız service_role). `create or replace` izinleri korur; yani ikinci
+-- koşuda fonksiyon hâlâ kapalıysa 310'un kararı yürürlüktedir ve burada
+-- yeniden açmak güvenlik kapanışını geri alırdı. İlk kurulumda fonksiyon
+-- yeni doğduğu için PUBLIC'e açıktır → grant eskisi gibi verilir.
+do $g236$
+begin
+  if not has_function_privilege('authenticated', 'public.etkin_plan(uuid)', 'EXECUTE')
+     and has_function_privilege('service_role', 'public.etkin_plan(uuid)', 'EXECUTE') then
+    raise notice '236: etkin_plan 310 ile ic yardimci — istemci izni yeniden ACILMADI (tekrar kurulum)';
+    return;
+  end if;
+  grant execute on function public.etkin_plan(uuid) to authenticated;
+end $g236$;
 
 -- ----------------------------------------------------------------------------
 -- 3) HAK EDİŞ — bir kez, tetikleyiciyle
@@ -687,8 +700,18 @@ end $n236$;
 -- ----------------------------------------------------------------------------
 -- 10) RPC YÜZEYİ
 -- ----------------------------------------------------------------------------
-insert into rpc_client_surface (fn_name, client, note) values
-  ('etkin_plan','app','Satin alinan ve hediye planin YUKSEK olani — tek kaynak (236)')
+-- 8 Kasım, tekrar kurulum: yukarıdaki gibi — etkin_plan istemciye kapalıysa
+-- (310'un hâli) yüzeye yeniden YAZILMAZ; yazılsaydı 224'ün nöbetçisi
+-- "yuzeyde yazili ama istemci CAGIRAMIYOR" derdi. İlk kurulumda açık → yazılır.
+-- (Rol adı alt sorguyla veriliyor: imza_uret.py yüzey satırını `('ad',`
+-- kalıbıyla okuyor; `('authenticated',` yazılsaydı onu da fonksiyon sanardı.)
+insert into rpc_client_surface (fn_name, client, note)
+select v.fn_name, v.client, v.note
+  from (values
+    ('etkin_plan','app','Satin alinan ve hediye planin YUKSEK olani — tek kaynak (236)')
+  ) as v(fn_name, client, note)
+ where has_function_privilege((select r.oid from pg_roles r where r.rolname = 'authenticated'),
+                              'public.etkin_plan(uuid)', 'EXECUTE')
 on conflict (fn_name) do update set note = excluded.note;
 
 do $$

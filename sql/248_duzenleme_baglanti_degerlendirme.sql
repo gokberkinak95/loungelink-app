@@ -318,8 +318,24 @@ grant execute on function public.update_availability(uuid, date, time, time, sma
 
 -- Donus tipi degisiyor (channel_id + 4 kolon) — `create or replace` bunu
 -- yapamaz: "cannot change return type of existing function". Once DROP.
-drop function if exists public.sorularim();
-
+-- 8 Kasım, tekrar kurulum: sorularim() sonradan büyüdü (248: 16, 313/314/331:
+-- 18 kolon). Bu dosya ikinci kez koşunca drop + create ile onu 16 kolona
+-- GERİ düşürüyordu (pg_run GERILEME: 18 -> 16) ve ardından gelen 331'in
+-- `create or replace`ı 42P13 veriyordu. Daha geniş (yeni) hâl kuruluysa eski
+-- tanım ATLANIR. İlk kurulumda mevcut hâl bu dosyanınkinden geniş değil →
+-- drop + create eskisi gibi.
+do $g248s$
+declare v_kolon int;
+begin
+  select count(*) into v_kolon
+    from pg_proc p, unnest(p.proargmodes) m
+   where p.oid = to_regprocedure('public.sorularim()') and m = 't';
+  if v_kolon > 16 then
+    raise notice '248: sorularim % kolonlu YENI hali kurulu — 16 kolonlu eski tanim atlandi (tekrar kurulum)', v_kolon;
+    return;
+  end if;
+  drop function if exists public.sorularim();
+  execute $c248s$
 create or replace function public.sorularim()
 returns table(
   id uuid, host_id uuid, host_name text, salon text, airport_code text,
@@ -364,6 +380,8 @@ begin
    order by cr.created_at desc
    limit 30;
 end $s248$;
+$c248s$;
+end $g248s$;
 
 grant execute on function public.sorularim() to authenticated;
 

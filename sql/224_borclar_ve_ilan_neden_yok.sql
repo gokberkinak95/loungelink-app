@@ -322,6 +322,34 @@ begin
   raise notice '224: sinir uygulandi — % kapatildi', v ->> 'kilitlenen';
 end $$;
 
+-- 8 Kasım, tekrar kurulum: 310 `etkin_plan` ve `partner_lounges`i bilerek
+-- İÇ YARDIMCI yaptı (EXECUTE yalnız service_role; istemci ikisini de
+-- çağırmıyor — rnapp/backoffice'te `rpc(` yok) ama yüzey satırlarını
+-- bıraktı. İkinci koşuda aşağıdaki nöbetçi bu çelişkiyi (c) olarak
+-- görüyordu. Çelişkiyi susturmak yerine veriyi 310'un kararına
+-- uyduruyorum: yalnız 310'un hâli kuruluysa (istemciye kapalı +
+-- service_role'a açık) satır yüzeyden düşer. İlk kurulumda 224 anında
+-- etkin_plan yok, partner_lounges açık → bu blok hiçbir şey yapmaz.
+do $$
+declare r record;
+begin
+  for r in
+    select s.fn_name from rpc_client_surface s
+     where s.fn_name in ('etkin_plan', 'partner_lounges')
+       and exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                    where n.nspname = 'public' and p.proname = s.fn_name)
+       and not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                        where n.nspname = 'public' and p.proname = s.fn_name
+                          and has_function_privilege('authenticated', p.oid, 'EXECUTE'))
+       and not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                        where n.nspname = 'public' and p.proname = s.fn_name
+                          and not has_function_privilege('service_role', p.oid, 'EXECUTE'))
+  loop
+    delete from rpc_client_surface where fn_name = r.fn_name;
+    raise notice '224: % 310 ile ic yardimci oldu — yuzey satiri dusuruldu (tekrar kurulum)', r.fn_name;
+  end loop;
+end $$;
+
 do $$
 declare v_kalan text;
 begin

@@ -401,6 +401,17 @@ begin
       insert into requests (guest_id, host_id, avail_id, status)
       values (v_ben, v_hid, v_avid, 'accepted') returning id into v_rid;
       -- Kredinin GERÇEKTEN harcandığı hâli kur:
+      -- 8 Kasım, tekrar kurulum: 299/B1'in tetikleyicisi (trg_bakiye_negatife_dusemez)
+      -- bakiyesi 0 olan yeni misafirin -1'ini reddediyordu (insufficient_credits) ve
+      -- nöbetçi kapıda iadeyi hiç ölçemeden çöküyordu. Tetikleyici kuruluysa önce
+      -- harcanacak 1 kredi yatırılır; ölçülen fark (iade = +1) aynı kalır, blok
+      -- yine geri alınır. İlk kurulumda (256 anında) tetikleyici yok → eskisi gibi.
+      if exists (select 1 from pg_trigger
+                  where tgname = 'trg_bakiye_negatife_dusemez'
+                    and tgrelid = 'public.credit_ledger'::regclass) then
+        insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
+        values (v_ben, 1, 'nobetci256_tohum', null, 1);
+      end if;
       insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
       values (v_ben, -1, 'request_hold', v_rid, -1);
       -- `sessions` host/guest taşımıyor; taraflar `requests` üzerinden okunuyor.

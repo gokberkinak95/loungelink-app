@@ -5241,6 +5241,26 @@ begin
     -- (9) 🔴 ARZ KAYBI OLMAMALI: keşif RPC'leri SECURITY DEFINER olduğu
     -- için RLS daralmasından ETKİLENMEMELİ. Sayıyla kanıtla.
     select count(*) into v_n from public.discover_availabilities();
+    -- 8 Kasım, tekrar kurulum: bu ölçüm kimliksiz izleyiciyle yapılıyor ve 301'den
+    -- beri kimliksiz izleyici TEST hesaplarının ilanını görmez (seed_test_hesabi).
+    -- İkinci koşuda gelecekteki aktif ilanların hepsi seed test hesaplarına ait
+    -- (70/70 ölçüldü) → 0 DOĞRU cevaptı. 0'ın arıza sayılması için bu izleyicinin
+    -- görmesi GEREKEN arz olmalı: test hesabı olmayan, aktif, gelecekteki ilan.
+    -- Öyle bir ilan varken 0 gelirse nöbetçi yine yanar. İlk kurulumda (253 anında)
+    -- seed_test_hesabi yok → v_n > 0 ve davranış aynı.
+    if v_n = 0 and to_regprocedure('public.seed_test_hesabi(text)') is not null then
+      execute $q253$
+        select count(*) from availabilities a join users u on u.id = a.host_id
+         where a.active and a.avail_date >= current_date
+           and u.deleted_at is null and u.banned_at is null
+           and not public.seed_test_hesabi(u.email)$q253$ into v_n;
+      if v_n = 0 then
+        raise notice '253: kesif 0 — gorulmesi gereken arz da 0 (aktif ilanlarin hepsi test hesabinda); olcum dogru';
+        v_n := -1;
+      else
+        v_n := 0;
+      end if;
+    end if;
     if v_n = 0 then
       v_h := v_h || 'kesif ilan sayisi 0 — RLS daralmasi arzi VURMUS olabilir'::text;
     end if;
@@ -5497,6 +5517,14 @@ begin
    where p.proname = 'ilan_kurali_sor' and p.pronamespace = 'public'::regnamespace limit 1;
   if v_tanim is null then raise notice '335: ilan_kurali_sor yok — atlandi.'; return; end if;
   if v_tanim like '%iletisim_dogrulandi_gevsek%' then raise notice '335: ilan_kurali_sor zaten guncel.'; return; end if;
+  -- 8 Kasım, tekrar kurulum: gövde ile aranan metin farklı satır sonuyla
+  -- gelebiliyor (bu dosya CRLF; gövdeyi kuran dosya LF olabilir ya da editör
+  -- CR'yi atabilir) ve birebir arama tutmuyordu. Önce birebir aranır (ilk
+  -- kurulumda tutuyordu, davranış aynı); tutmazsa ikisi de chr(13)'ten
+  -- arındırılıp yeniden aranır (337'deki düzeltmenin aynısı).
+  if position(v_eski in v_tanim) = 0 then
+    v_tanim := replace(v_tanim, chr(13), ''); v_eski := replace(v_eski, chr(13), '');
+  end if;
   if position(v_eski in v_tanim) = 0 then raise exception '335: ilan_kurali_sor govdesi beklenenden farkli — elle bak.'; end if;
   v_tanim := replace(v_tanim, v_eski, 'if not public.iletisim_dogrulandi_gevsek(v_uid) then raise exception ''contact_not_verified''; end if;');
   execute v_tanim;
@@ -18169,7 +18197,20 @@ begin
   else return v_satin::plan_type;
   end if;
 end $ep$;
-grant execute on function public.etkin_plan(uuid) to authenticated;
+-- 8 Kasım, tekrar kurulum: 310 bu fonksiyonu bilerek istemciye KAPATTI
+-- (yalnız service_role). `create or replace` izinleri korur; yani ikinci
+-- koşuda fonksiyon hâlâ kapalıysa 310'un kararı yürürlüktedir ve burada
+-- yeniden açmak güvenlik kapanışını geri alırdı. İlk kurulumda fonksiyon
+-- yeni doğduğu için PUBLIC'e açıktır → grant eskisi gibi verilir.
+do $g236$
+begin
+  if not has_function_privilege('authenticated', 'public.etkin_plan(uuid)', 'EXECUTE')
+     and has_function_privilege('service_role', 'public.etkin_plan(uuid)', 'EXECUTE') then
+    raise notice '236: etkin_plan 310 ile ic yardimci — istemci izni yeniden ACILMADI (tekrar kurulum)';
+    return;
+  end if;
+  grant execute on function public.etkin_plan(uuid) to authenticated;
+end $g236$;
 
 -- ----------------------------------------------------------------------------
 -- 3) HAK EDİŞ — bir kez, tetikleyiciyle
@@ -18602,8 +18643,18 @@ end $n236$;
 -- ----------------------------------------------------------------------------
 -- 10) RPC YÜZEYİ
 -- ----------------------------------------------------------------------------
-insert into rpc_client_surface (fn_name, client, note) values
-  ('etkin_plan','app','Satin alinan ve hediye planin YUKSEK olani — tek kaynak (236)')
+-- 8 Kasım, tekrar kurulum: yukarıdaki gibi — etkin_plan istemciye kapalıysa
+-- (310'un hâli) yüzeye yeniden YAZILMAZ; yazılsaydı 224'ün nöbetçisi
+-- "yuzeyde yazili ama istemci CAGIRAMIYOR" derdi. İlk kurulumda açık → yazılır.
+-- (Rol adı alt sorguyla veriliyor: imza_uret.py yüzey satırını `('ad',`
+-- kalıbıyla okuyor; `('authenticated',` yazılsaydı onu da fonksiyon sanardı.)
+insert into rpc_client_surface (fn_name, client, note)
+select v.fn_name, v.client, v.note
+  from (values
+    ('etkin_plan','app','Satin alinan ve hediye planin YUKSEK olani — tek kaynak (236)')
+  ) as v(fn_name, client, note)
+ where has_function_privilege((select r.oid from pg_roles r where r.rolname = 'authenticated'),
+                              'public.etkin_plan(uuid)', 'EXECUTE')
 on conflict (fn_name) do update set note = excluded.note;
 
 do $$
@@ -19286,7 +19337,19 @@ end $n237$;
 -- yazdım ama GRANT vermedim → "yuzeyde yazili ama istemci CAGIRAMIYOR".
 -- App bugüne kadar tabloyu doğrudan yazdığı için grant hiç gerekmemiş.
 -- Artık RPC'yi çağıracak; grant şart.
-grant execute on function public.cancel_availability(uuid) to authenticated;
+-- 8 Kasım, tekrar kurulum: 291 imzayı (uuid, boolean default false) yaptı,
+-- 293 eski (uuid) imzayı düşürdü. İkinci koşuda tek argümanlı imza yok;
+-- grant yeni imzaya verilir (aynı çağrı `cancel_availability(id)` ona gider).
+-- İlk kurulumda (uuid) imzası var → eskisi gibi ona verilir.
+do $g237$
+begin
+  if to_regprocedure('public.cancel_availability(uuid)') is not null then
+    grant execute on function public.cancel_availability(uuid) to authenticated;
+  elsif to_regprocedure('public.cancel_availability(uuid,boolean)') is not null then
+    grant execute on function public.cancel_availability(uuid, boolean) to authenticated;
+    raise notice '237: cancel_availability(uuid) 293 ile kalkti — grant (uuid, boolean) imzasina (tekrar kurulum)';
+  end if;
+end $g237$;
 
 insert into rpc_client_surface (fn_name, client, note) values
   ('update_availability','app','Ilan duzenleme — kabul edilmis basvuru varsa tarih/saat/salon kilitli (237)'),
@@ -22384,6 +22447,19 @@ grant execute on function public.huni_raporu(int) to service_role;
 -- OLAN BİR TABLOYA KURALSIZ YAZMAKTIR."
 -- ════════════════════════════════════════════════════════════════════════
 
+-- 8 Kasım, tekrar kurulum: 283 bu 8 parametreli imzayı düşürüp yerine 10
+-- parametreli (p_kisi, p_cocuk_yas) seyahat_ekle'yi kurdu. İkinci koşuda 8'li
+-- imza yeniden kurulunca iki aşırı yükleme oluşuyor ve 4 argümanlı her çağrı
+-- "is not unique" ile düşüyordu (aşağıdaki nöbetçi dahil). Yeni hâl varsa
+-- eski tanım ATLANIR. İlk kurulumda 10'lu imza yok → eskisi gibi kurulur.
+do $g250$
+begin
+  if to_regprocedure('public.seyahat_ekle(text,date,time,time,text,text,text,text,integer,integer[])') is not null then
+    raise notice '250: seyahat_ekle 10 parametreli hali (283+) kurulu — 8 parametreli tanim atlandi (tekrar kurulum)';
+    return;
+  end if;
+  execute $c250$
+
 -- ----------------------------------------------------------------------
 -- seyahat_ekle   [etkin kaynak: 325_seyahat_cakismasi_farkli_havalimani.sql]
 -- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
@@ -22647,7 +22723,13 @@ begin
   return jsonb_build_object('ok', true, 'guncellenen', v_n);
 end $bo250$;
 
-grant execute on function public.seyahat_ekle(text, date, time, time, text, text, text, text) to authenticated;
+-- 8 Kasım, tekrar kurulum: 8'li imza yalnız ilk kurulumda var (yukarıya bak).
+do $g250b$
+begin
+  if to_regprocedure('public.seyahat_ekle(text,date,time,time,text,text,text,text)') is not null then
+    grant execute on function public.seyahat_ekle(text, date, time, time, text, text, text, text) to authenticated;
+  end if;
+end $g250b$;
 grant execute on function public.seyahat_sil(uuid) to authenticated;
 grant execute on function public.bildirim_okundu(uuid) to authenticated;
 
@@ -25011,6 +25093,17 @@ begin
       insert into requests (guest_id, host_id, avail_id, status)
       values (v_ben, v_hid, v_avid, 'accepted') returning id into v_rid;
       -- Kredinin GERÇEKTEN harcandığı hâli kur:
+      -- 8 Kasım, tekrar kurulum: 299/B1'in tetikleyicisi (trg_bakiye_negatife_dusemez)
+      -- bakiyesi 0 olan yeni misafirin -1'ini reddediyordu (insufficient_credits) ve
+      -- nöbetçi kapıda iadeyi hiç ölçemeden çöküyordu. Tetikleyici kuruluysa önce
+      -- harcanacak 1 kredi yatırılır; ölçülen fark (iade = +1) aynı kalır, blok
+      -- yine geri alınır. İlk kurulumda (256 anında) tetikleyici yok → eskisi gibi.
+      if exists (select 1 from pg_trigger
+                  where tgname = 'trg_bakiye_negatife_dusemez'
+                    and tgrelid = 'public.credit_ledger'::regclass) then
+        insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
+        values (v_ben, 1, 'nobetci256_tohum', null, 1);
+      end if;
       insert into credit_ledger (user_id, delta, reason, ref_id, balance_after)
       values (v_ben, -1, 'request_hold', v_rid, -1);
       -- `sessions` host/guest taşımıyor; taraflar `requests` üzerinden okunuyor.

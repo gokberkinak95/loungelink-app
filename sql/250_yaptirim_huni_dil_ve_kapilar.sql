@@ -330,6 +330,18 @@ grant execute on function public.huni_raporu(int) to service_role;
 -- OLAN BİR TABLOYA KURALSIZ YAZMAKTIR."
 -- ════════════════════════════════════════════════════════════════════════
 
+-- 8 Kasım, tekrar kurulum: 283 bu 8 parametreli imzayı düşürüp yerine 10
+-- parametreli (p_kisi, p_cocuk_yas) seyahat_ekle'yi kurdu. İkinci koşuda 8'li
+-- imza yeniden kurulunca iki aşırı yükleme oluşuyor ve 4 argümanlı her çağrı
+-- "is not unique" ile düşüyordu (aşağıdaki nöbetçi dahil). Yeni hâl varsa
+-- eski tanım ATLANIR. İlk kurulumda 10'lu imza yok → eskisi gibi kurulur.
+do $g250$
+begin
+  if to_regprocedure('public.seyahat_ekle(text,date,time,time,text,text,text,text,integer,integer[])') is not null then
+    raise notice '250: seyahat_ekle 10 parametreli hali (283+) kurulu — 8 parametreli tanim atlandi (tekrar kurulum)';
+    return;
+  end if;
+  execute $c250$
 create or replace function public.seyahat_ekle(
   p_airport text, p_date date, p_from time, p_to time,
   p_destination text default null, p_flight text default null,
@@ -367,6 +379,8 @@ begin
   if p_carrier is not null then perform public.set_visit_carrier(v_id, p_carrier); end if;
   return jsonb_build_object('ok', true, 'id', v_id);
 end $se250$;
+$c250$;
+end $g250$;
 
 create or replace function public.seyahat_sil(p_id uuid)
 returns jsonb
@@ -404,7 +418,13 @@ begin
   return jsonb_build_object('ok', true, 'guncellenen', v_n);
 end $bo250$;
 
-grant execute on function public.seyahat_ekle(text, date, time, time, text, text, text, text) to authenticated;
+-- 8 Kasım, tekrar kurulum: 8'li imza yalnız ilk kurulumda var (yukarıya bak).
+do $g250b$
+begin
+  if to_regprocedure('public.seyahat_ekle(text,date,time,time,text,text,text,text)') is not null then
+    grant execute on function public.seyahat_ekle(text, date, time, time, text, text, text, text) to authenticated;
+  end if;
+end $g250b$;
 grant execute on function public.seyahat_sil(uuid) to authenticated;
 grant execute on function public.bildirim_okundu(uuid) to authenticated;
 

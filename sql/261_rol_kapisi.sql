@@ -65,7 +65,7 @@
 
 -- ── ON KONTROL 1: kapi mevcut hicbir host'u disarida birakiyor mu? ────────
 do $on261a$
-declare v_n int;
+declare v_n int; v_test int := 0;
 begin
   select count(distinct a.host_id) into v_n
     from availabilities a
@@ -74,6 +74,28 @@ begin
      and u.role <> 'host'
      and not exists (select 1 from host_applications ha
                       where ha.user_id = u.id and ha.status = 'approved');
+  -- 8 Kasım, tekrar kurulum: ikinci koşuda bu sayı 6 çıkıyordu ve altısı da
+  -- SEED2'nin tabloya DOĞRUDAN yazdığı test hesaplarıydı
+  -- (kaynak1..6@seed.loungelink.test, rol=guest). Bu ön kontrolün koruduğu şey
+  -- GERÇEK host'ların kapı dışında kalmaması; fikstür hesapları kapıdan hiç
+  -- geçmedi. seed_test_hesabi (301) kuruluysa onlar ayrı sayılır ve not düşülür;
+  -- gerçek hesap varsa dosya eskisi gibi DURUR. (261a yine hepsini uyumlar.)
+  -- İlk kurulumda (261 anında) seed_test_hesabi yok → davranış aynı.
+  if v_n > 0 and to_regprocedure('public.seed_test_hesabi(text)') is not null then
+    execute $q261$
+      select count(distinct a.host_id)
+        from availabilities a
+        join users u on u.id = a.host_id
+       where a.active
+         and u.role <> 'host'
+         and public.seed_test_hesabi(u.email)
+         and not exists (select 1 from host_applications ha
+                          where ha.user_id = u.id and ha.status = 'approved')$q261$ into v_test;
+    if v_test > 0 then
+      raise notice '261 on kontrol 1: % seed test hesabi kapi disinda (fikstur; 261a uyumlar) — sayilmadi', v_test;
+      v_n := v_n - v_test;
+    end if;
+  end if;
   if v_n > 0 then
     -- ⚠️ BU MESAJIN İLK HÂLİ "Once 055 toplu duzeltmesini kosun" DİYORDU
     -- VE O TAVSİYE YANLIŞTI. 055 rol düzeltmesinin yanında

@@ -893,6 +893,26 @@ begin
     -- (9) 🔴 ARZ KAYBI OLMAMALI: keşif RPC'leri SECURITY DEFINER olduğu
     -- için RLS daralmasından ETKİLENMEMELİ. Sayıyla kanıtla.
     select count(*) into v_n from public.discover_availabilities();
+    -- 8 Kasım, tekrar kurulum: bu ölçüm kimliksiz izleyiciyle yapılıyor ve 301'den
+    -- beri kimliksiz izleyici TEST hesaplarının ilanını görmez (seed_test_hesabi).
+    -- İkinci koşuda gelecekteki aktif ilanların hepsi seed test hesaplarına ait
+    -- (70/70 ölçüldü) → 0 DOĞRU cevaptı. 0'ın arıza sayılması için bu izleyicinin
+    -- görmesi GEREKEN arz olmalı: test hesabı olmayan, aktif, gelecekteki ilan.
+    -- Öyle bir ilan varken 0 gelirse nöbetçi yine yanar. İlk kurulumda (253 anında)
+    -- seed_test_hesabi yok → v_n > 0 ve davranış aynı.
+    if v_n = 0 and to_regprocedure('public.seed_test_hesabi(text)') is not null then
+      execute $q253$
+        select count(*) from availabilities a join users u on u.id = a.host_id
+         where a.active and a.avail_date >= current_date
+           and u.deleted_at is null and u.banned_at is null
+           and not public.seed_test_hesabi(u.email)$q253$ into v_n;
+      if v_n = 0 then
+        raise notice '253: kesif 0 — gorulmesi gereken arz da 0 (aktif ilanlarin hepsi test hesabinda); olcum dogru';
+        v_n := -1;
+      else
+        v_n := 0;
+      end if;
+    end if;
     if v_n = 0 then
       v_h := v_h || 'kesif ilan sayisi 0 — RLS daralmasi arzi VURMUS olabilir'::text;
     end if;

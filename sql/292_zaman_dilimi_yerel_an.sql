@@ -485,6 +485,19 @@ begin
 end $$;
 
 -- ── expire_stale_sessions ─────────────────────────────────────────────
+-- 8 Kasım, tekrar kurulum: 299 bu argümansız imzayı düşürüp yerine
+-- expire_stale_sessions(p_kaynak text default 'uygulama') kurdu. İkinci koşuda
+-- argümansız hâl burada yeniden doğunca 299'a kadar iki aşırı yükleme yan yana
+-- duruyor ve arada koşan 298'in `expire_stale_sessions()` çağrısı "is not unique"
+-- ile düşüyordu. Yeni hâl varsa eski tanım ATLANIR. İlk kurulumda (text) imzası
+-- yok → eskisi gibi kurulur.
+do $g292$
+begin
+  if to_regprocedure('public.expire_stale_sessions(text)') is not null then
+    raise notice '292: expire_stale_sessions(text) (299+) kurulu — argumansiz tanim atlandi (tekrar kurulum)';
+    return;
+  end if;
+  execute $c292$
 CREATE OR REPLACE FUNCTION public.expire_stale_sessions()
  RETURNS jsonb
  LANGUAGE plpgsql
@@ -560,6 +573,8 @@ begin
   perform public.tek_tarafli_oturumlari_kapat();
   return jsonb_build_object('ok', true, 'expired_requests', v_req, 'expired_sessions', v_sess);
 end $function$;
+$c292$;
+end $g292$;
 
 -- ── yarinki_lounge_hatirlat ─────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION public.yarinki_lounge_hatirlat()

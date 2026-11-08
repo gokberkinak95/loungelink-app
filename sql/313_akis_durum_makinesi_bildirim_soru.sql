@@ -790,6 +790,22 @@ revoke all on function public.sorularim() from public, anon;
 grant execute on function public.sorularim() to authenticated, service_role;
 
 -- Bana gelen sorular (host). Soranın fotoğrafı yalnız "herkese açık" ise.
+-- 8 Kasım, tekrar kurulum: 314 bu fonksiyona channel_id ekledi (19 kolon) ve
+-- 331 o hâli korudu. İkinci koşuda buradaki 18 kolonlu `create or replace`
+-- "cannot change return type" ile dosyanın TAMAMINI geri aldırıyordu. Daha
+-- geniş (yeni) hâl kuruluysa eski tanım ATLANIR. İlk kurulumda fonksiyon yok →
+-- eskisi gibi kurulur.
+do $g313b$
+declare v_kolon int;
+begin
+  select count(*) into v_kolon
+    from pg_proc p, unnest(p.proargmodes) m
+   where p.oid = to_regprocedure('public.bana_gelen_sorular()') and m = 't';
+  if v_kolon > 18 then
+    raise notice '313: bana_gelen_sorular % kolonlu YENI hali kurulu — 18 kolonlu eski tanim atlandi (tekrar kurulum)', v_kolon;
+    return;
+  end if;
+  execute $c313b$
 create or replace function public.bana_gelen_sorular()
 returns table(id uuid, soran_id uuid, soran_adi text, soran_foto text, soran_meslek text,
               avail_id uuid, salon text, airport_code text, avail_date date, time_from time, time_to time,
@@ -821,6 +837,8 @@ begin
    order by coalesce(cr.status = 'pending', false) desc, cr.created_at desc
    limit 50;
 end $function$;
+$c313b$;
+end $g313b$;
 revoke all on function public.bana_gelen_sorular() from public, anon;
 grant execute on function public.bana_gelen_sorular() to authenticated, service_role;
 
