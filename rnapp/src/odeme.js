@@ -127,6 +127,21 @@ export async function abonelikPaketleri() {
 // { ok } · { iptal } · { bekliyor } (Google'da onay bekleyen ödeme) · { hata }
 export async function satinAl(paket) {
   if (!(await kur()) || !paket) return { hata: true };
+  // 🔴 8 Kasım — SATIN ALMA ANONİM KİMLİKLE GİTMESİN. `odemeGiris` açılışta bir kez
+  // deneniyor ve hata verirse (zayıf ağ) sessizce geçiliyordu; o oturumdaki satın alma
+  // RevenueCat'in anonim kimliğiyle gidiyor, ilk olay (INITIAL_PURCHASE) sunucuda
+  // `kullanici_yok` oluyordu: ödeme alınır, kredi/plan yüklenmezdi. Şimdi satın almadan
+  // hemen önce giriş garanti; olmazsa satın alma BAŞLAMAZ.
+  try {
+    const { data, error: eOturum } = await supabase.auth.getSession();
+    if (eOturum) { logError("odeme_oturum", eOturum); return { hata: true }; }
+    const uid = data && data.session && data.session.user && data.session.user.id;
+    if (!uid) return { hata: true };
+    if (girisYapan !== uid) { await P.logIn(uid); girisYapan = uid; }
+  } catch (e) {
+    logError("odeme_giris", e);
+    return { hata: true };
+  }
   try {
     await P.purchasePackage(paket);
     return { ok: true };
