@@ -1,5 +1,5 @@
 -- ============================================================================
--- DENETIM_TAM · CANLI VERİTABANI = 001..SON DOSYALAR MI?   (üretildi: 2026-11-09 00:25)
+-- DENETIM_TAM · CANLI VERİTABANI = 001..SON DOSYALAR MI?   (üretildi: 2026-11-09 00:31)
 --
 -- `sql/denetim_tam_uret.py` üretti: bütün SQL dosyaları yerelde baştan kuruldu ve her
 -- nesnenin parmak izi alındı (fonksiyon 568 · kolon 1079 · politika 101 · rls 109 · tetikleyici 76).
@@ -132,7 +132,7 @@ with beklenen(tur, ad, iz) as (values
   ('fonksiyon', 'carrier_options()', '9e2da7d73f1951454c1e46ef40d104d6:D:-u'),
   ('fonksiyon', 'change_phone(p_phone text)', '778b0b3a402ab067e96326f170686807:D:-u'),
   ('fonksiyon', 'change_plan(p_plan plan_type)', '44f3b089b9dae8d539b99b4455ca6d38:D:--'),
-  ('fonksiyon', 'charter_note(p_avail_id uuid)', '2b9d55294604c8b8c7d4dcec16ae67c4:D:-u'),
+  ('fonksiyon', 'charter_note(p_avail_id uuid)', '41c6553407d7e2764b12514d03f03ee1:D:-u'),
   ('fonksiyon', 'cinsiyetimi_bildir(p_gender text)', 'ebbaca5377ec028428c8d7fd637eadaa:D:-u'),
   ('fonksiyon', 'claim_founding_host()', 'a037a3074b1d782f3ec263d77307dd9d:D:-u'),
   ('fonksiyon', 'client_flags()', 'ad41842446bfb86552bca2a48938e10a:D:au'),

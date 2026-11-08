@@ -36453,5 +36453,134 @@
     "eposta_ozeti_eski|select encode(extensions.digest(lower(trim(coalesce(p_email, ''))), 'sha256'), 'hex');"
    ]
   ]
+ ],
+ [
+  "348_canli_esitleme.sql",
+  [
+   [
+    "fonksiyon",
+    "discover_availabilities_ham"
+   ],
+   [
+    "govde",
+    "bo_plan_hediyeleri|from plan_grants g"
+   ],
+   [
+    "govde",
+    "card_advice_for_airport|from lounge_card_products cp"
+   ],
+   [
+    "govde",
+    "charter_note|Seferlerden biri charter. Bu salona giriş havayolu statüsüne değil"
+   ],
+   [
+    "govde",
+    "create_availability|not_authenticated"
+   ],
+   [
+    "govde",
+    "discover_availabilities_ham|q.avail_date, q.time_from"
+   ],
+   [
+    "govde",
+    "host_requests|not_authenticated"
+   ],
+   [
+    "govde",
+    "request_credit_cost|declare v_ham int;"
+   ],
+   [
+    "govde",
+    "trg_soru_bildirimi_host|into v_b from beta_settings where key="
+   ],
+   [
+    "govde",
+    "trg_soru_metni|into v_metin from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "bo_plan_hediyeleri|order by g.biter_at desc"
+   ],
+   [
+    "govde",
+    "card_advice_for_airport|select i.name, cp.name, p.name,"
+   ],
+   [
+    "govde",
+    "charter_note|üyeliğe bağlı olduğu için charter olması sorun değildir; geçerli"
+   ],
+   [
+    "govde",
+    "create_availability|contact_not_verified"
+   ],
+   [
+    "govde",
+    "discover_availabilities_ham|order by (coalesce(q.match_score,0) + public.host_rank_bonus(q.host_id)) desc,"
+   ],
+   [
+    "govde",
+    "host_requests|or b.hprof ilike"
+   ],
+   [
+    "govde",
+    "request_credit_cost|select 1 from availabilities a"
+   ],
+   [
+    "govde",
+    "trg_soru_bildirimi_host|into v_g from beta_settings where key="
+   ],
+   [
+    "govde",
+    "trg_soru_metni|, coalesce(v_salon,"
+   ],
+   [
+    "govde",
+    "bo_plan_hediyeleri|if auth.uid() is not null"
+   ],
+   [
+    "govde",
+    "card_advice_for_airport|count(distinct a.venue_id)::int,"
+   ],
+   [
+    "govde",
+    "charter_note|biniş kartı yeterlidir."
+   ],
+   [
+    "govde",
+    "create_availability|no_access_source"
+   ],
+   [
+    "govde",
+    "discover_availabilities_ham|select q.* from public.discover_availabilities_prerank(p_airport, p_sector, p_flight, p_date) q"
+   ],
+   [
+    "govde",
+    "host_requests|limit 1) as gflight,"
+   ],
+   [
+    "govde",
+    "request_credit_cost|if p_avail is not null and exists ("
+   ],
+   [
+    "govde",
+    "trg_soru_bildirimi_host|, coalesce(v_salon,"
+   ],
+   [
+    "govde",
+    "trg_soru_metni|from availabilities a"
+   ],
+   [
+    "govde",
+    "bo_plan_hediyeleri|raise exception 'not_admin';"
+   ],
+   [
+    "govde",
+    "card_advice_for_airport|order by count(distinct a.venue_id) desc,"
+   ],
+   [
+    "govde",
+    "charter_note|un seferi charter. Havayolu salonlarında charter seferde bilet"
+   ]
+  ]
  ]
 ]

@@ -22,8 +22,12 @@
 -- ============================================================================
 
 -- ── 1 · GÖVDELER ────────────────────────────────────────────────────────────
+-- host_requests canlıda ESKİ dönüş tipiyle duruyor (050): create or replace 42P13 verir → önce düşür.
+-- Yetkisi aşağıdaki 2. bölümde yeniden veriliyor.
+drop function if exists public.host_requests();
+
 -- bo_plan_hediyeleri(p_durum text)
-CREATE OR REPLACE FUNCTION public.bo_plan_hediyeleri(p_durum text DEFAULT 'aktif'::text)
+create or replace function public.bo_plan_hediyeleri(p_durum text DEFAULT 'aktif'::text)
  RETURNS TABLE(id uuid, user_id uuid, eposta text, ad text, plan text, plan_adi text, kaynak text, not_metni text, basladi_at timestamp with time zone, biter_at timestamp with time zone, bitti_at timestamp with time zone, iptal_at timestamp with time zone, iptal_notu text, gun_kaldi integer, satin_alinan text)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -62,7 +66,7 @@ begin
 end $function$;
 
 -- card_advice_for_airport(p_airport text)
-CREATE OR REPLACE FUNCTION public.card_advice_for_airport(p_airport text)
+create or replace function public.card_advice_for_airport(p_airport text)
  RETURNS TABLE(issuer text, card text, program text, lounges integer, confidence text, source_url text)
  LANGUAGE sql
  STABLE SECURITY DEFINER
@@ -86,7 +90,7 @@ AS $function$
 $function$;
 
 -- charter_note(p_avail_id uuid)
-CREATE OR REPLACE FUNCTION public.charter_note(p_avail_id uuid)
+create or replace function public.charter_note(p_avail_id uuid)
  RETURNS jsonb
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -116,9 +120,9 @@ begin
   if v_model is not null and v_model <> 'airline_status' then
     if coalesce(a.is_charter,false) or coalesce(v_guest_charter,false) then
       return jsonb_build_object('blocked', false,
-        'note', 'Seferlerden biri charter. Bu salona giris HAVAYOLU statusune degil '
-             || 'UYELIGE bagli oldugu icin charter olmasi sorun degildir — gecerli '
-             || 'binis karti yeterlidir.');
+        'note', 'Seferlerden biri charter. Bu salona giriş havayolu statüsüne değil '
+             || 'üyeliğe bağlı olduğu için charter olması sorun değildir; geçerli '
+             || 'biniş kartı yeterlidir.');
     end if;
     return jsonb_build_object('blocked', false, 'note', null);
   end if;
@@ -126,27 +130,27 @@ begin
   -- Havayolu salonu: charter HAK VERMEZ (iki taraf icin de)
   if coalesce(a.is_charter,false) then
     return jsonb_build_object('blocked', true,
-      'note', 'Host''un seferi CHARTER. Havayolu salonlarinda charter seferde bilet '
-           || 'sinifi ya da statu karti ne olursa olsun salon kullanim hakki yoktur. '
-           || 'Istisna: charter anlasmasi yapan acente yolcularina salon hakki satin '
-           || 'almissa gecerlidir.');
+      'note', 'Host''un seferi charter. Havayolu salonlarında charter seferde bilet '
+           || 'sınıfı ya da statü kartı ne olursa olsun salon kullanım hakkı yoktur. '
+           || 'İstisna: charter anlaşması yapan acente yolcularına salon hakkı satın '
+           || 'almışsa geçerlidir.');
   end if;
   if coalesce(v_guest_charter,false) then
     return jsonb_build_object('blocked', true,
-      'note', 'SENIN seferin charter. Havayolu salonlarinda charter yolcusu misafir '
-           || 'olarak da kabul edilmez. Kart agi (Priority Pass / LoungeKey / '
-           || 'DragonPass) kaynakli bir ilan ararsan giris mumkun olabilir.');
+      'note', 'Senin seferin charter. Havayolu salonlarında charter yolcusu misafir '
+           || 'olarak da kabul edilmez. Kart ağı (Priority Pass / LoungeKey / '
+           || 'DragonPass) kaynaklı bir ilan ararsan giriş mümkün olabilir.');
   end if;
   if a.is_charter is null then
     return jsonb_build_object('blocked', false,
-      'note', 'Seferin tarifeli mi charter mi belirtilmemis. Charter seferde havayolu '
-           || 'salonu hakki olmaz — emin degilsen biletini kontrol et.');
+      'note', 'Seferin tarifeli mi charter mi belirtilmemiş. Charter seferde havayolu '
+           || 'salonu hakkı olmaz; emin değilsen biletini kontrol et.');
   end if;
   return jsonb_build_object('blocked', false, 'note', null);
 end $function$;
 
 -- create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text)
-CREATE OR REPLACE FUNCTION public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text DEFAULT NULL::text, p_visibility text DEFAULT 'all'::text, p_carrier text DEFAULT NULL::text)
+create or replace function public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text DEFAULT NULL::text, p_visibility text DEFAULT 'all'::text, p_carrier text DEFAULT NULL::text)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -233,7 +237,7 @@ begin
 end $function$;
 
 -- discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date)
-CREATE OR REPLACE FUNCTION public.discover_availabilities_ham(p_airport text DEFAULT NULL::text, p_sector text DEFAULT NULL::text, p_flight text DEFAULT NULL::text, p_date date DEFAULT NULL::date)
+create or replace function public.discover_availabilities_ham(p_airport text DEFAULT NULL::text, p_sector text DEFAULT NULL::text, p_flight text DEFAULT NULL::text, p_date date DEFAULT NULL::date)
  RETURNS TABLE(id uuid, host_id uuid, airport_code text, lounge_name text, avail_date date, time_from time without time zone, time_to time without time zone, flight_number text, slots integer, filled integer, host_name text, host_badge text, host_score integer, host_profession text, host_photo text, match_score integer, same_flight boolean, has_trip boolean, is_featured boolean, fully_booked boolean, visibility text, host_gender text, host_langs text[], guest_policy text, guest_allowance integer, family_allowed boolean, decision_note text, blocks_request boolean, block_reason text, carrier_note text, same_sector boolean)
  LANGUAGE sql
  STABLE SECURITY DEFINER
@@ -245,7 +249,7 @@ AS $function$
     $function$;
 
 -- host_requests()
-CREATE OR REPLACE FUNCTION public.host_requests()
+create or replace function public.host_requests()
  RETURNS TABLE(id uuid, guest_id uuid, avail_id uuid, status text, intro_message text, created_at timestamp with time zone, guest_name text, guest_photo text, guest_profession text, guest_score integer, guest_badge text, guest_id_verified boolean, guest_phone_verified boolean, guest_linkedin boolean, guest_sessions integer, guest_rating numeric, guest_rating_count integer, same_flight boolean, same_purpose boolean, guest_fit integer, lounge_name text, avail_date date, time_from time without time zone, time_to time without time zone, flight_number text)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -333,7 +337,7 @@ begin
 end $function$;
 
 -- request_credit_cost(p_user uuid, p_avail uuid)
-CREATE OR REPLACE FUNCTION public.request_credit_cost(p_user uuid, p_avail uuid DEFAULT NULL::uuid)
+create or replace function public.request_credit_cost(p_user uuid, p_avail uuid DEFAULT NULL::uuid)
  RETURNS integer
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -359,7 +363,7 @@ begin
 end $function$;
 
 -- trg_soru_bildirimi_host()
-CREATE OR REPLACE FUNCTION public.trg_soru_bildirimi_host()
+create or replace function public.trg_soru_bildirimi_host()
  RETURNS trigger
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -388,7 +392,7 @@ begin
 end $function$;
 
 -- trg_soru_metni()
-CREATE OR REPLACE FUNCTION public.trg_soru_metni()
+create or replace function public.trg_soru_metni()
  RETURNS trigger
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -611,5 +615,5 @@ union all select 'seed_test_hesabi girissize kapali',
 union all select 'connection_test istemci yazamaz',
        to_regclass('public.connection_test') is null
        or not has_table_privilege('authenticated', 'public.connection_test', 'insert')
-union all select 'dokuz govde dosyalarla ayni', (select count(*) from (values ('bo_plan_hediyeleri','p_durum text','5b1cb6016416d0283caa27d469e271e6'), ('card_advice_for_airport','p_airport text','be48466bf6645b283901ddc6a37f0671'), ('charter_note','p_avail_id uuid','2b9d55294604c8b8c7d4dcec16ae67c4'), ('create_availability','p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text','423b4191c603523939f8cff4b6b92329'), ('discover_availabilities_ham','p_airport text, p_sector text, p_flight text, p_date date','5bdac4e371b191c2bc780bd3707a08d2'), ('host_requests','','fe23603a880d2eb1f9934b37d854ba21'), ('request_credit_cost','p_user uuid, p_avail uuid','cf212b4ec7ecc582e53ea35b6480284b'), ('trg_soru_bildirimi_host','','7be8dad318e40dfe2fd602007e6e5195'), ('trg_soru_metni','','36d7578ec8e63da5fad0302725bcb798')) b(ad, arg, iz) join pg_proc p on p.proname = b.ad and pg_get_function_identity_arguments(p.oid) = b.arg join pg_namespace n on n.oid = p.pronamespace and n.nspname = 'public' where md5(regexp_replace(pg_get_functiondef(p.oid), '\s+', '', 'g')) = b.iz) = 9;
+union all select 'dokuz govde dosyalarla ayni', (select count(*) from (values ('bo_plan_hediyeleri','p_durum text','5b1cb6016416d0283caa27d469e271e6'), ('card_advice_for_airport','p_airport text','be48466bf6645b283901ddc6a37f0671'), ('charter_note','p_avail_id uuid','41c6553407d7e2764b12514d03f03ee1'), ('create_availability','p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text','423b4191c603523939f8cff4b6b92329'), ('discover_availabilities_ham','p_airport text, p_sector text, p_flight text, p_date date','5bdac4e371b191c2bc780bd3707a08d2'), ('host_requests','','fe23603a880d2eb1f9934b37d854ba21'), ('request_credit_cost','p_user uuid, p_avail uuid','cf212b4ec7ecc582e53ea35b6480284b'), ('trg_soru_bildirimi_host','','7be8dad318e40dfe2fd602007e6e5195'), ('trg_soru_metni','','36d7578ec8e63da5fad0302725bcb798')) b(ad, arg, iz) join pg_proc p on p.proname = b.ad and pg_get_function_identity_arguments(p.oid) = b.arg join pg_namespace n on n.oid = p.pronamespace and n.nspname = 'public' where md5(regexp_replace(pg_get_functiondef(p.oid), '\s+', '', 'g')) = b.iz) = 9;
 -- Beklenen: 5 satır, hepsi tamam = true.

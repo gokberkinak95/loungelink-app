@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-11-08
+-- Uretim tarihi: 2026-11-09
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,8 +9,8 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 564
--- Birden cok dosyada tanimli (dikkat!): 175
+-- Toplam fonksiyon: 565
+-- Birden cok dosyada tanimli (dikkat!): 177
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -29,19 +29,21 @@
 --   binis_karti_kaydet           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   blok_gecmisi_kapat           -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 204_blok_eylem_sinirinda.sql)
 --   bo_plan_ata                  -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 253_guvenlik_kapanisi.sql)
+--   bo_plan_hediyeleri           -> etkin: 348_canli_esitleme.sql  (ayrica: 236_ust_plan_bir_ay_ucretsiz.sql)
 --   cancel_availability          -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 040_visibility_and_discovery_fix.sql, 291_ilan_kaldirma_zorlu.sql, 293_davet_cift_onay_ve_ilan_geri_cekme.sql)
 --   cancel_request               -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 032_p2_flows.sql, 166_slot_integrity_and_flow_tests.sql, 280_kredi_ve_durum_kilidi.sql)
 --   cancel_session               -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
+--   card_advice_for_airport      -> etkin: 348_canli_esitleme.sql  (ayrica: 131_card_advisor.sql)
 --   card_product_options         -> etkin: 145_null_sort_guard.sql  (ayrica: 095_close_the_loop.sql, 114_card_confidence_visible.sql)
 --   card_tier_label              -> etkin: 184_ms_status_language.sql  (ayrica: 120_human_text.sql)
 --   card_tier_options            -> etkin: 233_statu_listesi_tekillesiyor.sql  (ayrica: 100_tier_fee_and_time.sql)
 --   change_phone                 -> etkin: 078_trust_single_writer.sql  (ayrica: 026_doc_parity_core.sql)
---   charter_note                 -> etkin: 119_precheck_v5_and_charter.sql  (ayrica: 101_sections_charter_expiry.sql)
+--   charter_note                 -> etkin: 348_canli_esitleme.sql  (ayrica: 101_sections_charter_expiry.sql, 119_precheck_v5_and_charter.sql)
 --   cns_adaylar                  -> etkin: 214_misafir_hakki_kaynaktan.sql  (ayrica: 211_kart_aglari_kaynaktan.sql)
 --   cns_kapsam_haritasi          -> etkin: 214_misafir_hakki_kaynaktan.sql  (ayrica: 211_kart_aglari_kaynaktan.sql)
 --   compute_trust_badge          -> etkin: 212_yonetilen_ayarlar_gercekten_okunuyor.sql  (ayrica: 001_initial_schema.sql, 078_trust_single_writer.sql)
 --   confirm_session              -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 008_chat_sessions.sql, 067_fix_confirm_session_enum.sql, 078_trust_single_writer.sql, 300_uctan_uca_denetim.sql)
---   create_availability          -> etkin: 323_ilan_ac_saat_ve_kontenjan_kapisi.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 040_visibility_and_discovery_fix.sql, 055_listing_makes_host.sql, 056_supply_demand_match_notify.sql, 071_fix_create_availability_enum.sql, 074_host_always_visible.sql, 079_email_otp_contact_verification.sql, 158_device_findings.sql, 215_saglayici_veri_yollari.sql, 261_rol_kapisi.sql, 301_guven_ve_akis_tamamlama.sql)
+--   create_availability          -> etkin: 348_canli_esitleme.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 040_visibility_and_discovery_fix.sql, 055_listing_makes_host.sql, 056_supply_demand_match_notify.sql, 071_fix_create_availability_enum.sql, 074_host_always_visible.sql, 079_email_otp_contact_verification.sql, 158_device_findings.sql, 215_saglayici_veri_yollari.sql, 261_rol_kapisi.sql, 301_guven_ve_akis_tamamlama.sql, 323_ilan_ac_saat_ve_kontenjan_kapisi.sql)
 --   create_request               -> etkin: 140_rls_and_ratelimit.sql  (ayrica: 007_request_engine.sql, 009_phone_otp.sql, 026_doc_parity_core.sql, 033_beta_credits_dualrole_radar.sql, 065_fix_create_request.sql, 079_email_otp_contact_verification.sql)
 --   create_request_impl          -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 140_rls_and_ratelimit.sql, 159_grants_home_flows_request_gate.sql, 204_blok_eylem_sinirinda.sql, 207_kopruler_ve_verilen_sozler.sql, 212_yonetilen_ayarlar_gercekten_okunuyor.sql)
 --   create_request_impl_preflag  -> etkin: 320_istek_puani_daraltilmis.sql  (ayrica: 258_olmayan_kolonlar.sql, 283_kural_motoru_on_iki_boyut.sql, 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql)
@@ -69,7 +71,7 @@
 --   has_active_session           -> etkin: 080_session_lifecycle.sql  (ayrica: 032_p2_flows.sql)
 --   havalimani_nabzi             -> etkin: 319_tanis_gorunurluk_olcek.sql  (ayrica: 249_is_modeli_ve_soguk_ag.sql, 301_guven_ve_akis_tamamlama.sql)
 --   host_credit_settle           -> etkin: 337_jetset_puan_kredi_kurulus.sql  (ayrica: 206_host_motoru.sql, 207_kopruler_ve_verilen_sozler.sql)
---   host_requests                -> etkin: 050_host_requests_flight.sql  (ayrica: 046_trust_and_host_visibility.sql)
+--   host_requests                -> etkin: 348_canli_esitleme.sql  (ayrica: 046_trust_and_host_visibility.sql, 050_host_requests_flight.sql)
 --   host_standing                -> etkin: 249_is_modeli_ve_soguk_ag.sql  (ayrica: 206_host_motoru.sql, 207_kopruler_ve_verilen_sozler.sql)
 --   host_wallet                  -> etkin: 250_yaptirim_huni_dil_ve_kapilar.sql  (ayrica: 206_host_motoru.sql, 208_donem_devri_ve_kalibrasyon.sql, 232_rol_kapisi_ve_cuzdan_sizintisi.sql, 248_duzenleme_baglanti_degerlendirme.sql)
 --   ilan_guven_esigi_yaz         -> etkin: 288_guven_esigi_kolonu.sql  (ayrica: 246_ekonomi_ayari.sql)
@@ -119,7 +121,7 @@
 --   redeem_reward                -> etkin: 338_odul_erken_erisim_plan_indirimi.sql  (ayrica: 017_marketplace.sql, 029_bo_requirements.sql, 229_odul_teslim_sozu.sql)
 --   remove_rating                -> etkin: 297_yetki_kapilari.sql  (ayrica: 021_moderation_tools.sql)
 --   request_account_deletion     -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 141_deletion_flow_check.sql)
---   request_credit_cost          -> etkin: 252_ulasilabilirlik_ve_push_izni.sql  (ayrica: 206_host_motoru.sql, 249_is_modeli_ve_soguk_ag.sql)
+--   request_credit_cost          -> etkin: 348_canli_esitleme.sql  (ayrica: 206_host_motoru.sql, 249_is_modeli_ve_soguk_ag.sql, 252_ulasilabilirlik_ve_push_izni.sql)
 --   request_precheck             -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 090_rules_to_app.sql, 100_tier_fee_and_time.sql, 101_sections_charter_expiry.sql, 108_paid_guest_settlement.sql, 115_quota_who_says.sql, 119_precheck_v5_and_charter.sql, 120_human_text.sql, 142_short_detail_hard.sql, 187_kanitlanmis_kusurlar.sql, 192_on_kontrol_kapi_hizalama.sql)
 --   request_precheck_pregate     -> etkin: 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql  (ayrica: 283_kural_motoru_on_iki_boyut.sql)
 --   resolve_dispute              -> etkin: 284_kural_geri_bildirim_dongusu.sql  (ayrica: 029_bo_requirements.sql)
@@ -169,9 +171,9 @@
 --   trg_istek_guven_esigi        -> etkin: 288_guven_esigi_kolonu.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   trg_odul_ekonomi_kapisi      -> etkin: 245_vitrin_gokberkin_listesi.sql  (ayrica: 244_odul_ekonomisi.sql)
 --   trg_sohbet_suzgeci           -> etkin: 334_ekonomi_ve_icerik_suzgeci.sql  (ayrica: 255_magaza_sartlari.sql)
---   trg_soru_bildirimi_host      -> etkin: 239_soru_hangi_ilana_ait.sql  (ayrica: 238_cuzdan_ve_soru_dili.sql)
+--   trg_soru_bildirimi_host      -> etkin: 348_canli_esitleme.sql  (ayrica: 238_cuzdan_ve_soru_dili.sql, 239_soru_hangi_ilana_ait.sql)
 --   trg_soru_izi                 -> etkin: 239_soru_hangi_ilana_ait.sql  (ayrica: 235_sordugunu_gorebilmeli.sql)
---   trg_soru_metni               -> etkin: 239_soru_hangi_ilana_ait.sql  (ayrica: 238_cuzdan_ve_soru_dili.sql)
+--   trg_soru_metni               -> etkin: 348_canli_esitleme.sql  (ayrica: 238_cuzdan_ve_soru_dili.sql, 239_soru_hangi_ilana_ait.sql)
 --   trg_users_yasak_acik_isleri_kapat -> etkin: 329_silinen_hesap_14_gun_anonim.sql  (ayrica: 322_hesap_silme_calisir_ve_acik_isleri_kapatir.sql)
 --   trg_waitlist_rate            -> etkin: 347_guvenlik_fraud_kapanisi.sql  (ayrica: 194_bekleme_listesi.sql)
 --   trip_fit_note                -> etkin: 202_saat_dilimi_ajet_anahtari_pencere.sql  (ayrica: 199_ucus_saati_terminal_ve_katalog.sql)
@@ -3651,90 +3653,96 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- create_availability   [etkin kaynak: 323_ilan_ac_saat_ve_kontenjan_kapisi.sql]
--- ⚠ Bu fonksiyon 12 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- create_availability   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 13 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text DEFAULT NULL::text, p_visibility text DEFAULT 'all'::text, p_carrier text DEFAULT NULL::text)
+create or replace function public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text DEFAULT NULL::text, p_visibility text DEFAULT 'all'::text, p_carrier text DEFAULT NULL::text)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
 declare
-  v jsonb; v_id uuid;
-  v_pg uuid; v_kaynak text; v_kod text; v_ad text;
+  v_uid uuid := auth.uid(); v_cap int; v_ok boolean; v_id uuid; v_conflict boolean;
+  v_vis availability_visibility; v_min_trust smallint := 0;
 begin
-  -- ══════════════════════════════════════════════════════════════════
-  -- 🔴 261 — ROL KAPISI. ILAN ACMAK ARTIK KIMSEYI SESSIZCE HOST YAPMAZ.
-  --
-  -- Kapi EN USTTE: `_base` cagrilmadan once. Boylece `_base` icindeki
-  -- 055 terfisi (`update users set role='host'`) ULASILAMAZ hale
-  -- geliyor — buraya gelen zaten host.
-  --
-  -- Host olmanin TEK yolu artik acik niyet: `rolumu_sec('host')`
-  -- (uygulamadaki "Host ol" dugmesi) ya da onaylanmis host basvurusu.
-  if auth.uid() is null then raise exception 'not_authenticated'; end if;
-  if not exists (select 1 from users u where u.id = auth.uid() and u.role = 'host')
-     and not exists (select 1 from host_applications ha
-                      where ha.user_id = auth.uid() and ha.status = 'approved')
-  then
-    raise exception 'not_a_host';
-  end if;
-  -- 323 · Saat sırası ve kontenjan alt sınırı yalnız tablo KISITINDAYDI: ters saatte
-  -- kullanıcı ham "violates check constraint" (→ "Bir şeyler ters gitti") görüyordu.
-  -- Kodlar i18n'de zaten var (invalid_time_range · invalid_slots).
-  if p_from is null or p_to is null or p_from >= p_to then raise exception 'invalid_time_range'; end if;
-  if p_slots is null or p_slots < 1 then raise exception 'invalid_slots'; end if;
-  -- 🔴 301/§5: KENDİ İLANIYLA ÇAKIŞAN İLAN açılabiliyordu (tam akış testi,
-  -- 10–13 varken 12–15 GEÇTİ). `update_availability` bunu 'kendi_ilanlarin_
-  -- cakisiyor' ile zaten reddediyordu — açma yolu reddetmiyordu. Aynı kişi
-  -- aynı saatte iki salonda olamaz; ikinci ilana kabul edilen misafir kapıda kalır.
-  if exists (select 1 from availabilities a
-              where a.host_id = auth.uid() and a.active
-                and a.avail_date = p_date
-                and a.time_from < p_to and p_from < a.time_to) then
-    raise exception 'kendi_ilanlarin_cakisiyor'
-      using hint = 'Bu saatte başka bir ilanın var. Önce onu kaldır ya da saatleri ayır.';
-  end if;
-  -- ══════════════════════════════════════════════════════════════════
+  if v_uid is null then raise exception 'not_authenticated'; end if;
 
-  -- Butun kapilar, kotalar, bildirimler _base zincirinde.
-  -- Buraya tek bir is kaldi: SONUCU ANLATMAK.
-  v := public.create_availability_base(
-         p_lounge_id, p_airport, p_date, p_from, p_to, p_slots,
-         p_flight, p_visibility, p_carrier);
+  -- 079: KAPI ARTIK "DOĞRULANMIŞ İLETİŞİM" (telefon VEYA e-posta).
+  -- SMS maliyetli olduğu için beta boyunca e-posta doğrulaması yeterli;
+  -- demo bypass (kod 0000) kaldırıldı.
+  v_ok := public.is_contact_verified(v_uid);
+  if not v_ok then raise exception 'contact_not_verified'; end if;
 
-  v_id := nullif(v ->> 'id', '')::uuid;
-  if v_id is null then
-    return v;   -- _base bir sey dondurmediyse uydurmuyoruz
-  end if;
+  select guest_capacity into v_cap from profiles where user_id = v_uid;
+  if v_cap is null then raise exception 'no_access_source'; end if;
+  if p_slots > v_cap then raise exception 'slots_exceed_capacity'; end if;
+  if p_date < current_date then raise exception 'date_in_past'; end if;
 
-  select a.program_id, a.program_source, p.code, p.name
-    into v_pg, v_kaynak, v_kod, v_ad
-    from availabilities a
-    left join lounge_programs p on p.id = a.program_id
-   where a.id = v_id;
+  -- 033: örtüşen saatte bekleyen/kabul edilmiş guest isteğin varsa ilan açamazsın
+  select exists (
+    select 1 from requests r
+      join availabilities a on a.id = r.avail_id
+     where r.guest_id = v_uid and r.status in ('pending','accepted')
+       and a.avail_date = p_date
+       and a.time_from < p_to and p_from < a.time_to
+  ) into v_conflict;
+  if v_conflict then raise exception 'guest_same_slot'; end if;
 
-  return v || jsonb_build_object(
-    'program_id',     v_pg,
-    'program_kodu',   v_kod,
-    'program_adi',    v_ad,
-    'program_kaynagi', coalesce(v_kaynak, 'bilinmiyor'),
-    'program_notu', case
-      when v_pg is null then
-        'Bu ilan bir kart programına bağlanamadı: hak beyanınız bu salonun kabul listesiyle eşleşmiyor. İlan yayında; yalnız sağlayıcı raporunda "program bilinmeyen" sayılacak.'
-      when coalesce(v_kaynak, '') = 'turetildi' then
-        format('Bu ilan "%s" programı altında sayılacak. Bu bir ÇIKARIM: doğrulanmış hak beyanınızdan türetildi, sizin beyanınız değil.', coalesce(v_ad, v_kod))
-      else
-        format('Bu ilan "%s" programı altında sayılacak (beyan).', coalesce(v_ad, v_kod))
-      end);
+  -- 040: MVP'nin all/trusted/hidden -> enum + eşik
+  case lower(coalesce(p_visibility,'all'))
+    when 'all'         then v_vis := 'Public';      v_min_trust := 0;
+    when 'trusted'     then v_vis := 'Public';      v_min_trust := 55;
+    when 'hidden'      then v_vis := 'Hidden';      v_min_trust := 0;
+    when 'connections' then v_vis := 'Connections'; v_min_trust := 0;
+    else raise exception 'bad_visibility';
+  end case;
+
+  insert into availabilities (
+    host_id, lounge_id, airport_code, avail_date, time_from, time_to,
+    slots, filled, active, visibility, flight_number, min_trust, carrier
+  )
+  values (
+    v_uid, p_lounge_id, p_airport, p_date, p_from, p_to,
+    p_slots, 0, true, v_vis, nullif(trim(p_flight),''), v_min_trust,
+    -- v158: tasiyici artik ACIK veri — secilmediyse ucus no onekinden turetilir.
+    nullif(upper(coalesce(nullif(trim(p_carrier),''), substring(trim(coalesce(p_flight,'')) from '^[A-Za-z]+'))),'')
+  )
+  returning id into v_id;
+
+  -- 055: ilan açmak = host olmak (rol)
+  update users set role = 'host' where id = v_uid and role <> 'host';
+
+  -- YENİ (074): ilan açmak = APP HOST'U olmak (görünürlük).
+  -- Sıra önemli: is_staff hâlâ true iken profil düzeltilir (işaret olarak
+  -- kullanılıyor), SONRA bayrak temizlenir. Kullanıcının kendi kapattığı
+  -- show_on_discovery'ye (staff değilse) dokunulmaz.
+  update profiles p set show_on_discovery = true
+   where p.user_id = v_uid
+     and p.show_on_discovery = false
+     and exists (select 1 from users u where u.id = v_uid and u.is_staff = true);
+  update users set is_staff = false where id = v_uid and is_staff = true;
+
+  -- 056: ARZ-TALEP EŞLEŞTİRME — eşleşen misafirlere "host geldi" bildirimi
+  -- (SELECT içindeki literal enum'a OTOMATİK çevrilmez -> 071 cast'i korunur)
+  insert into notifications (user_id, category, title, body, ref_id, ref_type)
+  select distinct vs.user_id, 'requests'::notif_category,
+         'Havalimanında host var! ✦',
+         'Seni bekleyen bir host ' || p_airport || ' için ilan açtı. Hemen başvur.',
+         v_id, 'availability'
+    from visits vs
+    join users gu on gu.id = vs.user_id
+   where vs.airport_code = p_airport
+     and vs.visit_date = p_date
+     and vs.time_from < p_to and p_from < vs.time_to
+     and vs.user_id <> v_uid
+     and coalesce(gu.is_staff,false) = false
+     and gu.deleted_at is null;
+
+  return jsonb_build_object('ok', true, 'id', v_id, 'visibility', v_vis, 'min_trust', v_min_trust);
 end $function$;
 
-select 'ilan saat sirasi kapisi' as kontrol,
-       position('323 · Saat sırası' in pg_get_functiondef(p.oid)) > 0 as tamam
-  from pg_proc p join pg_namespace n on n.oid = p.pronamespace
- where n.nspname = 'public' and p.proname = 'create_availability';
--- Beklenen: tamam = true.
+-- discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date)
 
 -- ----------------------------------------------------------------------
 -- recompute_trust   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
@@ -4782,21 +4790,15 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- host_requests   [etkin kaynak: 050_host_requests_flight.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- host_requests   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.host_requests()
-returns table (
-  id uuid, guest_id uuid, avail_id uuid, status text, intro_message text,
-  created_at timestamptz,
-  guest_name text, guest_photo text, guest_profession text,
-  guest_score int, guest_badge text, guest_id_verified boolean,
-  guest_phone_verified boolean, guest_linkedin boolean,
-  guest_sessions int, guest_rating numeric, guest_rating_count int,
-  same_flight boolean, same_purpose boolean, guest_fit int,
-  lounge_name text, avail_date date, time_from time, time_to time, flight_number text
-)
-language plpgsql security definer set search_path = public as $$
+ RETURNS TABLE(id uuid, guest_id uuid, avail_id uuid, status text, intro_message text, created_at timestamp with time zone, guest_name text, guest_photo text, guest_profession text, guest_score integer, guest_badge text, guest_id_verified boolean, guest_phone_verified boolean, guest_linkedin boolean, guest_sessions integer, guest_rating numeric, guest_rating_count integer, same_flight boolean, same_purpose boolean, guest_fit integer, lounge_name text, avail_date date, time_from time without time zone, time_to time without time zone, flight_number text)
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 declare v_uid uuid := auth.uid();
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
@@ -4876,7 +4878,9 @@ begin
          b.gflight as flight_number                                     -- 050/#26: misafirin uçuşu
   from base b
   order by coalesce(b.st = 'pending', false) desc, guest_fit desc, b.created_at desc;
-end $$;
+end $function$;
+
+-- request_credit_cost(p_user uuid, p_avail uuid)
 
 -- ----------------------------------------------------------------------
 -- active_campaigns   [etkin kaynak: 049_discovery_safety_phone_delete.sql]
@@ -7853,11 +7857,15 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- charter_note   [etkin kaynak: 119_precheck_v5_and_charter.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- charter_note   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.charter_note(p_avail_id uuid)
-returns jsonb language plpgsql stable security definer set search_path = public as $$
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 declare a availabilities%rowtype; v_model text; v_guest_charter boolean;
 begin
   select * into a from availabilities where id = p_avail_id;
@@ -7882,9 +7890,9 @@ begin
   if v_model is not null and v_model <> 'airline_status' then
     if coalesce(a.is_charter,false) or coalesce(v_guest_charter,false) then
       return jsonb_build_object('blocked', false,
-        'note', 'Seferlerden biri charter. Bu salona giris HAVAYOLU statusune degil '
-             || 'UYELIGE bagli oldugu icin charter olmasi sorun degildir — gecerli '
-             || 'binis karti yeterlidir.');
+        'note', 'Seferlerden biri charter. Bu salona giriş havayolu statüsüne değil '
+             || 'üyeliğe bağlı olduğu için charter olması sorun değildir; geçerli '
+             || 'biniş kartı yeterlidir.');
     end if;
     return jsonb_build_object('blocked', false, 'note', null);
   end if;
@@ -7892,24 +7900,26 @@ begin
   -- Havayolu salonu: charter HAK VERMEZ (iki taraf icin de)
   if coalesce(a.is_charter,false) then
     return jsonb_build_object('blocked', true,
-      'note', 'Host''un seferi CHARTER. Havayolu salonlarinda charter seferde bilet '
-           || 'sinifi ya da statu karti ne olursa olsun salon kullanim hakki yoktur. '
-           || 'Istisna: charter anlasmasi yapan acente yolcularina salon hakki satin '
-           || 'almissa gecerlidir.');
+      'note', 'Host''un seferi charter. Havayolu salonlarında charter seferde bilet '
+           || 'sınıfı ya da statü kartı ne olursa olsun salon kullanım hakkı yoktur. '
+           || 'İstisna: charter anlaşması yapan acente yolcularına salon hakkı satın '
+           || 'almışsa geçerlidir.');
   end if;
   if coalesce(v_guest_charter,false) then
     return jsonb_build_object('blocked', true,
-      'note', 'SENIN seferin charter. Havayolu salonlarinda charter yolcusu misafir '
-           || 'olarak da kabul edilmez. Kart agi (Priority Pass / LoungeKey / '
-           || 'DragonPass) kaynakli bir ilan ararsan giris mumkun olabilir.');
+      'note', 'Senin seferin charter. Havayolu salonlarında charter yolcusu misafir '
+           || 'olarak da kabul edilmez. Kart ağı (Priority Pass / LoungeKey / '
+           || 'DragonPass) kaynaklı bir ilan ararsan giriş mümkün olabilir.');
   end if;
   if a.is_charter is null then
     return jsonb_build_object('blocked', false,
-      'note', 'Seferin tarifeli mi charter mi belirtilmemis. Charter seferde havayolu '
-           || 'salonu hakki olmaz — emin degilsen biletini kontrol et.');
+      'note', 'Seferin tarifeli mi charter mi belirtilmemiş. Charter seferde havayolu '
+           || 'salonu hakkı olmaz; emin değilsen biletini kontrol et.');
   end if;
   return jsonb_build_object('blocked', false, 'note', null);
-end $$;
+end $function$;
+
+-- create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text)
 
 -- ----------------------------------------------------------------------
 -- rules_expiring   [etkin kaynak: 101_sections_charter_expiry.sql]
@@ -8622,12 +8632,15 @@ returns table (
 $$;
 
 -- ----------------------------------------------------------------------
--- card_advice_for_airport   [etkin kaynak: 131_card_advisor.sql]
+-- card_advice_for_airport   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.card_advice_for_airport(p_airport text)
-returns table (issuer text, card text, program text, lounges int,
-               confidence text, source_url text)
-language sql stable security definer set search_path = public as $$
+ RETURNS TABLE(issuer text, card text, program text, lounges integer, confidence text, source_url text)
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
   select i.name, cp.name, p.name,
          count(distinct a.venue_id)::int,
          coalesce(cp.confidence,'unknown'), cp.source_url
@@ -8643,7 +8656,9 @@ language sql stable security definer set search_path = public as $$
    order by count(distinct a.venue_id) desc,
             coalesce(cp.confidence = 'verified', false) desc, i.name
    limit 5;
-$$;
+$function$;
+
+-- charter_note(p_avail_id uuid)
 
 -- ----------------------------------------------------------------------
 -- travel_style_options   [etkin kaynak: 132_travel_style.sql]
@@ -12831,12 +12846,15 @@ $fn$;
 -- Konsiyerj ayrıcalığı: kendi misafir isteği kredi harcamaz.
 
 -- ----------------------------------------------------------------------
--- request_credit_cost   [etkin kaynak: 252_ulasilabilirlik_ve_push_izni.sql]
--- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- request_credit_cost   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-create or replace function public.request_credit_cost(p_user uuid, p_avail uuid default null)
-returns int
-language plpgsql stable security definer set search_path = public as $rcc252$
+create or replace function public.request_credit_cost(p_user uuid, p_avail uuid DEFAULT NULL::uuid)
+ RETURNS integer
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 declare v_ham int;
 begin
   -- Önce eski kural aynen çalışır: Konsiyerj ayrıcalığı + soğuk ağ indirimi.
@@ -12854,20 +12872,9 @@ begin
     return 0;
   end if;
   return v_ham;
-end $rcc252$;
+end $function$;
 
--- 🔴 249 bunu `authenticated`e AÇMIŞTI ve nöbetçi "yüzeyde yok ama istemciye
--- açık" diye uyarıyordu. Ölçtüm: ne app ne BO bu fonksiyonu çağırıyor
--- (grep: 0 sonuç). Tüm çağıranlar sunucu tarafında SECURITY DEFINER
--- fonksiyonlar — yani hak kapanınca hiçbir akış bozulmuyor.
--- Kimsenin kullanmadığı bir hak, güvenlik yüzeyi olmaktan başka iş görmez.
-revoke all on function public.request_credit_cost(uuid, uuid) from public;
-revoke all on function public.request_credit_cost(uuid, uuid) from authenticated;
-revoke all on function public.request_credit_cost(uuid, uuid) from anon;
-grant execute on function public.request_credit_cost(uuid, uuid) to service_role;
-
--- Misafire NEDEN bedava olduğunu söyleyen cümle, isteği göndermeden önce
--- okunabilsin. `ilan_ozeti` zaten ilan başına çağrılıyor (248 §4).
+-- trg_soru_bildirimi_host()
 
 -- ----------------------------------------------------------------------
 -- host_feature_hours   [etkin kaynak: 207_kopruler_ve_verilen_sozler.sql]
@@ -18550,17 +18557,15 @@ insert into beta_settings (key, value) values ('kurulus_fiyat_bitis', to_jsonb('
   on conflict (key) do nothing;
 
 -- ----------------------------------------------------------------------
--- bo_plan_hediyeleri   [etkin kaynak: 236_ust_plan_bir_ay_ucretsiz.sql]
+-- bo_plan_hediyeleri   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-create or replace function public.bo_plan_hediyeleri(p_durum text default 'aktif')
-returns table (
-  id uuid, user_id uuid, eposta text, ad text,
-  plan text, plan_adi text, kaynak text, not_metni text,
-  basladi_at timestamptz, biter_at timestamptz,
-  bitti_at timestamptz, iptal_at timestamptz, iptal_notu text,
-  gun_kaldi int, satin_alinan text
-)
-language plpgsql stable security definer set search_path = public as $bph$
+create or replace function public.bo_plan_hediyeleri(p_durum text DEFAULT 'aktif'::text)
+ RETURNS TABLE(id uuid, user_id uuid, eposta text, ad text, plan text, plan_adi text, kaynak text, not_metni text, basladi_at timestamp with time zone, biter_at timestamp with time zone, bitti_at timestamp with time zone, iptal_at timestamp with time zone, iptal_notu text, gun_kaldi integer, satin_alinan text)
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 begin
   -- 🔴 248'DE DÜZELTİLDİ (42702). Burada `where user_id = auth.uid()`
   -- yazıyordu. Bu fonksiyon `returns table (... user_id uuid ...)` ilan
@@ -18591,10 +18596,9 @@ begin
            else true end
    order by g.biter_at desc
    limit 200;
-end $bph$;
-grant execute on function public.bo_plan_hediyeleri(text) to service_role;
+end $function$;
 
-drop function if exists public.bo_plan_hediyesi_ver(uuid, text, int, text);
+-- card_advice_for_airport(p_airport text)
 
 -- ----------------------------------------------------------------------
 -- bo_plan_hediyesi_ver   [etkin kaynak: 236_ust_plan_bir_ay_ucretsiz.sql]
@@ -19508,11 +19512,15 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- trg_soru_metni   [etkin kaynak: 239_soru_hangi_ilana_ait.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- trg_soru_metni   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.trg_soru_metni()
-returns trigger language plpgsql security definer set search_path = public as $sm$
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 declare v_salon text; v_metin text;
 begin
   if new.intent is distinct from 'kural_sorusu' then return new; end if;
@@ -19528,14 +19536,221 @@ begin
 
   new.intro := left(replace(v_metin, '{salon}', coalesce(v_salon, 'bu')), 400);
   return new;
-end $sm$;
+end $function$;
+
+-- ── 2 · YETKİLER ────────────────────────────────────────────────────────────
+-- bo_plan_hediyeleri(p_durum text) → anon kapalı · authenticated kapalı
+revoke execute on function public.bo_plan_hediyeleri(p_durum text) from public, anon, authenticated;
+grant execute on function public.bo_plan_hediyeleri(p_durum text) to service_role;
+
+-- card_advice_for_airport(p_airport text) → anon kapalı · authenticated açık
+revoke execute on function public.card_advice_for_airport(p_airport text) from public, anon, authenticated;
+grant execute on function public.card_advice_for_airport(p_airport text) to service_role;
+grant execute on function public.card_advice_for_airport(p_airport text) to authenticated;
+
+-- charter_note(p_avail_id uuid) → anon kapalı · authenticated açık
+revoke execute on function public.charter_note(p_avail_id uuid) from public, anon, authenticated;
+grant execute on function public.charter_note(p_avail_id uuid) to service_role;
+grant execute on function public.charter_note(p_avail_id uuid) to authenticated;
+
+-- create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text) → anon kapalı · authenticated açık
+revoke execute on function public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text) from public, anon, authenticated;
+grant execute on function public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text) to service_role;
+grant execute on function public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text) to authenticated;
+
+-- discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date) → anon kapalı · authenticated açık
+revoke execute on function public.discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date) from public, anon, authenticated;
+grant execute on function public.discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date) to service_role;
+grant execute on function public.discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date) to authenticated;
+
+-- host_requests() → anon kapalı · authenticated açık
+revoke execute on function public.host_requests() from public, anon, authenticated;
+grant execute on function public.host_requests() to service_role;
+grant execute on function public.host_requests() to authenticated;
+
+-- request_credit_cost(p_user uuid, p_avail uuid) → anon kapalı · authenticated kapalı
+revoke execute on function public.request_credit_cost(p_user uuid, p_avail uuid) from public, anon, authenticated;
+grant execute on function public.request_credit_cost(p_user uuid, p_avail uuid) to service_role;
+
+-- trg_soru_bildirimi_host() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_soru_bildirimi_host() from public, anon, authenticated;
+grant execute on function public.trg_soru_bildirimi_host() to service_role;
+
+-- trg_soru_metni() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_soru_metni() from public, anon, authenticated;
+grant execute on function public.trg_soru_metni() to service_role;
+
+-- istegin_acik_oturumu_var_mi(p_req uuid) → anon kapalı · authenticated açık
+revoke execute on function public.istegin_acik_oturumu_var_mi(p_req uuid) from public, anon, authenticated;
+grant execute on function public.istegin_acik_oturumu_var_mi(p_req uuid) to service_role;
+grant execute on function public.istegin_acik_oturumu_var_mi(p_req uuid) to authenticated;
+
+-- plan_kredisi_kalan(p_user uuid) → anon kapalı · authenticated açık
+revoke execute on function public.plan_kredisi_kalan(p_user uuid) from public, anon, authenticated;
+grant execute on function public.plan_kredisi_kalan(p_user uuid) to service_role;
+grant execute on function public.plan_kredisi_kalan(p_user uuid) to authenticated;
+
+-- plan_ucretli(p_plan text) → anon kapalı · authenticated açık
+revoke execute on function public.plan_ucretli(p_plan text) from public, anon, authenticated;
+grant execute on function public.plan_ucretli(p_plan text) to service_role;
+grant execute on function public.plan_ucretli(p_plan text) to authenticated;
+
+-- profil_dogrulandi_hesapla(p_user uuid) → anon kapalı · authenticated açık
+revoke execute on function public.profil_dogrulandi_hesapla(p_user uuid) from public, anon, authenticated;
+grant execute on function public.profil_dogrulandi_hesapla(p_user uuid) to service_role;
+grant execute on function public.profil_dogrulandi_hesapla(p_user uuid) to authenticated;
+
+-- push_kanali(p_category notif_category) → anon kapalı · authenticated açık
+revoke execute on function public.push_kanali(p_category notif_category) from public, anon, authenticated;
+grant execute on function public.push_kanali(p_category notif_category) to service_role;
+grant execute on function public.push_kanali(p_category notif_category) to authenticated;
+
+-- push_kanali(p_category text) → anon kapalı · authenticated açık
+revoke execute on function public.push_kanali(p_category text) from public, anon, authenticated;
+grant execute on function public.push_kanali(p_category text) to service_role;
+grant execute on function public.push_kanali(p_category text) to authenticated;
+
+-- seed_test_hesabi(p_email text) → anon kapalı · authenticated açık
+revoke execute on function public.seed_test_hesabi(p_email text) from public, anon, authenticated;
+grant execute on function public.seed_test_hesabi(p_email text) to service_role;
+grant execute on function public.seed_test_hesabi(p_email text) to authenticated;
+
+-- sogu_baslangic_ozeti(p_airport text) → anon kapalı · authenticated açık
+revoke execute on function public.sogu_baslangic_ozeti(p_airport text) from public, anon, authenticated;
+grant execute on function public.sogu_baslangic_ozeti(p_airport text) to service_role;
+grant execute on function public.sogu_baslangic_ozeti(p_airport text) to authenticated;
+
+-- telefon_kanonik(p_phone text) → anon kapalı · authenticated açık
+revoke execute on function public.telefon_kanonik(p_phone text) from public, anon, authenticated;
+grant execute on function public.telefon_kanonik(p_phone text) to service_role;
+grant execute on function public.telefon_kanonik(p_phone text) to authenticated;
+
+-- trg_bakiye_negatife_dusemez() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_bakiye_negatife_dusemez() from public, anon, authenticated;
+grant execute on function public.trg_bakiye_negatife_dusemez() to service_role;
+
+-- trg_cinsiyet_kilidi() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_cinsiyet_kilidi() from public, anon, authenticated;
+grant execute on function public.trg_cinsiyet_kilidi() to service_role;
+
+-- trg_huni_istek() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_huni_istek() from public, anon, authenticated;
+grant execute on function public.trg_huni_istek() to service_role;
+
+-- trg_huni_oturum() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_huni_oturum() from public, anon, authenticated;
+grant execute on function public.trg_huni_oturum() to service_role;
+
+-- trg_iade_tutulani_asamaz() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_iade_tutulani_asamaz() from public, anon, authenticated;
+grant execute on function public.trg_iade_tutulani_asamaz() to service_role;
+
+-- trg_kisit_gozden_gecir() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_kisit_gozden_gecir() from public, anon, authenticated;
+grant execute on function public.trg_kisit_gozden_gecir() to service_role;
+
+-- trg_kredi_paketi_kapisi() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_kredi_paketi_kapisi() from public, anon, authenticated;
+grant execute on function public.trg_kredi_paketi_kapisi() to service_role;
+
+-- trg_mesaj_bildirimi() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_mesaj_bildirimi() from public, anon, authenticated;
+grant execute on function public.trg_mesaj_bildirimi() to service_role;
+
+-- trg_puan_negatife_dusemez() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_puan_negatife_dusemez() from public, anon, authenticated;
+grant execute on function public.trg_puan_negatife_dusemez() to service_role;
+
+-- trg_sohbet_suzgeci() → anon kapalı · authenticated kapalı
+revoke execute on function public.trg_sohbet_suzgeci() from public, anon, authenticated;
+grant execute on function public.trg_sohbet_suzgeci() to service_role;
+
+-- tutma_sebepleri() → anon kapalı · authenticated açık
+revoke execute on function public.tutma_sebepleri() from public, anon, authenticated;
+grant execute on function public.tutma_sebepleri() to service_role;
+grant execute on function public.tutma_sebepleri() to authenticated;
+
+-- tutma_varsayim_esigi() → anon kapalı · authenticated açık
+revoke execute on function public.tutma_varsayim_esigi() from public, anon, authenticated;
+grant execute on function public.tutma_varsayim_esigi() to service_role;
+grant execute on function public.tutma_varsayim_esigi() to authenticated;
+
+-- tutulan_kredi(p_req uuid) → anon kapalı · authenticated açık
+revoke execute on function public.tutulan_kredi(p_req uuid) from public, anon, authenticated;
+grant execute on function public.tutulan_kredi(p_req uuid) to service_role;
+grant execute on function public.tutulan_kredi(p_req uuid) to authenticated;
+
+-- ucus_hatti(p_origin text, p_dest text) → anon kapalı · authenticated açık
+revoke execute on function public.ucus_hatti(p_origin text, p_dest text) from public, anon, authenticated;
+grant execute on function public.ucus_hatti(p_origin text, p_dest text) to service_role;
+grant execute on function public.ucus_hatti(p_origin text, p_dest text) to authenticated;
+
+-- yerel_an(p_date date, p_time time without time zone, p_airport text) → anon açık · authenticated açık
+revoke execute on function public.yerel_an(p_date date, p_time time without time zone, p_airport text) from public, anon, authenticated;
+grant execute on function public.yerel_an(p_date date, p_time time without time zone, p_airport text) to service_role;
+grant execute on function public.yerel_an(p_date date, p_time time without time zone, p_airport text) to anon;
+grant execute on function public.yerel_an(p_date date, p_time time without time zone, p_airport text) to authenticated;
+
+-- yerel_gun(p_airport text) → anon açık · authenticated açık
+revoke execute on function public.yerel_gun(p_airport text) from public, anon, authenticated;
+grant execute on function public.yerel_gun(p_airport text) to service_role;
+grant execute on function public.yerel_gun(p_airport text) to anon;
+grant execute on function public.yerel_gun(p_airport text) to authenticated;
+
+-- yerel_saat(p_airport text) → anon açık · authenticated açık
+revoke execute on function public.yerel_saat(p_airport text) from public, anon, authenticated;
+grant execute on function public.yerel_saat(p_airport text) to service_role;
+grant execute on function public.yerel_saat(p_airport text) to anon;
+grant execute on function public.yerel_saat(p_airport text) to authenticated;
+
+-- yonetici_kapisi() → anon kapalı · authenticated kapalı
+revoke execute on function public.yonetici_kapisi() from public, anon, authenticated;
+grant execute on function public.yonetici_kapisi() to service_role;
+
+-- ── 3 · connection_test: istemci yazması kapalı ──────────────────────────────
+do $ct348$
+begin
+  if to_regclass('public.connection_test') is not null then
+    execute 'revoke insert, update, delete on public.connection_test from anon, authenticated';
+    execute 'drop policy if exists "authenticated users can write" on public.connection_test';
+    raise notice '348: connection_test istemci yazmasi kapatildi (tablo duruyor).';
+  end if;
+end $ct348$;
+
+-- ── 4 · kurulum_imzasi_var istemciye kapalı ──────────────────────────────────
+do $ki348$
+declare r record;
+begin
+  for r in select p.oid::regprocedure as f from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+            where n.nspname = 'public' and p.proname = 'kurulum_imzasi_var' loop
+    execute format('revoke execute on function %s from public, anon, authenticated', r.f);
+  end loop;
+end $ki348$;
+
+-- ── DOĞRULAMA ───────────────────────────────────────────────────────────────
+select 'plan_kredisi_kalan kullaniciya acik' as kontrol,
+       has_function_privilege('authenticated', 'public.plan_kredisi_kalan(uuid)', 'execute') as tamam
+union all select 'tetikleyici fonksiyonlari istemciye kapali',
+       not has_function_privilege('anon', 'public.trg_bakiye_negatife_dusemez()', 'execute')
+   and not has_function_privilege('authenticated', 'public.trg_mesaj_bildirimi()', 'execute')
+union all select 'seed_test_hesabi girissize kapali',
+       not has_function_privilege('anon', 'public.seed_test_hesabi(text)', 'execute')
+union all select 'connection_test istemci yazamaz',
+       to_regclass('public.connection_test') is null
+       or not has_table_privilege('authenticated', 'public.connection_test', 'insert')
+union all select 'dokuz govde dosyalarla ayni', (select count(*) from (values ('bo_plan_hediyeleri','p_durum text','5b1cb6016416d0283caa27d469e271e6'), ('card_advice_for_airport','p_airport text','be48466bf6645b283901ddc6a37f0671'), ('charter_note','p_avail_id uuid','41c6553407d7e2764b12514d03f03ee1'), ('create_availability','p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text','423b4191c603523939f8cff4b6b92329'), ('discover_availabilities_ham','p_airport text, p_sector text, p_flight text, p_date date','5bdac4e371b191c2bc780bd3707a08d2'), ('host_requests','','fe23603a880d2eb1f9934b37d854ba21'), ('request_credit_cost','p_user uuid, p_avail uuid','cf212b4ec7ecc582e53ea35b6480284b'), ('trg_soru_bildirimi_host','','7be8dad318e40dfe2fd602007e6e5195'), ('trg_soru_metni','','36d7578ec8e63da5fad0302725bcb798')) b(ad, arg, iz) join pg_proc p on p.proname = b.ad and pg_get_function_identity_arguments(p.oid) = b.arg join pg_namespace n on n.oid = p.pronamespace and n.nspname = 'public' where md5(regexp_replace(pg_get_functiondef(p.oid), '\s+', '', 'g')) = b.iz) = 9;
+-- Beklenen: 5 satır, hepsi tamam = true.
 
 -- ----------------------------------------------------------------------
--- trg_soru_bildirimi_host   [etkin kaynak: 239_soru_hangi_ilana_ait.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- trg_soru_bildirimi_host   [etkin kaynak: 348_canli_esitleme.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.trg_soru_bildirimi_host()
-returns trigger language plpgsql security definer set search_path = public as $sbh$
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
 declare v_salon text; v_b text; v_g text;
 begin
   if new.intent is distinct from 'kural_sorusu' then return new; end if;
@@ -19556,52 +19771,9 @@ begin
    where user_id = new.to_id and ref_type = 'connection' and ref_id = new.id;
 
   return new;
-end $sbh$;
+end $function$;
 
--- ----------------------------------------------------------------------------
--- 6) NÖBETÇİ — tahmin gerçekten kalktı mı?
--- ----------------------------------------------------------------------------
-do $n239$
-declare
-  v_kolon int; v_tahmin int; v_yazar int;
-begin
-  select count(*) into v_kolon from information_schema.columns
-   where table_schema='public' and table_name='connection_requests' and column_name='avail_id';
-  if v_kolon <> 1 then
-    raise exception '239 NOBETCI: connection_requests.avail_id kolonu YOK.';
-  end if;
-
-  -- 🔴 ASIL SINAMA: hiçbir okuyucu artık "host'un ilk ilanı" tahminini
-  -- taşımamalı. Dört fonksiyonun gövdesinde o desen kaldıysa tahmin
-  -- sürüyor demektir.
-  select count(*) into v_tahmin
-    from pg_proc p join pg_namespace n on n.oid=p.pronamespace
-   where n.nspname='public'
-     and p.proname in ('sorularim','trg_soru_izi','trg_soru_metni','trg_soru_bildirimi_host')
-     and p.prosrc like '%a.host_id = %active%order by%limit 1%';
-  if v_tahmin <> 0 then
-    raise exception '239 NOBETCI: % fonksiyon hala ilani TAHMIN ediyor.', v_tahmin;
-  end if;
-
-  select count(*) into v_yazar
-    from pg_proc p join pg_namespace n on n.oid=p.pronamespace
-   where n.nspname='public' and p.proname='ilan_kurali_sor'
-     and p.prosrc like '%avail_id%';
-  if v_yazar <> 1 then
-    raise notice '239 UYARI: ilan_kurali_sor gövdesinde avail_id gorunmuyor — '
-                 'yeni sorular ilansiz kaydedilecek. 221/223 degismis olabilir.';
-  else
-    raise notice '239 OK · kolon var · yazan taraf avail_id yaziyor · 4 okuyucuda tahmin yok';
-  end if;
-
-  raise notice '239 OLCULMEDI: GECMIS sorularin avail_id si yalniz host un TEK aktif ilani '
-               'varsa dolduruldu. Birden cok ilani olan hostlarin eski sorulari BOS kaldi — '
-               'bilerek: yanlis doldurmaktansa bos birakmak.';
-end $n239$;
-
-select '239 SORU ARTIK ILANI BILIYOR' as sonuc,
-       (select count(*) from connection_requests where intent='kural_sorusu') as toplam_soru,
-       (select count(*) from connection_requests where intent='kural_sorusu' and avail_id is not null) as ilani_bilinen;
+-- trg_soru_metni()
 
 -- ----------------------------------------------------------------------
 -- trg_seyahat_sozlesme_kapisi   [etkin kaynak: 240_kural_kapida_degil_odada.sql]
@@ -33638,3 +33810,19 @@ create trigger silme_talebi_hiz before insert on public.deletion_requests
 -- IP'nin kendisi değil md5 özeti tutulur (yalnız hız sınırı için).
 alter table public.waitlist add column if not exists ip_ozeti text;
 create index if not exists ix_waitlist_ip on public.waitlist (ip_ozeti, created_at desc) where ip_ozeti is not null;
+
+-- ----------------------------------------------------------------------
+-- discover_availabilities_ham   [etkin kaynak: 348_canli_esitleme.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.discover_availabilities_ham(p_airport text DEFAULT NULL::text, p_sector text DEFAULT NULL::text, p_flight text DEFAULT NULL::text, p_date date DEFAULT NULL::date)
+ RETURNS TABLE(id uuid, host_id uuid, airport_code text, lounge_name text, avail_date date, time_from time without time zone, time_to time without time zone, flight_number text, slots integer, filled integer, host_name text, host_badge text, host_score integer, host_profession text, host_photo text, match_score integer, same_flight boolean, has_trip boolean, is_featured boolean, fully_booked boolean, visibility text, host_gender text, host_langs text[], guest_policy text, guest_allowance integer, family_allowed boolean, decision_note text, blocks_request boolean, block_reason text, carrier_note text, same_sector boolean)
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+      select q.* from public.discover_availabilities_prerank(p_airport, p_sector, p_flight, p_date) q
+       order by (coalesce(q.match_score,0) + public.host_rank_bonus(q.host_id)) desc,
+                q.avail_date, q.time_from
+    $function$;
+
+-- host_requests()

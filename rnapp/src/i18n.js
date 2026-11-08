@@ -774,6 +774,7 @@ export const D = {
       "kyc_already_approved": "Kimliğin zaten doğrulanmış.",
       "kyc_already_submitted": "Belgen zaten incelemede; sonucu bekle.",
       "kyc_kapali": "Kimlik belgesi artık istenmiyor. Profiline fotoğraf ve meslek eklemen yeterli.",
+      "reward_inactive": "Bu ödül şu an alınamıyor. Lütfen başka bir ödül seç.",
       // 🔴 v2.88 — 230/229'un attığı hatalar. App'in kendi nöbetçisi
       // (contract_check) bunları eksik bulup kırmızı yandı: karşılığı
       // olmayan bir hata kodu kullanıcıya HAM olarak görünür.
@@ -3290,6 +3291,7 @@ export const D = {
       "kyc_already_approved": "Your identity is already verified.",
       "kyc_already_submitted": "Your document is already under review.",
       "kyc_kapali": "ID documents are no longer required. Adding a photo and your profession is enough.",
+      "reward_inactive": "This reward is not available right now. Please pick another reward.",
       "gecersiz_rol": "Invalid role selection.",
       "availability_inactive": "This listing is no longer live.",
       "invalid_slots": "Capacity must be between 1 and 6.",
