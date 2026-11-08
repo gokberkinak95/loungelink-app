@@ -103,6 +103,23 @@ export async function applyAuthUrl(url, t) {
   try {
     // 2) implicit akış — jetonlar adres parçasında
     if (p.access_token && p.refresh_token) {
+      // 🔴 8 Kasım (güvenlik denetimi, ORTA): oturum enjeksiyonu. Jetonlu her `loungelink://`
+      // bağlantısı açık oturumu SORMADAN değiştiriyordu: saldırgan kendi hesabının jetonlarını
+      // içeren bir bağlantı gönderir, kurban tıklayınca saldırganın hesabına geçer (satın
+      // aldığı kredi saldırgana gider). Açık oturum BAŞKA bir kullanıcıya aitse reddet.
+      try {
+        const { data: mevcut, error: eMevcut } = await supabase.auth.getSession();
+        if (eMevcut) logError("deeplink_oturum", eMevcut);
+        const benim = mevcut && mevcut.session && mevcut.session.user && mevcut.session.user.id;
+        const govde = String(p.access_token).split(".")[1] || "";
+        const json = JSON.parse(atob(govde.replace(/-/g, "+").replace(/_/g, "/")));   // sub ASCII (uuid)
+        if (benim && json && json.sub && json.sub !== benim) {
+          logError("deeplink_baska_hesap", "acik oturum farkli kullaniciya ait");
+          return { ok: false, type, message: tr.dlFarkliHesap || "Bu bağlantı başka bir hesaba ait. Önce çıkış yapıp bağlantıyı yeniden aç." };
+        }
+      } catch (e) {
+        return { ok: false, type, message: dost("invalid") };
+      }
       const { error } = await supabase.auth.setSession({
         access_token: p.access_token,
         refresh_token: p.refresh_token,

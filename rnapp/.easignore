@@ -41,3 +41,12 @@ mockup.py
 # metro.config.js tarafindan kullanilir; EAS build ona dokunmaz. Olculdu:
 # dist 9.5 MB + out 38 MB = yuklemenin yarisi (96 MB arsiv ECONNRESET ile dustu).
 web_sahne/
+
+# 🔴 8 Kasim (guvenlik denetimi, YUKSEK): .easignore varken EAS .gitignore'u OKUMAZ.
+# Gizli anahtarlar burada da listelenmeli, yoksa build arsiviyle Expo'ya yuklenir.
+gizli/
+*.p8
+*-firebase-adminsdk-*.json
+fcm-v1-anahtar.json
+play-service-account.json
+.env*
