@@ -21,8 +21,16 @@ declare v_eski uuid; v_hedef uuid; v_n int;
 begin
   select id into v_eski from lounge_venues
    where active and airport_code = 'ESB' and name = 'Primeclass CIP Lounge' limit 1;
+  -- 8 Kasım (canlı ölçüm, 23505): hedef kayıt canlıda VAR ama PASİF. Önceki sürüm yalnız
+  -- aktifi arıyor, bulamayınca kopyayı aynı ada çevirmeye kalkıp benzersizlik kuralına
+  -- çarpıyordu. Şimdi pasif hedef de bulunur ve yeniden açılır (kaynak: PP + LoungeKey
+  -- ESB'de iki Primeclass listeliyor; dış hat salonu gerçekte var).
   select id into v_hedef from lounge_venues
-   where active and airport_code = 'ESB' and name = 'Primeclass Lounge — Dış Hat' limit 1;
+   where airport_code = 'ESB' and name = 'Primeclass Lounge — Dış Hat' and coalesce(section, '') = ''
+   order by active desc limit 1;
+  if v_hedef is not null then
+    update lounge_venues set active = true where id = v_hedef and not active;
+  end if;
 
   if v_eski is null then
     raise notice '346: kopya venue yok (zaten birlesmis).';
