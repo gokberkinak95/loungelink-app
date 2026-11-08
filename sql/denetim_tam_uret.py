@@ -77,6 +77,11 @@ def main():
     # Supabase'de bunlar `extensions` şemasında; canlıda "EKSIK" sanılmasın.
     TAKLIT = {"uuid_generate_v4()"}
     satirlar = [r for r in satirlar if not (r[0] == "fonksiyon" and r[1] in TAKLIT)]
+    # 241/B, RLS'i kapalı OLAN tablolara kurulum anında `<tablo>_okuma_korundu` (using true)
+    # ekliyor: hangi tablolara ekleneceği o veritabanının o anki durumuna bağlı. Canlıda bu
+    # politikaların yokluğu daha SIKI (istemci okuyamıyor) ve hiçbir istemci okumuyor
+    # (9 Kasım ölçümü) → beklenmez.
+    satirlar = [r for r in satirlar if not (r[0] == "politika" and r[1].endswith("_okuma_korundu"))]
     # Yerelde pg_cron yok: beklenen işler dosyalardan okunur (cron.schedule('ad', ...)).
     # Sonradan unschedule edilip yeniden kurulmayan iş için: dosyalarda unschedule'dan
     # sonra yeniden schedule edilen her ad beklenir.

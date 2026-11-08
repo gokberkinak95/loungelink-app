@@ -1,8 +1,8 @@
 -- ============================================================================
--- DENETIM_TAM · CANLI VERİTABANI = 001..SON DOSYALAR MI?   (üretildi: 2026-11-08 21:51)
+-- DENETIM_TAM · CANLI VERİTABANI = 001..SON DOSYALAR MI?   (üretildi: 2026-11-09 00:25)
 --
 -- `sql/denetim_tam_uret.py` üretti: bütün SQL dosyaları yerelde baştan kuruldu ve her
--- nesnenin parmak izi alındı (fonksiyon 568 · kolon 1079 · politika 106 · rls 109 · tetikleyici 76).
+-- nesnenin parmak izi alındı (fonksiyon 568 · kolon 1079 · politika 101 · rls 109 · tetikleyici 76).
 -- Bu sorgu canlıda aynı izleri hesaplar ve YALNIZ FARKLARI listeler. Hiçbir şey DEĞİŞTİRMEZ.
 --
 -- SONUÇ NASIL OKUNUR
@@ -1674,14 +1674,12 @@ with beklenen(tur, ad, iz) as (values
   ('politika', 'public.beta_settings.beta_settings_read', 'bf9525e544a04c9ff01d19882c8fb33e'),
   ('politika', 'public.blocks.blocks_own', '35657138aac15505e5f19300b72a6008'),
   ('politika', 'public.campaign_participations.part_own_read', '8306e7f4846e266ebb0470071a81e803'),
-  ('politika', 'public.card_network_source.card_network_source_okuma_korundu', '014842340900f79b7f13e5a43ca66103'),
   ('politika', 'public.carriers.carriers_anon_read', 'e55cd73a65bc476d21eb498cf5010350'),
   ('politika', 'public.carriers.carriers_read', 'bf9525e544a04c9ff01d19882c8fb33e'),
   ('politika', 'public.chat_channels.chan_party_insert', '665a74fc2dd9098750f3c58b54133bbd'),
   ('politika', 'public.chat_channels.chat_taraf_okur', '693005d398c6508e05b674c9a14809b9'),
   ('politika', 'public.connection_requests.conn_own_read', '56de424a58a8955e89d8ecb777751c1e'),
   ('politika', 'public.consents.consents_select_own', '0157c526afe9bc191994463128f59153'),
-  ('politika', 'public.country_aliases.country_aliases_okuma_korundu', '014842340900f79b7f13e5a43ca66103'),
   ('politika', 'public.credit_ledger.credit_own', 'adc9e2f08b254efb3f6e24763ccf2d17'),
   ('politika', 'public.credit_requests.credit_req_own', '8306e7f4846e266ebb0470071a81e803'),
   ('politika', 'public.disputes.disputes_insert', '8bca713955284b6b13a044515faca870'),
@@ -1694,7 +1692,6 @@ with beklenen(tur, ad, iz) as (values
   ('politika', 'public.host_entitlements.he_own_read', '8306e7f4846e266ebb0470071a81e803'),
   ('politika', 'public.host_stories.hs_own', '8306e7f4846e266ebb0470071a81e803'),
   ('politika', 'public.host_stories.hs_public', '3be77f2e911698d0c5e82446b8a1a086'),
-  ('politika', 'public.host_tiers.host_tiers_okuma_korundu', '014842340900f79b7f13e5a43ca66103'),
   ('politika', 'public.huni_olaylari.huni_kendi', '0157c526afe9bc191994463128f59153'),
   ('politika', 'public.i18n_strings.i18n_read', 'bf9525e544a04c9ff01d19882c8fb33e'),
   ('politika', 'public.iap_urunleri.iap_urunleri_oku', 'bf9525e544a04c9ff01d19882c8fb33e'),
@@ -1749,8 +1746,6 @@ with beklenen(tur, ad, iz) as (values
   ('politika', 'public.rewards.rewards_read', '9d7e7619fadc77f2abf53cceeac2b170'),
   ('politika', 'public.rozet_katalogu.rozet_okuma', '014842340900f79b7f13e5a43ca66103'),
   ('politika', 'public.rule_source_conflicts.rsc_read', 'bf9525e544a04c9ff01d19882c8fb33e'),
-  ('politika', 'public.rule_test_cases.rule_test_cases_okuma_korundu', 'bf9525e544a04c9ff01d19882c8fb33e'),
-  ('politika', 'public.rule_venue_cases.rule_venue_cases_okuma_korundu', 'bf9525e544a04c9ff01d19882c8fb33e'),
   ('politika', 'public.session_verifications.sv_kendi_okur', '6f03476d91ea059fccfde09fd4b00ff3'),
   ('politika', 'public.sessions.sess_parties', '90642fa94b960ff8a8b342ef401eca45'),
   ('politika', 'public.subscriptions.subs_select_own', '0157c526afe9bc191994463128f59153'),

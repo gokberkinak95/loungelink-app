@@ -1,3 +1,14 @@
+SQL SIRASI - 9 Kasim 2026 (18. tur) - YENI: 348 - 347'den SONRA
+
+  1) 348_canli_esitleme.sql
+       -> DENETIM_TAM'in buldugu farklar kapanir: 9 fonksiyonun govdesi dosyalardaki hale,
+          36 fonksiyonun yetkisi dosyalardaki hale esitlenir (bazilari canlida gereginden
+          acikti, plan_kredisi_kalan gibi bazilari uygulamaya kapaliydi).
+       -> connection_test tablosunda istemci yazmasi kapanir (tablo durur), kurulum_imzasi_var
+          istemciye kapanir.
+       Dogrulama: 5 satir, hepsi tamam = true. Sonra DENETIM_TAM.sql'i tekrar calistir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 8 Kasim 2026 gece (17. tur) - YENI: 347 - 346'dan SONRA
 
   1) 347_guvenlik_fraud_kapanisi.sql
