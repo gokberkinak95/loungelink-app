@@ -57,7 +57,9 @@ GüvenKalkan 3. satır "Biniş kartı doğrulandı"; plan kartları "yalnız do�
   (HEAD~1 ile ölçüldü): tasarim_uyum metin sembolü 6/5, dokunma_makbuz bayat (tarayıcı testi koşturulmalı), sql_lint 343:181 nullsort.
 - BO `node check.js`: temiz; `npm run build`: başarılı (çıkış 0)
 - site `node verify.js`: 1 kırmızı (tasarim_check v5.9.0 mühür — bu turdan önce de vardı); `npm run build`: başarılı (çıkış 0)
-- Android AAB 1.0.0 (302) EAS build: 9497881f-5b0e-415c-b0e2-f6b1ace05f31
+- Android AAB 1.0.0 (302): EAS 8a698265-d4dd-40aa-a11b-f8f6b3e7819f FINISHED → `_aab/LoungeLink-1.0.0-302.aab`.
+  İlk 4 deneme GitHub (Gradle dağıtımı) 504/502/zaman aşımıyla düştü; app.config.js `gradleIndirme`: Tencent aynası + resmi SHA-256 + 120 sn.
+  GitHub düzelince ayna kaldırılabilir (zararı yok; özet tutmazsa derleme durur).
 
 ## Açık kalanlar / Gökberk'ten beklenen
 - Play 9.5/9.6 ürünleri (sürüyor), RevenueCat iOS appl_ anahtarı → iOS 296 production build + gönderim.
