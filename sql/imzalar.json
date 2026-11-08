@@ -1903,5 +1903,10 @@
   "346_esb_primeclass_birlestir.sql",
   null,
   null
+ ],
+ [
+  "347_guvenlik_fraud_kapanisi.sql",
+  null,
+  null
  ]
 ]

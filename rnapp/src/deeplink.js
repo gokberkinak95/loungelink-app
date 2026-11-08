@@ -72,7 +72,7 @@ export function isAuthUrl(url) {
 export async function applyAuthUrl(url, t) {
   const p = parseAuthParams(url);
   const type = p.type || (p.code ? "oauth" : null);
-  const tr = t || {};
+  t = t || {};   // 8 Kasım: `t.` erişimi (ölü metin denetimi `tr.`yi görmüyordu)
 
   // 1) Sunucu hata döndürdüyse (en sık: bağlantının süresi dolmuş)
   if (p.error || p.error_code) {
@@ -82,8 +82,8 @@ export async function applyAuthUrl(url, t) {
       ok: false,
       type,
       message: expired
-        ? (tr.dlExpired || "Bağlantının süresi dolmuş. Lütfen yeni bir sıfırlama bağlantısı iste.")
-        : (tr.dlFailed || "Bağlantı doğrulanamadı."),
+        ? (t.dlExpired || "Bağlantının süresi dolmuş. Lütfen yeni bir sıfırlama bağlantısı iste.")
+        : (t.dlFailed || "Bağlantı doğrulanamadı."),
     };
   }
 
@@ -96,8 +96,8 @@ export async function applyAuthUrl(url, t) {
     const m = String(ham || "");
     if (m) logError("deeplink", m);
     return /expired|otp_expired|invalid/i.test(m)
-      ? (tr.dlExpired || "Bağlantının süresi dolmuş. Lütfen yeni bir sıfırlama bağlantısı iste.")
-      : (tr.dlFailed || "Bağlantı doğrulanamadı.");
+      ? (t.dlExpired || "Bağlantının süresi dolmuş. Lütfen yeni bir sıfırlama bağlantısı iste.")
+      : (t.dlFailed || "Bağlantı doğrulanamadı.");
   };
 
   try {
@@ -115,7 +115,7 @@ export async function applyAuthUrl(url, t) {
         const json = JSON.parse(atob(govde.replace(/-/g, "+").replace(/_/g, "/")));   // sub ASCII (uuid)
         if (benim && json && json.sub && json.sub !== benim) {
           logError("deeplink_baska_hesap", "acik oturum farkli kullaniciya ait");
-          return { ok: false, type, message: tr.dlFarkliHesap || "Bu bağlantı başka bir hesaba ait. Önce çıkış yapıp bağlantıyı yeniden aç." };
+          return { ok: false, type, message: t.dlFarkliHesap || "Bu bağlantı başka bir hesaba ait. Önce çıkış yapıp bağlantıyı yeniden aç." };
         }
       } catch (e) {
         return { ok: false, type, message: dost("invalid") };

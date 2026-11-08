@@ -1,3 +1,18 @@
+SQL SIRASI - 8 Kasim 2026 gece (17. tur) - YENI: 347 - 346'dan SONRA
+
+  1) 347_guvenlik_fraud_kapanisi.sql
+       -> Guvenlik denetiminin 21 bulgusu: davet kodu (kilit, karsilikli davet yok, odul telefon
+          SMS ile dogrulaninca, davet eden 30 gunde en cok 5), kapida iade yalniz acik oturumda,
+          oturum 15 dk dolmadan tamamlanmaz, ilan saatinden 1 saat once baslatilamaz, plan
+          hediyesi 3 FARKLI misafir + 60 gun, plan kredisi kilidi, abonelik TRANSFER / SANDBOX /
+          suresi gecen abonelik (pg_cron ll-abonelik-bitis 04:20), ekip bayragi app_metadata,
+          odul talebi 30 gunde 3, profil foto adresi, avatars kovasi 5 MB, tani fonksiyonlari
+          kapali, mesaj kolonlari + 2000 karakter, Gmail e-posta ozeti, hesap silme ve bekleme
+          listesi hiz siniri.
+       -> BO ile birlikte: ekip ve salon yetkilisi daveti bayragi app_metadata'ya yaziyor.
+       Dogrulama: 21 satir, hepsi tamam = true. Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 8 Kasim 2026 aksam (16. tur) - YENI: 346 - 345'ten SONRA
 
   1) 346_esb_primeclass_birlestir.sql

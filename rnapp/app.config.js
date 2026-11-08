@@ -95,7 +95,9 @@ function firebaseEkle(config) {
   // try/catch DIŞINDA fırlatıyordu → girişten hemen sonra uygulama kapanıyordu.
   config.extra = { ...(config.extra || {}), firebase: { android: androidOk, ios: iosOk } };
   if (!hazir) return config;
-  config.plugins = [...(config.plugins || []), "@react-native-firebase/app", firebaseAuthEklentisi];
+  // 8 Kasım (güvenlik denetimi, KRİTİK): App Check — SMS pompalamaya karşı Firebase'in asıl kapısı.
+  // Android: Play Integrity · iOS: DeviceCheck (App Attest ek entitlement ister; build riskine girmedik).
+  config.plugins = [...(config.plugins || []), "@react-native-firebase/app", "@react-native-firebase/app-check", firebaseAuthEklentisi];
   if (iosOk) {
     config.plugins = config.plugins.map((p) => {
       if (Array.isArray(p) && p[0] === "expo-build-properties") {

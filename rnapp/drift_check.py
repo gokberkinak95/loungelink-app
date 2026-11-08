@@ -31,6 +31,12 @@ ll_paths.require_sql('drift_check')
 # Bilerek kaldırıldığı doğrulanmış adımlar — bir daha uyarma.
 # Biçim: (fonksiyon, düşen etkinin içerdiği metin)
 ALLOWLIST = {
+    # --- 8 Kasım 2026 · SQL 347 (güvenlik kapanışı) ---
+    # apply_referral puan ve bildirimi artık `davet_odulu_yaz(uid)`a devrediyor: ödül telefon
+    # SMS ile doğrulanınca (hemen ya da doğrulama tetikleyicisiyle sonra), kişi başına bir kez;
+    # davet eden 30 günde en çok 5. İki insert de o yardımcıda duruyor — kayıp değil, taşındı.
+    ('apply_referral', 'insert notifications'),
+    ('apply_referral', 'insert points_ledger'),
     # --- 4 Ekim 2026 · uçtan uca test turu (SQL 316 · 320 · 322) ---
     # 316: bayat istek bildirimi `insert notifications` yerine `bildir()` (TR+EN, doğru sebep).
     ('bayat_istekleri_iade_et', 'insert notifications'),

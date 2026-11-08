@@ -36304,5 +36304,154 @@
  [
   "346_esb_primeclass_birlestir.sql",
   []
+ ],
+ [
+  "347_guvenlik_fraud_kapanisi.sql",
+  [
+   [
+    "kolon",
+    "waitlist.ip_ozeti"
+   ],
+   [
+    "kisit",
+    "mesaj_cok_uzun"
+   ],
+   [
+    "kisit",
+    "mesaj_cok_uzun"
+   ],
+   [
+    "indeks",
+    "ix_waitlist_ip"
+   ],
+   [
+    "indeks",
+    "uq_credit_plan_ayligi"
+   ],
+   [
+    "indeks",
+    "uq_points_referral_joined"
+   ],
+   [
+    "tetikleyici",
+    "silme_talebi_hiz"
+   ],
+   [
+    "tetikleyici",
+    "profil_foto_adresi"
+   ],
+   [
+    "tetikleyici",
+    "davet_odulu_telefon"
+   ],
+   [
+    "ayar_deger",
+    "host_free_upgrade_cooldown_days=60"
+   ],
+   [
+    "fonksiyon",
+    "yama_347"
+   ],
+   [
+    "fonksiyon",
+    "eposta_normal"
+   ],
+   [
+    "fonksiyon",
+    "davet_odulu_yaz"
+   ],
+   [
+    "fonksiyon",
+    "odeme_test_hesabi"
+   ],
+   [
+    "fonksiyon",
+    "eposta_ozeti_eski"
+   ],
+   [
+    "fonksiyon",
+    "oturum_puani_hakki"
+   ],
+   [
+    "fonksiyon",
+    "avatar_adres_oneki"
+   ],
+   [
+    "fonksiyon",
+    "trg_silme_talebi_hiz"
+   ],
+   [
+    "fonksiyon",
+    "telefon_dogrulandi_mi"
+   ],
+   [
+    "fonksiyon",
+    "trg_profil_foto_adresi"
+   ],
+   [
+    "fonksiyon",
+    "trg_davet_odulu_telefon"
+   ],
+   [
+    "fonksiyon",
+    "abonelik_suresi_dolanlari_kapat"
+   ],
+   [
+    "govde",
+    "yama_347|return 'yamandi';"
+   ],
+   [
+    "govde",
+    "telefon_dogrulandi_mi|from verifications v where v.user_id = p_user), false)"
+   ],
+   [
+    "govde",
+    "davet_odulu_yaz|telefon_bekliyor"
+   ],
+   [
+    "govde",
+    "apply_referral|referral_mutual_blocked"
+   ],
+   [
+    "govde",
+    "trg_davet_odulu_telefon|exception when others then"
+   ],
+   [
+    "govde",
+    "oturum_puani_hakki|)::int from beta_settings where key="
+   ],
+   [
+    "govde",
+    "odeme_test_hesabi|inceleme@loungelink.co"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|sandbox_yok_sayildi"
+   ],
+   [
+    "govde",
+    "abonelik_suresi_dolanlari_kapat|declare r record; v_n int := 0;"
+   ],
+   [
+    "govde",
+    "trg_email_onayi_aynala|set email_verified = true,"
+   ],
+   [
+    "govde",
+    "avatar_adres_oneki|) from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "trg_profil_foto_adresi|request.jwt.claims"
+   ],
+   [
+    "govde",
+    "eposta_normal|from (select lower(trim(coalesce(p_email, ''))) as e) x"
+   ],
+   [
+    "govde",
+    "eposta_ozeti_eski|select encode(extensions.digest(lower(trim(coalesce(p_email, ''))), 'sha256'), 'hex');"
+   ]
+  ]
  ]
 ]

@@ -23,6 +23,32 @@ import { backofficeUrl } from "./flight";
 import { mapErr } from "./i18n";
 
 let _auth = undefined;   // undefined = denenmedi · null = yok
+
+// 🔴 8 Kasım (güvenlik denetimi, KRİTİK) — FIREBASE APP CHECK.
+// SMS'i Google gönderiyor; bizim `telefon_gonderim_izni` kapımız yalnız uygulamanın kendi
+// akışını sınırlıyor. APK'dan anahtarı çıkaran biri Firebase'e doğrudan istek atıp premium
+// numaralara SMS attırabilirdi (SMS pompalama). App Check, isteğin GERÇEK uygulamamızdan
+// geldiğini kanıtlatır: Android Play Integrity, iOS DeviceCheck. Panelde zorlama, bu build
+// yayıldıktan sonra açılır. Başlatma düşerse telefon doğrulaması YİNE çalışır (izleme modu).
+let _appCheck = false;
+function appCheckBaslat() {
+  if (_appCheck) return;
+  _appCheck = true;
+  try {
+    if (!NativeModules.RNFBAppCheckModule) return;
+    const m = require("@react-native-firebase/app-check");
+    const ac = (m && (m.default || m))();
+    const saglayici = ac.newReactNativeFirebaseAppCheckProvider();
+    saglayici.configure({
+      android: { provider: __DEV__ ? "debug" : "playIntegrity" },
+      apple: { provider: __DEV__ ? "debug" : "deviceCheck" },
+    });
+    ac.initializeAppCheck({ provider: saglayici, isTokenAutoRefreshEnabled: true })
+      .catch((e) => logError("app_check_baslat", e));
+  } catch (e) {
+    logError("app_check_baslat", e);
+  }
+}
 function firebaseAuth() {
   if (_auth !== undefined) return _auth;
   if (Platform.OS === "web") { _auth = null; return null; }
@@ -35,6 +61,7 @@ function firebaseAuth() {
     const m = require("@react-native-firebase/auth");
     const a = m && (m.default || m);
     a();                       // yerel modül yoksa burada fırlatır
+    appCheckBaslat();
     _auth = a;
   } catch (e) {
     _auth = null;
