@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "co.loungelink.app",
-      "versionCode": 302,
+      "versionCode": 303,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -41,8 +41,8 @@
       "backofficeUrl": "",
       "_revenuecat_aciklama": "RevenueCat > Project settings > API keys: 'Public app-specific API key'. iOS anahtari appl_ ile, Android goog_ ile baslar. Bossa uygulamada satin alma kapali kalir (eski davranis).",
       "revenuecat": {
-        "ios": "",
-        "android": ""
+        "ios": "appl_fVhDQcnntctEnbqCoVZVSBwHVIY",
+        "android": "goog_ZarlJNrVtCnlKXfeTooNIxaXvRK"
       }
     },
     "plugins": [
