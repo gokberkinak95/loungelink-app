@@ -161,7 +161,11 @@ function gradleIndirme(config) {
     const dosya = path.join(c.modRequest.platformProjectRoot, "gradle", "wrapper", "gradle-wrapper.properties");
     if (!fs.existsSync(dosya)) return c;
     let s = fs.readFileSync(dosya, "utf8");
-    s = s.replace(/(distributionUrl=.*gradle-[\d.]+)-all\.zip/, "$1-bin.zip");
+    // GitHub 504/502 veriyordu (8 Kasım, buradan da ölçüldü). Ayna + resmi SHA-256: dosya
+    // birebir aynı değilse Gradle derlemeyi reddeder (özet services.gradle.org'dan alındı).
+    s = s.replace(/^distributionUrl=.*$/m, "distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-8.10.2-bin.zip");
+    if (/^distributionSha256Sum=/m.test(s)) s = s.replace(/^distributionSha256Sum=.*$/m, "distributionSha256Sum=31c55713e40233a8303827ceb42ca48a47267a0ad4bab9177123121e71524c26");
+    else s += "\ndistributionSha256Sum=31c55713e40233a8303827ceb42ca48a47267a0ad4bab9177123121e71524c26\n";
     if (/^networkTimeout=/m.test(s)) s = s.replace(/^networkTimeout=.*$/m, "networkTimeout=120000");
     else s += "\nnetworkTimeout=120000\n";
     fs.writeFileSync(dosya, s);
