@@ -5869,7 +5869,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
               doğrulama akışını açar. */}
           {[[t.epVEmail, verif.email_verified, C.greenBtn, "—", null],
             [t.epVPhone, verif.phone_verified, C.greenBtn, t.epVVerifyCta, () => onVerify && onVerify()],
-            // SQL 345 — kimlik belgesi kalktı. Bu satır "Doğrulanmış profil": e-posta + telefon +
+            // SQL 345 — kimlik belgesi kalktı. Bu satır Doğrulanmış profil: e-posta + telefon +
             // fotoğraf + meslek. Eksikse yukarı (fotoğraf/meslek alanına) kaydırır.
             [t.epVId, verif.id_verified, C.goldText, t.epVIdCta,
               () => { try { scRef.current && scRef.current.scrollTo && scRef.current.scrollTo({ y: 0, animated: true }); } catch (e) {} }],

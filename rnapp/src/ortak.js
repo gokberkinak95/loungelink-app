@@ -1143,7 +1143,7 @@ export function TarihSaatPenceresi({ acik, mod = "date", deger, enAz, onTamam, o
   }
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onKapat}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(10,18,32,0.35)" }} onPress={onKapat} accessibilityRole="button" accessibilityLabel={gorunur("Vazgeç")} />
+      <Pressable style={{ flex: 1, backgroundColor: C.perde }} onPress={onKapat} accessibilityRole="button" accessibilityLabel={gorunur("Vazgeç")} />
       <View style={{ backgroundColor: C.card, borderTopLeftRadius: R.lg, borderTopRightRadius: R.lg,
                      paddingBottom: ARA[28], paddingTop: SP[2] }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",

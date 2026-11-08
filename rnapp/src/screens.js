@@ -2520,10 +2520,10 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
             if (silErr) { setDelErr(mapErr(t, silErr.message)); return; }
             if (liste.error) logError("hesap_sil_avatar_liste", liste.error);
             const yollar = (liste.data || []).map(o => `${uid}/${o.name}`);
-            if (yollar.length) {
-              const { error: eAv } = await supabase.storage.from("avatars").remove(yollar);
-              if (eAv) logError("hesap_sil_avatar", eAv);
-            }
+            // Sıra ZORUNLU: dosyalar oturum jetonuyla silinir; signOut'tan önce bitmeli.
+            const silme = yollar.length ? supabase.storage.from("avatars").remove(yollar) : null;
+            const avSonuc = silme ? await silme : null;
+            if (avSonuc && avSonuc.error) logError("hesap_sil_avatar", avSonuc.error);
             await supabase.auth.signOut();
           }}
         />

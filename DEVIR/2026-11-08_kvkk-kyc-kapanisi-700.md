@@ -52,9 +52,12 @@ GüvenKalkan 3. satır "Biniş kartı doğrulandı"; plan kartları "yalnız do�
 
 ## Testler
 - app `node check.js`: temiz (0 sorun)
-- app `npm run verify`: SONUÇ aşağıda (bkz. "Açık kalanlar")
-- BO `node check.js`: temiz; `npm run build`: aşağıda
-- site `node verify.js`: 1 kırmızı (tasarim_check v5.9.0 mühür — bu turdan önce de vardı, dokunulmadı); `npm run build`: aşağıda
+- app `npm run verify`: ilk koşu 8 kırmızı → bu turun 5'i kapatıldı (ölü metin 11→0, BO KYC fonksiyonları beyaz listede,
+  kurulum tablosu son: 345, şelale 0, tema sızıntısı 0 — TarihSaatPenceresi perdesi C.perde). Kalan 3, bu turdan ÖNCE de kırmızı
+  (HEAD~1 ile ölçüldü): tasarim_uyum metin sembolü 6/5, dokunma_makbuz bayat (tarayıcı testi koşturulmalı), sql_lint 343:181 nullsort.
+- BO `node check.js`: temiz; `npm run build`: başarılı (çıkış 0)
+- site `node verify.js`: 1 kırmızı (tasarim_check v5.9.0 mühür — bu turdan önce de vardı); `npm run build`: başarılı (çıkış 0)
+- Android AAB 1.0.0 (302) EAS build: 9497881f-5b0e-415c-b0e2-f6b1ace05f31
 
 ## Açık kalanlar / Gökberk'ten beklenen
 - Play 9.5/9.6 ürünleri (sürüyor), RevenueCat iOS appl_ anahtarı → iOS 296 production build + gönderim.

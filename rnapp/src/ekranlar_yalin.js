@@ -2813,7 +2813,7 @@ export function VerifyPhone({ t, session, onDone, onBack, onKimlik }) {
           <View style={{ backgroundColor: C.card, borderRadius: R.md || 14, paddingHorizontal: ARA[14] }}>
             {satir(t.dgEposta, dg?.email ? (myEmail || t.dgDogrulandi) : t.dgEpostaAlt, !!dg?.email, 10, () => setEskiYol(true))}
             {satir(t.dgTelefon, dg?.phone ? (dg.tel || t.dgDogrulandi) : t.dgTelAlt, !!dg?.phone, 14, () => setTvAcik(true))}
-            {/* SQL 345 — kimlik belgesi kalktı; üçüncü satır profil fotoğrafı (Profili Düzenle'ye gider). */}
+            {/* SQL 345 — kimlik belgesi kalktı; üçüncü satır profil fotoğrafı (Profili Düzenle ekranına gider). */}
             {satir(t.dgKimlik, dg?.foto ? t.dgDogrulandi : t.dgKimlikAlt, !!dg?.foto, 6, onKimlik || null)}
           </View>
           {dg && dg.puan != null && (
