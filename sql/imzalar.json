@@ -1898,5 +1898,10 @@
   "345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql",
   null,
   null
+ ],
+ [
+  "346_esb_primeclass_birlestir.sql",
+  null,
+  null
  ]
 ]
