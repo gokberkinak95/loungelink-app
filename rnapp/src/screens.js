@@ -2172,6 +2172,8 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
   const [notifPrefs, setNotifPrefs] = useState(null);
   const [notifKapat, setNotifKapat] = useState([]);
   const [notifNot, setNotifNot] = useState("");
+  // SQL 345 — pazarlama izni (opt-in): ayrı kolon, ayrı RPC, varsayılan KAPALI.
+  const [pazarlamaIzni, setPazarlamaIzni] = useState(false);
   const [iletisimEposta, setIletisimEposta] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -2226,6 +2228,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
       setNotifPrefs(np.tercihler || {});
       setNotifKapat(Array.isArray(np.kapatilabilir) ? np.kapatilabilir : []);
       setNotifNot(np.kapatilamaz_not || "");
+      setPazarlamaIzni(!!np.pazarlama_izni);
     }
   }
 
@@ -2239,6 +2242,11 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
       logError("bildirim_tercihi_yaz", error || data);
       flash(t.stSaveFail); load();
     }
+  }
+  async function pazarlamaYaz(acik) {
+    setPazarlamaIzni(acik);   // iyimser
+    const { data, error } = await supabase.rpc("pazarlama_izni_yaz", { p_acik: acik });
+    if (error || (data && data.ok === false)) { logError("pazarlama_izni_yaz", error || data); flash(t.stSaveFail); load(); }
   }
   useEffect(() => { load(); }, [session]);
 
@@ -2388,7 +2396,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
               İstemcide sabit bir liste tutmak, sunucunun gerçekten
               uyguladığı kuralla ayrışmaya açık bir ikinci gerçek olurdu. */}
           {[["requests", t.stNotifRequests], ["sessions", t.stNotifSessions],
-            ["credits", t.stNotifPoints], ["system", t.stNotifMarketing],
+            ["credits", t.stNotifPoints], ["system", t.stNotifSystem],
             ["connections", t.stNotifConnections], ["ratings", t.stNotifRatings]].map(([k, l]) => {
             const kapatilabilir = notifKapat.indexOf(k) >= 0;
             const acik = !(notifPrefs && notifPrefs[k] && notifPrefs[k].push === false);
@@ -2398,6 +2406,9 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
                   onPress={() => notifYaz(k, !acik)} />} />
             );
           })}
+          <Row label={t.stNotifMarketing} sub={t.stNotifMarketingSub}
+            right={<SwitchCell a11yLabel={t.stNotifMarketing} on={pazarlamaIzni} color={C.gold}
+              onPress={() => pazarlamaYaz(!pazarlamaIzni)} />} />
           {!!notifNot && (
             <View style={{ padding: SP[3], borderTopWidth: 1, borderTopColor: C.line }}>
               <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 16 }}>{notifNot}</Text>
@@ -2496,9 +2507,23 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
             // istisnasını. (2) Sonuç ne olursa olsun koşulsuz `signOut`:
             // kullanıcı "hesabım silindi" sanıyor, `users.deleted_at`
             // yazılmamış oluyor. Silme hakkı (KVKK) açısından da yanlış.
-            const { error: silErr } = await supabase.rpc("delete_my_account");
+            // 🔵 8 Kasım (KVKK) — profil fotoğrafı DOSYASI da silinir. Anonimleştirme
+            // yalnız photo_url'i boşaltıyordu; kovadaki dosya kalıyordu. Liste silme
+            // çağrısıyla aynı dalgada okunur; dosyalar YALNIZ silme başarılıysa kaldırılır.
+            // Kullanıcı kendi klasörünü silebilir (avatars_own_delete).
+            const uid = session?.user?.id;
+            const [{ error: silErr }, liste] = await Promise.all([
+              supabase.rpc("delete_my_account"),
+              uid ? supabase.storage.from("avatars").list(uid, { limit: 100 }) : Promise.resolve({ data: [], error: null }),
+            ]);
             setDelBusy(false);
             if (silErr) { setDelErr(mapErr(t, silErr.message)); return; }
+            if (liste.error) logError("hesap_sil_avatar_liste", liste.error);
+            const yollar = (liste.data || []).map(o => `${uid}/${o.name}`);
+            if (yollar.length) {
+              const { error: eAv } = await supabase.storage.from("avatars").remove(yollar);
+              if (eAv) logError("hesap_sil_avatar", eAv);
+            }
             await supabase.auth.signOut();
           }}
         />

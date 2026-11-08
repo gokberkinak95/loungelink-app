@@ -555,6 +555,7 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
   const [role, setRole] = useState(null);
   const [gender, setGender] = useState(null);
   const [consents, setConsents] = useState([false, false, false, false, false, false]);
+  const [pazarlama, setPazarlama] = useState(false);   // SQL 345 — isteğe bağlı, ayrı
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [legal, setLegal] = useState(null);
@@ -589,8 +590,9 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
         // yüz yüze buluşma) ile sözleşme arasındaki boşluk buydu.
         // 🆕 SINIF: "SÖZLEŞMEDE YAZAN BİR ŞART, AKIŞTA SORULMUYORSA ŞART DEĞİL
         // TEMENNİDİR."
-        p_types: ["no_lounge_sale", "no_offplatform_payment", "community_rules", "venue_rules", "terms_privacy", "age_18"],
-        p_version: "v16",
+        p_types: ["no_lounge_sale", "no_offplatform_payment", "community_rules", "venue_rules", "terms_privacy", "age_18"]
+          .concat(pazarlama ? ["pazarlama_bildirimi"] : []),
+        p_version: "v17",
       });
       // 23 Eylül: hata `{ error }` olarak dönüyor, fırlamıyor — onaysız geçme.
       if (eOnay) throw eOnay;
@@ -630,6 +632,14 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
             <Text style={{ color: C.ink, fontSize: FS.sm, flex: 1, lineHeight: 18 }}>{txt}</Text>
           </TouchableOpacity>
         ))}
+        {/* SQL 345 — isteğe bağlı pazarlama izni: ayrı kutu, düğmeyi kilitlemez */}
+        <TouchableOpacity accessibilityRole="checkbox" accessibilityState={{ checked: pazarlama }} hitSlop={TAP.slop}
+          onPress={() => setPazarlama(v => !v)}
+          style={{ flexDirection: "row", alignItems: "flex-start", gap: SP[2], borderWidth: 1, borderStyle: "dashed",
+                   borderColor: pazarlama ? C.gold : C.line, borderRadius: R.xs, padding: SP[3], marginBottom: SP[2] }}>
+          <Ikon ad={pazarlama ? "kutuDolu" : "kutuBos"} boy={18} renk={pazarlama ? C.gold : C.mut} />
+          <Text style={{ color: C.body, fontSize: FS.sm, flex: 1, lineHeight: 18 }}>{t.cPazarlama}</Text>
+        </TouchableOpacity>
 
         {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
         <Btn label={t.onbCompleteBtn} onPress={submit} disabled={!role || !all || busy} busy={busy} style={{ marginTop: SP[3], opacity: (role && all) ? 1 : 0.45 }} />
@@ -731,7 +741,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
       try {
         const bek = await AsyncStorage.getItem("ll_onay_bekliyor");
         if (!bek) return;
-        const { error } = await supabase.rpc("grant_consents", { p_types: JSON.parse(bek), p_version: "v16" });
+        const { error } = await supabase.rpc("grant_consents", { p_types: JSON.parse(bek), p_version: "v17" });
         if (!error) await AsyncStorage.removeItem("ll_onay_bekliyor");
         else logError("grant_consents_tekrar", error);
       } catch (e) {}
@@ -752,7 +762,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
           .test(String(e && (e.message || e.code) || ""));
         let kalan = { ...b };
         if (b.onay && b.onay.length) {
-          const { error } = await supabase.rpc("grant_consents", { p_types: b.onay, p_version: "v16" });
+          const { error } = await supabase.rpc("grant_consents", { p_types: b.onay, p_version: "v17" });
           if (!error) kalan.onay = null; else logError("grant_consents_dogrulama", error);
         }
         if (b.tel) {
@@ -1633,7 +1643,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
       onOpenChat={(id, name) => { companionAc(id, name, () => setPubProfile(null)); }}
       onReport={(id, name) => { setPubProfile(null); setReport({ targetId: id, targetName: name, sessionId: null }); }} />),
     verify: () => (<VerifyPhone t={t} session={session} onDone={() => setShowVerify(false)} onBack={() => setShowVerify(false)}
-      onKimlik={() => { setShowVerify(false); setShowKimlik(true); }} />),
+      onKimlik={() => { setShowVerify(false); setShowEditProf(true); }} />),
     kimlik: () => (<KimlikDogrula t={t} session={session} onBack={() => setShowKimlik(false)} />),
     wallet: () => (<Wallet t={t} session={session} onBack={() => setShowWallet(false)} />),
     hostApply: () => (<HostApply t={t} session={session} onBack={() => setShowHostApply(false)} />),
@@ -1651,7 +1661,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
     // durumunu tamamen kurabiliyordu.
     // 🆕 SINIF: "BİR KAPIYI BİR YOLDA KAPATMAK, DİĞER YOLLARI KAPATMAZ."
     // (v0.26'da sitede aynı sınıf: hukuki kapı app'te vardı, sitede yoktu.)
-    editProf: () => (<EditProfile t={t} session={session} onVerify={() => { setShowEditProf(false); setShowVerify(true); }} onVerifyId={() => { setShowEditProf(false); setShowKimlik(true); }} onBack={() => setShowEditProf(false)} onAccess={role === "host" ? () => { setShowEditProf(false); setShowAccess(true); } : null}
+    editProf: () => (<EditProfile t={t} session={session} onVerify={() => { setShowEditProf(false); setShowVerify(true); }} onBack={() => setShowEditProf(false)} onAccess={role === "host" ? () => { setShowEditProf(false); setShowAccess(true); } : null}
       /* v2.66: "Host olmak istiyorum" kartı buraya taşındı (madde 4) */
       onHostApply={() => { setShowEditProf(false); setShowHostApply(true); }} />),
     // v2.89 (md.13) — düzenleme ekranları
@@ -3024,7 +3034,11 @@ function Auth({ mode, t, go, lang, toggleLang }) {
     { text: t.c6Age,  type: "age_18" },
   ];
   const CONSENT_TEXTS = CONSENT_ITEMS.map(x => x.text);
-  const CONSENT_TYPES = CONSENT_ITEMS.map(x => x.type);
+  // 🔵 8 Kasım (SQL 345) — PAZARLAMA İZNİ AYRI VE İSTEĞE BAĞLI. "Tümünü kabul et"
+  // ona dokunmaz, düğmeyi kilitlemez (rıza hizmet şartına bağlanamaz · KVKK m.3/1-a).
+  // İşaretlenirse tip listesine eklenir; grant_consents users.pazarlama_izni'yi açar.
+  const [pazarlama, setPazarlama] = useState(false);
+  const CONSENT_TYPES = CONSENT_ITEMS.map(x => x.type).concat(pazarlama ? ["pazarlama_bildirimi"] : []);
   const [consents, setConsents] = useState(() => CONSENT_ITEMS.map(() => false));
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -3287,7 +3301,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
         {
           let eOnay = null;
           for (let deneme = 0; deneme < 2; deneme++) {
-            const r = await supabase.rpc("grant_consents", { p_types: CONSENT_TYPES, p_version: "v16" })
+            const r = await supabase.rpc("grant_consents", { p_types: CONSENT_TYPES, p_version: "v17" })
               .catch((e) => ({ error: e }));
             eOnay = r && r.error;
             if (!eOnay) break;
@@ -3663,6 +3677,14 @@ function Auth({ mode, t, go, lang, toggleLang }) {
                 <Text style={{ color: consents[i] ? C.body : C.mut, fontSize: FS.sm + 0.5, flex: 1, lineHeight: 19 }}>{txt}</Text>
               </TouchableOpacity>
             ))}
+            <TouchableOpacity hitSlop={TAP.slop} onPress={() => setPazarlama(v => !v)}
+              accessibilityRole="checkbox" accessibilityLabel={t.cPazarlama}
+              accessibilityState={{ checked: pazarlama }}
+              style={{ flexDirection: "row", alignItems: "flex-start", gap: ARA[10], paddingVertical: ARA[6], minHeight: TAP.minHeight,
+                       marginTop: ARA[10], paddingTop: ARA[12], borderTopWidth: 1, borderTopColor: C.line }}>
+              <Ikon ad={pazarlama ? "kutuDolu" : "kutuBos"} boy={19} renk={pazarlama ? C.gold : C.mut} />
+              <Text style={{ color: pazarlama ? C.body : C.mut, fontSize: FS.sm, flex: 1, lineHeight: 18 }}>{t.cPazarlama}</Text>
+            </TouchableOpacity>
             {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
           </>
         )}

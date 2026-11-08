@@ -32411,5 +32411,3894 @@
     "set_availability_program|if not exists (select 1 from host_entitlements where user_id = v_uid and program_id = v_pid) then"
    ]
   ]
+ ],
+ [
+  "310_309_duzeltme_tasiyici_kapisi_guvenlik.sql",
+  [
+   [
+    "politika",
+    "storage|avatars_own_read"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|entitlement_model"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|elsif (d ->> 'carrier_ok') = 'false' and (d ->> 'program_id') is not null"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|and coalesce(v_dec ->> 'entitlement_model', '') <> 'bank_card' then"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|and coalesce(d ->> 'entitlement_model', '') <> 'bank_card' then v_can := false;"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|perform pg_advisory_xact_lock(hashtextextended('kredi:' || v_uid::text, 0));"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|Bu tarihte o havalimanında seyahatin yok"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|if (v_dec ->> 'carrier_ok') = 'false' and (v_dec ->> 'program_id') is not null"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|. O gün için bir seyahat ekle, ilan hemen başvurulabilir olsun."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|not_authenticated"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|İlan bulunamadı."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|contact_not_verified"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|then public.rule_notice("
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|availability_not_found"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|head_tier_no_guest"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|self_request_blocked"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|) then public.rule_notice("
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|availability_expired"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|Charter seferde havayolu salonu hakkı yoktur."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|hosting_same_slot"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|Bu salon misafirin host ile aynı havayolunda uçmasını istiyor."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|no_matching_trip"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|Host girebiliyor ama yanında misafir götüremiyor."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|and coalesce((v_dec ->>"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|then case (d ->>"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|guests_not_allowed"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|un kartından çekilir."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|guest_carrier_mismatch"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|Misafir girişi kapıda ücretlidir."
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|insufficient_credits"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|, public.rule_notice("
+   ]
+  ]
+ ],
+ [
+  "311_kesfet_ozeti_tek_kaynak.sql",
+  [
+   [
+    "rpc_yuzeyi",
+    "kesfet_ozeti"
+   ],
+   [
+    "fonksiyon",
+    "kesfet_ozeti"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|where d.host_id <> v_uid"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_sohbet := coalesce(v_sohbet, 0) + (select count(*)::int from requests r"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|count(distinct c.host_id)::int,"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where r.status = 'accepted' and (r.host_id = v_uid or r.guest_id = v_uid));"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|declare v_uid uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_sohbet int := 0;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|join availabilities a on a.id = d.id"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_istek  int := 0;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|if v_uid is null then return; end if;"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_davet  int := 0;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|and not coalesce(d.fully_booked, false)"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_soru   int := 0;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|order by count(distinct c.host_id) desc, c.ap;"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_ilan   int := 0;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|left join airports ap on ap.code = a.airport_code"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_baglanti int := 0;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|case when count(distinct c.host_id) >= 3 then 'canli'"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|if v_uid is null then"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|from public.discover_availabilities(null, null, null, null) k"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|from availabilities a"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|and greatest(0, coalesce(d.slots,0) - coalesce(d.filled,0)) > 0"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_uid uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|and a.avail_date <= current_date + greatest(1, coalesce(p_gun, 14))"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|from public.sorularim() s"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|when count(distinct c.host_id) >= 1 then 'isiniyor' else 'soguk' end"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where r.status = 'pending'"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|coalesce(sum(greatest(0, coalesce(c.slots,0) - coalesce(c.filled,0))), 0)::int,"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|return jsonb_build_object("
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|select k.id, k.host_id, k.airport_code::text as ap, k.slots, k.filled, k.fully_booked"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|from connection_requests cr"
+   ]
+  ]
+ ],
+ [
+  "312_soru_ilan_bagi_gercekten.sql",
+  []
+ ],
+ [
+  "313_akis_durum_makinesi_bildirim_soru.sql",
+  [
+   [
+    "kolon",
+    "connection_requests.cevap"
+   ],
+   [
+    "kolon",
+    "connection_requests.cevap_at"
+   ],
+   [
+    "kolon",
+    "connection_requests.cevap_notu"
+   ],
+   [
+    "kisit",
+    "connection_requests_cevap_chk"
+   ],
+   [
+    "tablo",
+    "akis_goruldu"
+   ],
+   [
+    "politika",
+    "akis_goruldu|akis_goruldu_kendi"
+   ],
+   [
+    "rpc_yuzeyi",
+    "soruyu_yanitla"
+   ],
+   [
+    "fonksiyon",
+    "bildir"
+   ],
+   [
+    "fonksiyon",
+    "kisa_ad"
+   ],
+   [
+    "fonksiyon",
+    "kisi_ara"
+   ],
+   [
+    "fonksiyon",
+    "_313_yama"
+   ],
+   [
+    "fonksiyon",
+    "salon_etiketi"
+   ],
+   [
+    "fonksiyon",
+    "soruyu_yanitla"
+   ],
+   [
+    "fonksiyon",
+    "bana_gelen_sorular"
+   ],
+   [
+    "fonksiyon",
+    "kural_sorusu_durumu"
+   ],
+   [
+    "fonksiyon",
+    "akis_goruldu_isaretle"
+   ],
+   [
+    "fonksiyon",
+    "yaklasan_bulusma_hatirlat"
+   ],
+   [
+    "govde",
+    "kisa_ad|when n is null then 'Bir yolcu'"
+   ],
+   [
+    "govde",
+    "salon_etiketi|), l.name, a.airport_code::text,"
+   ],
+   [
+    "govde",
+    "bildir|declare v_dil text;"
+   ],
+   [
+    "govde",
+    "istegin_acik_oturumu_var_mi|select exists (select 1 from sessions s where s.request_id = p_req and s.status = 'active')"
+   ],
+   [
+    "govde",
+    "respond_request|isteğini kabul etti 🎉"
+   ],
+   [
+    "govde",
+    "cancel_request|cancelled_before_both_started"
+   ],
+   [
+    "govde",
+    "cancel_session|oturumu iptal etti"
+   ],
+   [
+    "govde",
+    "start_session_request|oturumu başlattı"
+   ],
+   [
+    "govde",
+    "confirm_session|Session completed ✓"
+   ],
+   [
+    "govde",
+    "cancel_availability|ilanını kaldırdı"
+   ],
+   [
+    "govde",
+    "_313_yama|return 'yamalandi';"
+   ],
+   [
+    "govde",
+    "kural_sorusu_durumu|and not coalesce((d ->>"
+   ],
+   [
+    "govde",
+    "kural_sorusu_uygun_mu|select public.kural_sorusu_durumu(p_avail_id) = 'uygun'"
+   ],
+   [
+    "govde",
+    "soruyu_yanitla|not_authenticated"
+   ],
+   [
+    "govde",
+    "respond_connection|bağlantını kabul etti ✓"
+   ],
+   [
+    "govde",
+    "sorularim|cr.cevap, cr.cevap_notu"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|or cr.created_at > now() - interval"
+   ],
+   [
+    "govde",
+    "pending_actions|and coalesce(cr.intent,'') <> 'kural_sorusu';"
+   ],
+   [
+    "govde",
+    "akis_goruldu_isaretle|not_authenticated"
+   ]
+  ]
+ ],
+ [
+  "314_soru_yazili_yanit_ve_baglanti.sql",
+  [
+   [
+    "rpc_yuzeyi",
+    "soruya_cevap_yaz"
+   ],
+   [
+    "fonksiyon",
+    "_314_yama"
+   ],
+   [
+    "fonksiyon",
+    "soruya_cevap_yaz"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|not_authenticated"
+   ],
+   [
+    "govde",
+    "soruyu_yanitla|Evet, misafir alabiliyorum."
+   ],
+   [
+    "govde",
+    "respond_connection|Sorun ve yanıtı sohbette — yazışmaya oradan devam edebilirsin."
+   ],
+   [
+    "govde",
+    "_314_yama|return 'yamalandi';"
+   ],
+   [
+    "govde",
+    "sorularim|when cr.cevap_at is not null then 'yanitlandi'"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|case when cr.status = 'accepted' then ch.id end"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, coalesce(v_istek, 0),"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|connection_not_found"
+   ],
+   [
+    "govde",
+    "soruyu_yanitla|Bu ilanda misafir alamıyorum."
+   ],
+   [
+    "govde",
+    "respond_connection|Your question and the answer are in the chat — continue from there."
+   ],
+   [
+    "govde",
+    "_314_yama|declare g text; y text;"
+   ],
+   [
+    "govde",
+    "sorularim|case when cr.status = 'accepted' then ch.id end,"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|left join chat_channels ch on ch.connection_id = cr.id"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, coalesce(v_soru, 0),"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|already_answered"
+   ],
+   [
+    "govde",
+    "soruyu_yanitla|return public.soruya_cevap_yaz(p_id, coalesce(nullif(btrim(coalesce(p_not,'')), ''),"
+   ],
+   [
+    "govde",
+    "respond_connection|v_soru := coalesce(v_cr.intent,'') = 'kural_sorusu';"
+   ],
+   [
+    "govde",
+    "_314_yama|g := pg_get_functiondef(p_fn);"
+   ],
+   [
+    "govde",
+    "sorularim|hak_beyan_edildi"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|cr.status::text, cr.cevap, cr.cevap_notu, cr.created_at, cr.cevap_at,"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|'sohbet', coalesce(v_sohbet, 0), 'istek', coalesce(v_istek, 0), 'davet', coalesce(v_davet, 0),"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|sorunu yanıtladı"
+   ],
+   [
+    "govde",
+    "soruyu_yanitla|case when p_cevap = 'evet' then 'Evet, misafir alabiliyorum.' else 'Bu ilanda misafir alamıyorum.' end));"
+   ],
+   [
+    "govde",
+    "respond_connection|if coalesce(nullif(trim(v_cr.intro),''),'') <> '' then"
+   ],
+   [
+    "govde",
+    "_314_yama|y := regexp_replace(g, p_desen, p_yeni);"
+   ],
+   [
+    "govde",
+    "sorularim|cr.status::text,"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|and (cr.cevap_at is null or cr.status = 'pending' or cr.created_at > now() - interval '60 days')"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|'soru', coalesce(v_soru, 0), 'baglanti', coalesce(v_baglanti, 0), 'ilan', coalesce(v_ilan, 0),"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|answered your question"
+   ],
+   [
+    "govde",
+    "respond_connection|else 'The chat is open — Sessions and chats › Connections.' end,"
+   ]
+  ]
+ ],
+ [
+  "315_bo_rapor_fonksiyonlari_kullaniciya_kapali.sql",
+  []
+ ],
+ [
+  "316_bayat_istek_supurgede.sql",
+  [
+   [
+    "govde",
+    "bayat_istekleri_iade_et|İlanın saati geçti, host yanıt veremedi."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|baska_supurge_kosuyor"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|Kredin iade edildi."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|if not found then"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|te başka ilanlar var."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|if v_son is not null then"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|Your request closed"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|'neden', 'baska_supurge_kosuyor');"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|The listing time passed before the host replied."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|if v_son > now() - interval '5 minutes' then"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|Your credit was refunded."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|v_bayat := public.bayat_istekleri_iade_et();"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|There are other listings in Discover."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|'iptal_edilen', v_req, 'suresi_dolan', v_sess,"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|Yeni istek gönderebilirsin."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|where ad = 'expire_stale_sessions' for update skip locked;"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|You can send a new request."
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|'bayat_istek', coalesce((v_bayat->>'kapatilan')::int, 0));"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|if r.saat_gecti then"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|return jsonb_build_object('ok', true, 'durum', 'atlandi', 'kaynak', p_kaynak,"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|'Your request closed',"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|expire_stale_sessions"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|select req.id, req.guest_id,"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|, v_son + interval"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|public.salon_etiketi(req.avail_id) as salon"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|, completed_at = now(), cancel_reason ="
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|perform public.bildir(r.guest_id, 'requests',"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|when others then"
+   ],
+   [
+    "govde",
+    "bayat_istekleri_iade_et|v_kredi := exists (select 1 from credit_ledger cl"
+   ],
+   [
+    "govde",
+    "expire_stale_sessions|and (s.id is null"
+   ]
+  ]
+ ],
+ [
+  "317_kesfet_olcek.sql",
+  [
+   [
+    "govde",
+    "discover_availabilities_base|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|ll.kesif_son_gun"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|ll.kesif_son_gun"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|perform set_config('ll.kesif_limit', '', true);"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|a.host_id = v_uid"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|perform set_config('ll.kesif_son_gun', '', true);"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|from availabilities a"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|perform set_config('ll.kesif_limit', '1000000', true);"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|and (hu.role = 'host'"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|from public.discover_availabilities_base(null, null, null, null) k"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|)::int as match_score,"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|perform set_config('ll.kesif_son_gun', (current_date + greatest(1, coalesce(p_gun, 14)))::text, true);"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|b.hlangs as host_langs"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|where d.host_id <> v_uid"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|v_sayim := v_limit > 100000;"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|count(distinct c.host_id)::int,"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|b.hgender::text as host_gender,"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|declare v_uid uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|join users hu on hu.id=a.host_id"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|join availabilities a on a.id = d.id"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|and a.avail_date >= current_date"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|if v_uid is null then return; end if;"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|v_staff := coalesce(v_staff, false);"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|and not coalesce(d.fully_booked, false)"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|coalesce(v.id_verified,false) as hid,"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|order by count(distinct c.host_id) desc, c.ap;"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|into v_female, v_safe, v_langs, v_prof"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|left join airports ap on ap.code = a.airport_code"
+   ],
+   [
+    "govde",
+    "discover_availabilities_base|join requests r on r.id = s.request_id"
+   ],
+   [
+    "govde",
+    "kesfet_ozeti|case when count(distinct c.host_id) >= 3 then 'canli'"
+   ]
+  ]
+ ],
+ [
+  "318_ana_sayfa_akisi_olcek.sql",
+  [
+   [
+    "govde",
+    "ana_sayfa_akisi|where m.channel_id in ("
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select c1.id from chat_channels c1 join requests r on r.id = c1.request_id"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where (cr.from_id = v_uid or cr.to_id = v_uid) and cr.status = 'accepted')"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|and m.from_id <> v_uid and m.read_at is null and m.created_at > g_sohbet);"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where (r.host_id = v_uid or r.guest_id = v_uid) and r.status in ('accepted','completed')"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select c2.id from chat_channels c2 join connection_requests cr on cr.id = c2.connection_id"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, jsonb_build_object("
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|), now() - interval"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|),  now() - interval"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|),   now() - interval"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, coalesce(v_sohbet, 0),"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, coalesce(v_istek, 0),"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, coalesce(v_soru, 0),"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|, coalesce(v_baglanti, 0),"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|if v_uid is null then"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|from availabilities a"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_uid uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|return jsonb_build_object("
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|from connection_requests cr"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where cr.status = 'accepted'"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select count(*)::int into v_soru"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select count(*)::int into v_ilan"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where cr.intent = 'kural_sorusu'"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select count(*)::int into v_istek"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select count(*)::int into v_sohbet"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|or exists (select 1 from messages m"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|select count(*)::int into v_baglanti"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|v_baglanti int := 0; v_ilan int := 0;"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|and not public.is_blocked_pair(v_uid,"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where s.status in ('pending','active')"
+   ]
+  ]
+ ],
+ [
+  "319_tanis_gorunurluk_olcek.sql",
+  [
+   [
+    "govde",
+    "discover_people_prebfilter|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "kisi_ara|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v319_staff := coalesce(v319_staff, false);"
+   ],
+   [
+    "govde",
+    "kisi_ara|v319_staff := coalesce(v319_staff, false);"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|v319_staff := coalesce(v319_staff, false);"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|v319_test_gorur boolean;"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v319_staff boolean; v319_test_gorur boolean;"
+   ],
+   [
+    "govde",
+    "kisi_ara|v319_staff boolean; v319_test_gorur boolean;"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|v319_staff boolean; v319_test_gorur boolean;"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|v319_test_gorur := coalesce(v319_test_gorur, false)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and (not coalesce(hu.is_staff, false) or v319_staff))"
+   ],
+   [
+    "govde",
+    "kisi_ara|and (not coalesce(hu.is_staff, false) or v319_staff))"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|and (not coalesce(u.is_staff, false) or v319_staff))"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|into v319_test_gorur from users x where x.id = auth.uid();"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v319_test_gorur := coalesce(v319_test_gorur, false) or v319_staff"
+   ],
+   [
+    "govde",
+    "kisi_ara|v319_test_gorur := coalesce(v319_test_gorur, false) or v319_staff"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|v319_test_gorur := coalesce(v319_test_gorur, false) or v319_staff"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|select public.seed_test_hesabi(x.email) or coalesce(x.is_staff, false)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|select coalesce(x.is_staff, false), public.seed_test_hesabi(x.email)"
+   ],
+   [
+    "govde",
+    "kisi_ara|select coalesce(x.is_staff, false), public.seed_test_hesabi(x.email)"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|select coalesce(x.is_staff, false), public.seed_test_hesabi(x.email)"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|or exists (select 1 from test_gorunurlugu g where g.user_id = auth.uid());"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|into v319_staff, v319_test_gorur from users x where x.id = auth.uid();"
+   ],
+   [
+    "govde",
+    "kisi_ara|into v319_staff, v319_test_gorur from users x where x.id = auth.uid();"
+   ],
+   [
+    "govde",
+    "lounge_radar_people|into v319_staff, v319_test_gorur from users x where x.id = auth.uid();"
+   ],
+   [
+    "govde",
+    "havalimani_nabzi|or not coalesce((select f.enabled from feature_flags f where f.key = 'test_hesaplarini_gizle'), true)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|or exists (select 1 from test_gorunurlugu g where g.user_id = auth.uid());"
+   ],
+   [
+    "govde",
+    "kisi_ara|or exists (select 1 from test_gorunurlugu g where g.user_id = auth.uid());"
+   ]
+  ]
+ ],
+ [
+  "320_istek_puani_daraltilmis.sql",
+  [
+   [
+    "fonksiyon",
+    "discover_availabilities_prerank"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|ilanına başvurdu ✦"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|guests_not_allowed"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|— kabul ya da reddet; yanıt bekleyen istekler İstek ekranında."
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|) and e.my_carrier in ("
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|applied to your listing ✦"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|) and e.my_carrier ="
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|— accept or decline in Requests."
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|from enriched e;"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|perform set_config('ll.kesif_limit', '', true);"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|limit 1) as my_carrier"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|perform public.bildir(v_av.host_id, 'requests',"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|v_uid uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|public.kisa_ad(v_uid) || ' ilanına başvurdu ✦',"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|e.host_gender, e.host_langs,"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|perform set_config('ll.kesif_limit', '100000', true);"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|), enriched as materialized ("
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|public.kisa_ad(v_uid) || ' applied to your listing ✦',"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|and v.visit_date = b.avail_date"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|from discover_availabilities_base(v_av.airport_code, null, null, v_av.avail_date)"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|nullif(e.dec ->> 'headline', ''),"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|not_authenticated"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|and coalesce(v.flight_number,'') <> ''"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|contact_not_verified"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|from profiles p where p.user_id = v_uid;"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|availability_not_found"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|when e.av_carrier = e.my_carrier then null"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|self_request_blocked"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|e.is_featured, e.fully_booked, e.visibility,"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|availability_expired"
+   ],
+   [
+    "govde",
+    "discover_availabilities_prerank|when v_prof is null or v_prof = '' then null"
+   ]
+  ]
+ ],
+ [
+  "321_erisim_karari_kart_secimi_belirli.sql",
+  [
+   [
+    "fonksiyon",
+    "lounge_access_decision_prebase"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|İlan bulunamadı."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|, coalesce(v_acc.conditions,"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|, coalesce(v_rj ->>"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|) is not null and (v_rj ->>"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|same_flight_required"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Bu ilanın lounge programı belirlenemedi."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Host hangi hakla giriyor bilinmiyor; giriş koşullarını kapıda teyit edin."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|or coalesce(v_av.flight_number,"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|)) <> upper(replace(v_av.flight_number,"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Bu salon/hak birleşiminde misafir alınamıyor."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Misafirin uçuşu bu salonun kuralına uymuyor."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Bu salonun misafir kuralı henüz doğrulanmadı."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Misafir girişi ücretli olabilir (kapıda tahsil edilir)."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Uçuş bilgisi eksik — giriş koşulu kapıda teyit edilmeli."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Misafir kabul ediliyor."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Bu kural henüz resmî kaynaktan doğrulanmadı."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Host giriş anında yanında olmalı; erişim hakkı ödünç verilemez."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|Misafirin kendi biniş kartı ve kimliği gerekir."
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|guest_included_count"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|guest_fee_amount"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|guest_fee_currency"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|earliest_entry_hours"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|entitlement_model"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|v_policy := case"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|v_fits := false;"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|'source', v_src,"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|v_venue_id  uuid;"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|v_prog_id   uuid;"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|v_tier      text;"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_prebase|v_policy    text;"
+   ]
+  ]
+ ],
+ [
+  "322_hesap_silme_calisir_ve_acik_isleri_kapatir.sql",
+  [
+   [
+    "tetikleyici",
+    "users_yasak_acik_isleri_kapat"
+   ],
+   [
+    "fonksiyon",
+    "hesap_acik_islerini_kapat"
+   ],
+   [
+    "fonksiyon",
+    "trg_users_yasak_acik_isleri_kapat"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|request_cancel_refund"
+   ],
+   [
+    "govde",
+    "delete_my_account|v_kapanan := public.hesap_acik_islerini_kapat(v_uid);"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|perform public.hesap_acik_islerini_kapat(new.id);"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|Buluşma iptal oldu"
+   ],
+   [
+    "govde",
+    "delete_my_account|declare v_uid uuid := auth.uid(); v_email text; v_kapanan jsonb;"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|if old.banned_at is null and new.banned_at is not null then"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|artık LoungeLink"
+   ],
+   [
+    "govde",
+    "delete_my_account|where matched_user_id = v_uid and status in ('pending', 'verified'));"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|te değil; kabul ettiğin buluşma gerçekleşmeyecek. Yerin yeniden açıldı."
+   ],
+   [
+    "govde",
+    "delete_my_account|select coalesce(v_email, v_uid::text), 'uygulama içi \"Hesabı sil\"', 'app', 'pending', v_uid"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|Meetup cancelled"
+   ],
+   [
+    "govde",
+    "delete_my_account|not_authenticated"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|is no longer on LoungeLink; the meetup you accepted won"
+   ],
+   [
+    "govde",
+    "delete_my_account|uygulama içi \"Hesabı sil\""
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|t happen. Your spot is open again."
+   ],
+   [
+    "govde",
+    "delete_my_account|app.account_delete"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|te değil; bu buluşma gerçekleşmeyecek. Kredin iade edildi — Keşfet"
+   ],
+   [
+    "govde",
+    "delete_my_account|, v_uid, jsonb_build_object("
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|te başka ilanlar var."
+   ],
+   [
+    "govde",
+    "delete_my_account|where not exists (select 1 from deletion_requests"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|is no longer on LoungeLink; this meetup won"
+   ],
+   [
+    "govde",
+    "delete_my_account|select email into v_email from users where id = v_uid;"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|t happen. Your credit was refunded — there are other listings in Discover."
+   ],
+   [
+    "govde",
+    "delete_my_account|return jsonb_build_object('ok', true, 'sla_days', 30);"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|, completed_at = now(), cancel_reason ="
+   ],
+   [
+    "govde",
+    "delete_my_account|if v_uid is null then raise exception 'not_authenticated'; end if;"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|kapanan_istek_misafir"
+   ],
+   [
+    "govde",
+    "delete_my_account|insert into audit_log (action, entity_type, entity_id, after_data)"
+   ],
+   [
+    "govde",
+    "hesap_acik_islerini_kapat|kapanan_istek_host"
+   ],
+   [
+    "govde",
+    "delete_my_account|update users set deleted_at = now() where id = v_uid and deleted_at is null;"
+   ]
+  ]
+ ],
+ [
+  "323_ilan_ac_saat_ve_kontenjan_kapisi.sql",
+  [
+   [
+    "govde",
+    "create_availability|invalid_time_range"
+   ],
+   [
+    "govde",
+    "create_availability|if p_slots is null or p_slots < 1 then raise exception 'invalid_slots'; end if;"
+   ],
+   [
+    "govde",
+    "create_availability|if p_from is null or p_to is null or p_from >= p_to then raise exception 'invalid_time_range'; end if;"
+   ],
+   [
+    "govde",
+    "create_availability|not_authenticated"
+   ],
+   [
+    "govde",
+    "create_availability|kendi_ilanlarin_cakisiyor"
+   ],
+   [
+    "govde",
+    "create_availability|Bu saatte başka bir ilanın var. Önce onu kaldır ya da saatleri ayır."
+   ],
+   [
+    "govde",
+    "create_availability|where a.id = v_id;"
+   ],
+   [
+    "govde",
+    "create_availability|v jsonb; v_id uuid;"
+   ],
+   [
+    "govde",
+    "create_availability|if v_id is null then"
+   ],
+   [
+    "govde",
+    "create_availability|'program_notu', case"
+   ],
+   [
+    "govde",
+    "create_availability|from availabilities a"
+   ],
+   [
+    "govde",
+    "create_availability|when v_pg is null then"
+   ],
+   [
+    "govde",
+    "create_availability|'program_id',     v_pg,"
+   ],
+   [
+    "govde",
+    "create_availability|'program_adi',    v_ad,"
+   ],
+   [
+    "govde",
+    "create_availability|'program_kodu',   v_kod,"
+   ],
+   [
+    "govde",
+    "create_availability|and a.avail_date = p_date"
+   ],
+   [
+    "govde",
+    "create_availability|raise exception 'not_a_host';"
+   ],
+   [
+    "govde",
+    "create_availability|return v || jsonb_build_object("
+   ],
+   [
+    "govde",
+    "create_availability|into v_pg, v_kaynak, v_kod, v_ad"
+   ],
+   [
+    "govde",
+    "create_availability|p_flight, p_visibility, p_carrier);"
+   ],
+   [
+    "govde",
+    "create_availability|v := public.create_availability_base("
+   ],
+   [
+    "govde",
+    "create_availability|v_id := nullif(v ->> 'id', '')::uuid;"
+   ],
+   [
+    "govde",
+    "create_availability|if exists (select 1 from availabilities a"
+   ],
+   [
+    "govde",
+    "create_availability|where a.host_id = auth.uid() and a.active"
+   ],
+   [
+    "govde",
+    "create_availability|raise exception 'kendi_ilanlarin_cakisiyor'"
+   ],
+   [
+    "govde",
+    "create_availability|when coalesce(v_kaynak, '') = 'turetildi' then"
+   ],
+   [
+    "govde",
+    "create_availability|v_pg uuid; v_kaynak text; v_kod text; v_ad text;"
+   ],
+   [
+    "govde",
+    "create_availability|and not exists (select 1 from host_applications ha"
+   ],
+   [
+    "govde",
+    "create_availability|left join lounge_programs p on p.id = a.program_id"
+   ],
+   [
+    "govde",
+    "create_availability|and a.time_from < p_to and p_from < a.time_to) then"
+   ]
+  ]
+ ],
+ [
+  "324_tanis_silinmis_yasakli_suzgeci.sql",
+  [
+   [
+    "govde",
+    "discover_people_prebfilter|and hu.deleted_at is null and hu.banned_at is null"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|when not exists ("
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|tr.flight_number,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|c.created_at desc"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where m.ap = ho.ap"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|)) as can_request,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|end as req_reason,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v_phone_ok boolean;"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|left join lateral ("
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|select 1 from mine m"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|from availabilities a"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where a.active = true"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|ho.ap as host_airport,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|(ho.host_id is not null"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where p.user_id <> v_uid"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|ts.score desc nulls last"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v.flight_number, v.purpose"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and a.visibility <> 'Hidden'"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|or (v_female and v_phone_ok)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|ho.avail_id as host_avail_id,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|select distinct on (a.host_id)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|select distinct on (v.user_id)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and coalesce(a.min_trust,0) = 0"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and a.avail_date >= current_date"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and m.visit_date = ho.avail_date"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|when not v_phone_ok then 'phone'"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|ho.slots_left as host_slots_left,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where m.flight_number is not null"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where v.visit_date >= current_date"
+   ]
+  ]
+ ],
+ [
+  "325_seyahat_cakismasi_farkli_havalimani.sql",
+  [
+   [
+    "fonksiyon",
+    "seyahat_cakisma_kapisi"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|ayni_saatte_seyahatin_var"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|perform public.seyahat_cakisma_kapisi(v_uid, upper(btrim(p_airport)), p_date, p_from, p_to, null);"
+   ],
+   [
+    "govde",
+    "update_visit|perform public.seyahat_cakisma_kapisi(v_uid, v_ap, v_d, v_f, v_t, p_id);"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|baska_havalimaninda_seyahatin_var"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|not_authenticated"
+   ],
+   [
+    "govde",
+    "update_visit|not_authenticated"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|if exists (select 1 from visits v"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|then raise exception"
+   ],
+   [
+    "govde",
+    "update_visit|invalid_time_range"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|and v.id is distinct from p_haric"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|invalid_time_range"
+   ],
+   [
+    "govde",
+    "update_visit|seyahate_bagli_basvuru_var"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|raise exception 'ayni_saatte_seyahatin_var';"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|party_size_invalid"
+   ],
+   [
+    "govde",
+    "update_visit|Bu seyahate dayanan basvurun var. Once basvuruyu iptal et,"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|declare v_bas timestamptz; v_son timestamptz;"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|child_ages_invalid"
+   ],
+   [
+    "govde",
+    "update_visit|sonra tarihi/havalimanini degistir. Saat ve ucus bilgisini"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|v_son := public.yerel_an(p_date, p_to, p_airport);"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|party_size, child_ages)"
+   ],
+   [
+    "govde",
+    "update_visit|simdi de duzeltebilirsin."
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|and v.visit_date between p_date - 1 and p_date + 1"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|returning id into v_id;"
+   ],
+   [
+    "govde",
+    "update_visit|, v_v.airport_code,"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|and v.time_from < p_to and p_from < v.time_to) then"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|perform public.motor_yazimi_ac();"
+   ],
+   [
+    "govde",
+    "update_visit|, v_v.visit_date,"
+   ],
+   [
+    "govde",
+    "seyahat_cakisma_kapisi|v_bas := public.yerel_an(p_date, p_from, p_airport);"
+   ],
+   [
+    "govde",
+    "seyahat_ekle|raise exception 'unknown_airport';"
+   ],
+   [
+    "govde",
+    "update_visit|where id = p_id;"
+   ]
+  ]
+ ],
+ [
+  "326_kisi_ara_aday_siniri.sql",
+  [
+   [
+    "govde",
+    "kisi_ara|order by a.bas desc, a.name"
+   ],
+   [
+    "govde",
+    "kisi_ara|(p.name ilike v_q || '%') as bas"
+   ],
+   [
+    "govde",
+    "kisi_ara|where public.profil_gorunur_mu(a.user_id)"
+   ],
+   [
+    "govde",
+    "kisi_ara|select a.user_id, public.kisa_ad(a.user_id),"
+   ],
+   [
+    "govde",
+    "kisi_ara|nullif(btrim(coalesce(a.profession, '')), ''),"
+   ],
+   [
+    "govde",
+    "kisi_ara|and not public.is_blocked_pair(v_uid, a.user_id)"
+   ],
+   [
+    "govde",
+    "kisi_ara|select p.user_id, p.name, p.profession, p.photo_url, p.photo_connections_only,"
+   ],
+   [
+    "govde",
+    "kisi_ara|where ((c.from_id = v_uid and c.to_id = a.user_id) or (c.from_id = a.user_id and c.to_id = v_uid))"
+   ],
+   [
+    "govde",
+    "kisi_ara|case when a.photo_url is not null and not coalesce(a.photo_connections_only, false) then a.photo_url end,"
+   ],
+   [
+    "govde",
+    "kisi_ara|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "kisi_ara|not_authenticated"
+   ],
+   [
+    "govde",
+    "kisi_ara|) desc, c.created_at desc limit 1),"
+   ],
+   [
+    "govde",
+    "kisi_ara|into v_female, v_safe"
+   ],
+   [
+    "govde",
+    "kisi_ara|where p.user_id <> v_uid"
+   ],
+   [
+    "govde",
+    "kisi_ara|v_q := btrim(coalesce(p_q, ''));"
+   ],
+   [
+    "govde",
+    "kisi_ara|join users hu on hu.id = p.user_id"
+   ],
+   [
+    "govde",
+    "kisi_ara|and coalesce(p.show_on_discovery, true)"
+   ],
+   [
+    "govde",
+    "kisi_ara|v319_staff := coalesce(v319_staff, false);"
+   ],
+   [
+    "govde",
+    "kisi_ara|v319_staff boolean; v319_test_gorur boolean;"
+   ],
+   [
+    "govde",
+    "kisi_ara|if char_length(v_q) < 2 then return; end if;"
+   ],
+   [
+    "govde",
+    "kisi_ara|and coalesce(c.intent, '') <> 'kural_sorusu'"
+   ],
+   [
+    "govde",
+    "kisi_ara|and (not coalesce(p.women_safety_mode, false)"
+   ],
+   [
+    "govde",
+    "kisi_ara|order by (p.name ilike v_q || '%') desc, p.name"
+   ],
+   [
+    "govde",
+    "kisi_ara|and hu.deleted_at is null and hu.banned_at is null"
+   ],
+   [
+    "govde",
+    "kisi_ara|and (not coalesce(hu.is_staff, false) or v319_staff))"
+   ],
+   [
+    "govde",
+    "kisi_ara|coalesce((select c.status::text from connection_requests c"
+   ],
+   [
+    "govde",
+    "kisi_ara|or (coalesce(v_female, false) and coalesce(v_phone_ok, false))"
+   ],
+   [
+    "govde",
+    "kisi_ara|and (p.name ilike v_q || '%' or p.name ilike '% ' || v_q || '%')"
+   ],
+   [
+    "govde",
+    "kisi_ara|v319_test_gorur := coalesce(v319_test_gorur, false) or v319_staff"
+   ],
+   [
+    "govde",
+    "kisi_ara|if v_uid is null then raise exception 'not_authenticated'; end if;"
+   ]
+  ]
+ ],
+ [
+  "327_tanis_profil_gorunurlugu.sql",
+  [
+   [
+    "govde",
+    "discover_people_prebfilter|)::int from beta_settings b7 where b7.key ="
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v327_guvenilir boolean;"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|from connection_requests c7"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|or (p.profile_visibility::text = 'Trusted+' and v327_guvenilir)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and (coalesce(p.profile_visibility::text, 'Everyone') = 'Everyone'"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|from requests r7 where r7.guest_id = v_uid or r7.host_id = v_uid))"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|select case when r7.guest_id = v_uid then r7.host_id else r7.guest_id end"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|or p.user_id in (select case when c7.from_id = v_uid then c7.to_id else c7.from_id end"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where (c7.from_id = v_uid or c7.to_id = v_uid) and c7.status in ('pending','accepted')"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v327_guvenilir := coalesce((select t7.score from trust_scores t7 where t7.user_id = auth.uid()), 0)"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|>= coalesce((select (b7.value #>> '{}')::int from beta_settings b7 where b7.key = 'profil_trusted_esik'), 40);"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|test_hesaplarini_gizle"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|when not exists ("
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|tr.flight_number,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|c.created_at desc"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where m.ap = ho.ap"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|)) as can_request,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|end as req_reason,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v_phone_ok boolean;"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|left join lateral ("
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|select 1 from mine m"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|from availabilities a"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where a.active = true"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|ho.ap as host_airport,"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|(ho.host_id is not null"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|where p.user_id <> v_uid"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|ts.score desc nulls last"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|v.flight_number, v.purpose"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|and a.visibility <> 'Hidden'"
+   ],
+   [
+    "govde",
+    "discover_people_prebfilter|or (v_female and v_phone_ok)"
+   ]
+  ]
+ ],
+ [
+  "328_host_tek_yol_bo_onayli_basvuru.sql",
+  [
+   [
+    "govde",
+    "handle_new_user|if r = 'host' then r := 'guest'; end if;"
+   ],
+   [
+    "govde",
+    "rolumu_sec|host_basvurusu_gerekli"
+   ],
+   [
+    "govde",
+    "handle_new_user|); exception when others then r :="
+   ],
+   [
+    "govde",
+    "rolumu_sec|raise exception 'host_basvurusu_gerekli';"
+   ],
+   [
+    "govde",
+    "handle_new_user|), split_part(new.email,"
+   ],
+   [
+    "govde",
+    "rolumu_sec|where ha.user_id = v_uid and ha.status = 'approved') then"
+   ],
+   [
+    "govde",
+    "handle_new_user|if not v_staff then"
+   ],
+   [
+    "govde",
+    "rolumu_sec|if v_yeni = 'host' and not exists (select 1 from host_applications ha"
+   ],
+   [
+    "govde",
+    "handle_new_user|exception when others then"
+   ],
+   [
+    "govde",
+    "rolumu_sec|not_authenticated"
+   ],
+   [
+    "govde",
+    "handle_new_user|perform grant_signup_credits(new.id);"
+   ],
+   [
+    "govde",
+    "rolumu_sec|user.role_change"
+   ],
+   [
+    "govde",
+    "handle_new_user|exception when others then v_staff := false;"
+   ],
+   [
+    "govde",
+    "rolumu_sec|where id = v_uid;"
+   ],
+   [
+    "govde",
+    "handle_new_user|declare g user_gender; n text; r user_role; v_staff boolean;"
+   ],
+   [
+    "govde",
+    "rolumu_sec|v_eski  user_role;"
+   ],
+   [
+    "govde",
+    "handle_new_user|insert into public.profiles (user_id, name, show_on_discovery)"
+   ],
+   [
+    "govde",
+    "rolumu_sec|v_yeni  user_role;"
+   ],
+   [
+    "govde",
+    "handle_new_user|values (new.id, true, now()) on conflict (user_id) do nothing;"
+   ],
+   [
+    "govde",
+    "rolumu_sec|set role = v_yeni,"
+   ],
+   [
+    "govde",
+    "handle_new_user|values (new.id, n, not v_staff) on conflict (user_id) do nothing;"
+   ],
+   [
+    "govde",
+    "rolumu_sec|role_source = v_kay,"
+   ],
+   [
+    "govde",
+    "handle_new_user|insert into public.trust_scores (user_id, score, components, badge)"
+   ],
+   [
+    "govde",
+    "rolumu_sec|if v_eski = v_yeni then"
+   ],
+   [
+    "govde",
+    "handle_new_user|or coalesce((new.raw_user_meta_data->>'is_partner')::boolean, false);"
+   ],
+   [
+    "govde",
+    "rolumu_sec|role_changed_at = now(),"
+   ],
+   [
+    "govde",
+    "handle_new_user|v_staff := coalesce((new.raw_user_meta_data->>'is_staff')::boolean, false)"
+   ],
+   [
+    "govde",
+    "rolumu_sec|v_uid   uuid := auth.uid();"
+   ],
+   [
+    "govde",
+    "handle_new_user|insert into public.users (id, email, role, gender, password_hash, is_staff)"
+   ],
+   [
+    "govde",
+    "rolumu_sec|v_yeni := p_role::user_role;"
+   ]
+  ]
+ ],
+ [
+  "329_silinen_hesap_14_gun_anonim.sql",
+  [
+   [
+    "tablo",
+    "onceki_epostalar"
+   ],
+   [
+    "fonksiyon",
+    "eposta_ozeti"
+   ],
+   [
+    "fonksiyon",
+    "silinen_hesaplari_anonimlestir"
+   ],
+   [
+    "govde",
+    "eposta_ozeti|select encode(extensions.digest(lower(trim(coalesce(p_email, ''))), 'sha256'), 'hex');"
+   ],
+   [
+    "govde",
+    "silinen_hesaplari_anonimlestir|14 gün sonra otomatik anonimleştirildi (329)"
+   ],
+   [
+    "govde",
+    "handle_new_user|Önceki hesabı yasaklıydı (329)"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|Önceki hesabı yasaklıydı (329)"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|and table_name ="
+   ],
+   [
+    "govde",
+    "delete_my_account|update auth.users set banned_until = greatest(coalesce(banned_until, now()), now() + interval '15 days')"
+   ],
+   [
+    "govde",
+    "silinen_hesaplari_anonimlestir|anonimlestirilen"
+   ],
+   [
+    "govde",
+    "handle_new_user|v_onceki_var := found;"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|values (public.eposta_ozeti(new.email), true)"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|and column_name ="
+   ],
+   [
+    "govde",
+    "delete_my_account|not_authenticated"
+   ],
+   [
+    "govde",
+    "silinen_hesaplari_anonimlestir|exception when others then"
+   ],
+   [
+    "govde",
+    "handle_new_user|if not v_staff and not v_onceki_var then"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|on conflict (ozet) do update set yasakli = true;"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|update auth.users set deleted_at = coalesce(deleted_at, now()) where id = $1"
+   ],
+   [
+    "govde",
+    "delete_my_account|uygulama içi \"Hesabı sil\""
+   ],
+   [
+    "govde",
+    "silinen_hesaplari_anonimlestir|and u.anonymized_at is null"
+   ],
+   [
+    "govde",
+    "handle_new_user|if v_onceki_var and v_onceki.yasakli then"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|insert into public.onceki_epostalar (ozet, yasakli)"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|if exists (select 1 from information_schema.columns"
+   ],
+   [
+    "govde",
+    "delete_my_account|app.account_delete"
+   ],
+   [
+    "govde",
+    "silinen_hesaplari_anonimlestir|declare r record; n int := 0;"
+   ],
+   [
+    "govde",
+    "handle_new_user|where ozet = public.eposta_ozeti(new.email);"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|if coalesce(new.ban_reason, '') <> 'Önceki hesabı yasaklıydı (329)' then"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|where table_schema = 'auth' and table_name = 'users' and column_name = 'deleted_at') then"
+   ],
+   [
+    "govde",
+    "delete_my_account|, v_uid, jsonb_build_object("
+   ],
+   [
+    "govde",
+    "silinen_hesaplari_anonimlestir|update public.deletion_requests"
+   ],
+   [
+    "govde",
+    "handle_new_user|v_onceki record; v_onceki_var boolean := false;"
+   ],
+   [
+    "govde",
+    "trg_users_yasak_acik_isleri_kapat|perform public.hesap_acik_islerini_kapat(new.id);"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|execute 'update auth.users set deleted_at = coalesce(deleted_at, now()) where id = $1' using p_user_id;"
+   ]
+  ]
+ ],
+ [
+  "330_bo_hesabi_geri_al.sql",
+  [
+   [
+    "fonksiyon",
+    "admin_hesabi_geri_al"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|zaten_anonimlestirildi"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|hesap_silinmemis"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|yasakli_hesap_once_yasagi_kaldir"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|and table_name ="
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|and column_name ="
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|update auth.users set deleted_at = null where id = $1"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|Kullanıcı talebiyle geri alındı ("
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|Silme anında kapanan istekler, buluşmalar, bağlantılar ve ilanlar geri açılmadı."
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|update deletion_requests"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|declare v_u users%rowtype;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|return jsonb_build_object('ok', true,"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|update profiles set show_on_discovery = true"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|set status = 'rejected', handled_at = now(),"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|select * into v_u from users where id = p_user_id;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|if exists (select 1 from information_schema.columns"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|update users set deleted_at = null where id = p_user_id;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|if not found then raise exception 'user_not_found'; end if;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al||| coalesce(' · ' || nullif(btrim(p_reason), ''), ''), 500)"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|update auth.users set banned_until = null where id = p_user_id;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|where user_id = p_user_id and not coalesce(v_u.is_staff, false);"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|where matched_user_id = p_user_id and status in ('pending', 'verified');"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|if v_u.deleted_at is null then raise exception 'hesap_silinmemis'; end if;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|execute 'update auth.users set deleted_at = null where id = $1' using p_user_id;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|if v_u.anonymized_at is not null then raise exception 'zaten_anonimlestirildi'; end if;"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|resolution = left('Kullanıcı talebiyle geri alındı (' || coalesce(p_admin, 'BO') || ')'"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|where table_schema = 'auth' and table_name = 'users' and column_name = 'deleted_at') then"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|'not', 'Silme anında kapanan istekler, buluşmalar, bağlantılar ve ilanlar geri açılmadı.');"
+   ],
+   [
+    "govde",
+    "admin_hesabi_geri_al|if v_u.banned_at is not null then raise exception 'yasakli_hesap_once_yasagi_kaldir'; end if;"
+   ]
+  ]
+ ],
+ [
+  "331_soru_kendi_kaydinda.sql",
+  [
+   [
+    "indeks",
+    "ix_kural_sorulari_host"
+   ],
+   [
+    "indeks",
+    "ix_kural_sorulari_ilan"
+   ],
+   [
+    "indeks",
+    "ix_kural_sorulari_soran"
+   ],
+   [
+    "tablo",
+    "kural_sorulari"
+   ],
+   [
+    "fonksiyon",
+    "kural_sorusu_metni"
+   ],
+   [
+    "fonksiyon",
+    "kural_sorusu_hakkim_ham"
+   ],
+   [
+    "govde",
+    "kural_sorusu_metni|from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "ilan_kurali_sor|) desc, (status ="
+   ],
+   [
+    "govde",
+    "kural_sorusu_hakkim_ham|, now())) at time zone"
+   ],
+   [
+    "govde",
+    "sorularim|q.cevap, q.cevap_notu"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|from kural_sorulari q"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|, coalesce(v_cr.status::text,"
+   ],
+   [
+    "govde",
+    "trg_hak_beyani_soranlara|'question', r.id);"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|from kural_sorulari q"
+   ],
+   [
+    "govde",
+    "kural_sorusu_metni|, coalesce(p_salon,"
+   ],
+   [
+    "govde",
+    "ilan_kurali_sor|misafir hakkını soruyor ◈"
+   ],
+   [
+    "govde",
+    "kural_sorusu_hakkim_ham|where soran_id = v_uid"
+   ],
+   [
+    "govde",
+    "sorularim|from kural_sorulari q"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|where q.host_id = v_uid"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|if found and v_cr.id = p_id then"
+   ],
+   [
+    "govde",
+    "trg_hak_beyani_soranlara|from kural_sorulari q"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|where q.host_id = v_uid and q.cevap_at is null"
+   ],
+   [
+    "govde",
+    "kural_sorusu_metni|” ilanında misafir hakkın var mı?"
+   ],
+   [
+    "govde",
+    "ilan_kurali_sor|den yanıtlayabilirsin."
+   ],
+   [
+    "govde",
+    "kural_sorusu_hakkim_ham|select count(*) into v_n from kural_sorulari"
+   ],
+   [
+    "govde",
+    "sorularim|select q.id, q.host_id,"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|case when q.avail_id is null then false"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|perform public.bildir(v_q.soran_id, 'requests',"
+   ],
+   [
+    "govde",
+    "trg_hak_beyani_soranlara|values (r.soran_id, 'connections',"
+   ],
+   [
+    "govde",
+    "ana_sayfa_akisi|y_soru := exists (select 1 from kural_sorulari q"
+   ],
+   [
+    "govde",
+    "kural_sorusu_metni|select left(coalesce("
+   ],
+   [
+    "govde",
+    "ilan_kurali_sor|is asking about your guest right ◈"
+   ],
+   [
+    "govde",
+    "kural_sorusu_hakkim_ham|declare v_uid uuid := auth.uid(); v_n int; v_tavan int := 5;"
+   ],
+   [
+    "govde",
+    "sorularim|where q.soran_id = v_uid"
+   ],
+   [
+    "govde",
+    "bana_gelen_sorular|left join profiles p on p.user_id = q.soran_id"
+   ],
+   [
+    "govde",
+    "soruya_cevap_yaz|if v_cr.id is not null and v_cr.status = 'accepted' then"
+   ]
+  ]
+ ],
+ [
+  "332_revenuecat_satin_alma.sql",
+  [
+   [
+    "indeks",
+    "ix_rc_olaylari_user"
+   ],
+   [
+    "tablo",
+    "abonelikler"
+   ],
+   [
+    "tablo",
+    "rc_olaylari"
+   ],
+   [
+    "tablo",
+    "iap_urunleri"
+   ],
+   [
+    "politika",
+    "abonelikler|abonelik_kendi"
+   ],
+   [
+    "politika",
+    "iap_urunleri|iap_urunleri_oku"
+   ],
+   [
+    "fonksiyon",
+    "aboneligim"
+   ],
+   [
+    "fonksiyon",
+    "rc_olay_isle"
+   ],
+   [
+    "fonksiyon",
+    "bo_rc_olaylari"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|original_transaction_id"
+   ],
+   [
+    "govde",
+    "aboneligim|select coalesce(("
+   ],
+   [
+    "govde",
+    "bo_rc_olaylari|raise exception 'not_admin';"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|then raise exception"
+   ],
+   [
+    "govde",
+    "aboneligim|'durum', a.durum, 'bitis', a.bitis)"
+   ],
+   [
+    "govde",
+    "bo_rc_olaylari|order by o.created_at desc limit 500;"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|original_app_user_id"
+   ],
+   [
+    "govde",
+    "aboneligim|from abonelikler a where a.user_id = auth.uid()), '{}'::jsonb);"
+   ],
+   [
+    "govde",
+    "bo_rc_olaylari|from rc_olaylari o left join profiles p on p.user_id = o.user_id"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+   ],
+   [
+    "govde",
+    "aboneligim|select jsonb_build_object('plan', a.plan, 'urun', a.urun_kodu, 'magaza', a.magaza,"
+   ],
+   [
+    "govde",
+    "bo_rc_olaylari|select o.olay_kimlik, o.tur, o.user_id, p.name, o.urun_kodu, o.magaza, o.sonuc, o.created_at"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|expiration_at_ms"
+   ],
+   [
+    "govde",
+    "bo_rc_olaylari|where o.created_at > now() - make_interval(days => greatest(1, least(coalesce(p_gun, 30), 365)))"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|INITIAL_PURCHASE"
+   ],
+   [
+    "govde",
+    "bo_rc_olaylari|if auth.uid() is not null and not exists (select 1 from admin_roles ar where ar.user_id = auth.uid()) then"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|kredi_zaten_islendi"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|iade_satis_bulunamadi"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|kredi_magaza_iadesi"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|v_sonuc := 'test';"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|if v_geri > 0 then"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|v_sonuc := 'kayit';"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|v_bitis  timestamptz;"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|if v_tur = 'TEST' then"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|where user_id = v_uid;"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|elsif v_uid is null then"
+   ],
+   [
+    "govde",
+    "rc_olay_isle|v_sonuc := 'plan_bitti';"
+   ]
+  ]
+ ],
+ [
+  "333_magaza_inceleme_hesabi.sql",
+  [
+   [
+    "fonksiyon",
+    "inceleme_hesabi_hazirla"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|333 · magaza inceleme"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|Mağaza inceleme hesabı (333)"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|Doğrulandı, 10 kredi, vitrin görünür."
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|if v_ek > 0 then"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|if v_uid is null then"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|if auth.uid() is not null"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|raise exception 'not_admin';"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|on conflict (user_id) do update"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|v_ek := greatest(0, 10 - v_bal);"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|on conflict (user_id) do nothing;"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|values (v_uid, '333 · magaza inceleme')"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|return jsonb_build_object('ok', false, 'neden',"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|insert into test_gorunurlugu (user_id, ekleyen)"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|'not', 'Doğrulandı, 10 kredi, vitrin görünür.');"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|values (v_uid, true, now(), true, now(), 'manual')"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|insert into credit_ledger (user_id, delta, reason, balance_after, note)"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|select id into v_uid from users where lower(email) = lower(btrim(p_email));"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|and not exists (select 1 from admin_roles ar where ar.user_id = auth.uid()) then"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|phone_verified_method = coalesce(verifications.phone_verified_method, 'manual');"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|return jsonb_build_object('ok', true, 'kullanici', v_uid, 'bakiye', v_bal + v_ek,"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|select coalesce(sum(delta), 0) into v_bal from credit_ledger where user_id = v_uid;"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|values (v_uid, v_ek, 'admin_adjust', v_bal + v_ek, 'Mağaza inceleme hesabı (333)');"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|'Bu e-postayla hesap yok. Önce uygulamada bu e-postayla kayıt ol, sonra tekrar çalıştır.');"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|phone_verified = true, phone_verified_at = coalesce(verifications.phone_verified_at, now()),"
+   ],
+   [
+    "govde",
+    "inceleme_hesabi_hazirla|set email_verified = true, email_verified_at = coalesce(verifications.email_verified_at, now()),"
+   ]
+  ]
+ ],
+ [
+  "334_ekonomi_ve_icerik_suzgeci.sql",
+  [
+   [
+    "kolon",
+    "plan_catalog.baglanti_haftalik"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_soru"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_puan"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_ilan"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_istek"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_davet"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_profil"
+   ],
+   [
+    "tetikleyici",
+    "trg_uygunsuz_baglanti"
+   ],
+   [
+    "fonksiyon",
+    "baglanti_hakkim"
+   ],
+   [
+    "fonksiyon",
+    "uygunsuz_maskele"
+   ],
+   [
+    "fonksiyon",
+    "trg_uygunsuz_suz"
+   ],
+   [
+    "fonksiyon",
+    "plan_kredisi_kalan"
+   ],
+   [
+    "fonksiyon",
+    "bo_kacak_gostergesi"
+   ],
+   [
+    "govde",
+    "subscription_plans|baglanti_haftalik"
+   ],
+   [
+    "govde",
+    "plan_kredisi_kalan|^plan_monthly:([0-9]{4}-[0-9]{2})"
+   ],
+   [
+    "govde",
+    "plan_kredisi_yerlestir|^plan_monthly:([0-9]{4}-[0-9]{2})"
+   ],
+   [
+    "govde",
+    "baglanti_hakkim|, v_tavan is null,"
+   ],
+   [
+    "govde",
+    "bo_kacak_gostergesi|lounge_konusan_cift"
+   ],
+   [
+    "govde",
+    "uygunsuz_maskele|gavat.*|yavşak.*|yavsak.*|puşt.*|pust|kaltak.*|sürtük.*|surtuk.*|ananı|anani|"
+   ],
+   [
+    "govde",
+    "trg_sohbet_suzgeci|new.body := v_temiz;"
+   ],
+   [
+    "govde",
+    "trg_uygunsuz_suz|degisti := true;"
+   ],
+   [
+    "govde",
+    "subscription_plans|'acik_istek', p.acik_istek_tavani,"
+   ],
+   [
+    "govde",
+    "plan_kredisi_kalan|^plan_monthly:[0-9]{4}-[0-9]{2}:"
+   ],
+   [
+    "govde",
+    "plan_kredisi_yerlestir|^plan_monthly:[0-9]{4}-[0-9]{2}:"
+   ],
+   [
+    "govde",
+    "baglanti_hakkim|, case when v_ilk is null then null else v_ilk + interval"
+   ],
+   [
+    "govde",
+    "bo_kacak_gostergesi|resmi_oturuma_donen"
+   ],
+   [
+    "govde",
+    "uygunsuz_maskele|[^a-zçğıöşüâîû0-9]"
+   ],
+   [
+    "govde",
+    "trg_sohbet_suzgeci|declare v jsonb; v_temiz text;"
+   ],
+   [
+    "govde",
+    "trg_uygunsuz_suz|if v is not null then"
+   ],
+   [
+    "govde",
+    "subscription_plans|'oncelikli_destek', p.oncelikli_destek,"
+   ],
+   [
+    "govde",
+    "plan_kredisi_kalan|from credit_ledger"
+   ],
+   [
+    "govde",
+    "plan_kredisi_yerlestir|kredi hesabına eklendi. Aylık plan kredisi bir sonraki aya devretmez."
+   ],
+   [
+    "govde",
+    "baglanti_hakkim|from connection_requests"
+   ],
+   [
+    "govde",
+    "bo_kacak_gostergesi|with konusan as ("
+   ],
+   [
+    "govde",
+    "uygunsuz_maskele|v_desen constant text :="
+   ],
+   [
+    "govde",
+    "trg_sohbet_suzgeci|if v_temiz is distinct from new.body then"
+   ]
+  ]
+ ],
+ [
+  "335_telefon_firebase_dogrulama.sql",
+  [
+   [
+    "indeks",
+    "telefon_gonderimleri_numara"
+   ],
+   [
+    "indeks",
+    "telefon_gonderimleri_kullanici"
+   ],
+   [
+    "tablo",
+    "telefon_gonderimleri"
+   ],
+   [
+    "tetikleyici",
+    "telefon_degisti"
+   ],
+   [
+    "ayar_deger",
+    "profil_trusted_esik=25"
+   ],
+   [
+    "ayar_deger",
+    "telefon_gunluk_numara=3"
+   ],
+   [
+    "ayar_deger",
+    "telefon_gunluk_kullanici=3"
+   ],
+   [
+    "ayar",
+    "telefon_kanali"
+   ],
+   [
+    "ayar",
+    "firebase_proje_id"
+   ],
+   [
+    "ayar",
+    "telefon_gunluk_numara"
+   ],
+   [
+    "ayar",
+    "telefon_gunluk_kullanici"
+   ],
+   [
+    "fonksiyon",
+    "trg_telefon_degisti"
+   ],
+   [
+    "fonksiyon",
+    "telefon_gonderim_izni"
+   ],
+   [
+    "fonksiyon",
+    "telefon_dogrulandi_yaz"
+   ],
+   [
+    "fonksiyon",
+    "iletisim_dogrulandi_gevsek"
+   ],
+   [
+    "govde",
+    "dogrulama_kanali|and coalesce((select value #>> '{}' from beta_settings where key = 'firebase_proje_id'), '') <> '',"
+   ],
+   [
+    "govde",
+    "telefon_gonderim_izni|)::int from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "telefon_dogrulandi_yaz|, coalesce((select (value #>>"
+   ],
+   [
+    "govde",
+    "trg_telefon_degisti|) <> coalesce(new.phone_kanonik,"
+   ],
+   [
+    "govde",
+    "bildirim_hedefi|elsif n.ref_type = 'plan' then"
+   ],
+   [
+    "govde",
+    "iletisim_dogrulandi_gevsek|from verifications where user_id = p_user"
+   ],
+   [
+    "govde",
+    "is_contact_verified|from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "dogrulama_kanali|'not', coalesce((select value #>> '{}' from beta_settings where key = 'otp_notice_phone_declared'), '')"
+   ],
+   [
+    "govde",
+    "telefon_gonderim_izni|not_authenticated"
+   ],
+   [
+    "govde",
+    "telefon_dogrulandi_yaz|)::int from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "trg_telefon_degisti|where user_id = new.id and phone_verified;"
+   ],
+   [
+    "govde",
+    "bildirim_hedefi|elsif n.ref_type = 'credits' then"
+   ],
+   [
+    "govde",
+    "iletisim_dogrulandi_gevsek|select coalesce(bool_or(phone_verified) or bool_or(email_verified), false)"
+   ],
+   [
+    "govde",
+    "is_contact_verified|else public.iletisim_dogrulandi_gevsek(p_user) end"
+   ],
+   [
+    "govde",
+    "dogrulama_kanali|'sms_hazir', coalesce((select value #>> '{}' from beta_settings where key = 'otp_sms_saglayici'), '') <> '',"
+   ],
+   [
+    "govde",
+    "telefon_gonderim_izni|from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "telefon_dogrulandi_yaz|raise exception 'phone_taken';"
+   ],
+   [
+    "govde",
+    "trg_telefon_degisti|if found then perform public.recompute_trust(new.id); end if;"
+   ],
+   [
+    "govde",
+    "bildirim_hedefi|if n.ref_type = 'availability' then"
+   ],
+   [
+    "govde",
+    "is_contact_verified|then coalesce((select phone_verified from verifications where user_id = p_user), false)"
+   ],
+   [
+    "govde",
+    "dogrulama_kanali|'telefon_kanali', coalesce((select value #>> '{}' from beta_settings where key = 'telefon_kanali'), 'kapali'),"
+   ]
+  ]
+ ],
+ [
+  "336_kabulde_digerleri_geri_cek.sql",
+  [
+   [
+    "fonksiyon",
+    "kabulde_digerlerini_geri_cek"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|request_cancel_refund"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|başka bir ilanla eşleşti"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|— isteği kendiliğinden geri çekildi, yerin açık."
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|matched with another listing"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|— the request was withdrawn automatically; your spot is open."
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|'request', r.id);"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|'request', v_k.id);"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|cancel_reason = 'not_started'"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|if not found then return 0; end if;"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|'Diğer ' || v_n || ' isteğin geri çekildi',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|v_salon := public.salon_etiketi(r.avail_id);"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|perform public.bildir(r.host_id, 'requests',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|where request_id = r.id and status = 'pending';"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|perform public.bildir(v_k.guest_id, 'requests',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|select * into v_k from requests where id = p_kabul;"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|public.kisa_ad(v_k.guest_id) || ' başka bir ilanla eşleşti',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|if not found or v_k.status <> 'accepted' then return 0; end if;"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|select * into v_av from availabilities where id = v_k.avail_id;"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|v_salon || ' — isteği kendiliğinden geri çekildi, yerin açık.',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|public.kisa_ad(v_k.guest_id) || ' matched with another listing',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|perform public.istek_kredisi_iade(r.id, 'request_cancel_refund');"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|and a.airport_code = v_av.airport_code and a.avail_date = v_av.avail_date"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|where q.guest_id = v_k.guest_id and q.id <> v_k.id and q.status = 'pending'"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|v_salon || ' — the request was withdrawn automatically; your spot is open.',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|v_n || ' other request' || case when v_n > 1 then 's' else '' end || ' withdrawn',"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|v_k requests%rowtype; v_av availabilities%rowtype; r record; v_n int := 0; v_salon text;"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|update sessions set status = 'cancelled', completed_at = now(), cancelled_by = v_k.guest_id,"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|select q.id, q.host_id, q.avail_id from requests q join availabilities a on a.id = q.avail_id"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|update requests set status = 'cancelled'::request_status, responded_at = now() where id = r.id;"
+   ],
+   [
+    "govde",
+    "kabulde_digerlerini_geri_cek|'Aynı uçuş için bir host seni kabul etti. Diğer isteklerin geri çekildi ve kredilerin iade edildi.',"
+   ]
+  ]
+ ],
+ [
+  "337_jetset_puan_kredi_kurulus.sql",
+  [
+   [
+    "kolon",
+    "plan_catalog.agirlama_puani"
+   ],
+   [
+    "kolon",
+    "plan_catalog.agirlama_kredisi"
+   ],
+   [
+    "kolon",
+    "availabilities.yalniz_kimlikli"
+   ],
+   [
+    "tablo",
+    "ilan_gorunumleri"
+   ],
+   [
+    "tetikleyici",
+    "istek_yalniz_kimlikli"
+   ],
+   [
+    "tetikleyici",
+    "ilan_yalniz_kimlikli_plan"
+   ],
+   [
+    "ayar_deger",
+    "host_free_upgrade_sessions=3"
+   ],
+   [
+    "ayar",
+    "kurulus_fiyat_bitis"
+   ],
+   [
+    "fonksiyon",
+    "etkin_plan_ic"
+   ],
+   [
+    "fonksiyon",
+    "kurulus_fiyati"
+   ],
+   [
+    "fonksiyon",
+    "ilan_gorunum_yaz"
+   ],
+   [
+    "fonksiyon",
+    "plan_agirlama_puani"
+   ],
+   [
+    "fonksiyon",
+    "ilan_gorunum_istatistigi"
+   ],
+   [
+    "fonksiyon",
+    "trg_istek_yalniz_kimlikli"
+   ],
+   [
+    "fonksiyon",
+    "ilan_yalniz_kimlikli_ayarla"
+   ],
+   [
+    "fonksiyon",
+    "trg_ilan_yalniz_kimlikli_plan"
+   ],
+   [
+    "govde",
+    "etkin_plan_ic|declare v_satin text; v_hed text;"
+   ],
+   [
+    "govde",
+    "host_credit_settle|plan_kredi_vermiyor"
+   ],
+   [
+    "govde",
+    "plan_hediyelerini_bitir|), v_kredi, v_puan, coalesce(r.ad,"
+   ],
+   [
+    "govde",
+    "kurulus_fiyati|, b.v is not null and b.v <>"
+   ],
+   [
+    "govde",
+    "subscription_plans|agirlama_kredisi"
+   ],
+   [
+    "govde",
+    "trg_ilan_yalniz_kimlikli_plan|new.yalniz_kimlikli := false;"
+   ],
+   [
+    "govde",
+    "trg_istek_yalniz_kimlikli|ilan_yalniz_kimlikli"
+   ],
+   [
+    "govde",
+    "ilan_yalniz_kimlikli_ayarla|not_authenticated"
+   ],
+   [
+    "govde",
+    "ilan_gorunum_yaz|on conflict do nothing;"
+   ],
+   [
+    "govde",
+    "ilan_gorunum_istatistigi|not_authenticated"
+   ],
+   [
+    "govde",
+    "etkin_plan_ic|if v_satin is null then return 'yolcu'; end if;"
+   ],
+   [
+    "govde",
+    "host_credit_settle|Ilk agirlama hediyesi (Yolcu)."
+   ],
+   [
+    "govde",
+    "plan_hediyelerini_bitir|Your free month is over"
+   ],
+   [
+    "govde",
+    "kurulus_fiyati|from beta_settings where key ="
+   ],
+   [
+    "govde",
+    "subscription_plans|, (public.kurulus_fiyati() ->>"
+   ],
+   [
+    "govde",
+    "trg_ilan_yalniz_kimlikli_plan|if new.yalniz_kimlikli and public.etkin_plan_ic(new.host_id) not in ('sik_ucan','kahya') then"
+   ],
+   [
+    "govde",
+    "trg_istek_yalniz_kimlikli|raise exception 'ilan_yalniz_kimlikli';"
+   ],
+   [
+    "govde",
+    "ilan_yalniz_kimlikli_ayarla|) then raise exception"
+   ],
+   [
+    "govde",
+    "ilan_gorunum_yaz|get diagnostics v_n = row_count;"
+   ],
+   [
+    "govde",
+    "ilan_gorunum_istatistigi|declare v_uid uuid := auth.uid(); v_acik boolean;"
+   ]
+  ]
+ ],
+ [
+  "338_odul_erken_erisim_plan_indirimi.sql",
+  [
+   [
+    "kolon",
+    "rewards.acilis_at"
+   ],
+   [
+    "kolon",
+    "rewards.erken_erisim"
+   ],
+   [
+    "kolon",
+    "rewards.vitrin_bitis"
+   ],
+   [
+    "kolon",
+    "redemptions.liste_puani"
+   ],
+   [
+    "kolon",
+    "rewards.erken_erisim_gun"
+   ],
+   [
+    "kolon",
+    "rewards.plan_indirimi_yok"
+   ],
+   [
+    "kolon",
+    "plan_catalog.odul_indirim_yuzde"
+   ],
+   [
+    "kisit",
+    "rewards_erken_erisim_chk"
+   ],
+   [
+    "kisit",
+    "plan_catalog_odul_indirim_chk"
+   ],
+   [
+    "fonksiyon",
+    "plan_ucretli"
+   ],
+   [
+    "fonksiyon",
+    "odul_magazasi"
+   ],
+   [
+    "fonksiyon",
+    "odul_fiyati_ic"
+   ],
+   [
+    "fonksiyon",
+    "odul_yayin_ayarla"
+   ],
+   [
+    "fonksiyon",
+    "bo_odul_fiyatlari"
+   ],
+   [
+    "govde",
+    "plan_ucretli|select coalesce((select price_try > 0 from plan_catalog where plan::text = p_plan), false);"
+   ],
+   [
+    "govde",
+    "odul_fiyati_ic|declare v_pct int;"
+   ],
+   [
+    "govde",
+    "odul_magazasi|not_authenticated"
+   ],
+   [
+    "govde",
+    "redeem_reward|odul_erken_erisimde"
+   ],
+   [
+    "govde",
+    "odul_yayin_ayarla|reward_not_found"
+   ],
+   [
+    "govde",
+    "bo_odul_fiyatlari|select coalesce(jsonb_object_agg(r.id, ("
+   ],
+   [
+    "govde",
+    "set_featured_reward|update rewards set is_featured = false, vitrin_bitis = null where is_featured;"
+   ],
+   [
+    "govde",
+    "subscription_plans|Early access to new rewards"
+   ],
+   [
+    "govde",
+    "odul_fiyati_ic|if p_cost is null then return null; end if;"
+   ],
+   [
+    "govde",
+    "odul_magazasi|, coalesce(nullif(p.ad_en,"
+   ],
+   [
+    "govde",
+    "redeem_reward|odul_fiyati_degisti"
+   ],
+   [
+    "govde",
+    "odul_yayin_ayarla|erken_erisim_eksik"
+   ],
+   [
+    "govde",
+    "bo_odul_fiyatlari|from plan_catalog p where p.aktif)), '{}'::jsonb)"
+   ],
+   [
+    "govde",
+    "set_featured_reward|update rewards set is_featured = true, vitrin_bitis = null where id = p_reward_id;"
+   ],
+   [
+    "govde",
+    "subscription_plans|Yeni ödüllere erken erişim"
+   ],
+   [
+    "govde",
+    "odul_fiyati_ic|if coalesce(v_pct, 0) <= 0 then return p_cost; end if;"
+   ],
+   [
+    "govde",
+    "odul_magazasi|, p.odul_indirim_yuzde) order by p.sort_order),"
+   ],
+   [
+    "govde",
+    "redeem_reward|, v_pts - v_fiyat,"
+   ],
+   [
+    "govde",
+    "odul_yayin_ayarla|vitrin_suresi_gecersiz"
+   ],
+   [
+    "govde",
+    "bo_odul_fiyatlari|select jsonb_object_agg(p.plan, public.odul_fiyati_ic(r.cost_points, r.plan_indirimi_yok, p.plan::text))"
+   ],
+   [
+    "govde",
+    "set_featured_reward|select title, coalesce(active, true) into v_title, v_active from rewards where id = p_reward_id;"
+   ],
+   [
+    "govde",
+    "subscription_plans|odul_indirim_yuzde"
+   ]
+  ]
+ ],
+ [
+  "339_odul_marka_adlari.sql",
+  []
+ ],
+ [
+  "340_jetset_urun_kimlikleri.sql",
+  []
+ ],
+ [
+  "341_ilan_basvurusu_dili.sql",
+  []
+ ],
+ [
+  "342_oturum_baslatma_penceresi.sql",
+  [
+   [
+    "govde",
+    "start_session_request|session_window_closed"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|::timestamptz)) < now() - interval"
+   ],
+   [
+    "govde",
+    "start_session_request|v_bitis timestamptz;"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|and greatest(public.yerel_an(a.avail_date, a.time_to, a.airport_code),"
+   ],
+   [
+    "govde",
+    "start_session_request|raise exception 'session_window_closed';"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|coalesce(s.started_at, '-infinity'::timestamptz)) < now() - interval '2 hours'"
+   ],
+   [
+    "govde",
+    "start_session_request|from availabilities a where a.id = v_req.avail_id;"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|auto_completed_one_sided"
+   ],
+   [
+    "govde",
+    "start_session_request|if v_bitis is not null and v_bitis < now() - interval '2 hours'"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|where s.status = 'active'"
+   ],
+   [
+    "govde",
+    "start_session_request|select public.yerel_an(a.avail_date, a.time_to, a.airport_code) into v_bitis"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|declare v_n int := 0; v_s record;"
+   ],
+   [
+    "govde",
+    "start_session_request|and not exists (select 1 from sessions where request_id = p_request_id and status = 'active') then"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|join requests r on r.id = s.request_id"
+   ],
+   [
+    "govde",
+    "start_session_request|not_authenticated"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|join availabilities a on a.id = r.avail_id"
+   ],
+   [
+    "govde",
+    "start_session_request|request_not_found"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|cancel_reason = 'expired' where id = v_s.id;"
+   ],
+   [
+    "govde",
+    "start_session_request|then raise exception"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|cancel_reason = 'auto_completed_one_sided' where id = v_s.id;"
+   ],
+   [
+    "govde",
+    "start_session_request|oturumu başlattı"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|update sessions set status = 'expired', completed_at = now(),"
+   ],
+   [
+    "govde",
+    "start_session_request|— buluştuysanız sen de \"Oturumu Başlat\"a bas; ikiniz de basınca oturum başlar."
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|update sessions set status = 'completed', completed_at = now(),"
+   ],
+   [
+    "govde",
+    "start_session_request|started the session"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|update requests set status = 'completed' where id = v_s.request_id;"
+   ],
+   [
+    "govde",
+    "start_session_request|— if you have met, tap \"Start session\" too; it begins when you both tap."
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|update requests set status = 'cancelled' where id = v_s.request_id;"
+   ],
+   [
+    "govde",
+    "start_session_request|Oturum başladı ⏱"
+   ],
+   [
+    "govde",
+    "tek_tarafli_oturumlari_kapat|perform public.istek_kredisi_iade(v_s.request_id, 'expired_refund', v_s.id);"
+   ]
+  ]
+ ],
+ [
+  "343_olmayan_salonlari_gizle.sql",
+  []
+ ],
+ [
+  "344_ucus_onbellegi_temizligi.sql",
+  []
+ ],
+ [
+  "345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql",
+  [
+   [
+    "kolon",
+    "users.pazarlama_izni"
+   ],
+   [
+    "kolon",
+    "users.pazarlama_izni_at"
+   ],
+   [
+    "tetikleyici",
+    "profil_dogrulama_p"
+   ],
+   [
+    "tetikleyici",
+    "profil_dogrulama_v"
+   ],
+   [
+    "fonksiyon",
+    "pazarlama_izni_yaz"
+   ],
+   [
+    "fonksiyon",
+    "saklama_suresi_imha"
+   ],
+   [
+    "fonksiyon",
+    "trg_profil_dogrulama"
+   ],
+   [
+    "fonksiyon",
+    "profil_dogrulama_esitle"
+   ],
+   [
+    "fonksiyon",
+    "profil_dogrulandi_hesapla"
+   ],
+   [
+    "govde",
+    "kimlik_belgesi_gonder|raise exception 'kyc_kapali';"
+   ],
+   [
+    "govde",
+    "profil_dogrulandi_hesapla|select coalesce(("
+   ],
+   [
+    "govde",
+    "profil_dogrulama_esitle|updated_at     = now()"
+   ],
+   [
+    "govde",
+    "trg_profil_dogrulama|perform public.profil_dogrulama_esitle(new.user_id);"
+   ],
+   [
+    "govde",
+    "recompute_trust|if v_rating >= 4.5 then v_c := v_c || '{\"rating\":14}'::jsonb;"
+   ],
+   [
+    "govde",
+    "pazarlama_izni_yaz|not_authenticated"
+   ],
+   [
+    "govde",
+    "grant_consents|pazarlama_bildirimi"
+   ],
+   [
+    "govde",
+    "bildirim_tercihlerim|'pazarlama_izni', coalesce(v_pz, false));"
+   ],
+   [
+    "govde",
+    "send_campaign|Kapatmak için: Ayarlar › Bildirimler."
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|gender = null, pazarlama_izni = false,"
+   ],
+   [
+    "govde",
+    "saklama_suresi_imha|flight_fetch_log"
+   ],
+   [
+    "govde",
+    "profil_dogrulandi_hesapla|from public.verifications v"
+   ],
+   [
+    "govde",
+    "profil_dogrulama_esitle|set id_verified    = v_ok,"
+   ],
+   [
+    "govde",
+    "recompute_trust|elsif v_rating >= 4.0 then v_c := v_c || '{\"rating\":8}'::jsonb;"
+   ],
+   [
+    "govde",
+    "pazarlama_izni_yaz|pazarlama_bildirimi"
+   ],
+   [
+    "govde",
+    "grant_consents|if 'pazarlama_bildirimi' = any(p_types) then"
+   ],
+   [
+    "govde",
+    "bildirim_tercihlerim|'kapatilamaz_not', public.metin('bildirim_zorunlu_not_tr'),"
+   ],
+   [
+    "govde",
+    "send_campaign|::notif_category, p_title, v_govde,"
+   ],
+   [
+    "govde",
+    "admin_anonymize_user|set phone_verified = false, id_verified = false,"
+   ],
+   [
+    "govde",
+    "saklama_suresi_imha|onceki_epostalar"
+   ],
+   [
+    "govde",
+    "profil_dogrulandi_hesapla|where v.user_id = p_user), false)"
+   ],
+   [
+    "govde",
+    "profil_dogrulama_esitle|update public.verifications"
+   ],
+   [
+    "govde",
+    "recompute_trust|elsif v_rating >= 3.0 then v_c := v_c || '{\"rating\":3}'::jsonb;"
+   ],
+   [
+    "govde",
+    "pazarlama_izni_yaz|pazarlama_bildirimi_geri_alindi"
+   ],
+   [
+    "govde",
+    "grant_consents|update users set pazarlama_izni = true, pazarlama_izni_at = now() where id = v_uid;"
+   ],
+   [
+    "govde",
+    "bildirim_tercihlerim|select pazarlama_izni into v_pz from users where id = v_uid;"
+   ],
+   [
+    "govde",
+    "send_campaign|and u.pazarlama_izni"
+   ]
+  ]
  ]
 ]

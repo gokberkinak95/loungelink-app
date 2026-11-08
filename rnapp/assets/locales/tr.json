@@ -1,4 +1,4 @@
 {
-  "NSPhotoLibraryUsageDescription": "Profil fotoğrafını seçebilmen için galerine erişim izni gerekiyor. Fotoğrafın yalnızca senin belirlediğin görünürlükte gösterilir.",
+  "NSPhotoLibraryUsageDescription": "Profil fotoğrafını ya da biniş kartının ekran görüntüsünü seçmen için galeri erişimi gerekiyor. Profil fotoğrafı sunucumuza yüklenir ve senin seçtiğin görünürlükte gösterilir; biniş kartı görüntüsü cihazından çıkmaz.",
   "NSUserTrackingUsageDescription": "LoungeLink seni uygulamalar arasında takip etmez."
 }

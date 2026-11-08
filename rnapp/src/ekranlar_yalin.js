@@ -2653,15 +2653,16 @@ export function VerifyPhone({ t, session, onDone, onBack, onKimlik }) {
   const [eskiYol, setEskiYol] = useState(false);
   const dgYukle = useCallback(async () => {
     const uid = session?.user?.id; if (!uid) return null;
-    const [{ data: v, error: ev }, { data: ts, error: et }, { data: u, error: eu }] = await Promise.all([
+    const [{ data: v, error: ev }, { data: ts, error: et }, { data: u, error: eu }, { data: pr }] = await Promise.all([
       supabase.from("verifications").select("email_verified, phone_verified, id_verified").eq("user_id", uid).maybeSingle(),
       supabase.from("trust_scores").select("score").eq("user_id", uid).maybeSingle(),
       supabase.from("users").select("phone").eq("id", uid).maybeSingle(),
+      supabase.from("profiles").select("photo_url").eq("user_id", uid).maybeSingle(),
     ]);
     if (ev) logError("dg_verifications", ev);
     if (et) logError("dg_trust", et);
     if (eu) logError("dg_users", eu);
-    const yeni = { email: !!v?.email_verified, phone: !!v?.phone_verified, id: !!v?.id_verified, puan: ts?.score ?? null, tel: u?.phone || "" };
+    const yeni = { email: !!v?.email_verified, phone: !!v?.phone_verified, id: !!v?.id_verified, foto: !!pr?.photo_url, puan: ts?.score ?? null, tel: u?.phone || "" };
     setDg(yeni);
     return yeni;
   }, [session]);
@@ -2811,8 +2812,9 @@ export function VerifyPhone({ t, session, onDone, onBack, onKimlik }) {
         <View style={{ flex: 1, padding: ARA[22] }}>
           <View style={{ backgroundColor: C.card, borderRadius: R.md || 14, paddingHorizontal: ARA[14] }}>
             {satir(t.dgEposta, dg?.email ? (myEmail || t.dgDogrulandi) : t.dgEpostaAlt, !!dg?.email, 10, () => setEskiYol(true))}
-            {satir(t.dgTelefon, dg?.phone ? (dg.tel || t.dgDogrulandi) : t.dgTelAlt, !!dg?.phone, 10, () => setTvAcik(true))}
-            {satir(t.dgKimlik, dg?.id ? t.dgDogrulandi : t.dgKimlikAlt, !!dg?.id, 18, onKimlik || null)}
+            {satir(t.dgTelefon, dg?.phone ? (dg.tel || t.dgDogrulandi) : t.dgTelAlt, !!dg?.phone, 14, () => setTvAcik(true))}
+            {/* SQL 345 — kimlik belgesi kalktı; üçüncü satır profil fotoğrafı (Profili Düzenle'ye gider). */}
+            {satir(t.dgKimlik, dg?.foto ? t.dgDogrulandi : t.dgKimlikAlt, !!dg?.foto, 6, onKimlik || null)}
           </View>
           {dg && dg.puan != null && (
             <Text style={{ color: C.mut, fontSize: FS.xs, lineHeight: 17, marginTop: ARA[12] }}>
@@ -3434,7 +3436,7 @@ export function Marketplace({ t, session, onBack, onPlans, lang }) {
       {/* MVP: nasıl daha çok puan kazanılır */}
       <View style={[S.card, { marginBottom: SP[4] }]}>
         <View style={{ flexDirection: "row", alignItems: "center" }}><Ikon ad="puan" boy={15} renk={C.mutedAA} stil={{ marginRight: SP[1] }} /><Text style={{ fontSize: FS.sm, fontWeight: "600", color: C.ink, marginBottom: ARA[10] }}>{t.earnMoreTitle}</Text></View>
-        {[[t.earnSession, t.earnSessionD], [t.earnInvite, t.earnInviteD], [t.earnId, t.earnIdD], [t.earnLinkedin, t.earnLinkedinD]].map(([ti, de], i, arr) => (
+        {[[t.earnSession, t.earnSessionD], [t.earnInvite, t.earnInviteD]].map(([ti, de], i, arr) => (
           <View key={ti} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: SP[2], borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: C.line }}>
             <Text style={{ fontSize: FS.sm, color: C.body }}>{ti}</Text>
             <Text style={{ fontSize: FS.xs, color: C.goldText, fontWeight: "600" }}>{de}</Text>

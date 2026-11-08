@@ -1,78 +1,78 @@
 [
  [
   "001_initial_schema.sql",
-  "indeks",
-  "idx_otp_phone"
+  null,
+  null
  ],
  [
   "002_seed_reference.sql",
-  "satir",
-  "lounges.name=Primeclass Lounge"
+  null,
+  null
  ],
  [
   "003_admin_roles.sql",
-  "tablo",
-  "admin_roles"
+  null,
+  null
  ],
  [
   "004_auth_bridge.sql",
-  "tetikleyici",
-  "on_auth_user_created"
+  null,
+  null
  ],
  [
   "005_reference_read.sql",
-  "politika",
-  "lounges|lounges_read"
+  null,
+  null
  ],
  [
   "006_discovery_read.sql",
-  "politika",
-  "profiles|profiles_read_auth"
+  null,
+  null
  ],
  [
   "007_request_engine.sql",
-  "fonksiyon",
-  "create_request"
+  null,
+  null
  ],
  [
   "008_chat_sessions.sql",
-  "politika",
-  "messages|msg_read"
+  null,
+  null
  ],
  [
   "009_phone_otp.sql",
-  "fonksiyon",
-  "send_otp"
+  null,
+  null
  ],
  [
   "010_profile_write.sql",
-  "politika",
-  "profiles|profiles_self_update"
+  null,
+  null
  ],
  [
   "011_notifications.sql",
-  "politika",
-  "notifications|notif_own_read"
+  null,
+  null
  ],
  [
   "012_women_safety.sql",
-  "fonksiyon",
-  "discover_availabilities"
+  null,
+  null
  ],
  [
   "013_push_tokens.sql",
-  "tablo",
-  "push_tokens"
+  null,
+  null
  ],
  [
   "014_push_trigger.sql",
-  "tetikleyici",
-  "on_notification_created"
+  null,
+  null
  ],
  [
   "015_connections.sql",
-  "politika",
-  "connection_requests|conn_own_read"
+  null,
+  null
  ],
  [
   "016_match_score.sql",
@@ -81,38 +81,38 @@
  ],
  [
   "017_marketplace.sql",
-  "tablo",
-  "rewards"
+  null,
+  null
  ],
  [
   "018_subscriptions.sql",
-  "tablo",
-  "plan_catalog"
+  null,
+  null
  ],
  [
   "019_admin_management.sql",
-  "fonksiyon",
-  "admin_adjust_credit"
+  null,
+  null
  ],
  [
   "020_rbac.sql",
-  "kolon",
-  "admin_roles.created_by"
+  null,
+  null
  ],
  [
   "021_moderation_tools.sql",
-  "fonksiyon",
-  "remove_rating"
+  null,
+  null
  ],
  [
   "022_rewards_parity.sql",
-  "satir",
-  "rewards.title=Emirates Skywards 750 Mil"
+  null,
+  null
  ],
  [
   "023_partner_portal.sql",
-  "tablo",
-  "lounge_partners"
+  null,
+  null
  ],
  [
   "024a_PRE_drop_old_discovery.sql",
@@ -121,13 +121,13 @@
  ],
  [
   "024_avatars_storage.sql",
-  "politika",
-  "storage|avatars_read"
+  null,
+  null
  ],
  [
   "025_role_on_signup.sql",
-  "govde",
-  "handle_new_user|); exception when others then r :="
+  null,
+  null
  ],
  [
   "026a_PRE_drop.sql",
@@ -136,28 +136,28 @@
  ],
  [
   "026_doc_parity_core.sql",
-  "kolon",
-  "profiles.access_source"
+  null,
+  null
  ],
  [
   "027_companion_chat.sql",
-  "kolon",
-  "chat_channels.kind"
+  null,
+  null
  ],
  [
   "028_referral.sql",
-  "kolon",
-  "profiles.referred_by"
+  null,
+  null
  ],
  [
   "029_bo_requirements.sql",
-  "kolon",
-  "rewards.stock"
+  null,
+  null
  ],
  [
   "030_match_and_broadcast.sql",
-  "kolon",
-  "invites.responded_at"
+  null,
+  null
  ],
  [
   "031_cleanup_overloads.sql",
@@ -166,8 +166,8 @@
  ],
  [
   "032_p2_flows.sql",
-  "kolon",
-  "sessions.rate_deferred_by"
+  null,
+  null
  ],
  [
   "033a_PRE_drop.sql",
@@ -176,13 +176,13 @@
  ],
  [
   "033_beta_credits_dualrole_radar.sql",
-  "kolon",
-  "credit_ledger.note"
+  null,
+  null
  ],
  [
   "034_lounge_radar.sql",
-  "tablo",
-  "blocks"
+  null,
+  null
  ],
  [
   "035a_PRE_drop.sql",
@@ -191,8 +191,8 @@
  ],
  [
   "035_password_flow.sql",
-  "kolon",
-  "admin_roles.must_change_password"
+  null,
+  null
  ],
  [
   "036a_PRE_drop.sql",
@@ -201,8 +201,8 @@
  ],
  [
   "036_host_applications.sql",
-  "indeks",
-  "idx_host_app_status"
+  null,
+  null
  ],
  [
   "037a_PRE_drop.sql",
@@ -211,8 +211,8 @@
  ],
  [
   "037_admin_verifications.sql",
-  "fonksiyon",
-  "admin_set_verification"
+  null,
+  null
  ],
  [
   "038_SQL_DURUM.sql",
@@ -231,23 +231,23 @@
  ],
  [
   "040_visibility_and_discovery_fix.sql",
-  "kolon",
-  "availabilities.min_trust"
+  null,
+  null
  ],
  [
   "041_staff_accounts_excluded.sql",
-  "kolon",
-  "users.is_staff"
+  null,
+  null
  ],
  [
   "042_reports_and_sos.sql",
-  "kolon",
-  "reports.is_urgent"
+  null,
+  null
  ],
  [
   "043_admin_data_cleanup.sql",
-  "fonksiyon",
-  "admin_list_visits"
+  null,
+  null
  ],
  [
   "044a_PRE_drop.sql",
@@ -256,13 +256,13 @@
  ],
  [
   "044_trip_purpose_and_people_fix.sql",
-  "kolon",
-  "visits.purpose"
+  null,
+  null
  ],
  [
   "045_admin_edit_email_phone.sql",
-  "fonksiyon",
-  "admin_set_email"
+  null,
+  null
  ],
  [
   "046a_PRE_drop.sql",
@@ -271,8 +271,8 @@
  ],
  [
   "046_trust_and_host_visibility.sql",
-  "fonksiyon",
-  "host_requests"
+  null,
+  null
  ],
  [
   "047a_PRE_drop.sql",
@@ -281,8 +281,8 @@
  ],
  [
   "047_campaign_targets.sql",
-  "govde",
-  "send_campaign|and u.deleted_at is null"
+  null,
+  null
  ],
  [
   "048a_PRE_drop.sql",
@@ -291,8 +291,8 @@
  ],
  [
   "048_promo_campaigns.sql",
-  "tablo",
-  "promo_codes"
+  null,
+  null
  ],
  [
   "049a_PRE_drop.sql",
@@ -301,8 +301,8 @@
  ],
  [
   "049_discovery_safety_phone_delete.sql",
-  "kolon",
-  "promo_campaigns.joinable"
+  null,
+  null
  ],
  [
   "050a_PRE_drop.sql",
@@ -311,8 +311,8 @@
  ],
  [
   "050_host_requests_flight.sql",
-  "govde",
-  "host_requests|b.gflight as flight_number"
+  null,
+  null
  ],
  [
   "051_beta_visibility_reset_and_diagnoz.sql",
@@ -321,8 +321,8 @@
  ],
  [
   "052_session_live_status.sql",
-  "kolon",
-  "sessions.host_status"
+  null,
+  null
  ],
  [
   "053_unstaff_founder_and_diag.sql",
@@ -351,8 +351,8 @@
  ],
  [
   "057_waiting_demand_rpc.sql",
-  "fonksiyon",
-  "waiting_demand"
+  null,
+  null
  ],
  [
   "058_fix_stale_staff_roles.sql",
@@ -371,23 +371,23 @@
  ],
  [
   "060_security_hardening.sql",
-  "politika",
-  "reports|reports_select_own"
+  null,
+  null
  ],
  [
   "061_fix_respond_request_and_slots.sql",
-  "indeks",
-  "idx_conn_to"
+  null,
+  null
  ],
  [
   "062_fix_verify_otp.sql",
-  "ayar",
-  "otp_demo_bypass"
+  null,
+  null
  ],
  [
   "063_error_logging.sql",
-  "indeks",
-  "idx_app_errors_time"
+  null,
+  null
  ],
  [
   "064_fix_overloads_and_discovery.sql",
@@ -396,13 +396,13 @@
  ],
  [
   "065_fix_create_request.sql",
-  "kolon",
-  "requests.purpose"
+  null,
+  null
  ],
  [
   "066_request_status_completed.sql",
-  "enum_degeri",
-  "request_status.completed"
+  null,
+  null
  ],
  [
   "067_fix_confirm_session_enum.sql",
@@ -416,8 +416,8 @@
  ],
  [
   "069_fix_respond_connection_cast.sql",
-  "govde",
-  "respond_connection|on conflict (connection_id) where connection_id is not null do nothing"
+  null,
+  null
  ],
  [
   "070a_PRE_drop.sql",
@@ -471,23 +471,23 @@
  ],
  [
   "077_session_autostart_intro_slots.sql",
-  "tetikleyici",
-  "trg_requests_sync_filled"
+  null,
+  null
  ],
  [
   "078_trust_single_writer.sql",
-  "govde",
-  "compute_trust_badge|else 'basic' end"
+  null,
+  null
  ],
  [
   "079_email_otp_contact_verification.sql",
-  "fonksiyon",
-  "is_contact_verified"
+  null,
+  null
  ],
  [
   "080_session_lifecycle.sql",
-  "enum_degeri",
-  "session_status.pending"
+  null,
+  null
  ],
  [
   "081a_PRE_drop.sql",
@@ -496,28 +496,28 @@
  ],
  [
   "081_pending_ratings_link.sql",
-  "fonksiyon",
-  "unrated_sessions"
+  null,
+  null
  ],
  [
   "082_rate_limiting.sql",
-  "tetikleyici",
-  "trg_rl_visits"
+  null,
+  null
  ],
  [
   "083_lounge_rules_and_flight_prep.sql",
-  "kolon",
-  "visits.terminal"
+  null,
+  null
  ],
  [
   "084_deletion_requests.sql",
-  "indeks",
-  "idx_delreq_status"
+  null,
+  null
  ],
  [
   "085_lounge_rules_v2.sql",
-  "kolon",
-  "availabilities.rule_note"
+  null,
+  null
  ],
  [
   "086a_PRE_drop.sql",
@@ -526,8 +526,8 @@
  ],
  [
   "086_lounge_rules_v3.sql",
-  "kolon",
-  "lounges.venue_id"
+  null,
+  null
  ],
  [
   "087a_PRE_drop.sql",
@@ -536,13 +536,13 @@
  ],
  [
   "087_entitlements_and_coverage.sql",
-  "kolon",
-  "host_entitlements.quota_used"
+  null,
+  null
  ],
  [
   "088_card_catalog.sql",
-  "kolon",
-  "lounge_card_products.segment"
+  null,
+  null
  ],
  [
   "089_missing_columns.sql",
@@ -551,38 +551,38 @@
  ],
  [
   "090_rules_to_app.sql",
-  "kolon",
-  "lounge_card_products.guest_quota_total"
+  null,
+  null
  ],
  [
   "091_flight_quota.sql",
-  "kisit",
-  "ffl_outcome_chk"
+  null,
+  null
  ],
  [
   "092_host_access_declaration.sql",
-  "kolon",
-  "profiles.guest_fee_expected"
+  null,
+  null
  ],
  [
   "093_reward_featured.sql",
-  "kolon",
-  "rewards.is_featured"
+  null,
+  null
  ],
  [
   "094_admin_erasure.sql",
-  "kolon",
-  "users.anonymized_at"
+  null,
+  null
  ],
  [
   "095_close_the_loop.sql",
-  "fonksiyon",
-  "submit_field_report"
+  null,
+  null
  ],
  [
   "096_rule_autofill.sql",
-  "fonksiyon",
-  "autofill_venue_acceptance"
+  null,
+  null
  ],
  [
   "097_ajet_and_tk_detail.sql",
@@ -596,38 +596,38 @@
  ],
  [
   "099_card_networks_venue_level.sql",
-  "kolon",
-  "lounge_venues.venue_kind"
+  null,
+  null
  ],
  [
   "100_tier_fee_and_time.sql",
-  "kolon",
-  "lounge_programs.fee_payer"
+  null,
+  null
  ],
  [
   "101_sections_charter_expiry.sql",
-  "kolon",
-  "lounge_venues.section_of"
+  null,
+  null
  ],
  [
   "102_badge_wording.sql",
-  "ayar",
-  "badge_labels"
+  null,
+  null
  ],
  [
   "103_consolidate_and_charter.sql",
-  "fonksiyon",
-  "venue_norm"
+  null,
+  null
  ],
  [
   "104_tier_rules_program_level.sql",
-  "govde",
-  "lounge_access_decision_v3|, coalesce(v_head, d ->>"
+  null,
+  null
  ],
  [
   "105_fee_wording_and_business.sql",
-  "govde",
-  "lounge_access_decision_v3|Misafir girişi ücretli — ücret host"
+  null,
+  null
  ],
  [
   "106_channel_fees_and_bank_deals.sql",
@@ -636,13 +636,13 @@
  ],
  [
   "107_missing_airports.sql",
-  "satir",
-  "airports.code=DLM"
+  null,
+  null
  ],
  [
   "108_paid_guest_settlement.sql",
-  "indeks",
-  "uq_field_report_once"
+  null,
+  null
  ],
  [
   "109_pegasus_and_overloads.sql",
@@ -656,63 +656,63 @@
  ],
  [
   "111_push_direct_expo.sql",
-  "kolon",
-  "push_tokens.active"
+  null,
+  null
  ],
  [
   "112_blocks_in_discovery.sql",
-  "fonksiyon",
-  "is_blocked_pair"
+  null,
+  null
  ],
  [
   "113_dedupe_and_wording.sql",
-  "govde",
-  "venue_norm|ıİşŞğĞüÜöÖçÇÂâÎî"
+  null,
+  null
  ],
  [
   "114_card_confidence_visible.sql",
-  "fonksiyon",
-  "card_confidence_note"
+  null,
+  null
  ],
  [
   "115_quota_who_says.sql",
-  "ayar",
-  "quota_note_host"
+  null,
+  null
  ],
  [
   "116_badges_gate_and_sort.sql",
-  "govde",
-  "discovery_rule_badges|v_block := false;"
+  null,
+  null
  ],
  [
   "117_carrier_field.sql",
-  "kolon",
-  "visits.carrier_code"
+  null,
+  null
  ],
  [
   "118_carrier_in_rules.sql",
-  "fonksiyon",
-  "carrier_match"
+  null,
+  null
  ],
  [
   "119_precheck_v5_and_charter.sql",
-  "kolon",
-  "visits.is_charter"
+  null,
+  null
  ],
  [
   "120_human_text.sql",
-  "ayar",
-  "head_charter"
+  null,
+  null
  ],
  [
   "121_source_summary.sql",
-  "fonksiyon",
-  "access_source_summary"
+  null,
+  null
  ],
  [
   "122_what_can_i_do.sql",
-  "ayar",
-  "alt_note_some"
+  null,
+  null
  ],
  [
   "123_overload_cleanup.sql",
@@ -721,18 +721,18 @@
  ],
  [
   "124_card_catalog_verified.sql",
-  "kisit",
-  "lcp_q_period_chk"
+  null,
+  null
  ],
  [
   "125_saw_plaza_partners.sql",
-  "indeks",
-  "ix_lvp_venue"
+  null,
+  null
  ],
  [
   "126_partners_visible.sql",
-  "fonksiyon",
-  "venue_partners"
+  null,
+  null
  ],
  [
   "127_ist_tk_from_iga.sql",
@@ -741,28 +741,28 @@
  ],
  [
   "128_iga_lounge_and_conflicts.sql",
-  "kolon",
-  "lounge_venue_acceptance.source_conflict"
+  null,
+  null
  ],
  [
   "129_conflict_surfaced.sql",
-  "govde",
-  "lounge_access_decision_v5|if v_conf is not null then"
+  null,
+  null
  ],
  [
   "130_amenities.sql",
-  "kolon",
-  "lounge_venues.amenities"
+  null,
+  null
  ],
  [
   "131_card_advisor.sql",
-  "ayar",
-  "advice_intro"
+  null,
+  null
  ],
  [
   "132_travel_style.sql",
-  "kolon",
-  "profiles.travel_style"
+  null,
+  null
  ],
  [
   "133_catalog_dedupe.sql",
@@ -771,28 +771,28 @@
  ],
  [
   "134_tier_label_everywhere.sql",
-  "govde",
-  "lounge_access_decision_v3|coalesce(public.card_tier_label(v_ent.tier), 'Bu kart'))"
+  null,
+  null
  ],
  [
   "135_short_and_honest.sql",
-  "govde",
-  "discovery_rule_badges|v_key := 'guest_none_soft'; v_boost := -200;"
+  null,
+  null
  ],
  [
   "136_otp_honesty.sql",
-  "kolon",
-  "verifications.phone_verified_method"
+  null,
+  null
  ],
  [
   "137_placeholder_vs_data.sql",
-  "kolon",
-  "lounge_venue_acceptance.is_placeholder"
+  null,
+  null
  ],
  [
   "138_email_otp.sql",
-  "ayar",
-  "otp_notice_email"
+  null,
+  null
  ],
  [
   "139_final_polish.sql",
@@ -801,103 +801,103 @@
  ],
  [
   "140_rls_and_ratelimit.sql",
-  "tablo",
-  "rate_limits"
+  null,
+  null
  ],
  [
   "141_deletion_flow_check.sql",
-  "fonksiyon",
-  "request_account_deletion"
+  null,
+  null
  ],
  [
   "142_short_detail_hard.sql",
-  "fonksiyon",
-  "clip_text"
+  null,
+  null
  ],
  [
   "143_lounge_guide.sql",
-  "fonksiyon",
-  "guide_lounges"
+  null,
+  null
  ],
  [
   "144_guide_fixes.sql",
-  "govde",
-  "guide_lounges|then v.name || ' — Business'"
+  null,
+  null
  ],
  [
   "145_null_sort_guard.sql",
-  "govde",
-  "card_product_options|cp.quota_total, cp.quota_period, cp.conditions,"
+  null,
+  null
  ],
  [
   "146_tk_official_matrix.sql",
-  "ayar",
-  "tk_paid_entry_2026"
+  null,
+  null
  ],
  [
   "147_tier_resolver.sql",
-  "fonksiyon",
-  "resolve_guest_rule"
+  null,
+  null
  ],
  [
   "148_rule_matrix_test.sql",
-  "fonksiyon",
-  "rule_matrix_check"
+  null,
+  null
  ],
  [
   "149_multi_entitlement.sql",
-  "fonksiyon",
-  "best_entitlement"
+  null,
+  null
  ],
  [
   "150_network_rules_and_guard.sql",
-  "fonksiyon",
-  "rule_contamination_check"
+  null,
+  null
  ],
  [
   "151_deterministic_program_pick.sql",
-  "fonksiyon",
-  "pick_host_program"
+  null,
+  null
  ],
  [
   "152_field_reports_loop.sql",
-  "kolon",
-  "lounge_field_reports.entered"
+  null,
+  null
  ],
  [
   "153_host_motivation.sql",
-  "kolon",
-  "profiles.founding_host_no"
+  null,
+  null
  ],
  [
   "154_membership_tiers.sql",
-  "kolon",
-  "lounge_guest_rules.guest_entry_fee"
+  null,
+  null
  ],
  [
   "155_member_cost_visible.sql",
-  "fonksiyon",
-  "guide_cost"
+  null,
+  null
  ],
  [
   "156_official_alignment_and_scope.sql",
-  "kolon",
-  "lounge_guest_rules.venue_scope"
+  null,
+  null
  ],
  [
   "157_decision_uses_resolver.sql",
-  "fonksiyon",
-  "decision_chain_check"
+  null,
+  null
  ],
  [
   "158_device_findings.sql",
-  "govde",
-  "guide_lounges|(exists (select 1 from lounge_venue_acceptance ac"
+  null,
+  null
  ],
  [
   "159_grants_home_flows_request_gate.sql",
-  "kolon",
-  "connection_requests.responded_at"
+  null,
+  null
  ],
  [
   "160_catalog_name_dedupe.sql",
@@ -911,38 +911,38 @@
  ],
  [
   "162_source_truth_and_founder_badge.sql",
-  "fonksiyon",
-  "founding_badge_sync"
+  null,
+  null
  ],
  [
   "163_unknown_carrier_and_coverage_audit.sql",
-  "fonksiyon",
-  "rule_coverage_audit"
+  null,
+  null
  ],
  [
   "164_business_ticket_and_operator_rules.sql",
-  "govde",
-  "rule_coverage_audit|Hiç kuralı olmayan aktif program"
+  null,
+  null
  ],
  [
   "165_prebeta_security.sql",
-  "tetikleyici",
-  "trg_guard_otp_bypass"
+  null,
+  null
  ],
  [
   "166_slot_integrity_and_flow_tests.sql",
-  "fonksiyon",
-  "flow_gate_test"
+  null,
+  null
  ],
  [
   "167_rule_expectation_matrix.sql",
-  "indeks",
-  "uq_rule_test_case"
+  null,
+  null
  ],
  [
   "168_carrier_gap_and_paid_entry.sql",
-  "kural_notu",
-  "lounge_guest_rules|Bu kart tipinin hiçbir taşıyıcıda ve hiçbir kapsamda misafir hakkı yoktur."
+  null,
+  null
  ],
  [
   "169_slot_counter_repair.sql",
@@ -956,13 +956,13 @@
  ],
  [
   "171_full_matrix_and_report.sql",
-  "kolon",
-  "rule_test_cases.needs_review"
+  null,
+  null
  ],
  [
   "172_resolver_full_definition.sql",
-  "govde",
-  "resolve_guest_rule|and (p_tier is null or x.card_tier is null)"
+  null,
+  null
  ],
  [
   "173_showcase_data.sql",
@@ -971,68 +971,68 @@
  ],
  [
   "174_venue_beats_program_rule.sql",
-  "govde",
-  "rule_venue_test|✗ SALON KURALI ÇELİŞİYOR"
+  null,
+  null
  ],
  [
   "175_flow_test_cleanup_fix.sql",
-  "fonksiyon",
-  "flow_test_cleanup"
+  null,
+  null
  ],
  [
   "176_flow_test_rate_limit.sql",
-  "govde",
-  "rl_guard|if coalesce(current_setting('ll.test_mode', true), '') = 'on' then"
+  null,
+  null
  ],
  [
   "177_official_table_reconciliation.sql",
-  "govde",
-  "rule_matrix_test|(ac.id is not null) desc, v.id"
+  null,
+  null
  ],
  [
   "178_expectations_single_source.sql",
-  "fonksiyon",
-  "rebuild_rule_test_cases"
+  null,
+  null
  ],
  [
   "179_flow_test_skip_semantics.sql",
-  "fonksiyon",
-  "flow_env_block"
+  null,
+  null
  ],
  [
   "180_flow_test_future_availability.sql",
-  "govde",
-  "flow_env_block|'%self_request%',"
+  null,
+  null
  ],
  [
   "181_credit_model_rebalance.sql",
-  "ayar_deger",
-  "host_door_bonus_points=50"
+  null,
+  null
  ],
  [
   "182_discover_carries_decision.sql",
-  "fonksiyon",
-  "discover_availabilities_base"
+  null,
+  null
  ],
  [
   "183_lounges_rpc_and_grants.sql",
-  "fonksiyon",
-  "lounges_for_airport"
+  null,
+  null
  ],
  [
   "184_ms_status_language.sql",
-  "govde",
-  "card_tier_label|Miles&Smiles Amex"
+  null,
+  null
  ],
  [
   "185_device_flow_proofs.sql",
-  "fonksiyon",
-  "device_flow_check"
+  null,
+  null
  ],
  [
   "186_context_for_cards.sql",
-  "fonksiyon",
-  "my_sent_requests"
+  null,
+  null
  ],
  [
   "187a_PRE_asiri_yukleme_temizligi.sql",
@@ -1041,8 +1041,8 @@
  ],
  [
   "187_kanitlanmis_kusurlar.sql",
-  "fonksiyon",
-  "rpc_smoke_test"
+  null,
+  null
  ],
  [
   "188_salon_envanteri.sql",
@@ -1051,18 +1051,18 @@
  ],
  [
   "189_coklu_hak_ve_kaynak_hizalama.sql",
-  "fonksiyon",
-  "best_access_for_user"
+  null,
+  null
  ],
  [
   "190_salon_tekillestirme_ve_bolum.sql",
-  "fonksiyon",
-  "brand_key"
+  null,
+  null
  ],
  [
   "191_kaynak_celiskileri_ve_bosluklar.sql",
-  "kolon",
-  "availabilities.cabin_class"
+  null,
+  null
  ],
  [
   "192a_PRE_charter_tabanda.sql",
@@ -1071,98 +1071,98 @@
  ],
  [
   "192_on_kontrol_kapi_hizalama.sql",
-  "govde",
-  "request_precheck|Bu ilana misafir alınamıyor"
+  null,
+  null
  ],
  [
   "193_kart_etiketi_ve_kabin_yazma.sql",
-  "fonksiyon",
-  "save_host_card"
+  null,
+  null
  ],
  [
   "194_bekleme_listesi.sql",
-  "kisit",
-  "wl_role_chk"
+  null,
+  null
  ],
  [
   "195_ucus_alanlari_ve_kod_paylasimi.sql",
-  "kolon",
-  "flight_cache.airline"
+  null,
+  null
  ],
  [
   "196_plan_ucretleri_ve_celiski_kapanisi.sql",
-  "indeks",
-  "uq_venue_prices"
+  null,
+  null
  ],
  [
   "197_seyahatin_ucus_bilgisi_dolsun.sql",
-  "tetikleyici",
-  "trg_visit_flight_ins"
+  null,
+  null
  ],
  [
   "198_thy_ajet_ms_yeniden_dogrulama.sql",
-  "indeks",
-  "uq_entry_tariff"
+  null,
+  null
  ],
  [
   "199_ucus_saati_terminal_ve_katalog.sql",
-  "tetikleyici",
-  "trg_venue_catalog_ins"
+  null,
+  null
  ],
  [
   "200_ulke_sozlugu_tekillestirme.sql",
-  "tablo",
-  "country_aliases"
+  null,
+  null
  ],
  [
   "201_banka_karti_tek_cerceve.sql",
-  "kolon",
-  "host_entitlements.bank_covers_fee"
+  null,
+  null
  ],
  [
   "202_saat_dilimi_ajet_anahtari_pencere.sql",
-  "tetikleyici",
-  "trg_ajet_intl"
+  null,
+  null
  ],
  [
   "203_guvenlik_siniri.sql",
-  "tablo",
-  "rpc_client_surface"
+  null,
+  null
  ],
  [
   "204_blok_eylem_sinirinda.sql",
-  "tetikleyici",
-  "trg_blok_gecmis"
+  null,
+  null
  ],
  [
   "205_bo_adresi_kendini_kaydeder.sql",
-  "ayar",
-  "backoffice_url"
+  null,
+  null
  ],
  [
   "206_host_motoru.sql",
-  "tablo",
-  "host_tiers"
+  null,
+  null
  ],
  [
   "207_kopruler_ve_verilen_sozler.sql",
-  "kolon",
-  "host_tiers.one_cikar_saat"
+  null,
+  null
  ],
  [
   "208_donem_devri_ve_kalibrasyon.sql",
-  "indeks",
-  "idx_credit_requests_status"
+  null,
+  null
  ],
  [
   "209_saglayici_modulu.sql",
-  "ayar_deger",
-  "partner_k_threshold=5"
+  null,
+  null
  ],
  [
   "210a_PRE_plan_enum.sql",
-  "enum_degeri",
-  "plan_type.yolcu"
+  null,
+  null
  ],
  [
   "210b_PRE_push_dayanikli.sql",
@@ -1171,23 +1171,23 @@
  ],
  [
   "210_abonelik_push_ve_kapsam.sql",
-  "kolon",
-  "plan_catalog.ad"
+  null,
+  null
  ],
  [
   "211_kart_aglari_kaynaktan.sql",
-  "kolon",
-  "card_network_source.kart_no"
+  null,
+  null
  ],
  [
   "212_yonetilen_ayarlar_gercekten_okunuyor.sql",
-  "kolon",
-  "i18n_strings.note"
+  null,
+  null
  ],
  [
   "213_saglayici_kurumsal_katman.sql",
-  "rpc_yuzeyi",
-  "venue_no_show"
+  null,
+  null
  ],
  [
   "214a_PRE_ic_hat_salonlari.sql",
@@ -1196,63 +1196,63 @@
  ],
  [
   "214_misafir_hakki_kaynaktan.sql",
-  "kolon",
-  "lounge_venues.is_umbrella"
+  null,
+  null
  ],
  [
   "215_saglayici_veri_yollari.sql",
-  "kolon",
-  "availabilities.program_source"
+  null,
+  null
  ],
  [
   "216_hangi_kartimi_kullanayim.sql",
-  "rpc_yuzeyi",
-  "hangi_kartimi_kullanayim"
+  null,
+  null
  ],
  [
   "217_misafir_ucreti_geri.sql",
-  "kolon",
-  "lounge_guest_rules.yillik_para"
+  null,
+  null
  ],
  [
   "218_radar_olu_kolonlar.sql",
-  "govde",
-  "lounge_radar_people|or (c.to_id=v_uid and c.from_id=pe.uid)"
+  null,
+  null
  ],
  [
   "219_kredi_ve_ucret_dili.sql",
-  "ayar_deger",
-  "paid_guest_credits=1"
+  null,
+  null
  ],
  [
   "220_plan_katalogu_ve_dil.sql",
-  "kolon",
-  "plan_catalog.ad_en"
+  null,
+  null
  ],
  [
   "221_hosta_sor.sql",
-  "ayar",
-  "err_rule_ask_daily_limit"
+  null,
+  null
  ],
  [
   "222_ucretli_misafir_geri.sql",
-  "govde",
-  "lounge_access_decision|,            case when coalesce(d ->>"
+  null,
+  null
  ],
  [
   "223_sinirlar_dogruyu_soylesin.sql",
-  "ayar",
-  "err_rate_limited"
+  null,
+  null
  ],
  [
   "224_borclar_ve_ilan_neden_yok.sql",
-  "rpc_yuzeyi",
-  "ucus_kotam"
+  null,
+  null
  ],
  [
   "225_planin_sozu_tutulsun.sql",
-  "rpc_yuzeyi",
-  "plan_kredisi_yerlestir"
+  null,
+  null
  ],
  [
   "226_zamanlanmis_isler.sql",
@@ -1266,73 +1266,73 @@
  ],
  [
   "228_odul_katalogu_takas_kapaniyor.sql",
-  "kisit",
-  "rewards_no_lounge_barter_chk"
+  null,
+  null
  ],
  [
   "229_odul_teslim_sozu.sql",
-  "kolon",
-  "redemptions.durum"
+  null,
+  null
  ],
  [
   "230_host_hikayeleri.sql",
-  "kisit",
-  "hs_yayin_riza_chk"
+  null,
+  null
  ],
  [
   "231_kurucu_cember_sayaci.sql",
-  "ayar_deger",
-  "kurucu_kontenjan=100"
+  null,
+  null
  ],
  [
   "232_rol_kapisi_ve_cuzdan_sizintisi.sql",
-  "kolon",
-  "users.role_source"
+  null,
+  null
  ],
  [
   "233_statu_listesi_tekillesiyor.sql",
-  "govde",
-  "card_tier_options|r.notes nulls last;"
+  null,
+  null
  ],
  [
   "234_aktif_oturum_kendini_anlatsin.sql",
-  "rpc_yuzeyi",
-  "aktif_oturum_detay"
+  null,
+  null
  ],
  [
   "235_sordugunu_gorebilmeli.sql",
-  "tetikleyici",
-  "trg_cr_soru_izi"
+  null,
+  null
  ],
  [
   "236_ust_plan_bir_ay_ucretsiz.sql",
-  "indeks",
-  "uq_plan_grants_aktif"
+  null,
+  null
  ],
  [
   "237_ilan_ve_seyahat_duzenlenebilsin.sql",
-  "tetikleyici",
-  "trg_avail_kapatma_kapisi"
+  null,
+  null
  ],
  [
   "238_cuzdan_ve_soru_dili.sql",
-  "tetikleyici",
-  "trg_cr_soru_metni"
+  null,
+  null
  ],
  [
   "239_soru_hangi_ilana_ait.sql",
-  "kolon",
-  "connection_requests.avail_id"
+  null,
+  null
  ],
  [
   "240_kural_kapida_degil_odada.sql",
-  "tetikleyici",
-  "trg_visit_sozlesme"
+  null,
+  null
  ],
  [
   "241_supabase_varsayilani_kapatiliyor.sql",
-  "tablo",
-  "client_write_allowlist"
+  null,
+  null
  ],
  [
   "242_gorunumler_arka_kapi.sql",
@@ -1341,113 +1341,113 @@
  ],
  [
   "243_one_cikarma_gercekten_calissin.sql",
-  "ayar_deger",
-  "one_cikan_esz_tavan_host=1"
+  null,
+  null
  ],
  [
   "244_odul_ekonomisi.sql",
-  "kolon",
-  "rewards.maliyet_turu"
+  null,
+  null
  ],
  [
   "245_vitrin_gokberkin_listesi.sql",
-  "kolon",
-  "rewards.zarar_gerekce"
+  null,
+  null
  ],
  [
   "246_ekonomi_ayari.sql",
-  "kolon",
-  "plan_catalog.acik_istek_tavani"
+  null,
+  null
  ],
  [
   "247_haber_ver.sql",
-  "indeks",
-  "talep_kayit_arama"
+  null,
+  null
  ],
  [
   "248_duzenleme_baglanti_degerlendirme.sql",
-  "tablo",
-  "kredi_paketleri"
+  null,
+  null
  ],
  [
   "249_is_modeli_ve_soguk_ag.sql",
-  "kolon",
-  "requests.decision_note"
+  null,
+  null
  ],
  [
   "250_yaptirim_huni_dil_ve_kapilar.sql",
-  "kolon",
-  "profiles.dil"
+  null,
+  null
  ],
  [
   "251_cron_nobeti_ve_kahya_ayricaligi.sql",
-  "kolon",
-  "host_tiers.sinirsiz_kural_sorusu"
+  null,
+  null
  ],
  [
   "252_ulasilabilirlik_ve_push_izni.sql",
-  "kisit",
-  "push_izin_durum_kapisi"
+  null,
+  null
  ],
  [
   "253_guvenlik_kapanisi.sql",
-  "tablo",
-  "user_contact"
+  null,
+  null
  ],
  [
   "254_urun_bosluklari.sql",
-  "tablo",
-  "notification_prefs"
+  null,
+  null
  ],
  [
   "255_magaza_sartlari.sql",
-  "tetikleyici",
-  "trg_sohbet_suzgeci"
+  null,
+  null
  ],
  [
   "256_kredi_satisi_ve_kapida_iade.sql",
-  "kisit",
-  "kapida_ret_sebep"
+  null,
+  null
  ],
  [
   "257_push_makbuzlari.sql",
-  "indeks",
-  "push_gonderim_bekleyen"
+  null,
+  null
  ],
  [
   "258_olmayan_kolonlar.sql",
-  "kolon",
-  "points_ledger.balance_after"
+  null,
+  null
  ],
  [
   "259_bo_performans_indeksleri.sql",
-  "indeks",
-  "ix_visits_date"
+  null,
+  null
  ],
  [
   "260_bo_sunucu_tarafi_toplamlar.sql",
-  "fonksiyon",
-  "bo_finance_ozet"
+  null,
+  null
  ],
  [
   "261_rol_kapisi.sql",
-  "fonksiyon",
-  "ilan_acabilir_miyim"
+  null,
+  null
  ],
  [
   "261a_rol_uyumlama.sql",
-  "tablo",
-  "rol_uyumlama_kaydi"
+  null,
+  null
  ],
  [
   "262_seyahat_duzenle_tam.sql",
-  "govde",
-  "update_visit|'purpose', v_v.purpose),"
+  null,
+  null
  ],
  [
   "263_ana_sayfa_akisi.sql",
-  "fonksiyon",
-  "ana_sayfa_akisi"
+  null,
+  null
  ],
  [
   "264_push_ve_api_saglik_raporu.sql",
@@ -1456,13 +1456,13 @@
  ],
  [
   "265_api_yuzeyi_kapanisi.sql",
-  "indeks",
-  "uq_delreq_bekleyen"
+  null,
+  null
  ],
  [
   "266_eksik_bildirimler.sql",
-  "tablo",
-  "push_ceviri"
+  null,
+  null
  ],
  [
   "267_ilan_tablosu_anon_sizintisi.sql",
@@ -1471,8 +1471,8 @@
  ],
  [
   "268_telefon_tekilligi.sql",
-  "kolon",
-  "users.phone_kanonik"
+  null,
+  null
  ],
  [
   "268a_telefon_cakismasi.sql",
@@ -1481,8 +1481,8 @@
  ],
  [
   "269_dogrulama_zinciri.sql",
-  "tetikleyici",
-  "on_auth_email_confirmed"
+  null,
+  null
  ],
  [
   "269a_DOGRULAMA_KONTROL.sql",
@@ -1496,8 +1496,8 @@
  ],
  [
   "270_test_verisi_gorunur.sql",
-  "fonksiyon",
-  "test_verisi_tazele"
+  null,
+  null
  ],
  [
   "270a_GORUNURLUK.sql",
@@ -1541,38 +1541,38 @@
  ],
  [
   "274_istek_tavani_kilidi.sql",
-  "fonksiyon",
-  "cron_isi_var"
+  null,
+  null
  ],
  [
   "275_kural_kosullari.sql",
-  "fonksiyon",
-  "kural_kart_adi"
+  null,
+  null
  ],
  [
   "276_push_kanallari.sql",
-  "fonksiyon",
-  "push_kanali"
+  null,
+  null
  ],
  [
   "277_baglanti_kaldir.sql",
-  "kolon",
-  "chat_channels.active"
+  null,
+  null
  ],
  [
   "278_push_kanali_enum.sql",
-  "govde",
-  "push_kanali|select public.push_kanali(p_category::text)"
+  null,
+  null
  ],
  [
   "279_sogu_baslangic.sql",
-  "fonksiyon",
-  "sogu_baslangic_ozeti"
+  null,
+  null
  ],
  [
   "280_kredi_ve_durum_kilidi.sql",
-  "kolon",
-  "sessions.cancel_note"
+  null,
+  null
  ],
  [
   "281_kural_motoru_kapida_dogru.sql",
@@ -1581,123 +1581,123 @@
  ],
  [
   "282_ban_ve_kvkk_silme.sql",
-  "kolon",
-  "users.banned_at"
+  null,
+  null
  ],
  [
   "283_kural_motoru_on_iki_boyut.sql",
-  "kolon",
-  "visits.party_size"
+  null,
+  null
  ],
  [
   "284_kural_geri_bildirim_dongusu.sql",
-  "indeks",
-  "ix_kural_suphe_acik"
+  null,
+  null
  ],
  [
   "285_kyc_belge_ve_karar.sql",
-  "kolon",
-  "verifications.id_status"
+  null,
+  null
  ],
  [
   "286_tanis_cift_satir.sql",
-  "govde",
-  "discover_people_prebfilter|c.created_at desc"
+  null,
+  null
  ],
  [
   "287_planim_enum_metin_karsilastirma.sql",
-  "govde",
-  "my_plan|'ucretsiz_yukseltme', (v_g.id is not null and v_etkin::text <> v_satin),"
+  null,
+  null
  ],
  [
   "288_guven_esigi_kolonu.sql",
-  "govde",
-  "ilan_guven_esigi_yaz|where coalesce(ts.score, 0) >= p_esik));"
+  null,
+  null
  ],
  [
   "289_davet_kabulu_mevcut_istek.sql",
-  "govde",
-  "respond_invite|v_req := v_mevcut.id;"
+  null,
+  null
  ],
  [
   "290_kural_notlari_turkce.sql",
-  "desen_yok",
-  "lounge_guest_rules|notes|(UCRETSIZ|YURTDISI|ANLASMALI)"
+  null,
+  null
  ],
  [
   "291_ilan_kaldirma_zorlu.sql",
-  "govde",
-  "cancel_availability|İlan geri çekildi"
+  null,
+  null
  ],
  [
   "292_zaman_dilimi_yerel_an.sql",
-  "fonksiyon",
-  "yerel_an"
+  null,
+  null
  ],
  [
   "293_davet_cift_onay_ve_ilan_geri_cekme.sql",
-  "govde",
-  "respond_invite|insert into sessions (request_id, status)"
+  null,
+  null
  ],
  [
   "294_binis_karti_dogrulama.sql",
-  "indeks",
-  "idx_sv_user"
+  null,
+  null
  ],
  [
   "295_ilanin_ikinci_hayati_ve_sayaclar.sql",
-  "fonksiyon",
-  "ilani_yeniden_yayinla"
+  null,
+  null
  ],
  [
   "296_hikaye_daveti_erteleme.sql",
-  "tablo",
-  "hikaye_ertelemeleri"
+  null,
+  null
  ],
  [
   "297_yetki_kapilari.sql",
-  "fonksiyon",
-  "yonetici_kapisi"
+  null,
+  null
  ],
  [
   "298_supurge_kisiti_ve_asim_dedektoru.sql",
-  "tablo",
-  "supurge_damgasi"
+  null,
+  null
  ],
  [
   "299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql",
-  "kolon",
-  "supurge_damgasi.kaynak"
+  null,
+  null
  ],
  [
   "300_uctan_uca_denetim.sql",
-  "indeks",
-  "idx_messages_from"
+  null,
+  null
  ],
  [
   "301_guven_ve_akis_tamamlama.sql",
-  "kolon",
-  "blocks.sebep"
+  null,
+  null
  ],
  [
   "302_test_hesaplarini_gorenler.sql",
-  "tablo",
-  "test_gorunurlugu"
+  null,
+  null
  ],
  [
   "303_ertelenen_puan_ana_sayfadan_duser.sql",
-  "govde",
-  "pending_ratings|and not (coalesce(s.rate_deferred_by, '{}') @> array[v_uid])"
+  null,
+  null
  ],
  [
   "304_kesfet_engelinin_gercek_sebebi.sql",
-  "govde",
-  "discovery_rule_badges|v_key := 'carrier_bad';   v_boost := -1000;"
+  null,
+  null
  ],
  [
   "305_erisim_kaynagi_etiketleri.sql",
-  "fonksiyon",
-  "erisim_kaynagi_etiketle"
+  null,
+  null
  ],
  [
   "306_kural_notlari_turkce_tamam.sql",
@@ -1706,8 +1706,8 @@
  ],
  [
   "307_zarafet_atlama_siniri.sql",
-  "fonksiyon",
-  "binis_atlama_sayisi"
+  null,
+  null
  ],
  [
   "308_bo_atlama_uyarisi.sql",
@@ -1716,32 +1716,187 @@
  ],
  [
   "309_kural_tablosu_denetimi_ve_ilan_erisimi.sql",
-  "rpc_yuzeyi",
-  "set_availability_program"
+  null,
+  null
  ],
  [
   "310_309_duzeltme_tasiyici_kapisi_guvenlik.sql",
-  "govde",
-  "create_request_impl_preflag|310: taşıyıcı uyuşmazlığı KESİN engel"
+  null,
+  null
  ],
  [
   "311_kesfet_ozeti_tek_kaynak.sql",
-  "fonksiyon",
-  "kesfet_ozeti"
+  null,
+  null
  ],
  [
   "312_soru_ilan_bagi_gercekten.sql",
-  "govde",
-  "ilan_kurali_sor|'pending', p_avail_id)"
+  null,
+  null
  ],
  [
   "313_akis_durum_makinesi_bildirim_soru.sql",
-  "fonksiyon",
-  "soruyu_yanitla"
+  null,
+  null
  ],
  [
   "314_soru_yazili_yanit_ve_baglanti.sql",
-  "fonksiyon",
-  "soruya_cevap_yaz"
+  null,
+  null
+ ],
+ [
+  "315_bo_rapor_fonksiyonlari_kullaniciya_kapali.sql",
+  null,
+  null
+ ],
+ [
+  "316_bayat_istek_supurgede.sql",
+  null,
+  null
+ ],
+ [
+  "317_kesfet_olcek.sql",
+  null,
+  null
+ ],
+ [
+  "318_ana_sayfa_akisi_olcek.sql",
+  null,
+  null
+ ],
+ [
+  "319_tanis_gorunurluk_olcek.sql",
+  null,
+  null
+ ],
+ [
+  "320_istek_puani_daraltilmis.sql",
+  null,
+  null
+ ],
+ [
+  "321_erisim_karari_kart_secimi_belirli.sql",
+  null,
+  null
+ ],
+ [
+  "322_hesap_silme_calisir_ve_acik_isleri_kapatir.sql",
+  null,
+  null
+ ],
+ [
+  "323_ilan_ac_saat_ve_kontenjan_kapisi.sql",
+  null,
+  null
+ ],
+ [
+  "324_tanis_silinmis_yasakli_suzgeci.sql",
+  null,
+  null
+ ],
+ [
+  "325_seyahat_cakismasi_farkli_havalimani.sql",
+  null,
+  null
+ ],
+ [
+  "326_kisi_ara_aday_siniri.sql",
+  null,
+  null
+ ],
+ [
+  "327_tanis_profil_gorunurlugu.sql",
+  null,
+  null
+ ],
+ [
+  "328_host_tek_yol_bo_onayli_basvuru.sql",
+  null,
+  null
+ ],
+ [
+  "329_silinen_hesap_14_gun_anonim.sql",
+  null,
+  null
+ ],
+ [
+  "330_bo_hesabi_geri_al.sql",
+  null,
+  null
+ ],
+ [
+  "331_soru_kendi_kaydinda.sql",
+  null,
+  null
+ ],
+ [
+  "332_revenuecat_satin_alma.sql",
+  null,
+  null
+ ],
+ [
+  "333_magaza_inceleme_hesabi.sql",
+  null,
+  null
+ ],
+ [
+  "334_ekonomi_ve_icerik_suzgeci.sql",
+  null,
+  null
+ ],
+ [
+  "335_telefon_firebase_dogrulama.sql",
+  null,
+  null
+ ],
+ [
+  "336_kabulde_digerleri_geri_cek.sql",
+  null,
+  null
+ ],
+ [
+  "337_jetset_puan_kredi_kurulus.sql",
+  null,
+  null
+ ],
+ [
+  "338_odul_erken_erisim_plan_indirimi.sql",
+  null,
+  null
+ ],
+ [
+  "339_odul_marka_adlari.sql",
+  null,
+  null
+ ],
+ [
+  "340_jetset_urun_kimlikleri.sql",
+  null,
+  null
+ ],
+ [
+  "341_ilan_basvurusu_dili.sql",
+  null,
+  null
+ ],
+ [
+  "342_oturum_baslatma_penceresi.sql",
+  null,
+  null
+ ],
+ [
+  "343_olmayan_salonlari_gizle.sql",
+  null,
+  null
+ ],
+ [
+  "344_ucus_onbellegi_temizligi.sql",
+  null,
+  null
+ ],
+ [
+  "345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql",
+  null,
+  null
  ]
 ]

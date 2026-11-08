@@ -1518,7 +1518,7 @@ export function YasOnayi({ t }) {
   const onayla = async () => {
     setBekle(true);
     const { error } = await supabase.rpc("grant_consents",
-      { p_types: ["age_18"], p_version: "v16" });
+      { p_types: ["age_18"], p_version: "v17" });
     setBekle(false);
     if (error) { logError("grant_consents_age", error); return; }
     setGerek(false);

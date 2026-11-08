@@ -1,4 +1,4 @@
 {
-  "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can pick a profile photo. It is shown only at the visibility you choose.",
+  "NSPhotoLibraryUsageDescription": "Photo library access lets you pick a profile photo or a screenshot of your boarding pass. The profile photo is uploaded to our server and shown at the visibility you choose; the boarding pass image never leaves your device.",
   "NSUserTrackingUsageDescription": "LoungeLink does not track you across apps."
 }

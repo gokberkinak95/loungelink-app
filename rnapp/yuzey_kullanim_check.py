@@ -73,6 +73,10 @@ BO_ZORUNLU = {
 }
 
 BO_BEYAZ_LISTE = {
+    'bo_kyc_kuyrugu':
+        'SQL 345 ile kimlik belgesi (KYC) kalkti; BO ekrani _arsiv/20261108/kyc altinda. Fonksiyon eski kayitlar icin duruyor.',
+    'bo_kyc_karar':
+        'SQL 345 ile kimlik belgesi (KYC) kalkti; BO ekrani _arsiv/20261108/kyc altinda.',
     'bo_ilan_degisiklikleri':
         'Genel /audit ekrani ayni kayitlari zaten gosteriyor (availability.update, '
         'visit.update). Ayri ekran ikinci bir dogruluk kaynagi olurdu.',

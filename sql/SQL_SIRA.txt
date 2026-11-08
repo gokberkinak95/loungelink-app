@@ -1,3 +1,20 @@
+SQL SIRASI - 8 Kasim 2026 (15. tur) - YENI: 345 - 344'ten SONRA (341-344'u kosmadiysan once onlari)
+
+  1) 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql
+       -> Kimlik belgesi / selfie (KYC) kapanir: gonderim 'kyc_kapali', kyc kovasi yazma kurallari kalkar,
+          tablodaki belge yollari temizlenir.
+       -> "Dogrulanmis profil" = e-posta + telefon (SMS) + profil fotografi + meslek; id_verified kolonu
+          tetikleyiciyle otomatik tutulur (rozetler ve "yalniz dogrulanmis profiller" ilan secenegi).
+       -> Guven puani: kimligin 18 puani dagitildi (telefon 14, foto 6, oturum 8/13/18, puan 14/8/3);
+          herkes yeniden hesaplanir.
+       -> Pazarlama izni (users.pazarlama_izni, varsayilan kapali); kampanya yalniz izin verene gider.
+       -> Hesap silmede cinsiyet, bildirimler, tercihler, iletisim e-postasi da silinir.
+       -> Saklama sureleri her gece 04:10 (ll-saklama-imha) uygulanir.
+       Dogrulama: butun satirlar tamam = true. Son satir kyc kovasinda kalan dosya sayisi:
+       0 degilse Dashboard > Storage > kyc > hepsini sec > Delete, sonra kovayi sil.
+       Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 6 Kasim 2026 (14. tur) - YENI: 342, 343, 344 - 341'den SONRA (341'i kosmadiysan once onu)
 
   1) 342_oturum_baslatma_penceresi.sql

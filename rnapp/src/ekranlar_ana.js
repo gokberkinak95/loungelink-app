@@ -3978,11 +3978,11 @@ export function TrustVisual({ t, session, onBack }) {
   // kazanılan 8 puan hiç görünmüyor, toplam (18) ile dökümün toplamı (8)
   // tutmuyordu. Ayrıca oturum ve puan bileşenleri hiç listelenmiyordu.
   const ITEMS = [
-    ["email", t.trustEmail, 10, C.green], ["phone", t.trustPhone, 10, C.green],
+    ["email", t.trustEmail, 10, C.green], ["phone", t.trustPhone, 14, C.green],
     ["profession", t.trustProf, 6, C.gold], ["bio", t.trustBio, 6, C.gold],
-    ["linkedin", t.trustLinkedin, 8, C.teal], ["id", t.trustId, 18, C.gold],
+    ["linkedin", t.trustLinkedin, 8, C.teal], ["photo", t.trustPhoto, 6, C.gold],
     ...(isHost ? [["host_access", t.trustAccess, 8, C.teal]] : []),
-    ["sessions", t.trustSessions, 14, C.gold], ["rating", t.trustRating, 10, C.teal],
+    ["sessions", t.trustSessions, 18, C.gold], ["rating", t.trustRating, 14, C.teal],
   ];
   const nextLevel = score >= 88 ? 100 : score >= 72 ? 88 : score >= 56 ? 72 : 56;
   return (
@@ -5869,8 +5869,10 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
               doğrulama akışını açar. */}
           {[[t.epVEmail, verif.email_verified, C.greenBtn, "—", null],
             [t.epVPhone, verif.phone_verified, C.greenBtn, t.epVVerifyCta, () => onVerify && onVerify()],
-            // SQL 285 — kimlik satırı artık BELGE yükleme ekranına gider (telefon ekranına değil)
-            [t.epVId, verif.id_verified, C.goldText, t.epVIdCta, () => (onVerifyId ? onVerifyId() : onVerify && onVerify())],
+            // SQL 345 — kimlik belgesi kalktı. Bu satır "Doğrulanmış profil": e-posta + telefon +
+            // fotoğraf + meslek. Eksikse yukarı (fotoğraf/meslek alanına) kaydırır.
+            [t.epVId, verif.id_verified, C.goldText, t.epVIdCta,
+              () => { try { scRef.current && scRef.current.scrollTo && scRef.current.scrollTo({ y: 0, animated: true }); } catch (e) {} }],
             [t.epVLinkedin, !!form.linkedin_url, C.teal, t.epVLinkCta,
               () => { try { scRef.current && scRef.current.scrollTo && scRef.current.scrollTo({ y: 520, animated: true }); } catch (e) {}
                       setTimeout(() => { try { liRef.current && liRef.current.focus && liRef.current.focus(); } catch (e) {} }, 250); }],

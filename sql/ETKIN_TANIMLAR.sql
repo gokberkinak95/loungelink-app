@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-10-20
+-- Uretim tarihi: 2026-11-08
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -9,12 +9,12 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 547
--- Birden cok dosyada tanimli (dikkat!): 165
+-- Toplam fonksiyon: 552
+-- Birden cok dosyada tanimli (dikkat!): 169
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
---   admin_anonymize_user         -> etkin: 329_silinen_hesap_14_gun_anonim.sql  (ayrica: 094_admin_erasure.sql, 258_olmayan_kolonlar.sql)
+--   admin_anonymize_user         -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 094_admin_erasure.sql, 258_olmayan_kolonlar.sql, 329_silinen_hesap_14_gun_anonim.sql)
 --   ana_sayfa_akisi              -> etkin: 331_soru_kendi_kaydinda.sql  (ayrica: 263_ana_sayfa_akisi.sql, 295_ilanin_ikinci_hayati_ve_sayaclar.sql, 311_kesfet_ozeti_tek_kaynak.sql, 313_akis_durum_makinesi_bildirim_soru.sql, 314_soru_yazili_yanit_ve_baglanti.sql, 318_ana_sayfa_akisi_olcek.sql)
 --   apply_rule_engine            -> etkin: 250_yaptirim_huni_dil_ve_kapilar.sql  (ayrica: 029_bo_requirements.sql, 212_yonetilen_ayarlar_gercekten_okunuyor.sql)
 --   apply_rule_snapshot          -> etkin: 086_lounge_rules_v3.sql  (ayrica: 085_lounge_rules_v2.sql)
@@ -23,6 +23,7 @@
 --   bayat_istekleri_iade_et      -> etkin: 316_bayat_istek_supurgede.sql  (ayrica: 249_is_modeli_ve_soguk_ag.sql, 274_istek_tavani_kilidi.sql, 300_uctan_uca_denetim.sql)
 --   bekleyen_hikaye_daveti       -> etkin: 296_hikaye_daveti_erteleme.sql  (ayrica: 230_host_hikayeleri.sql)
 --   bildirim_hedefi              -> etkin: 335_telefon_firebase_dogrulama.sql  (ayrica: 254_urun_bosluklari.sql, 266_eksik_bildirimler.sql, 313_akis_durum_makinesi_bildirim_soru.sql)
+--   bildirim_tercihlerim         -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 254_urun_bosluklari.sql)
 --   binis_karti_durumu           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   binis_karti_kaydet           -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 294_binis_karti_dogrulama.sql)
 --   blok_gecmisi_kapat           -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 204_blok_eylem_sinirinda.sql)
@@ -56,6 +57,7 @@
 --   flight_info                  -> etkin: 195_ucus_alanlari_ve_kod_paylasimi.sql  (ayrica: 091_flight_quota.sql)
 --   flow_env_block               -> etkin: 180_flow_test_future_availability.sql  (ayrica: 179_flow_test_skip_semantics.sql)
 --   flow_gate_test               -> etkin: 180_flow_test_future_availability.sql  (ayrica: 166_slot_integrity_and_flow_tests.sql, 174_venue_beats_program_rule.sql, 175_flow_test_cleanup_fix.sql, 176_flow_test_rate_limit.sql, 179_flow_test_skip_semantics.sql)
+--   grant_consents               -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 026_doc_parity_core.sql)
 --   guest_flight_fits            -> etkin: 086_lounge_rules_v3.sql  (ayrica: 085_lounge_rules_v2.sql)
 --   guide_hosts_today            -> etkin: 301_guven_ve_akis_tamamlama.sql  (ayrica: 143_lounge_guide.sql)
 --   guide_lounges                -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 143_lounge_guide.sql, 144_guide_fixes.sql, 147_tier_resolver.sql, 158_device_findings.sql)
@@ -76,6 +78,7 @@
 --   istek_kredisi_iade           -> etkin: 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql  (ayrica: 280_kredi_ve_durum_kilidi.sql, 284_kural_geri_bildirim_dongusu.sql)
 --   join_campaign                -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
 --   kesfet_ozeti                 -> etkin: 317_kesfet_olcek.sql  (ayrica: 311_kesfet_ozeti_tek_kaynak.sql)
+--   kimlik_belgesi_gonder        -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 285_kyc_belge_ve_karar.sql)
 --   kisi_ara                     -> etkin: 326_kisi_ara_aday_siniri.sql  (ayrica: 313_akis_durum_makinesi_bildirim_soru.sql, 319_tanis_gorunurluk_olcek.sql)
 --   kural_kosullari              -> etkin: 284_kural_geri_bildirim_dongusu.sql  (ayrica: 275_kural_kosullari.sql)
 --   kural_sorusu_hakkim          -> etkin: 251_cron_nobeti_ve_kahya_ayricaligi.sql  (ayrica: 223_sinirlar_dogruyu_soylesin.sql)
@@ -108,7 +111,7 @@
 --   push_kanali                  -> etkin: 278_push_kanali_enum.sql  (ayrica: 276_push_kanallari.sql)
 --   rate_session                 -> etkin: 078_trust_single_writer.sql  (ayrica: 008_chat_sessions.sql, 068_fix_rate_session.sql)
 --   recompute_badge              -> etkin: 046_trust_and_host_visibility.sql  (ayrica: 032_p2_flows.sql, 033_beta_credits_dualrole_radar.sql)
---   recompute_trust              -> etkin: 307_zarafet_atlama_siniri.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 046_trust_and_host_visibility.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql)
+--   recompute_trust              -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 033_beta_credits_dualrole_radar.sql, 046_trust_and_host_visibility.sql, 077_session_autostart_intro_slots.sql, 080_session_lifecycle.sql, 307_zarafet_atlama_siniri.sql)
 --   redeem_reward                -> etkin: 338_odul_erken_erisim_plan_indirimi.sql  (ayrica: 017_marketplace.sql, 029_bo_requirements.sql, 229_odul_teslim_sozu.sql)
 --   remove_rating                -> etkin: 297_yetki_kapilari.sql  (ayrica: 021_moderation_tools.sql)
 --   request_account_deletion     -> etkin: 258_olmayan_kolonlar.sql  (ayrica: 141_deletion_flow_check.sql)
@@ -133,7 +136,7 @@
 --   salon_misafir_karsilastirmasi -> etkin: 216_hangi_kartimi_kullanayim.sql  (ayrica: 214_misafir_hakki_kaynaktan.sql)
 --   save_host_access             -> etkin: 100_tier_fee_and_time.sql  (ayrica: 092_host_access_declaration.sql, 095_close_the_loop.sql)
 --   save_push_token              -> etkin: 111_push_direct_expo.sql  (ayrica: 013_push_tokens.sql)
---   send_campaign                -> etkin: 047_campaign_targets.sql  (ayrica: 029_bo_requirements.sql)
+--   send_campaign                -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 029_bo_requirements.sql, 047_campaign_targets.sql)
 --   send_connection              -> etkin: 248_duzenleme_baglanti_degerlendirme.sql  (ayrica: 015_connections.sql, 026_doc_parity_core.sql, 079_email_otp_contact_verification.sql)
 --   send_invite                  -> etkin: 079_email_otp_contact_verification.sql  (ayrica: 030_match_and_broadcast.sql)
 --   send_otp                     -> etkin: 269_dogrulama_zinciri.sql  (ayrica: 009_phone_otp.sql, 203_guvenlik_siniri.sql)
@@ -146,9 +149,10 @@
 --   soruya_cevap_yaz             -> etkin: 331_soru_kendi_kaydinda.sql  (ayrica: 314_soru_yazili_yanit_ve_baglanti.sql)
 --   soruyu_yanitla               -> etkin: 314_soru_yazili_yanit_ve_baglanti.sql  (ayrica: 313_akis_durum_makinesi_bildirim_soru.sql)
 --   start_session                -> etkin: 080_session_lifecycle.sql  (ayrica: 008_chat_sessions.sql, 026_doc_parity_core.sql, 077_session_autostart_intro_slots.sql)
---   start_session_request        -> etkin: 313_akis_durum_makinesi_bildirim_soru.sql  (ayrica: 080_session_lifecycle.sql)
+--   start_session_request        -> etkin: 342_oturum_baslatma_penceresi.sql  (ayrica: 080_session_lifecycle.sql, 313_akis_durum_makinesi_bildirim_soru.sql)
 --   submit_field_report          -> etkin: 187_kanitlanmis_kusurlar.sql  (ayrica: 095_close_the_loop.sql, 152_field_reports_loop.sql)
 --   subscription_plans           -> etkin: 338_odul_erken_erisim_plan_indirimi.sql  (ayrica: 210_abonelik_push_ve_kapsam.sql, 220_plan_katalogu_ve_dil.sql, 334_ekonomi_ve_icerik_suzgeci.sql, 337_jetset_puan_kredi_kurulus.sql)
+--   tek_tarafli_oturumlari_kapat -> etkin: 342_oturum_baslatma_penceresi.sql  (ayrica: 280_kredi_ve_durum_kilidi.sql)
 --   test_hesabi_gizli_mi         -> etkin: 302_test_hesaplarini_gorenler.sql  (ayrica: 301_guven_ve_akis_tamamlama.sql)
 --   trg_acik_istek_tavani        -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   trg_bakiye_negatife_dusemez  -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 299_kredi_kilidi_supurge_sahibi_ve_iade_tutari.sql)
@@ -2177,10 +2181,11 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- grant_consents   [etkin kaynak: 026_doc_parity_core.sql]
+-- grant_consents   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
-create or replace function public.grant_consents(p_types text[], p_version text default 'v15')
-returns jsonb language plpgsql security definer set search_path = public as $$
+create or replace function public.grant_consents(p_types text[], p_version text default 'v17')
+returns jsonb language plpgsql security definer set search_path = public as $gc345$
 declare v_uid uuid := auth.uid(); t text;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
@@ -2189,8 +2194,11 @@ begin
     values (v_uid, t, p_version, now())
     on conflict do nothing;
   end loop;
+  if 'pazarlama_bildirimi' = any(p_types) then
+    update users set pazarlama_izni = true, pazarlama_izni_at = now() where id = v_uid;
+  end if;
   return jsonb_build_object('ok', true, 'count', array_length(p_types,1));
-end $$;
+end $gc345$;
 
 -- ----------------------------------------------------------------------
 -- publish_availability   [etkin kaynak: 026_doc_parity_core.sql]
@@ -2405,40 +2413,43 @@ returns boolean language sql security definer set search_path = public as $$
 $$;
 
 -- ----------------------------------------------------------------------
--- send_campaign   [etkin kaynak: 047_campaign_targets.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- send_campaign   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.send_campaign(
   p_title text, p_body text, p_segment jsonb, p_admin uuid,
   p_user_ids uuid[] default null
 )
-returns jsonb language plpgsql security definer set search_path = public as $$
-declare v_cid uuid; v_n int := 0;
+returns jsonb language plpgsql security definer set search_path = public as $sc345$
+declare v_cid uuid; v_n int := 0; v_govde text;
 begin
+  -- 345 · Kampanya YALNIZ pazarlama iznini veren kullanıcıya gider ve her iletide
+  -- nasıl kapatılacağı yazar (6563 m.6, Ticari İletişim Yönetmeliği).
+  v_govde := btrim(coalesce(p_body, '')) || E'\n' || 'Kapatmak için: Ayarlar › Bildirimler.';
   insert into notification_campaigns (title, body, segment, created_by)
   values (p_title, p_body, coalesce(p_segment,'{}'::jsonb), p_admin) returning id into v_cid;
 
   if p_user_ids is not null and array_length(p_user_ids, 1) > 0 then
-    -- KİŞİ BAZLI: seçilen kullanıcılar (silinmiş ve staff hariç)
     with target as (
       select u.id from users u
       where u.id = any(p_user_ids)
         and u.deleted_at is null
         and coalesce(u.is_staff, false) = false
+        and u.pazarlama_izni
     ), ins as (
       insert into notifications (user_id, category, title, body, ref_type, ref_id)
-      select id, 'system'::notif_category, p_title, p_body, 'campaign', v_cid from target
+      select id, 'system'::notif_category, p_title, v_govde, 'campaign', v_cid from target
       returning 1
     )
     select count(*) into v_n from ins;
   else
-    -- SEGMENT BAZLI: 029 gövdesi + staff filtresi
     with target as (
       select u.id from users u
       left join profiles p on p.user_id = u.id
       left join trust_scores ts on ts.user_id = u.id
       where u.deleted_at is null
         and coalesce(u.is_staff, false) = false
+        and u.pazarlama_izni
         and (p_segment->>'role' is null or u.role::text = p_segment->>'role')
         and (p_segment->>'plan' is null or u.plan::text = p_segment->>'plan')
         and (p_segment->>'min_trust' is null or coalesce(ts.score,0) >= (p_segment->>'min_trust')::int)
@@ -2447,7 +2458,7 @@ begin
             ))
     ), ins as (
       insert into notifications (user_id, category, title, body, ref_type, ref_id)
-      select id, 'system'::notif_category, p_title, p_body, 'campaign', v_cid from target
+      select id, 'system'::notif_category, p_title, v_govde, 'campaign', v_cid from target
       returning 1
     )
     select count(*) into v_n from ins;
@@ -2455,7 +2466,89 @@ begin
 
   update notification_campaigns set sent_count = v_n where id = v_cid;
   return jsonb_build_object('ok', true, 'sent', v_n, 'campaign_id', v_cid);
-end $$;
+end $sc345$;
+
+-- ── §5 HESAP SİLME: EKSİK ALANLAR ───────────────────────────────────────────
+CREATE OR REPLACE FUNCTION public.admin_anonymize_user(p_user_id uuid, p_admin text, p_reason text DEFAULT NULL::text)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+declare v_tag text;
+begin
+  perform 1 from users where id = p_user_id;
+  if not found then raise exception 'user_not_found'; end if;
+  if (select anonymized_at from users where id = p_user_id) is not null then
+    return jsonb_build_object('ok', true, 'already', true);
+  end if;
+
+  v_tag := 'silinmis-' || left(replace(p_user_id::text, '-', ''), 8);
+
+  -- 1) KİMLİK (345: cinsiyet ve pazarlama izni de)
+  update users
+     set email = v_tag || '@silinmis.loungelink',
+         phone = null, phone_e164 = null, phone_kanonik = null, deleted_at = coalesce(deleted_at, now()),
+         gender = null, pazarlama_izni = false,
+         anonymized_at = now(),
+         anonymized_by = p_admin
+   where id = p_user_id;
+
+  -- 2) PROFİL
+  update profiles
+     set name = 'Silinmiş kullanıcı',
+         bio = null, profession = null, photo_url = null,
+         linkedin_url = null, linkedin_verified = false,
+         access_source = null,
+         show_on_discovery = false, profile_visibility = 'Connections',
+         updated_at = now()
+   where user_id = p_user_id;
+
+  -- 3) DOĞRULAMA İZLERİ (345: eski kimlik başvurusu alanları da)
+  update verifications
+     set phone_verified = false, id_verified = false,
+         id_doc_path = null, id_selfie_path = null, id_review_note = null, id_status = 'none'
+   where user_id = p_user_id;
+
+  -- 4) SERBEST METİN İÇEREN KAYITLAR
+  -- Mesajlar SİLİNMEZ (karşı tarafın sohbeti ve itiraz bağlamı); yazar anonimleşir,
+  -- mesajlar saklama süresi (24 ay) dolunca §6 işiyle silinir.
+  update reports set description = '[anonimlestirildi]'
+   where reporter_id = p_user_id;
+  update ratings set comment = null
+   where rater_id = p_user_id;
+  delete from push_tokens      where user_id = p_user_id;
+  delete from otp_tokens       where user_id = p_user_id;
+  delete from visits           where user_id = p_user_id and visit_date >= current_date;
+  delete from availabilities   where host_id = p_user_id and avail_date >= current_date;
+  delete from host_entitlements where user_id = p_user_id;
+  -- 345 · kişiye özel kayıtlar
+  delete from notifications      where user_id = p_user_id;
+  delete from notification_prefs where user_id = p_user_id;
+  delete from user_contact       where user_id = p_user_id;
+
+  -- 5) OTURUMU KAPAT
+  delete from auth.sessions  where user_id = p_user_id;
+  delete from auth.identities where user_id = p_user_id;
+  update auth.users
+     set email = v_tag || '@silinmis.loungelink',
+         phone = null,
+         raw_user_meta_data = '{}'::jsonb,
+         banned_until = 'infinity'
+   where id = p_user_id;
+  if exists (select 1 from information_schema.columns
+              where table_schema = 'auth' and table_name = 'users' and column_name = 'deleted_at') then
+    execute 'update auth.users set deleted_at = coalesce(deleted_at, now()) where id = $1' using p_user_id;
+  end if;
+
+  return jsonb_build_object('ok', true, 'tag', v_tag);
+end $function$;
+
+-- Zaten anonimleşmiş hesaplarda kalan cinsiyet / izin / kimlik izleri
+update public.users set gender = null, pazarlama_izni = false
+ where anonymized_at is not null and (gender is not null or pazarlama_izni);
+
+-- ── §6 SAKLAMA SÜRELERİ ─────────────────────────────────────────────────────
 
 -- ----------------------------------------------------------------------
 -- partner_payout   [etkin kaynak: 209_saglayici_modulu.sql]
@@ -3632,8 +3725,8 @@ select 'ilan saat sirasi kapisi' as kontrol,
 -- Beklenen: tamam = true.
 
 -- ----------------------------------------------------------------------
--- recompute_trust   [etkin kaynak: 307_zarafet_atlama_siniri.sql]
--- ⚠ Bu fonksiyon 5 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- recompute_trust   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 6 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.recompute_trust(p_user uuid)
 returns int language plpgsql security definer set search_path = public as $$
@@ -3651,8 +3744,9 @@ begin
    where s.status = 'completed' and (r.guest_id = p_user or r.host_id = p_user);
 
   v_c := v_c || '{"email":10}'::jsonb;
-  if coalesce(v_v.phone_verified,false) then v_c := v_c || '{"phone":10}'::jsonb; end if;
-  if coalesce(v_v.id_verified,false)    then v_c := v_c || '{"id":18}'::jsonb; end if;
+  -- 345 · kimlik (18) kalktı: telefon 10→14, profil fotoğrafı +6, oturum +4, puan +4
+  if coalesce(v_v.phone_verified,false) then v_c := v_c || '{"phone":14}'::jsonb; end if;
+  if nullif(btrim(coalesce(v_p.photo_url,'')),'') is not null then v_c := v_c || '{"photo":6}'::jsonb; end if;
 
   if coalesce(v_p.linkedin_verified, false) then
     v_c := v_c || '{"linkedin":8}'::jsonb;
@@ -3671,18 +3765,18 @@ begin
     v_c := v_c || '{"host_access":8}'::jsonb;
   end if;
 
-  if v_sessions >= 10 then v_c := v_c || '{"sessions":14}'::jsonb;
-  elsif v_sessions >= 3 then v_c := v_c || '{"sessions":10}'::jsonb;
-  elsif v_sessions >= 1 then v_c := v_c || '{"sessions":6}'::jsonb;
+  if v_sessions >= 10 then v_c := v_c || '{"sessions":18}'::jsonb;
+  elsif v_sessions >= 3 then v_c := v_c || '{"sessions":13}'::jsonb;
+  elsif v_sessions >= 1 then v_c := v_c || '{"sessions":8}'::jsonb;
   end if;
 
   select avg(score)::numeric, count(*) into v_rating, v_rating_n
     from ratings where rated_id = p_user;
 
   if coalesce(v_rating_n,0) >= 3 then
-    if v_rating >= 4.5 then v_c := v_c || '{"rating":10}'::jsonb;
-    elsif v_rating >= 4.0 then v_c := v_c || '{"rating":6}'::jsonb;
-    elsif v_rating >= 3.0 then v_c := v_c || '{"rating":2}'::jsonb;
+    if v_rating >= 4.5 then v_c := v_c || '{"rating":14}'::jsonb;
+    elsif v_rating >= 4.0 then v_c := v_c || '{"rating":8}'::jsonb;
+    elsif v_rating >= 3.0 then v_c := v_c || '{"rating":3}'::jsonb;
     end if;
   end if;
 
@@ -5453,14 +5547,15 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- start_session_request   [etkin kaynak: 313_akis_durum_makinesi_bildirim_soru.sql]
--- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- start_session_request   [etkin kaynak: 342_oturum_baslatma_penceresi.sql]
+-- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.start_session_request(p_request_id uuid)
 returns jsonb language plpgsql security definer set search_path = public as $function$
 declare
   v_uid uuid := auth.uid(); v_req requests%rowtype; v_s sessions%rowtype;
   v_is_host boolean; v_both boolean; v_ad text; v_diger text; v_salon text;
+  v_bitis timestamptz;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   perform public.hesap_kapisi(v_uid);
@@ -5468,6 +5563,15 @@ begin
   if not found then raise exception 'request_not_found'; end if;
   if v_uid not in (v_req.host_id, v_req.guest_id) then raise exception 'not_party'; end if;
   if v_req.status <> 'accepted' then raise exception 'request_not_accepted'; end if;
+  -- 342: ilan saati + 2 sa ek süre geçtiyse başlatılamaz (süpürgenin isteği iptal ettiği an).
+  -- Önce yalnız süpürge kapatıyordu; süpürge koşana kadar (5 dk) ya da cron kapalıyken
+  -- düğme çalışıyordu ve ekran "Sona erdi" derken oturum başlıyordu. Zaten AKTİF oturum etkilenmez.
+  select public.yerel_an(a.avail_date, a.time_to, a.airport_code) into v_bitis
+    from availabilities a where a.id = v_req.avail_id;
+  if v_bitis is not null and v_bitis < now() - interval '2 hours'
+     and not exists (select 1 from sessions where request_id = p_request_id and status = 'active') then
+    raise exception 'session_window_closed';
+  end if;
   v_is_host := (v_uid = v_req.host_id);
   v_ad := public.kisa_ad(v_uid);
   v_salon := public.salon_etiketi(v_req.avail_id);
@@ -7144,8 +7248,8 @@ end $sf338$;
 -- §6 · plan kartları: indirim ve erken erişim satırları ORANDAN üretilir (app + site aynı kaynaktan)
 
 -- ----------------------------------------------------------------------
--- admin_anonymize_user   [etkin kaynak: 329_silinen_hesap_14_gun_anonim.sql]
--- ⚠ Bu fonksiyon 3 dosyada tanimli. Degistirirken drift_check.py calistir.
+-- admin_anonymize_user   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 4 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.admin_anonymize_user(p_user_id uuid, p_admin text, p_reason text DEFAULT NULL::text)
  RETURNS jsonb
@@ -7161,19 +7265,18 @@ begin
     return jsonb_build_object('ok', true, 'already', true);
   end if;
 
-  -- Silinen kişiyi arayanların bir şey bulabilmesi için kısa bir etiket.
-  -- Ham e-postanın hiçbir izi kalmaz; yalnız "kimdi" değil "kaçıncı"ydı.
   v_tag := 'silinmis-' || left(replace(p_user_id::text, '-', ''), 8);
 
-  -- 1) KİMLİK
+  -- 1) KİMLİK (345: cinsiyet ve pazarlama izni de)
   update users
      set email = v_tag || '@silinmis.loungelink',
-         phone = null, phone_e164 = null, phone_kanonik = null, deleted_at = coalesce(deleted_at, now()), /* 282/B3 */
+         phone = null, phone_e164 = null, phone_kanonik = null, deleted_at = coalesce(deleted_at, now()),
+         gender = null, pazarlama_izni = false,
          anonymized_at = now(),
          anonymized_by = p_admin
    where id = p_user_id;
 
-  -- 2) PROFİL — serbest metinlerin hepsi kişisel veri taşıyabilir
+  -- 2) PROFİL
   update profiles
      set name = 'Silinmiş kullanıcı',
          bio = null, profession = null, photo_url = null,
@@ -7183,14 +7286,15 @@ begin
          updated_at = now()
    where user_id = p_user_id;
 
-  -- 3) DOĞRULAMA İZLERİ
+  -- 3) DOĞRULAMA İZLERİ (345: eski kimlik başvurusu alanları da)
   update verifications
-     set phone_verified = false, id_verified = false
+     set phone_verified = false, id_verified = false,
+         id_doc_path = null, id_selfie_path = null, id_review_note = null, id_status = 'none'
    where user_id = p_user_id;
 
   -- 4) SERBEST METİN İÇEREN KAYITLAR
-  -- Mesajlar SİLİNMEZ: karşı tarafın sohbeti delik deşik olur ve bir
-  -- itiraz durumunda bağlam kaybolur. İçerik yerine yazarı anonimleşir.
+  -- Mesajlar SİLİNMEZ (karşı tarafın sohbeti ve itiraz bağlamı); yazar anonimleşir,
+  -- mesajlar saklama süresi (24 ay) dolunca §6 işiyle silinir.
   update reports set description = '[anonimlestirildi]'
    where reporter_id = p_user_id;
   update ratings set comment = null
@@ -7200,15 +7304,14 @@ begin
   delete from visits           where user_id = p_user_id and visit_date >= current_date;
   delete from availabilities   where host_id = p_user_id and avail_date >= current_date;
   delete from host_entitlements where user_id = p_user_id;
+  -- 345 · kişiye özel kayıtlar
+  delete from notifications      where user_id = p_user_id;
+  delete from notification_prefs where user_id = p_user_id;
+  delete from user_contact       where user_id = p_user_id;
 
-  -- 5) OTURUMU KAPAT — kullanıcı bir daha giremesin
+  -- 5) OTURUMU KAPAT
   delete from auth.sessions  where user_id = p_user_id;
   delete from auth.identities where user_id = p_user_id;
-  -- 🔴 329 · BU GÜNCELLEME HİÇ ÇALIŞMIYORDU. 282/B3 düzenlemesi buraya public.users'ın
-  -- kolonlarını (phone_e164, phone_kanonik) da yazmıştı; auth.users'ta bu kolonlar YOK →
-  -- "column ... does not exist" → bütün fonksiyon geri alınıyor: BO'nun "Anonimleştir"i
-  -- hiçbir şey yapmıyor, e-posta ve Google/Apple kimliği hiç serbest kalmıyordu.
-  -- Yalnız auth.users'ın gerçek kolonları; deleted_at Supabase'de var (yoksa atlanır).
   update auth.users
      set email = v_tag || '@silinmis.loungelink',
          phone = null,
@@ -7220,60 +7323,14 @@ begin
     execute 'update auth.users set deleted_at = coalesce(deleted_at, now()) where id = $1' using p_user_id;
   end if;
 
-  -- 🔴 Denetim kaydını BURADA yazmıyoruz. audit_log'un kolonları
-  -- (actor_id uuid, entity_type, before_data, after_data) BO'nun audit()
-  -- yardımcısıyla yazılıyor; buradan ikinci bir yol açmak iki farklı
-  -- şemayla iki farklı kayıt üretirdi. Çağıran BO action'ı audit() çağırır.
-
   return jsonb_build_object('ok', true, 'tag', v_tag);
 end $function$;
 
--- ── delete_my_account: silme sürecinde giriş kapalı ─────────────────────────
-CREATE OR REPLACE FUNCTION public.delete_my_account()
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare v_uid uuid := auth.uid(); v_email text; v_kapanan jsonb;
-begin
-  if v_uid is null then raise exception 'not_authenticated'; end if;
-  select email into v_email from users where id = v_uid;
+-- Zaten anonimleşmiş hesaplarda kalan cinsiyet / izin / kimlik izleri
+update public.users set gender = null, pazarlama_izni = false
+ where anonymized_at is not null and (gender is not null or pazarlama_izni);
 
-  -- 322 · açık işler (istekler · oturumlar · bağlantılar · ilanlar · keşif görünürlüğü)
-  v_kapanan := public.hesap_acik_islerini_kapat(v_uid);
-
-  update users set deleted_at = now() where id = v_uid and deleted_at is null;
-  -- 329 · Silme sürecinde GİRİŞ KAPALI: eskiden 14 gün içinde yeniden giriş yapan kişi salt
-  -- okunur, yarı silinmiş bir hesaba düşüyordu ("yazma işlemleri kapalı"). Auth katmanında
-  -- 15 gün kilit → uygulama "Bu hesap kapatıldı…" der. 14. gün gece anonimleştirme kilidi
-  -- kalıcı yapar ve e-postayı serbest bırakır (aradaki gün boşluk bırakmaz).
-  update auth.users set banned_until = greatest(coalesce(banned_until, now()), now() + interval '15 days')
-   where id = v_uid;
-
-  -- 282/B2: SLA kuyruğuna DÜŞ (bo_silme_talepleri yalnız bu tabloyu okur).
-  -- 322: durum sözlüğü tablonun ve BO'nun sözlüğü — 'pending' (eskiden 'open' → kısıt hatası).
-  insert into deletion_requests (email, note, source, status, matched_user_id)
-  select coalesce(v_email, v_uid::text), 'uygulama içi "Hesabı sil"', 'app', 'pending', v_uid
-   where not exists (select 1 from deletion_requests
-                      where matched_user_id = v_uid and status in ('pending', 'verified'));
-  insert into audit_log (action, entity_type, entity_id, after_data)
-  values ('app.account_delete', 'users', v_uid, jsonb_build_object('requested_by', 'user') || coalesce(v_kapanan, '{}'::jsonb));
-  return jsonb_build_object('ok', true, 'sla_days', 30);
-end $function$;
-
-do $$
-begin
-  if exists (select 1 from pg_namespace where nspname = 'cron') then
-    if exists (select 1 from cron.job where jobname = 'll-silinen-hesap-anonim') then
-      perform cron.unschedule('ll-silinen-hesap-anonim');
-    end if;
-    perform cron.schedule('ll-silinen-hesap-anonim', '30 3 * * *', 'select public.silinen_hesaplari_anonimlestir()');
-    raise notice '329: pg_cron isi kuruldu — ll-silinen-hesap-anonim, her gece 03:30.';
-  else
-    raise notice '329: pg_cron yok — is kurulmadi (canlida var).';
-  end if;
-end $$;
+-- ── §6 SAKLAMA SÜRELERİ ─────────────────────────────────────────────────────
 
 -- ----------------------------------------------------------------------
 -- anonymized_users   [etkin kaynak: 094_admin_erasure.sql]
@@ -24232,23 +24289,25 @@ begin
 end $pin253$;
 
 -- ----------------------------------------------------------------------
--- bildirim_tercihlerim   [etkin kaynak: 254_urun_bosluklari.sql]
+-- bildirim_tercihlerim   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.bildirim_tercihlerim()
 returns jsonb
-language plpgsql stable security definer set search_path = public as $bt254$
-declare v_uid uuid := auth.uid(); v_p jsonb; v_kap jsonb;
+language plpgsql stable security definer set search_path = public as $bt345$
+declare v_uid uuid := auth.uid(); v_p jsonb; v_kap jsonb; v_pz boolean;
 begin
   if v_uid is null then raise exception 'not_authenticated'; end if;
   select prefs into v_p from notification_prefs where user_id = v_uid;
   select value into v_kap from beta_settings where key = 'bildirim_kapatilabilir';
+  select pazarlama_izni into v_pz from users where id = v_uid;
   return jsonb_build_object(
     'tercihler', coalesce(v_p, '{}'::jsonb),
     'kapatilabilir', coalesce(v_kap, '[]'::jsonb),
-    -- Kapatılamayanları da SÖYLÜYORUZ: "neden bu anahtar yok?" sorusunun
-    -- cevabı ekranda olmalı.
-    'kapatilamaz_not', public.metin('bildirim_zorunlu_not_tr'));
-end $bt254$;
+    'kapatilamaz_not', public.metin('bildirim_zorunlu_not_tr'),
+    'pazarlama_izni', coalesce(v_pz, false));
+end $bt345$;
+grant execute on function public.bildirim_tercihlerim() to authenticated;
 
 -- ----------------------------------------------------------------------
 -- bildirim_tercihi_yaz   [etkin kaynak: 254_urun_bosluklari.sql]
@@ -26956,7 +27015,8 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- tek_tarafli_oturumlari_kapat   [etkin kaynak: 280_kredi_ve_durum_kilidi.sql]
+-- tek_tarafli_oturumlari_kapat   [etkin kaynak: 342_oturum_baslatma_penceresi.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.tek_tarafli_oturumlari_kapat()
 returns int language plpgsql security definer set search_path = public as $$
@@ -26968,8 +27028,11 @@ begin
       join requests r on r.id = s.request_id
       join availabilities a on a.id = r.avail_id
      where s.status = 'active'
-       and (a.avail_date + a.time_to)::timestamp
-           < (now() at time zone 'Europe/Istanbul') - interval '2 hours'
+       -- 342: (1) saat dilimi havalimanınınki (yerel_an) — İstanbul sabiti LHR/FRA'da 2-3 saat kayıyordu;
+       --      (2) ek sürede (ilan bittikten sonra) başlayan oturum da en az 2 saat yaşar.
+       --      Önce: 1 sa 50 dk gecikmeyle başlayan oturum 10 dk sonra "süresi doldu" diye kapanıyordu.
+       and greatest(public.yerel_an(a.avail_date, a.time_to, a.airport_code),
+                    coalesce(s.started_at, '-infinity'::timestamptz)) < now() - interval '2 hours'
   loop
     if coalesce(v_s.host_confirmed,false) or coalesce(v_s.guest_confirmed,false) then
       update sessions set status = 'completed', completed_at = now(),
@@ -28105,29 +28168,27 @@ begin
 end $$;
 
 -- ----------------------------------------------------------------------
--- kimlik_belgesi_gonder   [etkin kaynak: 285_kyc_belge_ve_karar.sql]
+-- kimlik_belgesi_gonder   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.kimlik_belgesi_gonder(p_doc_path text, p_selfie_path text)
-returns jsonb language plpgsql security definer set search_path = public as $$
-declare v_uid uuid := auth.uid(); v_st text;
+returns jsonb language plpgsql security definer set search_path = public as $kbg345$
 begin
-  if v_uid is null then raise exception 'not_authenticated'; end if;
-  perform public.hesap_kapisi(v_uid);
-  -- Yol kendi klasöründe olmalı: başkasının belgesini "benim" diye gönderemez
-  if p_doc_path is null or p_doc_path !~ ('^' || v_uid::text || '/') then raise exception 'kyc_path_invalid'; end if;
-  if p_selfie_path is not null and p_selfie_path !~ ('^' || v_uid::text || '/') then raise exception 'kyc_path_invalid'; end if;
-  select id_status into v_st from verifications where user_id = v_uid;
-  if v_st = 'approved' then raise exception 'kyc_already_approved'; end if;
-  if v_st = 'submitted' then raise exception 'kyc_already_submitted'; end if;
-  insert into verifications (user_id) values (v_uid) on conflict (user_id) do nothing;
-  update verifications
-     set id_status = 'submitted', id_doc_path = p_doc_path, id_selfie_path = p_selfie_path,
-         id_submitted_at = now(), id_review_note = null, updated_at = now()
-   where user_id = v_uid;
-  insert into audit_log (action, entity_type, entity_id, after_data)
-  values ('kyc.submitted', 'verifications', v_uid, jsonb_build_object('selfie', p_selfie_path is not null));
-  return jsonb_build_object('ok', true, 'status', 'submitted', 'sla_saat', 48);
-end $$;
+  -- 345 · Kimlik belgesi artık alınmıyor (eski uygulama sürümleri buraya düşer).
+  raise exception 'kyc_kapali';
+end $kbg345$;
+
+drop policy if exists "kyc_own_write"  on storage.objects;
+drop policy if exists "kyc_own_update" on storage.objects;
+
+update public.verifications
+   set id_doc_path = null, id_selfie_path = null, id_review_note = null,
+       id_status = case when id_status in ('submitted', 'approved', 'rejected') then 'none' else id_status end,
+       updated_at = now()
+ where id_doc_path is not null or id_selfie_path is not null
+    or id_status in ('submitted', 'approved', 'rejected');
+
+-- ── §2 DOĞRULANMIŞ PROFİL ───────────────────────────────────────────────────
 
 -- ----------------------------------------------------------------------
 -- kimlik_durumum   [etkin kaynak: 285_kyc_belge_ve_karar.sql]
@@ -32673,3 +32734,199 @@ revoke all on function public.bo_odul_fiyatlari() from public, anon, authenticat
 grant execute on function public.bo_odul_fiyatlari() to service_role;
 
 -- Eski "öne çıkar" düğmesi vitrin_bitis'i de temizlesin (süresiz vitrin).
+
+-- ----------------------------------------------------------------------
+-- profil_dogrulandi_hesapla   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.profil_dogrulandi_hesapla(p_user uuid)
+returns boolean language sql stable security definer set search_path = public as $pdh345$
+  select coalesce((
+    select coalesce(v.email_verified, false)
+       and coalesce(v.phone_verified, false)
+       and coalesce(v.phone_verified_method, 'sms') <> 'bypass'
+       and nullif(btrim(coalesce(p.photo_url, '')), '') is not null
+       and nullif(btrim(coalesce(p.profession, '')), '') is not null
+      from public.verifications v
+      left join public.profiles p on p.user_id = v.user_id
+     where v.user_id = p_user), false)
+$pdh345$;
+revoke execute on function public.profil_dogrulandi_hesapla(uuid) from public, anon;
+
+-- ----------------------------------------------------------------------
+-- profil_dogrulama_esitle   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.profil_dogrulama_esitle(p_user uuid)
+returns void language plpgsql security definer set search_path = public as $pde345$
+declare v_ok boolean := public.profil_dogrulandi_hesapla(p_user);
+begin
+  update public.verifications
+     set id_verified    = v_ok,
+         id_verified_at = case when v_ok then coalesce(id_verified_at, now()) else null end,
+         id_provider    = case when v_ok then 'profil' else null end,
+         updated_at     = now()
+   where user_id = p_user and id_verified is distinct from v_ok;
+end $pde345$;
+revoke execute on function public.profil_dogrulama_esitle(uuid) from public, anon, authenticated;
+
+-- ----------------------------------------------------------------------
+-- trg_profil_dogrulama   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.trg_profil_dogrulama()
+returns trigger language plpgsql security definer set search_path = public as $tpd345$
+begin
+  perform public.profil_dogrulama_esitle(new.user_id);
+  return null;
+end $tpd345$;
+
+drop trigger if exists profil_dogrulama_p on public.profiles;
+create trigger profil_dogrulama_p
+  after insert or update of photo_url, profession on public.profiles
+  for each row execute function public.trg_profil_dogrulama();
+
+drop trigger if exists profil_dogrulama_v on public.verifications;
+create trigger profil_dogrulama_v
+  after insert or update of email_verified, phone_verified, phone_verified_method on public.verifications
+  for each row execute function public.trg_profil_dogrulama();
+
+-- Güven puanı fotoğraf değişince de yeniden hesaplanır (yeni bileşen).
+drop trigger if exists on_profile_trust on public.profiles;
+create trigger on_profile_trust
+  after insert or update of profession, bio, linkedin_url, linkedin_verified, guest_capacity, photo_url on public.profiles
+  for each row execute function public.trg_profile_trust();
+
+-- Mevcut herkes yeni tanıma göre (eski KYC onayları da bu tanıma geçer).
+update public.verifications v
+   set id_verified    = public.profil_dogrulandi_hesapla(v.user_id),
+       id_verified_at = case when public.profil_dogrulandi_hesapla(v.user_id) then coalesce(v.id_verified_at, now()) else null end,
+       id_provider    = case when public.profil_dogrulandi_hesapla(v.user_id) then 'profil' else null end
+ where v.id_verified is distinct from public.profil_dogrulandi_hesapla(v.user_id)
+    or coalesce(v.id_provider, '') not in ('profil', '');
+
+-- ── §3 GÜVEN PUANI ──────────────────────────────────────────────────────────
+
+-- ----------------------------------------------------------------------
+-- pazarlama_izni_yaz   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.pazarlama_izni_yaz(p_acik boolean)
+returns jsonb language plpgsql security definer set search_path = public as $piy345$
+declare v_uid uuid := auth.uid(); v_acik boolean := coalesce(p_acik, false);
+begin
+  if v_uid is null then raise exception 'not_authenticated'; end if;
+  update users set pazarlama_izni = v_acik, pazarlama_izni_at = now() where id = v_uid;
+  -- İspat kaydı: verilme de geri alma da ayrı satır (KVKK m.3 / 6563 m.6).
+  insert into consents (user_id, type, version, granted_at)
+  values (v_uid, case when v_acik then 'pazarlama_bildirimi' else 'pazarlama_bildirimi_geri_alindi' end, 'v17', now());
+  return jsonb_build_object('ok', true, 'pazarlama_izni', v_acik);
+end $piy345$;
+revoke all on function public.pazarlama_izni_yaz(boolean) from public, anon;
+grant execute on function public.pazarlama_izni_yaz(boolean) to authenticated;
+
+-- Kayıtta işaretlenen isteğe bağlı kutu, onay listesinde 'pazarlama_bildirimi' olarak gelir
+-- (kayıt akışının yeniden deneme / ertelenmiş yazma yolları aynen çalışsın diye).
+
+-- ----------------------------------------------------------------------
+-- saklama_suresi_imha   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.saklama_suresi_imha()
+returns jsonb language plpgsql security definer set search_path = public as $ssi345$
+declare
+  v_sonuc jsonb := '{}'::jsonb; v_n int;
+  r record;
+begin
+  for r in
+    select * from (values
+      ('app_errors',       'created_at', interval '12 months'),
+      ('notifications',    'created_at', interval '12 months'),
+      ('flight_fetch_log', 'created_at', interval '12 months'),
+      ('messages',         'created_at', interval '24 months'),
+      ('reports',          'created_at', interval '5 years')
+    ) as t(tablo, kolon, sure)
+  loop
+    if exists (select 1 from information_schema.columns
+                where table_schema = 'public' and table_name = r.tablo and column_name = r.kolon) then
+      begin
+        execute format('delete from public.%I where %I < now() - $1', r.tablo, r.kolon) using r.sure;
+        get diagnostics v_n = row_count;
+        v_sonuc := v_sonuc || jsonb_build_object(r.tablo, v_n);
+      exception when others then
+        -- Bir tablo başka bir kayda bağlıysa (yabancı anahtar) iş durmaz; hata sayılır.
+        v_sonuc := v_sonuc || jsonb_build_object(r.tablo, 'hata: ' || left(sqlerrm, 120));
+      end;
+    end if;
+  end loop;
+
+  -- Onay kayıtları: hesap silindikten (anonimleştikten) 10 yıl sonra
+  begin
+    delete from public.consents c using public.users u
+     where u.id = c.user_id and u.anonymized_at is not null
+       and u.anonymized_at < now() - interval '10 years';
+    get diagnostics v_n = row_count;
+    v_sonuc := v_sonuc || jsonb_build_object('consents', v_n);
+  exception when others then
+    v_sonuc := v_sonuc || jsonb_build_object('consents', 'hata: ' || left(sqlerrm, 120));
+  end;
+
+  -- Silinen hesabın e-posta özeti: 5 yıl
+  begin
+    delete from public.onceki_epostalar where created_at < now() - interval '5 years';
+    get diagnostics v_n = row_count;
+    v_sonuc := v_sonuc || jsonb_build_object('onceki_epostalar', v_n);
+  exception when others then
+    v_sonuc := v_sonuc || jsonb_build_object('onceki_epostalar', 'hata: ' || left(sqlerrm, 120));
+  end;
+
+  return jsonb_build_object('ok', true, 'silinen', v_sonuc, 'kosuldu', now());
+end $ssi345$;
+revoke execute on function public.saklama_suresi_imha() from public, anon, authenticated;
+grant execute on function public.saklama_suresi_imha() to service_role;
+
+do $cr345$
+begin
+  if exists (select 1 from pg_namespace where nspname = 'cron') then
+    if exists (select 1 from cron.job where jobname = 'll-saklama-imha') then
+      perform cron.unschedule('ll-saklama-imha');
+    end if;
+    perform cron.schedule('ll-saklama-imha', '10 4 * * *', 'select public.saklama_suresi_imha()');
+    raise notice '345: pg_cron isi kuruldu — ll-saklama-imha, her gece 04:10.';
+  else
+    raise notice '345: pg_cron yok — is kurulmadi.';
+  end if;
+end $cr345$;
+
+-- İlk imha hemen (süresi zaten dolmuş kayıtlar için)
+select public.saklama_suresi_imha() as ilk_imha;
+
+-- ── DOĞRULAMA ───────────────────────────────────────────────────────────────
+select 'kimlik belgesi gonderimi kapali' as kontrol,
+       position('kyc_kapali' in pg_get_functiondef('public.kimlik_belgesi_gonder(text,text)'::regprocedure)) > 0 as tamam
+union all
+select 'kyc kovasina yazma kurali yok',
+       not exists (select 1 from pg_policies where schemaname = 'storage' and tablename = 'objects'
+                    and policyname in ('kyc_own_write', 'kyc_own_update'))
+union all
+select 'tabloda belge yolu kalmadi',
+       not exists (select 1 from public.verifications where id_doc_path is not null or id_selfie_path is not null)
+union all
+select 'id_verified = dogrulanmis profil (herkes)',
+       not exists (select 1 from public.verifications v
+                    where v.id_verified is distinct from public.profil_dogrulandi_hesapla(v.user_id))
+union all
+select 'guven puaninda kimlik bileseni kalmadi',
+       not exists (select 1 from public.trust_scores where components ? 'id')
+union all
+select 'kampanya pazarlama iznine bakiyor',
+       position('pazarlama_izni' in pg_get_functiondef('public.send_campaign(text,text,jsonb,uuid,uuid[])'::regprocedure)) > 0
+union all
+select 'kayit onayi pazarlama iznini aciyor',
+       position('pazarlama_izni' in pg_get_functiondef('public.grant_consents(text[],text)'::regprocedure)) > 0
+union all
+select 'anonimlestirme cinsiyeti siliyor',
+       position('gender = null' in pg_get_functiondef('public.admin_anonymize_user(uuid,text,text)'::regprocedure)) > 0
+union all
+select 'saklama isi kurulu',
+       not exists (select 1 from pg_namespace where nspname = 'cron')
+       or exists (select 1 from cron.job where jobname = 'll-saklama-imha')
+union all
+select 'BILGI: kyc kovasinda kalan dosya sayisi = '
+       || (select count(*) from storage.objects where bucket_id = 'kyc')::text
+       || ' (0 degilse Dashboard › Storage › kyc › sil)', true;

@@ -248,7 +248,7 @@ export function TelefonDogrulamaSayfasi({ t, session, acik, onKapat, onBitti, il
                 </TouchableOpacity>
               </View>
               <View style={{ marginTop: ARA[12], gap: ARA[6] }}>
-                {[["+10", t.tvKazanc1], [null, t.tvKazanc2], [null, t.tvKazanc3]].map(([i, m]) => (
+                {[["+14", t.tvKazanc1], [null, t.tvKazanc2], [null, t.tvKazanc3]].map(([i, m]) => (
                   <View key={m} style={{ flexDirection: "row", gap: ARA[8], alignItems: "center" }}>
                     <View style={{ minWidth: 26 }}>
                       {i ? <Text style={{ color: C.greenInk || C.green, fontWeight: "700", fontSize: FS.sm }}>{i}</Text>
@@ -340,7 +340,7 @@ export function TelefonDogrulamaSayfasi({ t, session, acik, onKapat, onBitti, il
                   </View>
                 )}
                 <View style={{ flexDirection: "row", gap: ARA[8] }}>
-                  <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, minWidth: 26 }}>+18</Text>
+                  <Text style={{ color: C.goldText, fontWeight: "700", fontSize: FS.sm, minWidth: 26 }}>+6</Text>
                   <Text style={[govde, { flex: 1 }]}>{t.tvSonraki}</Text>
                 </View>
               </View>
