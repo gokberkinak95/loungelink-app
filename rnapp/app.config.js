@@ -150,7 +150,26 @@ function podHedefi(config) {
   }]);
 }
 
-module.exports = ({ config }) => podHedefi(firebaseEkle(geriTusuEski(iosPlist(hazirla(config)))));
+// 8 Kasım 2026 — EAS Android makinesi Gradle dağıtımını (services.gradle.org → GitHub) üç kez
+// indiremedi: 504, 504, "timeout (10000ms)". Ölçüldü: aynı dosya buradan iniyordu. Wrapper'ın
+// 10 sn ağ zaman aşımı 120 sn'ye çıkar ve -all (200 MB) yerine -bin (130 MB) paketi indirilir;
+// sürüm aynı (8.10.2), derleme davranışı değişmez.
+function gradleIndirme(config) {
+  return withDangerousMod(config, ["android", async (c) => {
+    const fs = require("fs");
+    const path = require("path");
+    const dosya = path.join(c.modRequest.platformProjectRoot, "gradle", "wrapper", "gradle-wrapper.properties");
+    if (!fs.existsSync(dosya)) return c;
+    let s = fs.readFileSync(dosya, "utf8");
+    s = s.replace(/(distributionUrl=.*gradle-[\d.]+)-all\.zip/, "$1-bin.zip");
+    if (/^networkTimeout=/m.test(s)) s = s.replace(/^networkTimeout=.*$/m, "networkTimeout=120000");
+    else s += "\nnetworkTimeout=120000\n";
+    fs.writeFileSync(dosya, s);
+    return c;
+  }]);
+}
+
+module.exports = ({ config }) => gradleIndirme(podHedefi(firebaseEkle(geriTusuEski(iosPlist(hazirla(config))))));
 
 function hazirla(config) {
   const easYol = process.env.GOOGLE_SERVICES_JSON;
