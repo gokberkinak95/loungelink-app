@@ -1,5 +1,26 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -35,7 +56,7 @@
   "",
   "",
   "Bildirimler",
-  "3",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -72,7 +93,7 @@
   "Planım",
   "",
   "Tanış",
-  "3",
+  "1",
   "",
   "Profil",
   "",
@@ -83,7 +104,7 @@
   "İlanını öne çıkar veya doğrudan davet gönder",
   "",
   "Öne Çıkan Yerleşim",
-  "Müsaitliğini 24 saat boyunca keşfin en üstüne taşı. 200 puan.",
+  "İlanını 24 saat boyunca Keşfet'in en üstüne taşı. 200 puan.",
   "Öne Çıkarmayı Aktifleştir",
   "DOĞRUDAN DAVET",
   "Geçmiş oturumlardan güvendiğin misafirleri bir sonraki slotuna davet et. Tanımadıklarına toplu mesaj yasaktır.",
@@ -91,7 +112,7 @@
   "IST",
   "14:20",
   "TAV Primeclass",
-  "20 Ekim · 14:20–16:40",
+  "8 Kasım · 14:20–16:40",
   "1 yer açık · 1/2"
  ],
  "tasan": [],

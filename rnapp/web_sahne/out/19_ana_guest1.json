@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -8,13 +21,13 @@
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ AKŞAMLAR",
+  "İYİ GÜNLER",
   "Gökberk",
-  "12",
+  "7",
   "KREDİ",
-  "200",
+  "400",
   "LOUNGEPUAN",
-  "50",
+  "38",
   "GÜVEN",
   "1",
   "SOHBET",
@@ -24,7 +37,7 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · 242 GÜN SONRA",
+  "BUGÜN · BİNİŞ",
   "TK1979",
   "IST",
   "LHR",
@@ -32,8 +45,13 @@
   "SALON",
   "14:00–18:00",
   "Host bul",
-  "Bağlantılarım  ·  1",
+  "",
+  "Radar kapalı",
+  "Konum paylaşımını açarsan, bulunduğun havalimanında senin saat aralığındaki diğer LoungeLink kullanıcılarını görebilirsin. Sen de onlara görünürsün. İstediğin an Ayarlar'dan kapatabilirsin.",
+  "Radarı aç",
+  "Bağlantılarım",
   "Selin B.",
+  "1",
   "",
   "",
   "Ana Sayfa",
@@ -43,7 +61,7 @@
   "Planım",
   "",
   "Tanış",
-  "7",
+  "9",
   "",
   "Profil"
  ],

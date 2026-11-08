@@ -7,10 +7,6 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -48,7 +44,7 @@
   "",
   "",
   "Bildirimler",
-  "3",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -85,7 +81,7 @@
   "Planım",
   "",
   "Tanış",
-  "3",
+  "1",
   "",
   "Profil",
   "",
@@ -97,7 +93,7 @@
   "Bekleyen · 3",
   "Tamamlanan",
   "Ağırlaman nasıl geçti?",
-  "TAV Primeclass · 20 Ekim",
+  "TAV Primeclass · 8 Kasım",
   "",
   "0/240 · 20 karakter daha",
   "Bu cümlenin LoungeLink sitesinde yayınlanmasına izin veriyorum. Yalnız yukarıdaki ad görünür.",

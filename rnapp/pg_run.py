@@ -415,7 +415,10 @@ def main():
     # HER ZAMAN ana dosyadan ONCE calisir. Sirali anahtar bunu zorunlu kilar.
     def order(f):
         m = re.match(r'^(\d{3})([a-z]?)_', f)
-        return (m.group(1), 0 if m.group(2) else 1, f)
+        # 8 Kasım: yalnız `_PRE_` dosyaları ana dosyadan ÖNCE. 268a/269a/270a gibi
+        # teşhis/elle dosyaları ana dosyanın SONUCUNA bakar; önce koşunca
+        # "phone_kanonik does not exist" gibi sahte hata veriyordu.
+        return (m.group(1), 0 if (m.group(2) and '_PRE_' in f) else 1, 0 if not m.group(2) else 1, f)
 
     files = sorted((f for f in os.listdir(sql_dir)
                     if re.match(r'^\d{3}[a-z]?_.*\.sql$', f) and f[:3] >= start),

@@ -10,7 +10,7 @@
 -- ============================================================
 
 -- Toplam fonksiyon: 552
--- Birden cok dosyada tanimli (dikkat!): 169
+-- Birden cok dosyada tanimli (dikkat!): 170
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -44,6 +44,7 @@
 --   create_request               -> etkin: 140_rls_and_ratelimit.sql  (ayrica: 007_request_engine.sql, 009_phone_otp.sql, 026_doc_parity_core.sql, 033_beta_credits_dualrole_radar.sql, 065_fix_create_request.sql, 079_email_otp_contact_verification.sql)
 --   create_request_impl          -> etkin: 300_uctan_uca_denetim.sql  (ayrica: 140_rls_and_ratelimit.sql, 159_grants_home_flows_request_gate.sql, 204_blok_eylem_sinirinda.sql, 207_kopruler_ve_verilen_sozler.sql, 212_yonetilen_ayarlar_gercekten_okunuyor.sql)
 --   create_request_impl_preflag  -> etkin: 320_istek_puani_daraltilmis.sql  (ayrica: 258_olmayan_kolonlar.sql, 283_kural_motoru_on_iki_boyut.sql, 310_309_duzeltme_tasiyici_kapisi_guvenlik.sql)
+--   cron_isi_var                 -> etkin: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql  (ayrica: 274_istek_tavani_kilidi.sql)
 --   declare_phone                -> etkin: 268_telefon_tekilligi.sql  (ayrica: 138_email_otp.sql)
 --   delete_my_account            -> etkin: 329_silinen_hesap_14_gun_anonim.sql  (ayrica: 049_discovery_safety_phone_delete.sql, 282_ban_ve_kvkk_silme.sql, 322_hesap_silme_calisir_ve_acik_isleri_kapatir.sql)
 --   discover_availabilities      -> etkin: 243_one_cikarma_gercekten_calissin.sql  (ayrica: 012_women_safety.sql, 016_match_score.sql, 024_avatars_storage.sql, 030_match_and_broadcast.sql, 040_visibility_and_discovery_fix.sql, 041_staff_accounts_excluded.sql, 049_discovery_safety_phone_delete.sql, 064_fix_overloads_and_discovery.sql, 072_discover_availabilities_gender_langs.sql, 112_blocks_in_discovery.sql, 158_device_findings.sql, 182_discover_carries_decision.sql, 187_kanitlanmis_kusurlar.sql, 195_ucus_alanlari_ve_kod_paylasimi.sql)
@@ -26295,96 +26296,52 @@ select
         or u.email like '%@e2e.test'))                                        as "hâlâ tarihi geçmiş";
 
 -- ----------------------------------------------------------------------
--- cron_isi_var   [etkin kaynak: 274_istek_tavani_kilidi.sql]
+-- cron_isi_var   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.cron_isi_var(p_ad text)
-returns boolean language plpgsql stable as $ci$
+returns boolean language plpgsql stable security definer set search_path = public as $civ345$
 declare v boolean;
 begin
-  if not exists (select 1 from pg_extension where extname = 'pg_cron') then
-    return false;
-  end if;
-  execute 'select exists (select 1 from cron.job where jobname = $1)'
-    into v using p_ad;
-  return coalesce(v, false);
-end $ci$;
+  if to_regclass('cron.job') is null then return true; end if;   -- pg_cron yok: kurulacak iş yok
+  execute 'select exists (select 1 from cron.job where jobname = $1)' into v using p_ad;
+  return v;
+end $civ345$;
+revoke execute on function public.cron_isi_var(text) from public, anon, authenticated;
 
-do $cr$
-begin
-  if exists (select 1 from pg_extension where extname = 'pg_cron') then
-    perform cron.unschedule('loungelink_bayat_istek')
-      where exists (select 1 from cron.job where jobname = 'loungelink_bayat_istek');
-    perform cron.schedule('loungelink_bayat_istek', '15 * * * *',
-                          $q$select public.bayat_istekleri_iade_et();$q$);
-    raise notice '274: bayat istek isi saatlik zamanlandi';
-  else
-    raise notice '274: pg_cron yok — is zamanlanmadi';
-  end if;
-end $cr$;
-
-
--- ════════════════════════════════════════════════════════════════════════
--- §6 — NÖBETÇİ + SONUÇ TABLOSU
---
--- Supabase yalnız SON sorgunun tablosunu gösterir; bu yüzden tek tablo.
--- ════════════════════════════════════════════════════════════════════════
-select * from (
-  select 1::int as s, 'Kapatilan bayat istek (bu kosuda)' as "kontrol",
-         (select count(*)::text from requests
-           where decision_note like '%274%') as "deger",
-         '—' as "durum"
-  union all
-  select 2, 'Hala kilitli gorunen hesap (canli sayimla)',
-         (select count(*)::text from (
-            select r.guest_id
-              from requests r join availabilities a on a.id = r.avail_id
-             where r.status = 'pending' and a.avail_date >= current_date
-               and r.created_at >= now() - interval '72 hours'
-             group by r.guest_id having count(*) >= 1
-         ) x),
-         'bilgi — tavan asilmadikca sorun degil'
-  union all
-  select 3, 'Zamanlanmis is: loungelink_bayat_istek',
-         case when exists (select 1 from pg_extension where extname='pg_cron')
-                   and public.cron_isi_var('loungelink_bayat_istek')
-              then 'var' else 'YOK' end,
-         case when exists (select 1 from pg_extension where extname='pg_cron')
-                   and public.cron_isi_var('loungelink_bayat_istek')
-              then '✅ saatlik kosacak' else '⚠️ pg_cron yok ya da kurulamadi' end
-  union all
-  select 4, 'Tavan sayaci zaman kisitli mi',
-         case when (select pg_get_functiondef(p.oid) from pg_proc p
-                     join pg_namespace n on n.oid=p.pronamespace
-                    where n.nspname='public' and p.proname='trg_acik_istek_tavani')
-                   like '%avail_date >= current_date%'
-              then 'evet' else 'HAYIR' end,
-         case when (select pg_get_functiondef(p.oid) from pg_proc p
-                     join pg_namespace n on n.oid=p.pronamespace
-                    where n.nspname='public' and p.proname='trg_acik_istek_tavani')
-                   like '%avail_date >= current_date%'
-              then '✅ eski istekler tavani doldurmuyor'
-              else '❌ 274 §2 kurulmamis' end
-  union all
-  select 5, 'Vitrin ile kapi ayni kosulu mu kullaniyor',
-         case when (select pg_get_functiondef(p.oid) from pg_proc p
-                     join pg_namespace n on n.oid=p.pronamespace
-                    where n.nspname='public' and p.proname='acik_istek_tavanim')
-                   like '%avail_date >= current_date%'
-              then 'evet' else 'HAYIR' end,
-         case when (select pg_get_functiondef(p.oid) from pg_proc p
-                     join pg_namespace n on n.oid=p.pronamespace
-                    where n.nspname='public' and p.proname='acik_istek_tavanim')
-                   like '%avail_date >= current_date%'
-              then '✅ cip kapiyla ayni' else '❌ 274 §3 kurulmamis' end
-  union all
-  select 6, 'Supurucu kapatmayi krediden ayirdi mi',
-         case when (select pg_get_functiondef(p.oid) from pg_proc p
-                     join pg_namespace n on n.oid=p.pronamespace
-                    where n.nspname='public' and p.proname='bayat_istekleri_iade_et')
-                   not like '%and exists (select 1 from credit_ledger cl%where cl.ref_id = req.id and cl.reason = ''request_hold''%'
-              then 'evet' else 'HAYIR' end,
-         '✅ ucretsiz istekler de kapaniyor'
-) x order by s;
+-- ── DOĞRULAMA ───────────────────────────────────────────────────────────────
+select 'kimlik belgesi gonderimi kapali' as kontrol,
+       position('kyc_kapali' in pg_get_functiondef('public.kimlik_belgesi_gonder(text,text)'::regprocedure)) > 0 as tamam
+union all
+select 'kyc kovasina yazma kurali yok',
+       not exists (select 1 from pg_policies where schemaname = 'storage' and tablename = 'objects'
+                    and policyname in ('kyc_own_write', 'kyc_own_update'))
+union all
+select 'tabloda belge yolu kalmadi',
+       not exists (select 1 from public.verifications where id_doc_path is not null or id_selfie_path is not null)
+union all
+select 'id_verified = dogrulanmis profil (herkes)',
+       not exists (select 1 from public.verifications v
+                    where v.id_verified is distinct from public.profil_dogrulandi_hesapla(v.user_id))
+union all
+select 'guven puaninda kimlik bileseni kalmadi',
+       not exists (select 1 from public.trust_scores where components ? 'id')
+union all
+select 'kampanya pazarlama iznine bakiyor',
+       position('pazarlama_izni' in pg_get_functiondef('public.send_campaign(text,text,jsonb,uuid,uuid[])'::regprocedure)) > 0
+union all
+select 'kayit onayi pazarlama iznini aciyor',
+       position('pazarlama_izni' in pg_get_functiondef('public.grant_consents(text[],text)'::regprocedure)) > 0
+union all
+select 'anonimlestirme cinsiyeti siliyor',
+       position('gender = null' in pg_get_functiondef('public.admin_anonymize_user(uuid,text,text)'::regprocedure)) > 0
+union all
+select 'saklama isi kurulu',
+       public.cron_isi_var('ll-saklama-imha')
+union all
+select 'BILGI: kyc kovasinda kalan dosya sayisi = '
+       || (select count(*) from storage.objects where bucket_id = 'kyc')::text
+       || ' (0 degilse Dashboard › Storage › kyc › sil)', true;
 
 -- ----------------------------------------------------------------------
 -- kural_kosullari   [etkin kaynak: 284_kural_geri_bildirim_dongusu.sql]
@@ -32431,6 +32388,8 @@ declare v_tanim text;
 begin
   select pg_get_functiondef(p.oid) into v_tanim from pg_proc p
    where p.proname = 'confirm_session' and p.pronamespace = 'public'::regnamespace limit 1;
+  -- 8 Kasım: satır sonu farkı (CRLF/LF) karşılaştırmayı bozmasın (yerel kurulumda düşüyordu).
+  v_tanim := replace(v_tanim, chr(13), ''); v_eski := replace(v_eski, chr(13), '');
   if v_tanim like '%plan_agirlama_puani%' then raise notice '337: confirm_session zaten guncel.'; return; end if;
   if position(v_eski in v_tanim) = 0 then raise exception '337: confirm_session govdesi beklenenden farkli — elle bak.'; end if;
   v_tanim := replace(v_tanim, v_eski,
@@ -32896,37 +32855,4 @@ end $cr345$;
 -- İlk imha hemen (süresi zaten dolmuş kayıtlar için)
 select public.saklama_suresi_imha() as ilk_imha;
 
--- ── DOĞRULAMA ───────────────────────────────────────────────────────────────
-select 'kimlik belgesi gonderimi kapali' as kontrol,
-       position('kyc_kapali' in pg_get_functiondef('public.kimlik_belgesi_gonder(text,text)'::regprocedure)) > 0 as tamam
-union all
-select 'kyc kovasina yazma kurali yok',
-       not exists (select 1 from pg_policies where schemaname = 'storage' and tablename = 'objects'
-                    and policyname in ('kyc_own_write', 'kyc_own_update'))
-union all
-select 'tabloda belge yolu kalmadi',
-       not exists (select 1 from public.verifications where id_doc_path is not null or id_selfie_path is not null)
-union all
-select 'id_verified = dogrulanmis profil (herkes)',
-       not exists (select 1 from public.verifications v
-                    where v.id_verified is distinct from public.profil_dogrulandi_hesapla(v.user_id))
-union all
-select 'guven puaninda kimlik bileseni kalmadi',
-       not exists (select 1 from public.trust_scores where components ? 'id')
-union all
-select 'kampanya pazarlama iznine bakiyor',
-       position('pazarlama_izni' in pg_get_functiondef('public.send_campaign(text,text,jsonb,uuid,uuid[])'::regprocedure)) > 0
-union all
-select 'kayit onayi pazarlama iznini aciyor',
-       position('pazarlama_izni' in pg_get_functiondef('public.grant_consents(text[],text)'::regprocedure)) > 0
-union all
-select 'anonimlestirme cinsiyeti siliyor',
-       position('gender = null' in pg_get_functiondef('public.admin_anonymize_user(uuid,text,text)'::regprocedure)) > 0
-union all
-select 'saklama isi kurulu',
-       not exists (select 1 from pg_namespace where nspname = 'cron')
-       or exists (select 1 from cron.job where jobname = 'll-saklama-imha')
-union all
-select 'BILGI: kyc kovasinda kalan dosya sayisi = '
-       || (select count(*) from storage.objects where bucket_id = 'kyc')::text
-       || ' (0 degilse Dashboard › Storage › kyc › sil)', true;
+-- pg_cron yoksa (yerel kurulum) cron.job tablosu da yoktur; doğrudan başvuru sorguyu düşürür.

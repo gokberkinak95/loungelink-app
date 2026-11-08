@@ -1,6 +1,17 @@
 {
- "console": [],
- "errors": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
+ "errors": [
+  "adım ('dokun_a11y', 'Kabul ediyorum: Kullanım'): Locator.click: Timeout 4000ms exceeded."
+ ],
  "calls": [],
  "metin": [
   "",
@@ -9,8 +20,8 @@
   "Şartlar ve Sözleşmeler",
   "",
   "Tümünü kabul et",
-  "",
-  "Kabul ediyorum: Kullanım Koşulları ve Gizlilik Politikası",
+  "",
+  "Kullanım Koşulları'nı kabul ediyorum; Gizlilik Politikası ve Aydınlatma Metni'ni okudum.",
   "",
   "Kabul ediyorum: Topluluk Kuralları",
   "",
@@ -21,6 +32,8 @@
   "Kabul ediyorum: Platform dışı ödemeler kesinlikle yasaktır",
   "",
   "18 yaşımı doldurdum. LoungeLink yalnızca yetişkinler içindir.",
+  "",
+  "İsteğe bağlı: Kampanya, indirim ve yeni özellik duyurularını uygulama bildirimi olarak almak istiyorum. Ayarlar'dan istediğim an kapatabilirim.",
   "Hesap Oluştur"
  ],
  "tasan": [],

@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -14,7 +27,7 @@
   "",
   "Misafir ücretli girer",
   "iGA VE PRIMECLASS SALONLARI",
-  "Tam cevap uçuşuna ve salona göre değişir — uygulamada kural motoru hepsini birlikte okur.",
+  "Kesin cevap uçuşuna ve salona göre değişir; uygulama hepsini birlikte değerlendirir.",
   "Başla"
  ],
  "tasan": [

@@ -178,7 +178,7 @@ begin
      where v.active and coalesce(v.venue_kind, 'lounge') = 'lounge' and not v.is_umbrella
        and exists (select 1 from card_network_source c where c.venue_id = v.id)
        and not exists (select 1 from lounges l2 where l2.venue_id = v.id and l2.active)
-     order by v.id, (l.name = v.name) desc, l.id
+     order by v.id, coalesce(l.name = v.name, false) desc, l.id
   )
   update lounges l set active = true, name = aday.vname, terminal = aday.vterm
     from aday where l.id = aday.lid;

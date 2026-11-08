@@ -7,6 +7,14 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -45,17 +53,17 @@
   },
   {
    "g": 483,
-   "sol": 155,
+   "sol": 12,
    "tx": ""
   },
   {
    "g": 483,
-   "sol": 155,
+   "sol": 12,
    "tx": ""
   },
   {
    "g": 483,
-   "sol": 155,
+   "sol": 12,
    "tx": ""
   }
  ],

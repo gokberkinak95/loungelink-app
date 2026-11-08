@@ -5,6 +5,10 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -19,14 +23,14 @@
   "H",
   "Hazır Üye",
   "Tasarımcı · İstanbul",
-  "• Temel Doğrulama · 26",
+  "• Temel Doğrulama · 30",
   "0",
   "OTURUM",
   "—",
   "YILDIZ",
   "0",
   "LOUNGEPUAN",
-  "6",
+  "1",
   "KREDİ",
   "Profil",
   "",

@@ -1,26 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -29,9 +8,9 @@
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ AKŞAMLAR",
+  "İYİ GÜNLER",
   "Yeni",
-  "6",
+  "1",
   "KREDİ",
   "0",
   "LOUNGEPUAN",
@@ -45,13 +24,13 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · YARIN",
+  "BUGÜN · BİNİŞ",
   "TK1979",
   "IST",
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "13:50–17:20",
+  "17:02–20:32",
   "Host bul",
   "",
   "Ana Sayfa",

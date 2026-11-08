@@ -1,18 +1,5 @@
 {
- "console": [
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
-   "t": "warning",
-   "s": "font yüklenemedi NetworkError: A network error occurred."
-  }
- ],
+ "console": [],
  "errors": [],
  "calls": [],
  "metin": [
@@ -48,7 +35,7 @@
   "",
   "",
   "Bildirimler",
-  "3",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -85,7 +72,7 @@
   "Planım",
   "",
   "Tanış",
-  "3",
+  "1",
   "",
   "Profil"
  ],

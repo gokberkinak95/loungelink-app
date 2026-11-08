@@ -85,6 +85,8 @@ declare v_tanim text;
 begin
   select pg_get_functiondef(p.oid) into v_tanim from pg_proc p
    where p.proname = 'confirm_session' and p.pronamespace = 'public'::regnamespace limit 1;
+  -- 8 Kasım: satır sonu farkı (CRLF/LF) karşılaştırmayı bozmasın (yerel kurulumda düşüyordu).
+  v_tanim := replace(v_tanim, chr(13), ''); v_eski := replace(v_eski, chr(13), '');
   if v_tanim like '%plan_agirlama_puani%' then raise notice '337: confirm_session zaten guncel.'; return; end if;
   if position(v_eski in v_tanim) = 0 then raise exception '337: confirm_session govdesi beklenenden farkli — elle bak.'; end if;
   v_tanim := replace(v_tanim, v_eski,

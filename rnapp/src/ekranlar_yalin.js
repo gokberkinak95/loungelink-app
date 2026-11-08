@@ -5422,7 +5422,8 @@ export function LoungeRadarCard({ t, session, onOpen }) {
 
   return (
     <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => onOpen(r)} activeOpacity={0.85}
-      style={{ backgroundColor: C.gece, borderRadius: R.sm, padding: SP[4], marginBottom: SP[3], flexDirection: "row", alignItems: "center" }}>
+      style={{ backgroundColor: C.gece, borderRadius: R.sm, padding: SP[4], marginBottom: SP[3], flexDirection: "row", alignItems: "center", gap: SP[3] }}>
+      {/* 8 Kasım — sahne ölçümü: ikon ile metin arasında 0 pt vardı (gap yoktu). */}
       <Ikon ad="radar" boy={22} renk={C.mutedAA} />
       <View style={{ flex: 1 }}>
         <Text style={{ color: C.gold, fontWeight: "700", fontSize: FS.base }}>
@@ -5735,7 +5736,7 @@ export function LoungeGuide({ t, onBack, onDiscover, girisYok, onKayit }) {
     // 6 Kasım (Gökberk): geri düğmesi saat/çentik alanına biniyordu (üst güvenli alan yoktu;
     // onBack alan ekranlar içinde Hdr/TOPPAD kullanmayan TEK ekran buydu) ve "‹" iki kez çiziliyordu.
     <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: ARA[20], paddingTop: TOPPAD + ARA[12], paddingBottom: ARA[40] }}>
-      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onBack} style={{ alignSelf: "flex-start", minHeight: TAP.minHeight, justifyContent: "center" }}><IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.base }} metin={String(t.back).replace(/^[‹<]\s*/, "")} /></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={onBack} style={{ alignSelf: "flex-start", minHeight: TAP.minHeight, justifyContent: "center" }}><IkonMetin ad="sol" renk={C.gold} stilMetin={{ color: C.gold, fontSize: FS.base }} metin={String(t.back).replace(/^[\u2039<]\s*/, "")} /></TouchableOpacity>
       <Text style={{ ...S.h1, color: C.ink, marginTop: SP[3] }}>{t.guideTitle}</Text>
       <Text style={{ fontSize: FS.sm, color: C.mut, lineHeight: 19, marginBottom: SP[4] }}>{t.guideSub}</Text>
 

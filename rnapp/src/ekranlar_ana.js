@@ -3641,7 +3641,10 @@ export function CompanionChat({ t, session, channelId, otherName, onBack, onOpen
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text numberOfLines={1} style={{ color: C.ink, fontSize: FS.lg - 1, fontWeight: "700" }}>{otherName || t.ccTitle}</Text>
               {onOpenProfile && peerId ? (
-                <Text numberOfLines={1} style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600", marginTop: 1 }}>{t.ccViewProfile} ›</Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: ARA[2], marginTop: 1 }}>
+                  <Text numberOfLines={1} style={{ color: C.goldText, fontSize: FS.xs, fontWeight: "600" }}>{t.ccViewProfile}</Text>
+                  <Ikon ad="sag" boy={11} renk={C.goldText} />
+                </View>
               ) : null}
             </View>
           </TouchableOpacity>
@@ -5880,7 +5883,7 @@ export function EditProfile({ t, session, onBack, onDone, onVerify, onVerifyId, 
             <TouchableOpacity key={lbl} activeOpacity={act && !done ? 0.7 : 1}
               onPress={() => { if (act && !done) act(); }}
               accessibilityRole={act && !done ? "button" : undefined}
-              accessibilityLabel={act && !done ? String(lbl) + " — " + String(cta).replace("→", "").trim() : undefined}
+              accessibilityLabel={act && !done ? String(lbl) + " — " + String(cta).replace(/\u2192/, "").trim() : undefined}
               style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: SP[2], minHeight: TAP.minHeight, borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: C.line }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ width: 20, height: 20, borderRadius: R.xs, backgroundColor: done ? c + "22" : "transparent", borderWidth: 1.5, borderColor: done ? c : C.dimAA, alignItems: "center", justifyContent: "center", marginRight: SP[2] }}>

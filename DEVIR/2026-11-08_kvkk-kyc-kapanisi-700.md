@@ -50,18 +50,28 @@ GüvenKalkan 3. satır "Biniş kartı doğrulandı"; plan kartları "yalnız do�
 2. **345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql** — tüm satırlar tamam = true
 3. Dashboard › Storage › kyc › dosyaları sil, sonra kovayı sil (SQL'le silinemez)
 
-## Testler
-- app `node check.js`: temiz (0 sorun)
-- app `npm run verify`: ilk koşu 8 kırmızı → bu turun 5'i kapatıldı (ölü metin 11→0, BO KYC fonksiyonları beyaz listede,
-  kurulum tablosu son: 345, şelale 0, tema sızıntısı 0 — TarihSaatPenceresi perdesi C.perde). Kalan 3, bu turdan ÖNCE de kırmızı
-  (HEAD~1 ile ölçüldü): tasarim_uyum metin sembolü 6/5, dokunma_makbuz bayat (tarayıcı testi koşturulmalı), sql_lint 343:181 nullsort.
-- BO `node check.js`: temiz; `npm run build`: başarılı (çıkış 0)
-- site `node verify.js`: 1 kırmızı (tasarim_check v5.9.0 mühür — bu turdan önce de vardı); `npm run build`: başarılı (çıkış 0)
-- Android AAB 1.0.0 (302): EAS 8a698265-d4dd-40aa-a11b-f8f6b3e7819f FINISHED → `_aab/LoungeLink-1.0.0-302.aab`.
-  İlk 4 deneme GitHub (Gradle dağıtımı) 504/502/zaman aşımıyla düştü; app.config.js `gradleIndirme`: Tencent aynası + resmi SHA-256 + 120 sn.
-  GitHub düzelince ayna kaldırılabilir (zararı yok; özet tutmazsa derleme durur).
+## Testler (son koşu, 8 Kasım öğleden sonra)
+- app `node check.js`: 0 bulgu · `npm run verify`: **77/77 temiz**
+- tarayıcı dokunma testi (`web_sahne/dokunma_yolu_test.py`): **9/9** · sahne ölçümleri (kutu taşma, gren) temiz
+- yerel Postgres kurulumu (`pg_run.py`, 001→345 + SEED): ilk kurulum **temiz** (345 dahil)
+- BO `node check.js` temiz · `npm run build` başarılı · site `node verify.js` **7/7** · `npm run build` başarılı
+- Android AAB 1.0.0 (302): EAS 8a698265 FINISHED → `_aab/LoungeLink-1.0.0-302.aab`
+
+### Bu turda kapatılan eski kırmızılar (Gökberk: "gözlemlediğini çöz")
+- tasarım sembolü 6/5 → 3/5 (CompanionChat "›" → Ikon; iki regex'te unicode kaçışı)
+- SQL 343:181 nullsort → coalesce(..., false)
+- site mühür: legal metinde "ticaret" → "muhasebe"
+- dokunma makbuzu bayattı: test güncel koda koşturuldu; Salon Rehberi düğmesi artık Ikon + "Geri" (test metni güncellendi)
+- tarayıcı testinin açtığı 2 görsel bulgu: radar kartında ikon-metin boşluğu 0 → gap SP[3]; vitrin_kalkis sahnesine gren
+- kutu_tasma_check test çıktılarını sahne sanıyordu (3 uyarı) → atlama listesi
+- `npm run sahne:export` Windows'ta çalışmıyordu (`LL_SAHNE=1` cmd sözdizimi) → node ile ortam değişkeni
+- yerel kurulum: 337 CRLF/LF gövde karşılaştırması (338/339 zincirleme düşüyordu) · pg_run sıralaması (268a/269a/270a teşhis
+  dosyaları ana dosyadan SONRA) · 345 doğrulamasında cron.job doğrudan başvurusu → `cron_isi_var()`
+- Gradle dağıtımı: GitHub 504/502 → app.config.js `gradleIndirme` (Tencent aynası + resmi SHA-256)
 
 ## Açık kalanlar / Gökberk'ten beklenen
+- pg_run "tekrar kurulum" stres testi: 15 eski dosya (224…335, SEED9) aynı veritabanında 2. kez koşunca düşüyor + sorularim() gerilemesi.
+  Canlıda bunlar bir kez koştu, yeniden koşulmayacak; yine de idempotent yapılıyor (ayrı iş).
 - Play 9.5/9.6 ürünleri (sürüyor), RevenueCat iOS appl_ anahtarı → iOS 296 production build + gönderim.
 - App Store açıklamasında "Kural motoru" ve "Kadın güvenlik modu" ifadeleri 296 gönderiminde değiştirilecek.
 - Mağaza rehberi: veri güvenliği / App Privacy'den "kimlik belgesi" çıkarıldı (v34).

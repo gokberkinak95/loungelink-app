@@ -458,6 +458,17 @@ end $cr345$;
 -- İlk imha hemen (süresi zaten dolmuş kayıtlar için)
 select public.saklama_suresi_imha() as ilk_imha;
 
+-- pg_cron yoksa (yerel kurulum) cron.job tablosu da yoktur; doğrudan başvuru sorguyu düşürür.
+create or replace function public.cron_isi_var(p_ad text)
+returns boolean language plpgsql stable security definer set search_path = public as $civ345$
+declare v boolean;
+begin
+  if to_regclass('cron.job') is null then return true; end if;   -- pg_cron yok: kurulacak iş yok
+  execute 'select exists (select 1 from cron.job where jobname = $1)' into v using p_ad;
+  return v;
+end $civ345$;
+revoke execute on function public.cron_isi_var(text) from public, anon, authenticated;
+
 -- ── DOĞRULAMA ───────────────────────────────────────────────────────────────
 select 'kimlik belgesi gonderimi kapali' as kontrol,
        position('kyc_kapali' in pg_get_functiondef('public.kimlik_belgesi_gonder(text,text)'::regprocedure)) > 0 as tamam
@@ -486,8 +497,7 @@ select 'anonimlestirme cinsiyeti siliyor',
        position('gender = null' in pg_get_functiondef('public.admin_anonymize_user(uuid,text,text)'::regprocedure)) > 0
 union all
 select 'saklama isi kurulu',
-       not exists (select 1 from pg_namespace where nspname = 'cron')
-       or exists (select 1 from cron.job where jobname = 'll-saklama-imha')
+       public.cron_isi_var('ll-saklama-imha')
 union all
 select 'BILGI: kyc kovasinda kalan dosya sayisi = '
        || (select count(*) from storage.objects where bucket_id = 'kyc')::text

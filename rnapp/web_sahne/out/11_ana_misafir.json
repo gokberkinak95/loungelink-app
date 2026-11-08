@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -8,7 +21,7 @@
   "?",
   "Nasıl çalışır?",
   "",
-  "İYİ AKŞAMLAR",
+  "İYİ GÜNLER",
   "Gökberk",
   "14",
   "KREDİ",
@@ -24,13 +37,13 @@
   "DAVET",
   "0",
   "SORU",
-  "SIRADAKİ SEYAHATİN · YARIN",
+  "BUGÜN · BİNİŞ",
   "TK1979",
   "IST",
   "LHR",
   "Şimdi seni salona alabilecek bir host bulalım.",
   "SALON",
-  "14:00–18:00",
+  "17:12–21:12",
   "Host bul",
   "DAVETLER",
   "2 bağlantı isteği",
@@ -47,8 +60,9 @@
   "“Uçuşun aynı, güzel.”",
   "Kabul et",
   "Reddet",
-  "Bağlantılarım  ·  1",
+  "Bağlantılarım",
   "Ece Y.",
+  "1",
   "",
   "",
   "Ana Sayfa",

@@ -150,7 +150,7 @@ silinir ya da anonimleştirilir.
 · Sohbet mesajları: gönderildiği tarihten itibaren 24 ay.
 · Bildirimler, hata kayıtları, uçuş sorgu kayıtları: 12 ay.
 · Şikayet ve itiraz kayıtları: 5 yıl.
-· Satın alma kayıtları: vergi ve ticaret mevzuatının öngördüğü süre boyunca
+· Satın alma kayıtları: vergi ve muhasebe mevzuatının öngördüğü süre boyunca
   (en çok 10 yıl).
 · Onay kayıtları: hesap süresince ve hesap silindikten sonra 10 yıl
   (sözleşmeden doğan zamanaşımı süresi).

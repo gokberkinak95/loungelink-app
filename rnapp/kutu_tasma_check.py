@@ -44,7 +44,8 @@ for y in dosyalar:
     ad = os.path.basename(y)[:-5]
     # `karsilama.json` sahne değil, `oniz_cek.py`nin tek karelik çıktısı;
     # `cek.py` ölçüm alanlarını oraya yazmaz.
-    if ad.startswith("_") or ad == "karsilama":
+    # 8 Kasım: dokunma_yolu / akis_e2e / akis_envanter de sahne değil, test çıktısı.
+    if ad.startswith("_") or ad in ("karsilama", "dokunma_yolu", "akis_e2e", "akis_envanter"):
         continue
     d = json.load(open(y, encoding="utf-8"))
     if "tasan" not in d or "bitisik" not in d:

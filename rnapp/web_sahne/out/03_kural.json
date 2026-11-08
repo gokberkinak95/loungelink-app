@@ -1,5 +1,22 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -11,7 +28,7 @@
   "Planım",
   "",
   "Tanış",
-  "2",
+  "1",
   "",
   "Profil",
   "",
@@ -20,10 +37,10 @@
   "?",
   "KURAL MOTORU · IST",
   "Bu eşleşme",
-  "neden %96?",
-  "THY Dış Hat Business",
-  "Bu uyum puanı sosyal eşleşmeyi ölçer — ama şu şart sağlanmıyor, yani kapıdan geçemezsin: Salon iç hatta, uçuşun dış hat",
-  "KART · MİLES&SMİLES",
+  "neden %90?",
+  "TAV Primeclass",
+  "Uyum puanı sosyal eşleşmeyi ölçer. Şu şartı doğrulayamadık, kapıda sürpriz olabilir: Birlikte varış gerekir · kapıda beraber olun",
+  "KART · MİLES&SMİLES ELİTE PLUS",
   "SALON UYUMLULUĞU",
   "",
   "Misafir hakkı var",
@@ -31,8 +48,8 @@
   "",
   "2 koşul",
   "UÇUŞ EŞLEŞMESİ",
-  "",
-  "Salon iç hatta, uçuşun dış hat",
+  "Birlikte varış gerekir",
+  "KAPIDA BERABER OLUN",
   "",
   "4 koşul",
   "BİRLİKTE GİRİŞ",

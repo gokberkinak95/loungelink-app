@@ -1,5 +1,18 @@
 {
- "console": [],
+ "console": [
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  },
+  {
+   "t": "warning",
+   "s": "font yüklenemedi NetworkError: A network error occurred."
+  }
+ ],
  "errors": [],
  "calls": [],
  "metin": [
@@ -8,13 +21,13 @@
   "?",
   "Nasıl çalışır?",
   "",
-  "GÜNAYDIN",
+  "İYİ GÜNLER",
   "Boş",
-  "6",
+  "1",
   "KREDİ",
   "0",
   "LOUNGEPUAN",
-  "26",
+  "30",
   "GÜVEN",
   "0",
   "SOHBET",
@@ -26,9 +39,9 @@
   "SORU",
   "BUGÜN",
   "Bugün sakin. Sıradaki uçuşuna bakalım mı?",
-  "IST · 5 host",
-  "ADB · 3 host",
-  "AYT · 1 host",
+  "IST · 16 host",
+  "ADB · 7 host",
+  "SAW · 5 host",
   "Misafir olarak host bul",
   "Host olsam ne kazanırım?",
   "",
@@ -49,15 +62,15 @@
   "LOUNGELINK",
   "LOUNGELINK",
   "PLANIM",
-  "Havalimanı Ziyareti Ekle",
-  "Seyahatini anlat ki havalimanındaki hostları ve yol arkadaşlarını keşfedebilelim.",
+  "Seyahat Ekle",
+  "Seyahatini anlat; havalimanındaki host'ları ve yol arkadaşlarını sana gösterelim.",
   "1 / 3",
   "Hangi uçuştasın?",
   "TARİH",
   "Bugün",
   "Yarın",
-  "Pazar",
-  "Pazartesi",
+  "Salı",
+  "Çarşamba",
   "Tarih seç",
   "",
   "HAVAYOLU",

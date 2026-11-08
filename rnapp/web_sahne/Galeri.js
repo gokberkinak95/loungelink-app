@@ -102,7 +102,7 @@ export default function Galeri() {
     return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 44 }}>
       <KalkisHalkasi t={TR.tr || {}} baslangic={simdi + 42 * 60000} bitis={simdi + 162 * 60000} />
       <KalkisHalkasi t={TR.tr || {}} baslangic={simdi - 110 * 60000} bitis={simdi + 9 * 60000} />
-    </View></Sayfa>);
+    </View><Tanecik /></Sayfa>);   // 8 Kasım: uygulama kökü greni her ekrana serer; sahne de sersin (gren_check 5.17 pt)
   }
   if (SAHNE.endsWith("vitrin_zemin")) {
     return (<Sayfa><View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

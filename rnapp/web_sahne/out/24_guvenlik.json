@@ -5,10 +5,6 @@
    "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   },
   {
-   "t": "error",
-   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
-  },
-  {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
   }
@@ -48,7 +44,7 @@
   "",
   "",
   "Bildirimler",
-  "3",
+  "1",
   "",
   "GÜVEN VE GÜVENLİK",
   "",
@@ -85,7 +81,7 @@
   "Planım",
   "",
   "Tanış",
-  "3",
+  "1",
   "",
   "Profil",
   "",
@@ -96,16 +92,16 @@
   "Güvende kalman için araçlar",
   "Acil Durum (SOS)",
   "Hayati tehlikede önce 112'yi ara. Bu düğme ekibimize yardım çağrısı gönderir.",
-  "",
-  "Kadın Güvenlik Modu",
-  "",
-  "Yalnızca doğrulanmış · Yalnızca kadınlara görünürlük · Öncelikli itiraz incelemesi",
-  "Bu katmanı açmak için cinsiyetini şuradan Kadın yap: Profili Düzenle ›",
   "",
   "Sorun Bildir",
   "",
   "Sahte host, dolandırıcılık, taciz, platform dışı ödeme",
-  ""
+  "",
+  "Engellenen Kullanıcılar",
+  "Engel listeni yönet",
+  "",
+  "",
+  "İtiraz Merkezi"
  ],
  "tasan": [],
  "bitisik": []

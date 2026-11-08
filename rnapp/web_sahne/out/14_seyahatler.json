@@ -7,6 +7,10 @@
   {
    "t": "warning",
    "s": "font yüklenemedi NetworkError: A network error occurred."
+  },
+  {
+   "t": "error",
+   "s": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
   }
  ],
  "errors": [],
@@ -15,10 +19,10 @@
   "LOUNGELINK",
   "LOUNGELINK",
   "?",
-  "HAVALİMANI ZİYARETLERİNİ YÖNET",
+  "SEYAHATLERİNİ YÖNET",
   "Seyahatlerim",
   "Seyahatlerim",
-  "21 EKİM · AKTARMA",
+  "BUGÜN · AKTARMA",
   "IST",
   "LHR",
   "",
@@ -26,13 +30,13 @@
   "UÇUŞ",
   "TK1979",
   "SALON",
-  "14:00–18:00",
+  "17:12–21:12",
   "KİŞİ",
   "1 + 1",
-  "Keşfet'te 10 uyumlu ilan →",
+  "Keşfet'te 4 uyumlu ilan →",
   "",
   "Host bul",
-  "28 EKİM · TATİL",
+  "16 KASIM · TATİL",
   "SAW",
   "",
   "PC · Pegasus",
