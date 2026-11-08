@@ -36300,5 +36300,9 @@
     "grant_consents|update users set pazarlama_izni = true, pazarlama_izni_at = now() where id = v_uid;"
    ]
   ]
+ ],
+ [
+  "346_esb_primeclass_birlestir.sql",
+  []
  ]
 ]

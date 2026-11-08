@@ -46,6 +46,8 @@ Doğrulamalar'dan elle kimlik anahtarı kalktı; puan sayfası kazanma metni ger
 GüvenKalkan 3. satır "Biniş kartı doğrulandı"; plan kartları "yalnız doğrulanmış profilleri kabul et".
 
 ## Supabase'de çalıştırılacak (sırayla)
+0. (Gökberk 341-345'i çalıştırdı; 343 tamam=false → 346 yazıldı)
+4. **346_esb_primeclass_birlestir.sql** — ESB eski nesil Primeclass kopyası birleşir; tamam = true
 1. (koşulmadıysa) 341, 342, 343, 344
 2. **345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql** — tüm satırlar tamam = true
 3. Dashboard › Storage › kyc › dosyaları sil, sonra kovayı sil (SQL'le silinemez)
@@ -73,6 +75,9 @@ GüvenKalkan 3. satır "Biniş kartı doğrulandı"; plan kartları "yalnız do�
 - ✅ pg_run "tekrar kurulum" stres testi KAPANDI: 389 dosya baştan sona + 145 dosya ikinci kez temiz, gerileme yok, verify 77/77.
   Düzenlenen eski dosyalar (yalnız ikinci koşuyu etkiler, Supabase'de yeni SQL YOK): 224, 228, 235, 236, 237, 239, 248, 250,
   253, 256, 261, 292, 295, 298, 313, 335, SEED4. Kalıp: kurulu yeni hâl varsa eski tanımı atla; nöbetçiler veri durumuna göre düzeltildi.
-- Play 9.5/9.6 ürünleri (sürüyor), RevenueCat iOS appl_ anahtarı → iOS 296 production build + gönderim.
+- Build'ler: iOS 296 IPA (EAS aa563ef0) · Android 303 AAB `_aab/LoungeLink-1.0.0-303.aab` (EAS 152b7a4c) — RevenueCat anahtarlarıyla.
+  Yükleme: eas.json submit → `rnapp/gizli/` (gitignore) içindeki ASC .p8 ve Play servis hesabı JSON'u bekleniyor.
+- RevenueCat: 1-2 ve 4-9 tamam (webhook test olayı panelde görüldü). Google kimlik bilgileri (abonelik doğrulama) Google'ın izni tanımasını bekliyor → sonra Pub/Sub.
+- Play 9.5/9.6 ürünleri tamam, RevenueCat iOS appl_ anahtarı → iOS 296 production build + gönderim.
 - App Store açıklamasında "Kural motoru" ve "Kadın güvenlik modu" ifadeleri 296 gönderiminde değiştirilecek.
 - Mağaza rehberi: veri güvenliği / App Privacy'den "kimlik belgesi" çıkarıldı (v34).

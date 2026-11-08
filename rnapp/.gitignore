@@ -57,3 +57,8 @@ yarn-error.log*
 .DS_Store
 *.tsbuildinfo
 play-service-account.json
+
+# 8 Kasim: magaza yukleme anahtarlari (ASC API .p8, Play servis hesabi JSON) - ASLA depoya girmez
+gizli/
+*.p8
+play-service-account.json

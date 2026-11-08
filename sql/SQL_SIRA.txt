@@ -1,3 +1,13 @@
+SQL SIRASI - 8 Kasim 2026 aksam (16. tur) - YENI: 346 - 345'ten SONRA
+
+  1) 346_esb_primeclass_birlestir.sql
+       -> 343 dogrulamasi canlida tamam = false verdi (eski_ad_gorunen = 1): ESB'de eski nesil
+          "Primeclass CIP Lounge" kaydi canlida hic birlestirilmemisti (211). Kopya, Dis Hat
+          Primeclass kaydina birlesir; aktif ilan kapanmaz, dogru salona tasinir.
+       Dogrulama: tek satir tamam = true. Sonra 343'un son sorgusu da tamam = true doner.
+       Tekrar kosulabilir.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 8 Kasim 2026 (15. tur) - YENI: 345 - 344'ten SONRA (341-344'u kosmadiysan once onlari)
 
   1) 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql

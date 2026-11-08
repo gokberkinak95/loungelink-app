@@ -51,10 +51,13 @@
       "ios": {
         "appleId": "gokberkinak95@gmail.com",
         "ascAppId": "6825816456",
-        "appleTeamId": "D57RLX67QJ"
+        "appleTeamId": "D57RLX67QJ",
+        "ascApiKeyPath": "./gizli/AuthKey_FKJ52749T3.p8",
+        "ascApiKeyId": "FKJ52749T3",
+        "ascApiKeyIssuerId": "d1b59ecc-2f26-48cf-abfe-7e87385750de"
       },
       "android": {
-        "serviceAccountKeyPath": "./play-service-account.json",
+        "serviceAccountKeyPath": "./gizli/play-service-account.json",
         "track": "internal",
         "releaseStatus": "draft"
       }
