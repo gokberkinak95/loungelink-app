@@ -34,3 +34,14 @@
 - App Store: build 300'ü seç, gönder. Play: 307'yi dahili testte yayınla, kapalı teste 12 kullanıcı × 14 gün.
 - Expo bu ayın $45 kredisini doldurdu; sonraki build'ler ücretli (iOS $2, Android $1). Mağaza onayı sonrası
   ücretsiz plana geçiş önerildi.
+
+## Ek (aksam)
+- iOS **301**: `NSUserTrackingUsageDescription` app.json'dan cikarildi (App Store "tracking beyan et" diye
+  gonderimi durduruyordu; izleme yok). Build 68d053d1 + auto-submit.
+- SQL **350** (Gokberk calistiracak): canlida rehber 187 yamasi YOKTU (DENETIM_TAM guide_lounges farki);
+  inceleme vitrini acik ilan 0 idi → tazele + gerekirse yeniden ac + pg_cron `ll-vitrin-tazele` 03:30.
+- 270a_GORUNURLUK canlida 0 satir (fikstur gercek kullaniciya gorunmuyor).
+- DENETIM_TAM (349 sonrasi): guide_lounges disinda 21 satir bilinen zararsiz (connection_test,
+  sql_migration_durumu, test_hesabi_kaydi, kurulum_imzasi_var, schema_migrations.kaynak nullable).
+- ACIK KIRMIZI: `sql/tablo_sina.py` B ve C senaryolari dusuyor (350'den ONCE de dusuyordu, olculdu);
+  KURULUM_TABLOSU kontrolu (kurulum_tablosu_check) temiz. Sonraki turda incelenecek.
