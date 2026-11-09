@@ -45,3 +45,9 @@
   sql_migration_durumu, test_hesabi_kaydi, kurulum_imzasi_var, schema_migrations.kaynak nullable).
 - ACIK KIRMIZI: `sql/tablo_sina.py` B ve C senaryolari dusuyor (350'den ONCE de dusuyordu, olculdu);
   KURULUM_TABLOSU kontrolu (kurulum_tablosu_check) temiz. Sonraki turda incelenecek.
+
+## Magaza durumu (9 Kasim aksam)
+- App Store: 1.0.0 (301) + 3 kredi + 4 abonelik + LoungeLink Uyelik grubu incelemeye gonderildi (manuel yayin).
+- Play: kapali test Alpha 307 YAYINLANDI (9 Kasim 14:48); test kullanicisi Google Grubu
+  testers-community@googlegroups.com (Testers Community Starter). Reklam kimligi: Hayir; satici: Evet.
+  14 gun sayaci test kullanicilari katildiktan sonra baslar → sonra uretim erisimi basvurusu.
