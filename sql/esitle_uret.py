@@ -3,7 +3,7 @@
 LoungeLink · esitle_uret.py   (9 Kasım 2026)
 
 DENETIM_TAM canlıda fark verdi. Bu betik, 001..son dosyaların yerelde kurduğu
-"olması gereken" veritabanından (127.0.0.1:5432) şu farkları kapatan bir SQL üretir:
+"olması gereken" veritabanından (127.0.0.1:5432; YALNIZ `LL_TEKRAR_ATLA=1 python pg_run.py --keep` ile — ikinci geçiş fonksiyonları geriletiyordu, 349 notu) şu farkları kapatan bir SQL üretir:
   · gövdesi farklı fonksiyonlar → yerel tanımın birebir kopyası (create or replace)
   · yetkisi farklı fonksiyonlar → anon / authenticated çalıştırma yetkisi yereldeki gibi
 Çıktı: sql/348_canli_esitleme.sql (elle eklenen bölümlerle birlikte).

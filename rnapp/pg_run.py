@@ -1021,7 +1021,10 @@ def main():
     if not fails:
         son_tur = [f for f in files if f[:3].isdigit() and int(f[:3]) >= TEKRAR_ESIK]
         son_tur += list(seeds)
-        if son_tur:
+        # 9 Kasım: LL_TEKRAR_ATLA=1 → ikinci geçiş yok. "Olması gereken" veritabanı
+        # (DENETIM_TAM / esitle_uret) YALNIZ ilk kurulumdan alınmalı: ikinci geçiş bazı
+        # fonksiyonları eski hâline yazıyordu ve 348 bu yüzden create_availability'yi geriletti.
+        if son_tur and not os.environ.get('LL_TEKRAR_ATLA'):
             def _kolon_snapshot():
                 r = psql(uri, "select p.proname || ':' || "
                               "coalesce(array_length(p.proallargtypes,1),0) "
@@ -1035,6 +1038,16 @@ def main():
                         except ValueError: pass
                 return d
             _once_kolon = _kolon_snapshot()
+            # 🔴 9 Kasım · GÖVDE GERİLEMESİ. Kolon sayısı aynı kalıp GÖVDESİ eski hâline dönen
+            # fonksiyonu (create_availability: 323 sarmalayıcısı yerine _base'in eski gövdesi)
+            # kolon ölçümü görmüyordu. İkinci geçiş hiçbir fonksiyonun gövdesini değiştirmemeli.
+            def _govde_snapshot():
+                r = psql(uri, "select p.oid::regprocedure::text || '|' || "
+                              "md5(regexp_replace(pg_get_functiondef(p.oid), '\s+', '', 'g')) "
+                              "from pg_proc p join pg_namespace n on n.oid=p.pronamespace "
+                              "where n.nspname='public' and p.prokind in ('f','p')", tuples=True)
+                return dict(l.strip().rsplit('|', 1) for l in (r.stdout or '').splitlines() if '|' in l)
+            _once_govde = _govde_snapshot()
             print(f'\n  TEKRAR KURULUM: son {len(son_tur)} dosya ayni veritabaninda '
                   f'bir kez daha kosuluyor ({TEKRAR_ESIK}+)...')
             for f in son_tur:
@@ -1062,6 +1075,11 @@ def main():
                 simdi = _sonra_kolon.get(ad)
                 if simdi is not None and simdi < once:
                     gerileme.append(f'{ad}() {once} -> {simdi} kolon')
+            _sonra_govde = _govde_snapshot()
+            for ad, once in _once_govde.items():
+                simdi = _sonra_govde.get(ad)
+                if simdi is not None and simdi != once:
+                    gerileme.append(f'{ad} govdesi degisti')
             if gerileme:
                 print(f'  ✗ GERILEME — tekrar kurulum {len(gerileme)} fonksiyonu '
                       f'ESKI haline dusurdu:')

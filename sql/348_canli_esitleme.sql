@@ -149,93 +149,7 @@ begin
   return jsonb_build_object('blocked', false, 'note', null);
 end $function$;
 
--- create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text)
-create or replace function public.create_availability(p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text DEFAULT NULL::text, p_visibility text DEFAULT 'all'::text, p_carrier text DEFAULT NULL::text)
- RETURNS jsonb
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-declare
-  v_uid uuid := auth.uid(); v_cap int; v_ok boolean; v_id uuid; v_conflict boolean;
-  v_vis availability_visibility; v_min_trust smallint := 0;
-begin
-  if v_uid is null then raise exception 'not_authenticated'; end if;
-
-  -- 079: KAPI ARTIK "DOĞRULANMIŞ İLETİŞİM" (telefon VEYA e-posta).
-  -- SMS maliyetli olduğu için beta boyunca e-posta doğrulaması yeterli;
-  -- demo bypass (kod 0000) kaldırıldı.
-  v_ok := public.is_contact_verified(v_uid);
-  if not v_ok then raise exception 'contact_not_verified'; end if;
-
-  select guest_capacity into v_cap from profiles where user_id = v_uid;
-  if v_cap is null then raise exception 'no_access_source'; end if;
-  if p_slots > v_cap then raise exception 'slots_exceed_capacity'; end if;
-  if p_date < current_date then raise exception 'date_in_past'; end if;
-
-  -- 033: örtüşen saatte bekleyen/kabul edilmiş guest isteğin varsa ilan açamazsın
-  select exists (
-    select 1 from requests r
-      join availabilities a on a.id = r.avail_id
-     where r.guest_id = v_uid and r.status in ('pending','accepted')
-       and a.avail_date = p_date
-       and a.time_from < p_to and p_from < a.time_to
-  ) into v_conflict;
-  if v_conflict then raise exception 'guest_same_slot'; end if;
-
-  -- 040: MVP'nin all/trusted/hidden -> enum + eşik
-  case lower(coalesce(p_visibility,'all'))
-    when 'all'         then v_vis := 'Public';      v_min_trust := 0;
-    when 'trusted'     then v_vis := 'Public';      v_min_trust := 55;
-    when 'hidden'      then v_vis := 'Hidden';      v_min_trust := 0;
-    when 'connections' then v_vis := 'Connections'; v_min_trust := 0;
-    else raise exception 'bad_visibility';
-  end case;
-
-  insert into availabilities (
-    host_id, lounge_id, airport_code, avail_date, time_from, time_to,
-    slots, filled, active, visibility, flight_number, min_trust, carrier
-  )
-  values (
-    v_uid, p_lounge_id, p_airport, p_date, p_from, p_to,
-    p_slots, 0, true, v_vis, nullif(trim(p_flight),''), v_min_trust,
-    -- v158: tasiyici artik ACIK veri — secilmediyse ucus no onekinden turetilir.
-    nullif(upper(coalesce(nullif(trim(p_carrier),''), substring(trim(coalesce(p_flight,'')) from '^[A-Za-z]+'))),'')
-  )
-  returning id into v_id;
-
-  -- 055: ilan açmak = host olmak (rol)
-  update users set role = 'host' where id = v_uid and role <> 'host';
-
-  -- YENİ (074): ilan açmak = APP HOST'U olmak (görünürlük).
-  -- Sıra önemli: is_staff hâlâ true iken profil düzeltilir (işaret olarak
-  -- kullanılıyor), SONRA bayrak temizlenir. Kullanıcının kendi kapattığı
-  -- show_on_discovery'ye (staff değilse) dokunulmaz.
-  update profiles p set show_on_discovery = true
-   where p.user_id = v_uid
-     and p.show_on_discovery = false
-     and exists (select 1 from users u where u.id = v_uid and u.is_staff = true);
-  update users set is_staff = false where id = v_uid and is_staff = true;
-
-  -- 056: ARZ-TALEP EŞLEŞTİRME — eşleşen misafirlere "host geldi" bildirimi
-  -- (SELECT içindeki literal enum'a OTOMATİK çevrilmez -> 071 cast'i korunur)
-  insert into notifications (user_id, category, title, body, ref_id, ref_type)
-  select distinct vs.user_id, 'requests'::notif_category,
-         'Havalimanında host var! ✦',
-         'Seni bekleyen bir host ' || p_airport || ' için ilan açtı. Hemen başvur.',
-         v_id, 'availability'
-    from visits vs
-    join users gu on gu.id = vs.user_id
-   where vs.airport_code = p_airport
-     and vs.visit_date = p_date
-     and vs.time_from < p_to and p_from < vs.time_to
-     and vs.user_id <> v_uid
-     and coalesce(gu.is_staff,false) = false
-     and gu.deleted_at is null;
-
-  return jsonb_build_object('ok', true, 'id', v_id, 'visibility', v_vis, 'min_trust', v_min_trust);
-end $function$;
-
+-- create_availability: 349 notu — burada yanlış kaynaktan alınmış ESKİ gövde vardı (canlıyı geriletti); çıkarıldı.
 -- discover_availabilities_ham(p_airport text, p_sector text, p_flight text, p_date date)
 create or replace function public.discover_availabilities_ham(p_airport text DEFAULT NULL::text, p_sector text DEFAULT NULL::text, p_flight text DEFAULT NULL::text, p_date date DEFAULT NULL::date)
  RETURNS TABLE(id uuid, host_id uuid, airport_code text, lounge_name text, avail_date date, time_from time without time zone, time_to time without time zone, flight_number text, slots integer, filled integer, host_name text, host_badge text, host_score integer, host_profession text, host_photo text, match_score integer, same_flight boolean, has_trip boolean, is_featured boolean, fully_booked boolean, visibility text, host_gender text, host_langs text[], guest_policy text, guest_allowance integer, family_allowed boolean, decision_note text, blocks_request boolean, block_reason text, carrier_note text, same_sector boolean)
@@ -615,5 +529,5 @@ union all select 'seed_test_hesabi girissize kapali',
 union all select 'connection_test istemci yazamaz',
        to_regclass('public.connection_test') is null
        or not has_table_privilege('authenticated', 'public.connection_test', 'insert')
-union all select 'dokuz govde dosyalarla ayni', (select count(*) from (values ('bo_plan_hediyeleri','p_durum text','5b1cb6016416d0283caa27d469e271e6'), ('card_advice_for_airport','p_airport text','be48466bf6645b283901ddc6a37f0671'), ('charter_note','p_avail_id uuid','41c6553407d7e2764b12514d03f03ee1'), ('create_availability','p_lounge_id uuid, p_airport text, p_date date, p_from time without time zone, p_to time without time zone, p_slots integer, p_flight text, p_visibility text, p_carrier text','423b4191c603523939f8cff4b6b92329'), ('discover_availabilities_ham','p_airport text, p_sector text, p_flight text, p_date date','5bdac4e371b191c2bc780bd3707a08d2'), ('host_requests','','fe23603a880d2eb1f9934b37d854ba21'), ('request_credit_cost','p_user uuid, p_avail uuid','cf212b4ec7ecc582e53ea35b6480284b'), ('trg_soru_bildirimi_host','','7be8dad318e40dfe2fd602007e6e5195'), ('trg_soru_metni','','36d7578ec8e63da5fad0302725bcb798')) b(ad, arg, iz) join pg_proc p on p.proname = b.ad and pg_get_function_identity_arguments(p.oid) = b.arg join pg_namespace n on n.oid = p.pronamespace and n.nspname = 'public' where md5(regexp_replace(pg_get_functiondef(p.oid), '\s+', '', 'g')) = b.iz) = 9;
+union all select 'sekiz govde dosyalarla ayni', (select count(*) from (values ('bo_plan_hediyeleri','p_durum text','5b1cb6016416d0283caa27d469e271e6'), ('card_advice_for_airport','p_airport text','be48466bf6645b283901ddc6a37f0671'), ('charter_note','p_avail_id uuid','41c6553407d7e2764b12514d03f03ee1'), ('discover_availabilities_ham','p_airport text, p_sector text, p_flight text, p_date date','5bdac4e371b191c2bc780bd3707a08d2'), ('host_requests','','fe23603a880d2eb1f9934b37d854ba21'), ('request_credit_cost','p_user uuid, p_avail uuid','cf212b4ec7ecc582e53ea35b6480284b'), ('trg_soru_bildirimi_host','','7be8dad318e40dfe2fd602007e6e5195'), ('trg_soru_metni','','36d7578ec8e63da5fad0302725bcb798')) b(ad, arg, iz) join pg_proc p on p.proname = b.ad and pg_get_function_identity_arguments(p.oid) = b.arg join pg_namespace n on n.oid = p.pronamespace and n.nspname = 'public' where md5(regexp_replace(pg_get_functiondef(p.oid), '\s+', '', 'g')) = b.iz) = 8;
 -- Beklenen: 5 satır, hepsi tamam = true.

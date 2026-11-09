@@ -1,3 +1,14 @@
+SQL SIRASI - 9 Kasim 2026 ogle (19. tur) - YENI: 349 - 348'den SONRA (ACIL)
+
+  1) 349_create_availability_geri.sql
+       -> 348 canlida create_availability'yi ESKI govdeye cevirdi (onaysiz misafir ilan acip
+          host olabiliyordu; cakisan ilan ve saat sirasi kapilari dustu). Sebep: 348'in kaynagi
+          yerel kurulumun ikinci gecisinden sonra alinmisti. 349 dogru govdeyi (348 oncesi canli
+          ile birebir ayni) ve 18 fonksiyonun dogru yetkisini geri yazar.
+       -> 348'i bundan sonra TEKRAR CALISTIRMA (yetkileri yeniden bozar).
+       Dogrulama: 3 satir, hepsi tamam = true. Sonra DENETIM_TAM.sql.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 9 Kasim 2026 (18. tur) - YENI: 348 - 347'den SONRA
 
   1) 348_canli_esitleme.sql
