@@ -1918,5 +1918,10 @@
   "349_create_availability_geri.sql",
   null,
   null
+ ],
+ [
+  "350_rehber_187_ve_inceleme_vitrini.sql",
+  null,
+  null
  ]
 ]

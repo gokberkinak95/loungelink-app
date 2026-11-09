@@ -1,3 +1,14 @@
+SQL SIRASI - 9 Kasim 2026 aksam (20. tur) - YENI: 350 - 349'dan SONRA
+
+  1) 350_rehber_187_ve_inceleme_vitrini.sql
+       -> Rehberin 187 yamasi canlida yoktu (guide_lounges: salon "misafir yok" diyorsa program
+          kurali onu ezemez). Yama yeniden uygulanir.
+       -> Inceleme hesabinin gorecegi acik vitrin ilani 0'di: fikstur ilanlari ileri tarihe
+          tasinir, gerekirse vitrin ilanlari yeniden acilir, pg_cron ll-vitrin-tazele her gece 03:30.
+       Dogrulama: 4 satir (yama true, fikstur hesabi > 0, acik vitrin ilani > 0, havalimani listesi).
+       Sonra DENETIM_TAM.sql.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 9 Kasim 2026 ogle (19. tur) - YENI: 349 - 348'den SONRA (ACIL)
 
   1) 349_create_availability_geri.sql

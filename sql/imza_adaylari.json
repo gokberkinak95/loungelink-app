@@ -36707,5 +36707,9 @@
     "create_availability|select a.program_id, a.program_source, p.code, p.name"
    ]
   ]
+ ],
+ [
+  "350_rehber_187_ve_inceleme_vitrini.sql",
+  []
  ]
 ]
