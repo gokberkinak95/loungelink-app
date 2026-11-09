@@ -53,7 +53,7 @@ export const supabase = createClient(
 let __appVersion = "";
 export function setAppVersion(v) { __appVersion = v || ""; }
 
-export function logError(screen, err, code) {
+export function logError(screen, err, code, context) {
   try {
     const message = typeof err === "string" ? err : (err?.message || String(err || "?"));
     supabase.rpc("log_client_error", {
@@ -62,7 +62,7 @@ export function logError(screen, err, code) {
       p_code: code ? String(code).slice(0, 60) : null,
       p_version: __appVersion,
       p_platform: Platform.OS,
-      p_context: null,
+      p_context: context && typeof context === "object" ? context : null,
     }).then(() => {}, () => {});   // sessiz: log yazamamak sorun değil
   } catch (e) { /* yut */ }
 }

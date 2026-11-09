@@ -5059,7 +5059,13 @@ export function mapErr(t, msg) {
   // Sentry aramaya gerek yok: kendi sistemimiz zaten var, sadece
   // BAGLANMAMIS. Ucuncu bir servise para vermeden once elimizdekini
   // calistirmak gerek.
-  logError("mapErr", m);
+  // 9 Kasım — Android'de iki kez "undefined is not a function" geldi; yalnız metin vardı,
+  // yeri yoktu. JS programlama hatalarında (TypeError sınıfı) çağıranın yığını da yazılır.
+  let yigin = null;
+  if (/is not a function|is not an object|cannot read propert|undefined is not|null is not/i.test(m)) {
+    try { yigin = { yigin: String(new Error("mapErr").stack || "").slice(0, 1500) }; } catch (e) { yigin = null; }
+  }
+  logError("mapErr", m, null, yigin);
   return t.errGeneric || "Bir şeyler ters gitti. Lütfen tekrar dene.";
 }
 
