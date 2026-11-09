@@ -15,7 +15,7 @@
 // · Önizleme ile aynı ölçüler: ekran oranları (W, H) üzerinden.
 // ============================================================
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Image, Pressable, useWindowDimensions } from "react-native";
+import { Animated, Easing, Image, Platform, Pressable, useWindowDimensions } from "react-native";
 import { ACILIS, F } from "./theme";
 import { useAzHareket } from "./hareket";
 
@@ -32,7 +32,15 @@ const YUMUSAK = Easing.bezier(0.55, 0, 0.2, 1);
 const SUZUL = Easing.bezier(0.2, 0.7, 0.3, 1);
 
 export function AcilisSahnesi({ slogan, onBitti }) {
-  const { width: W, height: H } = useWindowDimensions();
+  // 9 Kasım (Gökberk, Android: "bulutlar arasında logo çıkarken altta Başla butonu geliyor") —
+  // iki kök: 1) Android pencere yüksekliği durum çubuğunu saymıyor, kök görünüm ise onun altına
+  // da uzanıyor → sahne alttan ~durum çubuğu kadar kısa kalıyor, karşılama ekranı görünüyordu.
+  // Ölçü artık sahnenin KENDİ yerleşiminden (tam kök). 2) Android çizim sırasını zIndex değil
+  // elevation ile veriyor: karşılamadaki yükseltili düğme sahnenin ÜSTÜNE çiziliyordu.
+  const pencere = useWindowDimensions();
+  const [olcu, setOlcu] = useState(null);
+  const W = (olcu && olcu.w) || pencere.width;
+  const H = (olcu && olcu.h) || pencere.height;
   const az = useAzHareket();
   const sis = useRef(new Animated.Value(0)).current;
   const bulut = useRef(new Animated.Value(0)).current;
@@ -102,7 +110,10 @@ export function AcilisSahnesi({ slogan, onBitti }) {
   const isikR = W * 0.6;
 
   return (
-    <Animated.View style={{ position: "absolute", left: 0, top: 0, width: W, height: H, zIndex: 9999, opacity: cik }}
+    <Animated.View style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, zIndex: 9999, opacity: cik,
+                            elevation: Platform.OS === "android" ? 1000 : undefined }}
+      onLayout={(e) => { const { width: w, height: h } = e.nativeEvent.layout;
+                         if (w > 0 && h > 0 && (!olcu || Math.abs(olcu.w - w) > 0.5 || Math.abs(olcu.h - h) > 0.5)) setOlcu({ w, h }); }}
       accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
       <Pressable style={{ flex: 1, overflow: "hidden", backgroundColor: ACILIS.gece }} onPress={() => kapat(250)}>
         <Image source={GOK} onLoad={yuklendi} resizeMode="stretch" style={{ position: "absolute", left: 0, top: 0, width: W, height: H }} />

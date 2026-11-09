@@ -44,7 +44,24 @@ export const TOPPAD = Platform.OS === "android" ? (StatusBar.currentHeight || 24
 // 18 Ekim — Android de cihazın kendi ölçüsünü okuyor. Hedef API 35/36 ile Android 15-16 uygulamayı
 // kenardan kenara çizer: gezinti çubuğu sekme çubuğunun ÜSTÜNE biner. Kenardan kenara olmayan
 // cihazda safe-area ölçüsü 0 döner (pencere çubuğun dışında) → eski davranış aynen sürer.
-export const ALTPAD = Platform.OS === "web" ? 0 : (_ins ? _ins.bottom : 0);
+// 9 Kasım (Gökberk, Android ekran görüntüsü: "tabbar yukarıda kalmış, altında baya boşluk") —
+// kenardan kenara OLMAYAN Android pencerede (gezinti çubuğu pencerenin dışında, opak) ilk ölçü
+// yine de gezinti çubuğunu (≈48dp) alt pay olarak bildiriyor; çubuk o kadar yukarı itiliyordu.
+// Pay artık pencerenin gezinti çubuğuyla GERÇEKTEN örtüşen kısmı: pencere ekranın altına kadar
+// iniyorsa (Android 15+ kenardan kenara) tam pay, çubuğun üstünde bitiyorsa 0.
+function altPayHesapla() {
+  if (Platform.OS === "web" || !_ins) return 0;
+  const alt = _ins.bottom || 0;
+  if (Platform.OS !== "android" || alt <= 0) return alt;
+  try {
+    const fr = _ilkPay && _ilkPay.frame;
+    const ekranH = Dimensions.get("screen").height;
+    if (!fr || !(fr.height > 0) || !(ekranH > 0)) return alt;
+    const ortusme = (fr.y || 0) + fr.height - (ekranH - alt);
+    return Math.max(0, Math.min(alt, Math.round(ortusme)));
+  } catch (e) { return alt; }
+}
+export const ALTPAD = altPayHesapla();
 
 // bant iç kenar boşluğu — tasarımda 64/1080 ≈ %5.9
 const SP_BANT = 20;

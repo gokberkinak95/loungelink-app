@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "co.loungelink.app",
-      "versionCode": 306,
+      "versionCode": 307,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -37,7 +37,7 @@
       },
       "supabaseUrl": "https://wgprynisnriyblccxuhq.supabase.co",
       "supabaseAnonKey": "sb_publishable_UDlDQ7369xubMMYeuZRzNQ_jvY4Kfv9",
-      "_backofficeUrl_aciklama": "BOS BIRAKIN. v2.71'den beri gerekli degil: backoffice acildiginda kendi adresini Supabase'e yazar (SQL 205) ve uygulama service_endpoints() ile okur. Buraya bir deger yazarsaniz o KAZANIR — yalnizca kendi sunucunuza bakmak istediginizde doldurun.",
+      "_backofficeUrl_aciklama": "BOS BIRAKIN. v2.71'den beri gerekli degil: backoffice acildiginda kendi adresini Supabase'e yazar (SQL 205) ve uygulama service_endpoints() ile okur. Buraya bir deger yazarsaniz o KAZANIR â€” yalnizca kendi sunucunuza bakmak istediginizde doldurun.",
       "backofficeUrl": "",
       "_revenuecat_aciklama": "RevenueCat > Project settings > API keys: 'Public app-specific API key'. iOS anahtari appl_ ile, Android goog_ ile baslar. Bossa uygulamada satin alma kapali kalir (eski davranis).",
       "revenuecat": {
@@ -93,28 +93,28 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Profil fotoğrafını ya da biniş kartının ekran görüntüsünü seçmen için galeri erişimi gerekiyor. Profil fotoğrafı sunucumuza yüklenir ve senin seçtiğin görünürlükte gösterilir; biniş kartı görüntüsü cihazından çıkmaz.",
-          "cameraPermission": "Biniş kartındaki barkodu okumak için kamera gerekiyor.",
+          "photosPermission": "Profil fotoÄŸrafÄ±nÄ± ya da biniÅŸ kartÄ±nÄ±n ekran gÃ¶rÃ¼ntÃ¼sÃ¼nÃ¼ seÃ§men iÃ§in galeri eriÅŸimi gerekiyor. Profil fotoÄŸrafÄ± sunucumuza yÃ¼klenir ve senin seÃ§tiÄŸin gÃ¶rÃ¼nÃ¼rlÃ¼kte gÃ¶sterilir; biniÅŸ kartÄ± gÃ¶rÃ¼ntÃ¼sÃ¼ cihazÄ±ndan Ã§Ä±kmaz.",
+          "cameraPermission": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor.",
           "microphonePermission": false
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Biniş kartındaki barkodu okumak için kamera gerekiyor.",
+          "cameraPermission": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor.",
           "recordAudioAndroid": false
         }
       ],
       [
         "expo-sensors",
         {
-          "motionPermission": "Kart ekranındaki ışık efekti için telefonunun eğimi okunur. Hareket verisi cihazından çıkmaz ve kaydedilmez."
+          "motionPermission": "Kart ekranÄ±ndaki Ä±ÅŸÄ±k efekti iÃ§in telefonunun eÄŸimi okunur. Hareket verisi cihazÄ±ndan Ã§Ä±kmaz ve kaydedilmez."
         }
       ],
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Bulunduğun havalimanını seyahat formunda seçebilmek için yaklaşık konumun okunur. Konumun telefonundan çıkmaz ve kaydedilmez.",
+          "locationWhenInUsePermission": "BulunduÄŸun havalimanÄ±nÄ± seyahat formunda seÃ§ebilmek iÃ§in yaklaÅŸÄ±k konumun okunur. Konumun telefonundan Ã§Ä±kmaz ve kaydedilmez.",
           "isIosBackgroundLocationEnabled": false,
           "isAndroidBackgroundLocationEnabled": false,
           "isAndroidForegroundServiceEnabled": false
@@ -126,11 +126,11 @@
       "buildNumber": "300",
       "supportsTablet": false,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Profil fotoğrafını ya da biniş kartının ekran görüntüsünü seçmen için galeri erişimi gerekiyor. Profil fotoğrafı sunucumuza yüklenir ve senin seçtiğin görünürlükte gösterilir; biniş kartı görüntüsü cihazından çıkmaz.",
+        "NSPhotoLibraryUsageDescription": "Profil fotoÄŸrafÄ±nÄ± ya da biniÅŸ kartÄ±nÄ±n ekran gÃ¶rÃ¼ntÃ¼sÃ¼nÃ¼ seÃ§men iÃ§in galeri eriÅŸimi gerekiyor. Profil fotoÄŸrafÄ± sunucumuza yÃ¼klenir ve senin seÃ§tiÄŸin gÃ¶rÃ¼nÃ¼rlÃ¼kte gÃ¶sterilir; biniÅŸ kartÄ± gÃ¶rÃ¼ntÃ¼sÃ¼ cihazÄ±ndan Ã§Ä±kmaz.",
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleAllowMixedLocalizations": true,
-        "NSUserTrackingUsageDescription": "LoungeLink seni başka uygulama ve web sitelerinde takip etmez; bu izin istenmez.",
-        "NSCameraUsageDescription": "Biniş kartındaki barkodu okumak için kamera gerekiyor. Görüntü cihazından çıkmaz, hiçbir sunucuya gönderilmez."
+        "NSUserTrackingUsageDescription": "LoungeLink seni baÅŸka uygulama ve web sitelerinde takip etmez; bu izin istenmez.",
+        "NSCameraUsageDescription": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor. GÃ¶rÃ¼ntÃ¼ cihazÄ±ndan Ã§Ä±kmaz, hiÃ§bir sunucuya gÃ¶nderilmez."
       },
       "usesAppleSignIn": true,
       "privacyManifests": {
