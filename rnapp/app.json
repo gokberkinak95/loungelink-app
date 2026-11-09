@@ -123,13 +123,12 @@
     ],
     "ios": {
       "bundleIdentifier": "co.loungelink.app",
-      "buildNumber": "300",
+      "buildNumber": "301",
       "supportsTablet": false,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Profil fotoÄŸrafÄ±nÄ± ya da biniÅŸ kartÄ±nÄ±n ekran gÃ¶rÃ¼ntÃ¼sÃ¼nÃ¼ seÃ§men iÃ§in galeri eriÅŸimi gerekiyor. Profil fotoÄŸrafÄ± sunucumuza yÃ¼klenir ve senin seÃ§tiÄŸin gÃ¶rÃ¼nÃ¼rlÃ¼kte gÃ¶sterilir; biniÅŸ kartÄ± gÃ¶rÃ¼ntÃ¼sÃ¼ cihazÄ±ndan Ã§Ä±kmaz.",
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleAllowMixedLocalizations": true,
-        "NSUserTrackingUsageDescription": "LoungeLink seni baÅŸka uygulama ve web sitelerinde takip etmez; bu izin istenmez.",
         "NSCameraUsageDescription": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor. GÃ¶rÃ¼ntÃ¼ cihazÄ±ndan Ã§Ä±kmaz, hiÃ§bir sunucuya gÃ¶nderilmez."
       },
       "usesAppleSignIn": true,
