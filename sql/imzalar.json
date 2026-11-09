@@ -1913,5 +1913,10 @@
   "348_canli_esitleme.sql",
   null,
   null
+ ],
+ [
+  "349_create_availability_geri.sql",
+  null,
+  null
  ]
 ]

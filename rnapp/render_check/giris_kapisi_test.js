@@ -526,8 +526,14 @@ async function calis() {
     const isaretli = m4.filter(a => a === "kutuDolu").length;
     const isaretsiz = m4.filter(a => a === "kutuBos").length;
     const kutuSayisi = 6;   // c1..c5 + c6Age
-    ol("kayıt · tümünü kabul → HİÇ boş kutu kalmamalı", isaretsiz === 0,
-      isaretli + " işaretli, " + isaretsiz + " işaretsiz (beklenen: " + (kutuSayisi + 1) + " / 0)");
+    // 🔵 8 Kasım (SQL 345 · KVKK m.3/1-a): kampanya bildirimi izni (cPazarlama) AYRI ve isteğe
+    // bağlı bir kutu; "Tümünü kabul et" ona DOKUNMAMALI (rıza zorunlu onaylarla toplanamaz).
+    // Beklenen: zorunlu 6 + "tümü" kutusu = 7 işaretli, yalnız pazarlama kutusu işaretsiz.
+    ol("kayıt · tümünü kabul → zorunlu kutuların hepsi işaretli, pazarlama izni AYRI kalır",
+      isaretli === kutuSayisi + 1 && isaretsiz === 1,
+      isaretli + " işaretli, " + isaretsiz + " işaretsiz (beklenen: " + (kutuSayisi + 1) + " / 1)");
+    const pazarlamaKutusu = metneGoreBas(tree, String(t.cPazarlama || "").slice(0, 24));
+    ol("kayıt · pazarlama izni kutusu ayrı ve basılabilir", typeof pazarlamaKutusu === "function");
 
     // 18+ kutusunu tek tek kapatıp açabiliyor muyuz?
     const yasKutusu = metneGoreBas(tree, String(t.c6Age || "").slice(0, 24));

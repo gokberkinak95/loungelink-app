@@ -20,6 +20,11 @@ NEDEN VAR:
   belli olur: yanlış şeyin OLMAMASI gerektiği yerde gerçekten
   olmuyor mu?
 """
+# Windows (9 Kasım): initdb C yereli, psql argüman sırası/UTF-8, tam ortam, pg8000 →
+# render_check/win_e2e.py. Linux'ta hiçbir şey yapmaz. `npm run e2e` bu satırla Windows'ta koşar.
+import os as _w_os, sys as _w_sys
+_w_sys.path.insert(0, _w_os.path.dirname(_w_os.path.abspath(__file__)))
+import win_e2e  # noqa: F401,E402
 import os
 import re
 import shutil

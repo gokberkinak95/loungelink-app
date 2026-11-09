@@ -65,6 +65,11 @@ NE YAKALAMAZ: prop zinciriyle üç bileşen ötesine taşınan listeler.
 Onlar için küçük ve gerekçeli bir açık harita var (PROP_BAGLARI);
 haritada bilinmeyen bir RPC adı yazarsa denetim patlar.
 """
+# Windows (9 Kasım): initdb C yereli, psql argüman sırası/UTF-8, tam ortam, pg8000 →
+# render_check/win_e2e.py. Linux'ta hiçbir şey yapmaz. `npm run e2e` bu satırla Windows'ta koşar.
+import os as _w_os, sys as _w_sys
+_w_sys.path.insert(0, _w_os.path.dirname(_w_os.path.abspath(__file__)))
+import win_e2e  # noqa: F401,E402
 import os
 import re
 import shutil
@@ -319,6 +324,9 @@ DIS_ALANLAR = {
     'content_type':      'HTTP başlığı',
     'error_code':        'Supabase auth yönlendirme parametresi (deeplink)',
     'error_description': 'Supabase auth yönlendirme parametresi (deeplink)',
+    # 9 Kasım (BO api/telefon-dogrula/route.js): Firebase ID token yükü (jose jwtVerify)
+    'sign_in_provider':  'Firebase ID token: firebase.sign_in_provider',
+    'auth_time':         'Firebase ID token: auth_time (standart JWT iddiası)',
 }
 
 toplam_okunan = 0

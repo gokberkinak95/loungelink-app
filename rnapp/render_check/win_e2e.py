@@ -14,11 +14,20 @@ düşüyordu:
 Betiklerin kendisi Linux (bulut kabı) için doğru; burada yalnız bu iki şey
 Windows'a uyarlanıyor, sonra betik OLDUĞU GİBİ çalışır. Linux'ta hiçbir
 şey yapmaz.
+
+9 Kasım: `npm run e2e` betikleri doğrudan çağırıyordu (bu sarmalayıcı
+devre dışıydı → Windows'ta stderr None, auth.users yok). Artık e2e
+betikleri bunu en başta KENDİLERİ içe aktarıyor (`import win_e2e`);
+iki kez yüklenirse (sarmalayıcıyla da koşulursa) yamalar bir kez kurulur.
 """
 import os, sys, runpy, subprocess, pathlib
 
-if os.name == "nt":
+if os.name == "nt" and not getattr(subprocess, "_ll_win_e2e", False):
+    subprocess._ll_win_e2e = True
     os.environ.setdefault("PYTHONUTF8", "1")
+    for _akim in (sys.stdout, sys.stderr):   # cp1254 konsolda ✓/✗ basarken çökmesin
+        try: _akim.reconfigure(encoding="utf-8", errors="replace")
+        except Exception: pass
     import pgserver
     _bin = pathlib.Path(pgserver.__file__).parent / "pginstall" / "bin"
     _asil_get_server = pgserver.get_server

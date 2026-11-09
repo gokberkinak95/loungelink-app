@@ -36475,10 +36475,6 @@
    ],
    [
     "govde",
-    "create_availability|not_authenticated"
-   ],
-   [
-    "govde",
     "discover_availabilities_ham|q.avail_date, q.time_from"
    ],
    [
@@ -36508,10 +36504,6 @@
    [
     "govde",
     "charter_note|üyeliğe bağlı olduğu için charter olması sorun değildir; geçerli"
-   ],
-   [
-    "govde",
-    "create_availability|contact_not_verified"
    ],
    [
     "govde",
@@ -36547,10 +36539,6 @@
    ],
    [
     "govde",
-    "create_availability|no_access_source"
-   ],
-   [
-    "govde",
     "discover_availabilities_ham|select q.* from public.discover_availabilities_prerank(p_airport, p_sector, p_flight, p_date) q"
    ],
    [
@@ -36580,6 +36568,143 @@
    [
     "govde",
     "charter_note|un seferi charter. Havayolu salonlarında charter seferde bilet"
+   ],
+   [
+    "govde",
+    "host_requests|b.photo_priv = false"
+   ],
+   [
+    "govde",
+    "request_credit_cost|if coalesce(v_ham, 1) = 0 then return 0; end if;"
+   ],
+   [
+    "govde",
+    "trg_soru_bildirimi_host|set title = v_b,"
+   ]
+  ]
+ ],
+ [
+  "349_create_availability_geri.sql",
+  [
+   [
+    "govde",
+    "create_availability|not_authenticated"
+   ],
+   [
+    "govde",
+    "create_availability|invalid_time_range"
+   ],
+   [
+    "govde",
+    "create_availability|kendi_ilanlarin_cakisiyor"
+   ],
+   [
+    "govde",
+    "create_availability|Bu saatte başka bir ilanın var. Önce onu kaldır ya da saatleri ayır."
+   ],
+   [
+    "govde",
+    "create_availability|where a.id = v_id;"
+   ],
+   [
+    "govde",
+    "create_availability|v jsonb; v_id uuid;"
+   ],
+   [
+    "govde",
+    "create_availability|if v_id is null then"
+   ],
+   [
+    "govde",
+    "create_availability|'program_notu', case"
+   ],
+   [
+    "govde",
+    "create_availability|from availabilities a"
+   ],
+   [
+    "govde",
+    "create_availability|when v_pg is null then"
+   ],
+   [
+    "govde",
+    "create_availability|'program_id',     v_pg,"
+   ],
+   [
+    "govde",
+    "create_availability|'program_adi',    v_ad,"
+   ],
+   [
+    "govde",
+    "create_availability|'program_kodu',   v_kod,"
+   ],
+   [
+    "govde",
+    "create_availability|and a.avail_date = p_date"
+   ],
+   [
+    "govde",
+    "create_availability|raise exception 'not_a_host';"
+   ],
+   [
+    "govde",
+    "create_availability|return v || jsonb_build_object("
+   ],
+   [
+    "govde",
+    "create_availability|into v_pg, v_kaynak, v_kod, v_ad"
+   ],
+   [
+    "govde",
+    "create_availability|p_flight, p_visibility, p_carrier);"
+   ],
+   [
+    "govde",
+    "create_availability|v := public.create_availability_base("
+   ],
+   [
+    "govde",
+    "create_availability|v_id := nullif(v ->> 'id', '')::uuid;"
+   ],
+   [
+    "govde",
+    "create_availability|if exists (select 1 from availabilities a"
+   ],
+   [
+    "govde",
+    "create_availability|where a.host_id = auth.uid() and a.active"
+   ],
+   [
+    "govde",
+    "create_availability|raise exception 'kendi_ilanlarin_cakisiyor'"
+   ],
+   [
+    "govde",
+    "create_availability|when coalesce(v_kaynak, '') = 'turetildi' then"
+   ],
+   [
+    "govde",
+    "create_availability|v_pg uuid; v_kaynak text; v_kod text; v_ad text;"
+   ],
+   [
+    "govde",
+    "create_availability|and not exists (select 1 from host_applications ha"
+   ],
+   [
+    "govde",
+    "create_availability|left join lounge_programs p on p.id = a.program_id"
+   ],
+   [
+    "govde",
+    "create_availability|and a.time_from < p_to and p_from < a.time_to) then"
+   ],
+   [
+    "govde",
+    "create_availability|'program_kaynagi', coalesce(v_kaynak, 'bilinmiyor'),"
+   ],
+   [
+    "govde",
+    "create_availability|select a.program_id, a.program_source, p.code, p.name"
    ]
   ]
  ]

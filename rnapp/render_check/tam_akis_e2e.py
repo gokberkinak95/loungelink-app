@@ -36,6 +36,11 @@ Koşum:
   (DSN verilmezse pgserver ile sıfırdan kurulmuş geçici bir veritabanında,
    diğer e2e'lerle aynı yoldan koşar.)
 """
+# Windows (9 Kasım): initdb C yereli, psql argüman sırası/UTF-8, tam ortam, pg8000 →
+# render_check/win_e2e.py. Linux'ta hiçbir şey yapmaz. `npm run e2e` bu satırla Windows'ta koşar.
+import os as _w_os, sys as _w_sys
+_w_sys.path.insert(0, _w_os.path.dirname(_w_os.path.abspath(__file__)))
+import win_e2e  # noqa: F401,E402
 import json, os, re, sys, uuid, pathlib, shutil, subprocess
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -158,6 +163,25 @@ def kod(sonuc):
 def bakiye(u):
     return q("select coalesce(sum(delta),0) from credit_ledger where user_id=%s", (u,), tek=True)
 
+def test_modu(acik):
+    """SQL 347'nin iki zaman kapısı `ll.test_mode` açıkken atlanır (176 muafiyeti; yalnız
+    işlem içi set_config(..., true) — PostgREST'ten ayarlanamaz)."""
+    q("select set_config('ll.test_mode', %s, true)", ("on" if acik else "off",))
+
+def baslat(uid, rid):
+    """347/4: oturum ilan başlangıcından en çok 1 saat önce başlatılır. Bu akışın ilanları
+    YARIN; saat farkını taklit etmek ilan/seyahat eşleşmesini bozar. Kapının kendisi 7'de
+    ayrıca ölçülüyor (session_too_early); akış içindeki başlatmalar test kipinde yapılır."""
+    test_modu(True)
+    try:
+        return rpc(uid, "start_session_request", p_request_id=rid)
+    finally:
+        test_modu(False)
+
+def oturum_suresi_gecti(sid, dk=20):
+    """347/3a: onay oturum başladıktan 15 dk sonra açılır. Gerçeği taklit: başlangıç geriye."""
+    q("update sessions set started_at = now() - make_interval(mins => %s) where id = %s", (dk, sid))
+
 def id_(r):
     return (r[1] or {}).get("id") if r[0] and isinstance(r[1], dict) else None
 
@@ -188,6 +212,17 @@ X  = hesap("Yabancı E2E", f"x_{sfx}@e2e.test")
 
 # ── 0 · Kayıt: rol + sözleşmeler (uygulamanın ilk ekranı) ───────────
 print("\n--- 0 · KAYIT")
+# 🔴 9 Kasım (SQL 328 · Gökberk 4 Ekim): host olmanın TEK yolu BO onaylı başvuru.
+# Misafir `rolumu_sec('host')` ile kendini host yapamaz → 'host_basvurusu_gerekli'.
+# Gerçek akış taklit edilir: uygulama `apply_for_host`, BO `review_host_application`
+# (yönetici bağlantısı = uid'siz), sonra uygulamanın ilk ekranı rolumu_sec('host').
+r = rpc(G, "rolumu_sec", p_role="host", p_gender=None)
+chk("0. onaysız misafir kendini host YAPAMIYOR (328)", kod(r) == "host_basvurusu_gerekli", kod(r))
+for u in (H, H2):
+    r = rpc(u, "apply_for_host", p_access_source="Havayolu Statüsü", p_guest_capacity=2, p_note=None)
+    chk("0. host başvurusu gönderildi (apply_for_host)", r[0], kod(r))
+    r = dene("select public.review_host_application(%s, true, 'e2e onay')", ((r[1] or {}).get("id") if r[0] else None,))
+    chk("0. BO başvuruyu onayladı (review_host_application)", r[0], kod(r))
 for u, rol in [(H, "host"), (H2, "host"), (G, "guest"), (G2, "guest"), (G3, "guest"), (X, "guest")]:
     r = rpc(u, "rolumu_sec", p_role=rol, p_gender=None)
     if not r[0]: chk(f"0. rolumu_sec({rol})", False, r[1])
@@ -404,6 +439,8 @@ chk("6. başkası adına mesaj yazılamıyor", not r[0], kod(r))
 # ── 7 · Oturum: başlat · durum · tamamla · puan ────────────────────
 print("\n--- 7 · OTURUM")
 r = rpc(G, "start_session_request", p_request_id=R1)
+chk("7. ilan saatinden 1 saatten önce başlatılamaz (347/4)", kod(r) == "session_too_early", kod(r))
+r = baslat(G, R1)
 chk("7. misafir 'Oturumu başlat' → bekliyor", r[0] and (r[1] or {}).get("status") == "pending", r[1])
 SID = (r[1] or {}).get("id") if r[0] else None
 chk("7. host bekleyen oturumu görüyor (RLS)", q("select status::text from sessions where id=%s", (SID,), uid=H, tek=True) == "pending")
@@ -412,7 +449,7 @@ chk("7. host bekleyen oturumu görüyor (RLS)", q("select status::text from sess
 # yani tek taraflı basış iptali/geri almayı kilitliyordu (canlıda host "kabulü geri al" diyemedi).
 # Tek taraflı başlatılmış buluşmanın iptal/geri alınabildiğini iptal_akisi_e2e (S1 · S3 · S4)
 # ölçüyor; burada İKİ taraf başlattıktan SONRA istek üzerinden iptalin kilitli olduğu ölçülür.
-r = rpc(H, "start_session_request", p_request_id=R1)
+r = baslat(H, R1)
 chk("7. host da başlattı → SÜRÜYOR", r[0] and (r[1] or {}).get("status") == "active", r[1])
 r = rpc(G, "respond_request", p_request_id=R1, p_action="cancel")
 chk("7. iki taraf başlattıktan sonra istekten iptal → session_started", kod(r) == "session_started", kod(r))
@@ -423,12 +460,22 @@ chk("7. misafir host'un durumunu görüyor",
 r = rpc(G, "rate_session", p_session_id=SID, p_score=5, p_comment=None)
 chk("7. bitmemiş oturum puanlanamıyor", kod(r) == "not_completed", kod(r))
 r = rpc(G, "confirm_session", p_session_id=SID)
+chk("7. 15 dk dolmadan tamamlanamıyor (347/3a)", kod(r) == "cok_erken", kod(r))
+oturum_suresi_gecti(SID)
+r = rpc(G, "confirm_session", p_session_id=SID)
 chk("7. misafir tamamladı → karşı tarafı bekliyor", r[0] and (r[1] or {}).get("completed") is False, r[1])
 r = rpc(H, "confirm_session", p_session_id=SID)
 chk("7. host tamamladı → TAMAMLANDI", r[0] and (r[1] or {}).get("completed") is True, r[1])
 chk("7. istek de 'completed'", q("select status::text from requests where id=%s", (R1,), uid=G, tek=True) == "completed")
-chk("7. puan: host +500, misafir +200",
-    q("select string_agg(delta::text, ',' order by delta) from points_ledger where ref_id=%s", (SID,), tek=True) == "200,500")
+# 🔴 9 Kasım: SQL 337 (19 Ekim, Jetset) puanı PLANA bağladı — herkes kendi planının
+# agirlama_puani'nı alır (Yolcu 100 · Sık Uçan 250 · Jetset 500). Eski sabit "host +500,
+# misafir +200" o karardan önceydi. Beklenen değer ürünün kendi fonksiyonundan okunur.
+_bek_puan = q("select string_agg(x::text, ',' order by x) from (values (public.plan_agirlama_puani(%s)), "
+              "(public.plan_agirlama_puani(%s))) t(x)", (H, G), tek=True)
+_puan = q("select string_agg(delta::text, ',' order by delta) from points_ledger "
+          "where ref_id=%s and reason='session_reward'", (SID,), tek=True)
+chk("7. puan: iki taraf kendi planının ağırlama puanını aldı (337)", _puan == _bek_puan,
+    f"{_puan} (beklenen {_bek_puan})")
 pr = [row[0] for row in liste(G, "pending_ratings")]
 chk("7. misafirin puanlanacaklar listesinde", any(x["session_id"] == SID for x in pr))
 r = rpc(G, "rate_session", p_session_id=SID, p_score=5, p_comment="Harika sohbet")
@@ -446,7 +493,7 @@ chk("7. puanlar karşı tarafa yazıldı",
 
 # ── 8 · Gelmedi (301) ──────────────────────────────────────────────
 print("\n--- 8 · GELMEDİ")
-r = rpc(G2, "start_session_request", p_request_id=R2c)
+r = baslat(G2, R2c)
 S2 = (r[1] or {}).get("id") if r[0] else None
 r = rpc(G2, "gelmedi_bildir", p_request_id=R2c)
 chk("8. 15 dk dolmadan 'gelmedi' → gelmedi_erken", kod(r) == "gelmedi_erken", kod(r))
@@ -479,8 +526,8 @@ r = rpc(G2, "create_request", p_avail_id=AV1, p_type="lounge", p_intro=None, p_i
 chk("9. yeni istek (gelmedi sonrası aynı ilana)", r[0], kod(r))
 R9 = id_(r)
 r = rpc(H, "respond_request", p_request_id=R9, p_action="accept"); chk("9. kabul", r[0], kod(r))
-r = rpc(G2, "start_session_request", p_request_id=R9); chk("9. misafir başlattı", r[0], kod(r))
-r = rpc(H, "start_session_request", p_request_id=R9)
+r = baslat(G2, R9); chk("9. misafir başlattı", r[0], kod(r))
+r = baslat(H, R9)
 S9 = (r[1] or {}).get("id") if r[0] else None
 r = rpc(G2, "kapida_ret_bildirebilir_mi", p_session_id=S9)
 chk("9. kapıda ret bildirilebilir mi sorusu çalışıyor", r[0], kod(r))
@@ -716,8 +763,8 @@ seyahat(G, "19:30:00", "22:00:00")
 g_once = bakiye(G)
 r = rpc(G, "create_request", p_avail_id=AV5, p_type="lounge", p_intro=None, p_idem=None); R17 = id_(r)
 rpc(H, "respond_request", p_request_id=R17, p_action="accept")
-rpc(G, "start_session_request", p_request_id=R17)
-r = rpc(H, "start_session_request", p_request_id=R17); S17 = (r[1] or {}).get("id") if r[0] else None
+baslat(G, R17)
+r = baslat(H, R17); S17 = (r[1] or {}).get("id") if r[0] else None
 r = rpc(G, "cancel_session", p_session_id=S17, p_reason="plan_degisti")
 chk("17. oturum ilk 5 dk içinde iptal edildi", r[0], kod(r))
 chk("17. 5 dk içindeki iptalde kredi iade", bakiye(G) == g_once, f"{g_once} → {bakiye(G)}")

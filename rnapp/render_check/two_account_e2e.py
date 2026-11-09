@@ -1,3 +1,8 @@
+# Windows (9 Kasım): initdb C yereli, psql argüman sırası/UTF-8, tam ortam, pg8000 →
+# render_check/win_e2e.py. Linux'ta hiçbir şey yapmaz. `npm run e2e` bu satırla Windows'ta koşar.
+import os as _w_os, sys as _w_sys
+_w_sys.path.insert(0, _w_os.path.dirname(_w_os.path.abspath(__file__)))
+import win_e2e  # noqa: F401,E402
 import os,re,shutil,pathlib,subprocess,pgserver
 BIN=pathlib.Path(pgserver.__file__).parent/'pginstall'/'bin'; ENV={'PATH':f'{BIN}:/usr/bin:/bin','HOME':'/tmp'}
 import pathlib as _pl
@@ -48,7 +53,7 @@ D=pathlib.Path('/tmp/ll_e2e_' + str(os.getpid()))
 _ll_temizle(D)
 if D.exists(): shutil.rmtree(D,ignore_errors=True)
 D.mkdir(parents=True); srv=pgserver.get_server(D); uri=srv.get_uri()
-def sql(q, as_user=None):
+def sql(q, as_user=None, test_modu=False):
     # 🔴 `set request.jwt.claims` AYRI bir -c ile gonderilmeli.
     # Ayni -c icinde noktali virgulle birlestirince psql once "SET"
     # basiyor ve o satir SONUCA karisiyordu: create_request'in dondurdugu
@@ -57,6 +62,9 @@ def sql(q, as_user=None):
     cmd=[str(BIN/'psql'),uri,'-X','-t','-A','-v','ON_ERROR_STOP=1']
     if as_user:
         cmd += ['-c', "set request.jwt.claims = '{\"sub\":\"%s\"}'" % as_user]
+    if test_modu:
+        # SQL 347 zaman kapilari (176 muafiyeti) — yalniz bu psql oturumunda
+        cmd += ['-c', "set ll.test_mode = 'on'"]
     cmd += ['-c', q]
     r=subprocess.run(cmd,capture_output=True,text=True,env=ENV)
     out=[l for l in r.stdout.splitlines() if l.strip() and l.strip()!='SET']
@@ -197,8 +205,13 @@ m,_,_ = sql(f"select count(*) from messages m where m.channel_id in (select id f
 chk("9. Kabulde tanitim mesaji sohbete dustu", int(m or 0)>0, m)
 
 # 6 oturum baslat (iki taraf)
-o1h,e1h,_ = sql(f"select public.start_session_request('{rid}')", HOST)
-o1g,e1g,_ = sql(f"select public.start_session_request('{rid}')", GUEST)
+# 🔴 9 Kasim (SQL 347/4): oturum ilan baslangicindan en cok 1 saat once baslatilir
+# ('session_too_early'). Secilen seed ilani ileri tarihli; kapi once olculur, sonra
+# baslatma test kipinde (ll.test_mode) yapilir.
+_, e_erken, _ = sql(f"select public.start_session_request('{rid}')", GUEST)
+chk("10a. Ilan saatinden 1 saatten once baslatilamaz (347)", 'session_too_early' in (e_erken or ''), (e_erken or 'GECTI')[:80])
+o1h,e1h,_ = sql(f"select public.start_session_request('{rid}')", HOST, test_modu=True)
+o1g,e1g,_ = sql(f"select public.start_session_request('{rid}')", GUEST, test_modu=True)
 if e1h or e1g: print("      start hatasi:", (e1h or e1g)[:120])
 allst,_,_ = sql(f"select count(*)||' oturum: '||string_agg(status::text,',') from sessions where request_id='{rid}'")
 # 🔴 TESTIN HATASI, URUNUN DEGIL: `sessions` tablosunda `created_at`
@@ -210,6 +223,11 @@ chk("10. Iki taraf basladi -> oturum aktif", st=='active', f"{st} | {allst}")
 
 # 7 cift onay tamamlama
 sid = sql(f"select s.id from sessions s where s.request_id='{rid}'")[0]
+# 🔴 9 Kasim (SQL 347/3a): onay, oturum basladiktan 15 dk sonra. Once kapi olculur,
+# sonra gercek taklit edilir: baslangic 20 dk geriye (yonetici baglantisi).
+_, e_erken2, _ = sql(f"select public.confirm_session('{sid}')", HOST)
+chk("10b. 15 dk dolmadan onay yok (cok_erken)", 'cok_erken' in (e_erken2 or ''), (e_erken2 or 'GECTI')[:80])
+sql(f"update sessions set started_at = now() - interval '20 minutes' where id='{sid}'")
 sql(f"select public.confirm_session('{sid}')", HOST)
 sql(f"select public.confirm_session('{sid}')", GUEST)
 st2,_,_ = sql(f"select status from sessions where id='{sid}'")

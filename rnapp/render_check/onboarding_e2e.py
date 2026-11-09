@@ -20,6 +20,11 @@ NEDEN VAR:
   hoş geldin kredisi → KVKK rızaları → referans kodu → profil
   tamamlama → doğrulama → ilk seyahat → keşifte görünme.
 """
+# Windows (9 Kasım): initdb C yereli, psql argüman sırası/UTF-8, tam ortam, pg8000 →
+# render_check/win_e2e.py. Linux'ta hiçbir şey yapmaz. `npm run e2e` bu satırla Windows'ta koşar.
+import os as _w_os, sys as _w_sys
+_w_sys.path.insert(0, _w_os.path.dirname(_w_os.path.abspath(__file__)))
+import win_e2e  # noqa: F401,E402
 import os
 import re
 import shutil
@@ -225,12 +230,28 @@ def main():
             1, 'TK712', 'all')"""
         _, err, rc = run(uri, ilan, as_user=NEW)
         chk('12. Host OLMAYAN ilan açamaz (rol kapısı)',
-            rc != 0 and 'not_a_host' in (err or ''), (err or '')[:140])
-        run(uri, "select public.rolumu_sec('host')", as_user=NEW)
+            rc != 0 and 'not_a_host' in (err or ''), (err or 'GECTI (kapı açık: ilan açıldı, rol host oldu)')[:140])
+        if rc == 0:
+            # Kapı açıksa (ürün hatası) sonraki adımlar o hatanın gölgesinde kalmasın:
+            # durumu yönetici bağlantısıyla geri al, 13-14 kendi başına ölçülsün.
+            run(uri, f"delete from availabilities where host_id='{NEW}'; "
+                     f"update users set role='guest' where id='{NEW}'")
+        # 🔴 9 Kasım · SQL 328 (4 Ekim, Gökberk): "açık niyet" artık YETMİYOR — host
+        # olmanın TEK yolu BO onaylı başvuru. rolumu_sec('host') onaysız misafire
+        # 'host_basvurusu_gerekli' der. Gerçek akış: apply_for_host → BO onayı
+        # (yönetici bağlantısı) → ilan.
+        _, err_r, rc_r = run(uri, "select public.rolumu_sec('host')", as_user=NEW)
+        chk('13a. Onaysız misafir kendini host yapamaz (328)',
+            rc_r != 0 and 'host_basvurusu_gerekli' in (err_r or ''), (err_r or 'GECTI')[:140])
+        app_id, err_a, rc_a = run(uri, "select public.apply_for_host('Miles&Smiles Elite Plus', 1, null)->>'id'",
+                                  as_user=NEW)
+        chk('13b. Host başvurusu gönderildi', rc_a == 0 and bool(app_id), (err_a or app_id)[:140])
+        _, err_o, rc_o = run(uri, f"select public.review_host_application('{app_id}'::uuid, true, 'e2e')")
+        chk('13c. BO başvuruyu onayladı', rc_o == 0, (err_o or '')[:140])
         _, err2, rc2 = run(uri, ilan, as_user=NEW)
-        chk('13. Açık niyetle host olan ilan açabilir', rc2 == 0, (err2 or '')[:140])
+        chk('13. Onaylı host ilan açabilir', rc2 == 0, (err2 or '')[:140])
         role, _, _ = run(uri, f"select role from users where id='{NEW}'")
-        chk('14. rolumu_sec sonrası rol host', role == 'host', role)
+        chk('14. BO onayı sonrası rol host', role == 'host', role)
     else:
         chk('12. Host OLMAYAN ilan açamaz (rol kapısı)', False, 'IST salonu yok')
 

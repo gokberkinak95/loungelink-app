@@ -16,6 +16,11 @@ NEDEN VAR:
   doğru girdiyle AÇILDIĞINI ölçmek gerekir. Her boyut için ikisi de
   ölçülüyor.
 """
+# Windows (9 Kasım): initdb C yereli, psql argüman sırası/UTF-8, tam ortam, pg8000 →
+# render_check/win_e2e.py. Linux'ta hiçbir şey yapmaz. `npm run e2e` bu satırla Windows'ta koşar.
+import os as _w_os, sys as _w_sys
+_w_sys.path.insert(0, _w_os.path.dirname(_w_os.path.abspath(__file__)))
+import win_e2e  # noqa: F401,E402
 import os, re, json, shutil, subprocess, pathlib, sys
 import pgserver
 
@@ -65,10 +70,13 @@ def build():
     return uri
 
 
-def q(uri, sql=None, file=None, as_user=None):
+def q(uri, sql=None, file=None, as_user=None, test_modu=False):
     cmd = [str(BIN / 'psql'), uri, '-X', '-t', '-A']
     if as_user:
         cmd += ['-c', 'set request.jwt.claims = \'{"sub":"%s"}\'' % as_user]
+    if test_modu:
+        # SQL 347 zaman kapıları (176 muafiyeti) — yalnız bu psql oturumunda
+        cmd += ['-c', "set ll.test_mode = 'on'"]
     cmd += ['-v', 'ON_ERROR_STOP=1']
     cmd += (['-f', str(file)] if file else ['-c', sql])
     r = subprocess.run(cmd, capture_output=True, text=True, env=ENV)
@@ -190,10 +198,14 @@ def main():
     chk('30. İstek oluştu', rc == 0, e[:80])
     rid = J(raw).get('id') if raw.startswith('{') else raw
     q(uri, f"select public.respond_request('{rid}','accept')", as_user=HOST)
-    q(uri, f"select public.start_session_request('{rid}')", as_user=HOST)
-    q(uri, f"select public.start_session_request('{rid}')", as_user=G1)
+    # 🔴 9 Kasım (SQL 347/4): seed ilanı ileri saatli; başlatma ilan saatinden en çok 1 saat
+    # önce olur. Kapı tam_akis/two_account'ta ölçülüyor; burada başlatma test kipinde.
+    q(uri, f"select public.start_session_request('{rid}')", as_user=HOST, test_modu=True)
+    q(uri, f"select public.start_session_request('{rid}')", as_user=G1, test_modu=True)
     sid = q(uri, f"select id from sessions where request_id='{rid}'")[0]
     chk('31. Oturum açıldı', bool(sid), sid[:8])
+    # 347/3a: onay oturum başladıktan 15 dk sonra → gerçeği taklit: başlangıç 20 dk geriye
+    q(uri, f"update sessions set started_at = now() - interval '20 minutes' where id='{sid}'")
     q(uri, f"select public.confirm_session('{sid}')", as_user=HOST)
     q(uri, f"select public.confirm_session('{sid}')", as_user=G1)
     st = q(uri, f"select status from sessions where id='{sid}'")[0]
@@ -201,10 +213,26 @@ def main():
     used = q(uri, f"select quota_used from host_entitlements where user_id='{HOST}' and program_id='{PRG}'")[0]
     chk('33. Tamamlanan oturum host kotasını düşürdü (0→1)', used == '1', used)
 
-    # Kapı reddi → şüphe (misafir bildirir; oturum tamamlandı ama 24 saat penceresi içinde)
+    # 🔴 9 Kasım (SQL 347/2): TAMAMLANMIŞ oturumda "kapıda alınmadım" artık iade/şüphe
+    # açmaz → {ok:false, reason:'oturum_tamamlandi'} (iki tarafın "tamamlandı" dediği
+    # buluşmadan kredi geri almak istismardı). Eski beklenti (ok=true) o açığı sınıyordu.
     o, e, rc = q(uri, f"select public.kapida_giremedim('{sid}','kural_tutmadi','Kapıda kartı kabul etmediler')", as_user=G1)
-    chk('34. kapida_giremedim çalıştı', rc == 0 and J(o).get('ok') is True, (e or o)[:80])
-    n = q(uri, f"select count(*) from kural_supheleri where session_id='{sid}' and durum='acik'")[0]
+    chk('34. Tamamlanmış oturumda kapida_giremedim → oturum_tamamlandi', rc == 0 and J(o).get('ok') is False
+        and J(o).get('reason') == 'oturum_tamamlandi', (e or o)[:80])
+    # Kapı reddi gerçekte AKTİF buluşmada bildirilir: ikinci buluşma (kota/kontenjan
+    # yönetici bağlantısıyla açılır — 33 zaten ölçüldü).
+    q(uri, f"update host_entitlements set quota_used=0 where user_id='{HOST}' and program_id='{PRG}'")
+    q(uri, f"update availabilities set slots = slots + 1 where id='{AV}'")
+    raw2, e2, rc2 = q(uri, f"select public.create_request('{AV}','lounge','Yine ben')", as_user=G1)
+    rid2 = J(raw2).get('id') if raw2.startswith('{') else raw2
+    q(uri, f"select public.respond_request('{rid2}','accept')", as_user=HOST)
+    q(uri, f"select public.start_session_request('{rid2}')", as_user=HOST, test_modu=True)
+    q(uri, f"select public.start_session_request('{rid2}')", as_user=G1, test_modu=True)
+    sid2 = q(uri, f"select id from sessions where request_id='{rid2}' and status='active'")[0]
+    o, e, rc = q(uri, f"select public.kapida_giremedim('{sid2}','kural_tutmadi','Kapıda kartı kabul etmediler')", as_user=G1)
+    chk('34b. Aktif oturumda kapida_giremedim çalıştı', rc == 0 and J(o).get('ok') is True,
+        (e or e2 or o or 'oturum yok')[:80])
+    n = q(uri, f"select count(*) from kural_supheleri where session_id='{sid2}' and durum='acik'")[0]
     chk('35. Şüphe YAN TABLOYA düştü', n == '1', n)
     g = J(q(uri, f"select public.kural_guncelligi('{VEN}','{PRG}')")[0])
     chk('36. kural_guncelligi = supheli', g.get('durum') == 'supheli', g)

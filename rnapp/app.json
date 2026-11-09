@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "co.loungelink.app",
-      "versionCode": 305,
+      "versionCode": 306,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -123,7 +123,7 @@
     ],
     "ios": {
       "bundleIdentifier": "co.loungelink.app",
-      "buildNumber": "298",
+      "buildNumber": "299",
       "supportsTablet": false,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Profil fotoğrafını ya da biniş kartının ekran görüntüsünü seçmen için galeri erişimi gerekiyor. Profil fotoğrafı sunucumuza yüklenir ve senin seçtiğin görünürlükte gösterilir; biniş kartı görüntüsü cihazından çıkmaz.",
