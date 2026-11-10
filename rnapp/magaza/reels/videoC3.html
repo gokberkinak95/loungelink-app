@@ -52,6 +52,7 @@ html,body{margin:0;padding:0;background:#000}
   <div id="rozet"></div>
 </div>
 <script src="veri.js"></script>
+<script src="lansman_cta.js"></script>
 <script>
 const $ = (i) => document.getElementById(i);
 const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -364,6 +365,7 @@ function kapanis(t) {
   const sp = eo(ar(t, t0 + 3.9, t0 + 4.5));
   $("slogan").innerHTML = `<span style="display:inline-block;opacity:${sp};transform:translateY(${(1 - sp) * 20}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</span>`;
   const rb = t0 + 4.3, p1 = eo(ar(t, rb, rb + 0.4)), p2 = geri(ar(t, rb + 0.25, rb + 0.75)), p3 = geri(ar(t, rb + 0.4, rb + 0.9)), p4 = eo(ar(t, rb + 0.9, rb + 1.4));
+  if (LANSMAN_SONRA) $("rozet").innerHTML = lansmanCTA(t, rb, false); else
   $("rozet").innerHTML = `<div class="yakinda" style="opacity:${p1};transform:translateY(${(1 - p1) * 16}px)">YAKINDA</div>
     <div class="ikili"><div class="ro" style="opacity:${cl(p2)};transform:scale(${p2})"><svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#1A2B4C"/></svg>App Store</div>
     <div class="ro" style="opacity:${cl(p3)};transform:scale(${p3})"><svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#1A2B4C"/></svg>Google Play</div></div>

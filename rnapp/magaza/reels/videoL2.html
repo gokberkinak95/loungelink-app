@@ -38,6 +38,7 @@ html,body{margin:0;padding:0;background:#000}
   <div id="son"></div>
 </div>
 <script src="veri.js"></script>
+<script src="lansman_cta.js"></script>
 <script>
 const $ = (i) => document.getElementById(i);
 const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -242,12 +243,12 @@ function kapanis(t) {
         <path d="${VERI.kanat}" fill="url(#isilti)" opacity="${dol}"/></g></svg>
     <div style="position:absolute;left:0;width:1080px;top:${cy + 150 - ap * 10}px;text-align:center;font-size:${64}px;letter-spacing:${lerp(.9, .42, ap)}em;color:#F7F4EE;margin-right:-.42em">${yazi}</div>
     <div style="position:absolute;left:0;width:1080px;top:${cy + 270}px;text-align:center;font-size:40px;color:#E7D3AC;opacity:${sl};transform:translateY(${(1 - sl) * 18}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</div>
-    <div style="position:absolute;left:0;width:1080px;top:${cy + 420}px;text-align:center">
+    <div style="position:absolute;left:0;width:1080px;top:${cy + 420}px;text-align:center">${LANSMAN_SONRA ? lansmanCTA(g, 3.5, true) + "</div>" : `
       <div style="font-size:30px;letter-spacing:.32em;color:#9FB2D2;opacity:${yk}">YAKINDA</div>
       <div style="display:flex;justify-content:center;gap:26px;margin-top:26px">
         <div class="ro" style="opacity:${cl(r1)};transform:scale(${r1})"><svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#F7F4EE"/></svg>App Store</div>
         <div class="ro" style="opacity:${cl(r2)};transform:scale(${r2})"><svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#F7F4EE"/></svg>Google Play</div></div>
-      <div style="margin-top:34px;font-size:30px;color:#C9D4E6;opacity:${ok}">Ön kayıt listesine katıl · <b style="color:#F2D59A">loungelink.co</b></div></div>`;
+      <div style="margin-top:34px;font-size:30px;color:#C9D4E6;opacity:${ok}">Ön kayıt listesine katıl · <b style="color:#F2D59A">loungelink.co</b></div></div>`}`;
 }
 
 const HARF = "ABCDEFGHIJKLMNOPRSTUVYZÇĞİÖŞÜ0123456789";

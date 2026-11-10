@@ -55,6 +55,7 @@ html,body{margin:0;padding:0;background:#000}
   <svg id="ust" class="k" width="1080" height="1920"></svg>
 </div>
 <script src="veri.js"></script>
+<script src="lansman_cta.js"></script>
 <script>
 const TEMA = (new URLSearchParams(location.search).get("tema") || "A").toUpperCase();
 const $ = (i) => document.getElementById(i);
@@ -326,6 +327,7 @@ const IKON_G = () => `<svg viewBox="0 0 24 24"><path d="${VERI.gplay}" fill="#1A
 function rozetler(t, bas, top = 1290, koyu = false) {
   const p1 = eo(ar(t, bas, bas + 0.4)), p2 = geri(ar(t, bas + 0.25, bas + 0.75)), p3 = geri(ar(t, bas + 0.4, bas + 0.9));
   const r = $("rozet"); r.style.top = top + "px";
+  if (LANSMAN_SONRA) { r.innerHTML = lansmanCTA(t, bas, koyu); return; }
   r.innerHTML = `<div class="yakinda" style="opacity:${p1};transform:translateY(${(1 - p1) * 16}px)">YAKINDA</div>
     <div class="ikili"><div class="ro" style="opacity:${cl(p2)};transform:scale(${p2})">${IKON_A()}App Store</div>
     <div class="ro" style="opacity:${cl(p3)};transform:scale(${p3})">${IKON_G()}Google Play</div></div>`;

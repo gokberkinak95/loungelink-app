@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<!-- Lansman reels ONIZLEME (10 Kasim 2026): pano LOUNGE'DA / BULUSALIM, durum satiri YAKINDA -> YAYINDA, App Store yanar, kapanis karti.
+     ?f=45 -> 1080x1350 (akis), varsayilan 1080x1920 (Reels). window.ciz(t), window.SURE. -->
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#s{position:relative;width:1080px;overflow:hidden;font-family:J;color:#1A2B4C}
+.k{position:absolute;left:0;top:0}
+.bulut{position:absolute;border-radius:50%;background:#fff;filter:blur(30px)}
+.pano{position:absolute;display:flex;gap:7px}
+.kap{position:relative;border-radius:11px;text-align:center;overflow:hidden;box-shadow:0 6px 14px rgba(26,43,76,.12)}
+.kap:after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:rgba(26,43,76,.14)}
+.kap i{position:absolute;left:0;right:0;top:0;height:50%;transform-origin:50% 100%}
+.ro{display:inline-flex;align-items:center;gap:14px;height:88px;padding:0 42px;border-radius:44px;font-size:32px;white-space:nowrap}
+.ro svg{width:38px;height:38px}
+</style></head><body>
+<div id="s"><div id="zemin" class="k"></div><div id="bulutlar" class="k"></div><div id="sahne" class="k"></div></div>
+<script src="veri.js"></script>
+<script>
+const F45 = new URLSearchParams(location.search).get("f") === "45";
+const H = F45 ? 1350 : 1920, O = F45 ? 0 : 250;          // 9:16'da her şey 250 px aşağı (Reels üst/alt arayüz payı)
+const $ = (i) => document.getElementById(i);
+$("s").style.height = H + "px";
+const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ar = (t, a, b) => cl((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const es = (x) => -(Math.cos(Math.PI * x) - 1) / 2;
+const geri = (x) => { const c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+function rnd(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+const kanat = (renk, w) => `<svg width="${w}" height="${w * 29 / 62}" viewBox="76 117.5 62 29"><path d="${VERI.kanat}" fill="${renk}"/></svg>`;
+
+// ------------------------------------------------------------------ ZAMAN
+const T_PANO = 0, T_SATIR = 1.9, T_DON = 3.5, T_YAN = 4.9, T_CTA = 5.2, T_GEC = 7.3, SURE = 10.6;
+
+function zemin(t) {
+  const cy = F45 ? 76 : 74;
+  $("zemin").style.cssText = `width:1080px;height:${H}px;background:radial-gradient(circle at 74% ${cy}%, rgba(255,240,214,.95), rgba(255,226,184,0) 28%), linear-gradient(180deg,#6E93C8 0%,#A9C0E0 44%,#F3D7BE 76%,#FBEADB 100%)`;
+  const k = H / 1350;
+  let h = "";
+  [[180, 1010, 380, 60, .55, 8], [900, 1080, 420, 70, .5, 12], [560, 1240, 640, 100, .7, 5], [820, 330, 260, 34, .35, 16], [230, 420, 220, 30, .3, 13]]
+    .forEach(([x, y, rx, ry, o, v]) => {
+      const xx = ((x + t * v + 400) % 1880) - 400;
+      h += `<div class="bulut" style="left:${xx - rx}px;top:${y * k - ry}px;width:${rx * 2}px;height:${ry * 2}px;opacity:${o}"></div>`;
+    });
+  $("bulutlar").innerHTML = h;
+}
+
+// ------------------------------------------------------------------ KAPAKLAR
+const HARF = "ABCDEFGHIJKLMNOPRSTUVYZÇĞİÖŞÜ";
+// eski -> yeni metne dönüş; bas'tan önce eski görünür. o.renk / o.zem: son durum renkleri
+function kapaklar(eski, yeni, x, y, bas, t, o = {}) {
+  const hw = 76, hh = 112, fs = 72, hiz = 15;
+  let h = `<div class="pano" style="left:${x}px;top:${y}px">`;
+  [...yeni].forEach((ch, i) => {
+    const e = [...eski][i] || " ";
+    const dur = bas + 0.12 + i * (o.ara || 0.09) + rnd(i * 7 + Math.floor(bas * 10)) * 0.22;
+    let c = e, kapak = "", bitti = t >= dur;
+    if (t >= bas && !bitti && (ch !== " " || e !== " ")) {
+      c = HARF[Math.floor(rnd(Math.floor(t * hiz) + i * 13) * HARF.length)];
+      kapak = `<i style="transform:scaleY(${1 - (t * hiz) % 1});background:rgba(214,224,238,.95)"></i>`;
+    } else if (bitti) c = ch;
+    const bos = c === " ";
+    const son = bitti && o.renk && !bos;
+    h += `<div class="kap" style="width:${hw}px;height:${hh}px;line-height:${hh}px;font-size:${fs}px;color:${son ? o.renk : "#1A2B4C"};
+      background:${bos ? "rgba(255,255,255,.28)" : son ? o.zem : "rgba(255,255,255,.88)"}">${bos ? "&nbsp;" : c}${kapak}</div>`;
+  });
+  return h + `</div>`;
+}
+
+// ------------------------------------------------------------------ PANO SAHNESİ
+function pano(t, cik) {
+  const gir = es(ar(t, 0, 0.7)), y = 150 + O + (1 - gir) * 70, x = 90, w = 900, hP = 640;
+  const yan = t >= T_YAN;
+  const nab = 5 + 3 * Math.sin(t * 5);
+  const durum = yan
+    ? `<span style="width:14px;height:14px;border-radius:50%;background:#4FB6A0;box-shadow:0 0 0 ${nab}px rgba(79,182,160,.28)"></span>YAYINDA`
+    : `<span style="width:14px;height:14px;border-radius:50%;background:#D9822B;box-shadow:0 0 0 ${nab}px rgba(217,130,43,.25)"></span>YAKINDA`;
+  const parla = ar(t, T_YAN, T_YAN + 0.9);   // altın parıltı panonun üstünden geçer
+  let s = `<div style="opacity:${gir * (1 - cik)};transform:translateY(${-cik * 40}px)">
+    <div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${hP}px;border-radius:40px;background:rgba(255,255,255,.42);border:2px solid ${yan ? `rgba(255,255,255,${.75 + .25 * Math.sin(parla * Math.PI)})` : "rgba(255,255,255,.75)"};
+      box-shadow:0 40px 100px rgba(26,43,76,.22)${yan ? `,0 0 ${90 * Math.sin(parla * Math.PI)}px rgba(255,214,140,${.55 * Math.sin(parla * Math.PI)})` : ""};backdrop-filter:blur(18px);overflow:hidden">
+      <div style="position:absolute;left:52px;top:44px;display:flex;align-items:center;gap:16px">${kanat("#1A2B4C", 62)}<span style="font-size:26px;letter-spacing:.46em;color:#1A2B4C">LOUNGELINK</span></div>
+      <div style="position:absolute;right:52px;top:52px;display:flex;align-items:center;gap:12px;font-size:24px;letter-spacing:.2em;color:#8A6D3B">${durum}</div>
+      <div style="position:absolute;left:52px;right:52px;top:118px;height:2px;background:rgba(26,43,76,.12)"></div>
+      <div style="position:absolute;left:52px;right:52px;top:438px;height:2px;background:rgba(26,43,76,.12);opacity:${ar(t, T_SATIR - .3, T_SATIR)}"></div>
+      <div style="position:absolute;left:52px;top:452px;font-size:19px;letter-spacing:.26em;color:#6B7285;opacity:${ar(t, T_SATIR - .3, T_SATIR)}">APP STORE · DURUM</div>
+      ${parla > 0 && parla < 1 ? `<div style="position:absolute;top:-100px;left:${lerp(-400, 1100, eo(parla))}px;width:260px;height:900px;transform:rotate(18deg);background:linear-gradient(90deg,rgba(255,236,190,0),rgba(255,236,190,.75),rgba(255,236,190,0))"></div>` : ""}
+    </div>`;
+  const ww = 10 * 83, x0 = (1080 - ww) / 2 + 4;
+  s += kapaklar("          ", "LOUNGE'DA ", x0, y + 168, 0.35, t);
+  s += kapaklar("          ", "BULUŞALIM ", x0, y + 302, 0.65, t);
+  if (t >= T_SATIR - 0.05) {
+    const satir = t < T_DON ? kapaklar("          ", "YAKINDA   ", x0, y + 492, T_SATIR, t, { ara: .06 })
+      : kapaklar("YAKINDA   ", "YAYINDA   ", x0, y + 492, T_DON, t, { ara: .14, renk: "#1E6E5D", zem: "rgba(232,248,242,.96)" });
+    s += satir;
+  }
+  // #LoungeLinked + CTA
+  const hp = eo(ar(t, 1.5, 2.1));
+  s += `<div class="k" style="width:1080px;top:${840 + O}px;text-align:center;font-size:76px;opacity:${hp};transform:translateY(${(1 - hp) * 20}px)"><span style="color:#B8873A">#</span>LoungeLinked</div>`;
+  s += cta(t, 960 + O);
+  return s + `</div>`;
+}
+
+function cta(t, y, buyuk) {
+  const p1 = eo(ar(t, T_CTA, T_CTA + 0.4)), p2 = geri(ar(t, T_CTA + 0.2, T_CTA + 0.75)), p3 = eo(ar(t, T_CTA + 0.8, T_CTA + 1.2));
+  const isik = ar(t, T_CTA + 0.55, T_CTA + 1.1);           // pill yanar
+  const halka = ar(t, T_CTA + 0.6, T_CTA + 1.6);           // genişleyen ışık halkası (bir kez)
+  const nefes = t > T_CTA + 1.1 ? .5 + .5 * Math.sin((t - T_CTA) * 3) : 0;
+  const glow = isik * (0.75 + 0.25 * nefes);
+  return `<div class="k" style="width:1080px;top:${y}px;text-align:center">
+    <div style="display:flex;align-items:center;justify-content:center;gap:20px;font-size:24px;letter-spacing:.3em;color:#A87B32;opacity:${p1};transform:translateY(${(1 - p1) * 14}px)">
+      <span style="width:${90 * p1}px;height:2px;background:linear-gradient(90deg,transparent,rgba(168,123,50,.6))"></span>${kanat("#A87B32", 40)}ŞİMDİ APP STORE'DA
+      <span style="width:${90 * p1}px;height:2px;background:linear-gradient(90deg,rgba(168,123,50,.6),transparent)"></span></div>
+    <div style="position:relative;display:flex;justify-content:center;margin-top:18px">
+      ${halka > 0 && halka < 1 ? `<div style="position:absolute;left:50%;top:50%;width:440px;height:88px;margin:-44px 0 0 -220px;border-radius:44px;border:3px solid rgba(226,184,103,${.8 * (1 - halka)});transform:scale(${1 + halka * .22},${1 + halka * .7})"></div>` : ""}
+      <div class="ro" style="opacity:${cl(p2)};transform:scale(${p2});color:#FFF;background:${isik > 0 ? `linear-gradient(180deg,#22365F,#1A2B4C)` : "#1A2B4C"};border:2px solid rgba(201,168,110,${.3 + .7 * isik});
+        box-shadow:0 0 0 ${7 * glow}px rgba(226,184,103,.24),0 0 ${54 * glow}px rgba(226,184,103,${.6 * glow}),0 18px 36px rgba(26,43,76,.3)">
+        <svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#FFF"/></svg>App Store'dan indir</div></div>
+    <div style="margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:22px;letter-spacing:.14em;color:#5A6A8A;opacity:${p3}">
+      <svg viewBox="0 0 24 24" style="width:22px;height:22px;opacity:.8"><path d="${VERI.gplay}" fill="#5A6A8A"/></svg>GOOGLE PLAY · YAKINDA</div></div>`;
+}
+
+// ------------------------------------------------------------------ KAPANIŞ KARTI
+function kapanis(t) {
+  const g = t - T_GEC, C = F45 ? 600 : 880;
+  const a = eo(ar(g, 0.3, 0.9)), b = eo(ar(g, 0.55, 1.15)), c = eo(ar(g, 0.8, 1.4)), d = geri(ar(g, 1.1, 1.7)), e = eo(ar(g, 1.6, 2.1));
+  const nefes = .75 + .25 * Math.sin(g * 3);
+  return `<div class="k" style="width:1080px;top:${C - 300}px;opacity:${a};transform:translateY(${(1 - a) * 24}px)">
+      <div style="display:flex;align-items:center;justify-content:center;gap:24px">${kanat("#1A2B4C", 100)}<span style="font-size:42px;letter-spacing:.46em;margin-right:-.46em">LOUNGELINK</span></div></div>
+    <div class="k" style="width:1080px;top:${C - 150}px;text-align:center;font-size:26px;letter-spacing:.32em;color:#A87B32;opacity:${b}">ŞİMDİ</div>
+    <div class="k" style="width:1080px;top:${C - 112}px;text-align:center;font-size:112px;letter-spacing:-.015em;opacity:${b};transform:translateY(${(1 - b) * 24}px)">App Store'da<span style="color:#B8873A">.</span></div>
+    <div class="k" style="width:1080px;top:${C + 46}px;text-align:center;font-family:JR;font-size:40px;color:#2C4374;opacity:${c}">Lounge'da buluşalım.</div>
+    <div class="k" style="width:1080px;top:${C + 130}px;display:flex;justify-content:center">
+      <div class="ro" style="opacity:${cl(d)};transform:scale(${d});color:#FFF;background:linear-gradient(180deg,#22365F,#1A2B4C);border:2px solid #C9A86E;
+        box-shadow:0 0 0 ${7 * nefes}px rgba(226,184,103,.24),0 0 ${54 * nefes}px rgba(226,184,103,.55),0 18px 36px rgba(26,43,76,.3)"><svg viewBox="0 0 24 24"><path d="${VERI.apple}" fill="#FFF"/></svg>App Store'dan indir</div></div>
+    <div class="k" style="width:1080px;top:${C + 252}px;text-align:center;font-size:34px;opacity:${e}"><b style="color:#A87B32">loungelink.co</b></div>
+    <div class="k" style="width:1080px;top:${C + 312}px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:22px;letter-spacing:.14em;color:#5A6A8A;opacity:${e}">
+      <svg viewBox="0 0 24 24" style="width:22px;height:22px;opacity:.8"><path d="${VERI.gplay}" fill="#5A6A8A"/></svg>GOOGLE PLAY · YAKINDA</div>`;
+}
+
+window.ciz = function (t) {
+  zemin(t);
+  const cik = es(ar(t, T_GEC, T_GEC + 0.5));
+  let s = "";
+  if (cik < 1) s += pano(t, cik);
+  if (t > T_GEC) s += kapanis(t);
+  const itme = 1 + 0.025 * es(ar(t, 0, T_GEC));   // hafif kamera itmesi
+  $("sahne").style.cssText = `width:1080px;height:${H}px;transform:scale(${t < T_GEC ? itme : 1});transform-origin:50% 40%`;
+  $("sahne").innerHTML = s;
+};
+window.SURE = SURE;
+window.ciz(0);
+</script>
+</body></html>
