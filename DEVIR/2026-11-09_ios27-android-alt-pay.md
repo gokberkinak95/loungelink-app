@@ -51,3 +51,28 @@
 - Play: kapali test Alpha 307 YAYINLANDI (9 Kasim 14:48); test kullanicisi Google Grubu
   testers-community@googlegroups.com (Testers Community Starter). Reklam kimligi: Hayir; satici: Evet.
   14 gun sayaci test kullanicilari katildiktan sonra baslar → sonra uretim erisimi basvurusu.
+
+## 10 Kasim — Apple ONAYI, yayin hazirligi
+- App Store 1.0.0 (301) ONAYLANDI (Pending Developer Release, manuel). Yayin plani: 12 Kasim Persembe 10:00.
+- SQL 351 canlida (iki gecis): test/fikstur/example.com/test@loungelink.com + Gokberk'in iki deneme hesabi
+  silindi; mustafa.emre... icin admin_roles satiri Gokberk onayiyla kaldirildi, sonra silindi. Kurucu
+  (super_admin) + inceleme hesabi kaldi, icerikleri temizlendi. 11 Testers Community hesabina dokunulmadi
+  (dis hesap kilidi + once/sonra sayimi). Dogrulama 5/5 true, kalan hesap 13. ll-vitrin-tazele kaldirildi.
+- SQL 352 canlida: nakit maliyetli oduller stok 0 (geri acma komutu dosyada). 2/2 true.
+- TEMIZLIK_ENVANTER.sql (salt okunur) eklendi.
+- Satin alma (sandbox, inceleme hesabi): kredi 9 sn, abonelik ilk alim 43 sn (uygulama 30 sn bekliyor →
+  ekran plani gostermiyor; sunucu dogru). Yenileme/bitis dogru. → 1.0.1 duzeltmesi.
+- Nominations (App Launch, 12 Kasim, Turkiye) gonderildi.
+- Website: branch `yayin-onizleme` (yerel, PUSH YOK): App Store rozeti, Android haber formu, itunes akilli
+  bant, JSON-LD. verify 7/7, build 298/298. Yayin gunu surum artir + canliya al.
+- Pazarlama onizlemeleri: _gorseller/onizleme_yayinda (post_1/3/5_lansman, reels_lansman_9x16/4x5,
+  event_kart/detay "Kurucu Host ol"). Gokberk onayladi. posts.html &durum=lansman, videoLansman.html, etkinlik.html.
+
+## 1.0.1 listesi (yayindan sonra gonderilecek)
+1. Satin alma sonrasi plan/kredi aninda (RevenueCat CustomerInfo) + arka planda yoklama + ekrana donuste yenile.
+2. Odullerde "yakinda" etiketi (stok 0 yerine).
+3. App Store: ad "LoungeLink: Lounge Arkadasi", alt baslik, anahtar kelimeler (DEVIR'deki konusma), EN de.
+4. Degerlendirme istegi (basarili bulusma sonrasi).
+5. Eski ekran goruntusu ekran/34_host_ol.jpg kaldirilmis vaadi gosteriyor → yenile.
+6. Inceleme hesabina guncel seyahat + inceleme notu ("ag yeni").
+- ACIK: DENETIM_TAM 351/352 sonrasi yeniden uretilmeli; tablo_sina B/C kirmizisi.
