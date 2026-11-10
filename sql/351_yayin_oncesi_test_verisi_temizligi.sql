@@ -8,7 +8,9 @@
 --   · fikstür: @vitrin.loungelink.test · @seed.loungelink.test · @e2e.test
 --   · diğer test alan adları: *.test (ör. @sahne.loungelink.test)
 --   · otomatik inceleme robotu hesapları: @example.com
---   · EK_SIL listesindeki açık adresler (TEMIZLIK_ENVANTER sonucuna göre)
+--   · EK_SIL listesindeki açık adresler (TEMIZLIK_ENVANTER 10 Kasım: test@loungelink.com ve
+--     Gökberk'in açtığı iki deneme hesabı). Kapalı test kullanıcıları (gmail) LİSTEDE YOK.
+--   · Panel yetkisi (admin_roles) olan hesap hiçbir koşulda silinmez, yalnız içeriği temizlenir.
 -- KALAN HESAPLAR (hesap durur, İÇERİĞİ silinir: ilan, seyahat, istek, oturum, mesaj,
 --   bağlantı, bildirim, puanlama, soru, davet, hikâye):
 --   · KORU listesi: gokberkinak95@gmail.com (kurucu), inceleme@loungelink.co (Apple/Google
@@ -20,7 +22,7 @@
 -- önce çocuk satırları (her düzeyde), sonra satırın kendisini siler. "…_by / actor"
 -- gibi işlem yapanı gösteren boş bırakılabilir kolonlar silinmez, boşaltılır.
 -- Yerelde (001..350 + SEED'ler, 62 hesap) denendi; sonuç DEVIR'de.
--- Tekrar koşulabilir. Doğrulama: son sorgu, hepsi tamam = true.
+-- Tekrar koşulabilir. Doğrulama: son sorgu, 5 satır, hepsi tamam = true.
 -- Avatar dosyaları (Storage) SQL ile silinmez; sahipsiz dosya kalır, zararsız.
 -- ============================================================================
 
@@ -66,13 +68,17 @@ delete from tezgah.temizlik_351;
 insert into tezgah.temizlik_351 (user_id, email, karar)
 select u.id, u.email,
        case when lower(u.email) in ('gokberkinak95@gmail.com', 'inceleme@loungelink.co') then 'koru'
+            -- panel yetkisi olan hesap ASLA silinmez (auth silinince admin_roles da gider)
+            when exists (select 1 from admin_roles ar where ar.user_id = u.id) then 'koru'
             else 'sil' end
   from users u
  where lower(u.email) in ('gokberkinak95@gmail.com', 'inceleme@loungelink.co')
     or u.email like '%.test'
     or u.email like '%@example.com'
-    or lower(u.email) in (                       -- EK_SIL: envanter sonucuna göre
-         'test@loungelink.com'
+    or lower(u.email) in (                       -- EK_SIL: envanter sonucu (10 Kasım, Gökberk)
+         'test@loungelink.com',
+         'mustafa.emre.alimoglu@gmail.com',      -- Gökberk'in açtığı deneme hesabı
+         'gzmdmz@gmail.com'                      -- Gökberk'in açtığı deneme hesabı ("Merve B.")
        );
 
 -- auth'ta olup public.users'ta olmayan test girişleri de
@@ -82,6 +88,49 @@ select a.id, a.email, 'sil'
  where not exists (select 1 from users u where u.id = a.id)
    and (a.email like '%.test' or a.email like '%@example.com' or lower(a.email) in ('test@loungelink.com'))
 on conflict (user_id) do nothing;
+
+-- 2b · DIŞARIDAKİ HESAPLARIN KİLİDİ (kapalı test kullanıcıları ve her gerçek hesap)
+--  · Listede olmayan her hesabın hesap / içerik sayıları önceden fotoğraflanır; doğrulama
+--    aynı sayıları yeniden sayar ve birebir eşit olmasını ister.
+--  · Listedeki bir hesapla listede OLMAYAN bir hesap arasında bağ varsa (istek, bağlantı,
+--    mesaj, puanlama, davet, engel, soru) silme o bağı da götürürdü: o zaman liste
+--    BOŞALTILIR ve hiçbir şey silinmez (aşağıdaki adımlar boş listeyle hiçbir şey yapmaz).
+create table if not exists tezgah.temizlik_351_dis (
+  ad text primary key, sayi bigint not null, kayit_at timestamptz default now()
+);
+delete from tezgah.temizlik_351_dis;
+insert into tezgah.temizlik_351_dis (ad, sayi)
+select 'hesap', count(*) from users u where u.id not in (select user_id from tezgah.temizlik_351)
+union all select 'giris', count(*) from auth.users a where a.id not in (select user_id from tezgah.temizlik_351)
+union all select 'ilan', count(*) from availabilities a where a.host_id not in (select user_id from tezgah.temizlik_351)
+union all select 'seyahat', count(*) from visits v where v.user_id not in (select user_id from tezgah.temizlik_351)
+union all select 'kredi_satiri', count(*) from credit_ledger l where l.user_id not in (select user_id from tezgah.temizlik_351)
+union all select 'profil', count(*) from profiles p where p.user_id not in (select user_id from tezgah.temizlik_351);
+
+do $s351b$
+declare v_bag bigint;
+begin
+  select
+    (select count(*) from requests r
+      where (r.guest_id in (select user_id from tezgah.temizlik_351)) <> (r.host_id in (select user_id from tezgah.temizlik_351)))
+  + (select count(*) from connection_requests c
+      where (c.from_id in (select user_id from tezgah.temizlik_351)) <> (c.to_id in (select user_id from tezgah.temizlik_351)))
+  + (select count(*) from ratings x
+      where (x.rater_id in (select user_id from tezgah.temizlik_351)) <> (x.rated_id in (select user_id from tezgah.temizlik_351)))
+  + (select count(*) from invites i
+      where (i.guest_id in (select user_id from tezgah.temizlik_351)) <> (i.host_id in (select user_id from tezgah.temizlik_351)))
+  + (select count(*) from blocks b
+      where (b.blocker in (select user_id from tezgah.temizlik_351)) <> (b.blocked in (select user_id from tezgah.temizlik_351)))
+  + (select count(*) from kural_sorulari k
+      where (k.soran_id in (select user_id from tezgah.temizlik_351)) <> (k.host_id in (select user_id from tezgah.temizlik_351)))
+    into v_bag;
+  if v_bag > 0 then
+    delete from tezgah.temizlik_351;
+    raise notice '351 DURDU: listedeki hesaplarla listede olmayan hesaplar arasinda % bag var; HICBIR SEY SILINMEDI. Sonucu Claudea ilet.', v_bag;
+  else
+    raise notice '351: disaridaki hesaplarla bag yok, devam';
+  end if;
+end $s351b$;
 
 -- 3 · İÇERİK: listedeki HER hesabın (kalan + silinecek) içeriği, iş kuralı sırasıyla
 --     (önce istekler, sonra ilan/seyahat: seyahat kapısı başvurusu olan seyahati sildirmez)
@@ -130,7 +179,7 @@ end $s351e$;
 -- DOĞRULAMA
 select 'test kalibina uyan hesap kalmadi' as kontrol,
        not exists (select 1 from users where email like '%.test' or email like '%@example.com'
-                    or lower(email) = 'test@loungelink.com')
+                    or lower(email) in ('test@loungelink.com', 'mustafa.emre.alimoglu@gmail.com', 'gzmdmz@gmail.com'))
    and not exists (select 1 from auth.users where email like '%.test' or email like '%@example.com'
                     or lower(email) = 'test@loungelink.com') as tamam
 union all
@@ -141,6 +190,19 @@ select 'kalan hesaplarin ilani / seyahati / istegi yok',
        not exists (select 1 from availabilities a join tezgah.temizlik_351 t on t.user_id = a.host_id)
    and not exists (select 1 from visits v join tezgah.temizlik_351 t on t.user_id = v.user_id)
    and not exists (select 1 from requests r join tezgah.temizlik_351 t on t.user_id in (r.guest_id, r.host_id))
+union all
+select 'listede olmayan hesaplara dokunulmadi (hesap, giris, ilan, seyahat, kredi, profil ayni)',
+       not exists (
+         select 1 from tezgah.temizlik_351_dis d
+          where d.sayi <> case d.ad
+            when 'hesap'        then (select count(*) from users u where u.id not in (select user_id from tezgah.temizlik_351))
+            when 'giris'        then (select count(*) from auth.users a where a.id not in (select user_id from tezgah.temizlik_351))
+            when 'ilan'         then (select count(*) from availabilities a where a.host_id not in (select user_id from tezgah.temizlik_351))
+            when 'seyahat'      then (select count(*) from visits v where v.user_id not in (select user_id from tezgah.temizlik_351))
+            when 'kredi_satiri' then (select count(*) from credit_ledger l where l.user_id not in (select user_id from tezgah.temizlik_351))
+            when 'profil'       then (select count(*) from profiles p where p.user_id not in (select user_id from tezgah.temizlik_351))
+          end)
+   and exists (select 1 from tezgah.temizlik_351)
 union all
 select 'kalan hesap sayisi: ' || (select count(*) from users)::text
        || ' · kalan ilan: ' || (select count(*) from availabilities)::text
