@@ -36711,5 +36711,86 @@
  [
   "350_rehber_187_ve_inceleme_vitrini.sql",
   []
+ ],
+ [
+  "351_yayin_oncesi_test_verisi_temizligi.sql",
+  [
+   [
+    "tablo",
+    "tezgah"
+   ],
+   [
+    "fonksiyon",
+    "temizlik_derin_sil"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|from pg_constraint c"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|if r.confdeltype = 'n' then"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|elsif r.cocuk = p_tablo then"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|get diagnostics v_n = row_count;"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|elsif r.bos_olur and (r.cocuk = p_tablo"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|declare r record; v_n bigint; v_alt text;"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|c.confdeltype, not a.attnotnull as bos_olur"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|raise exception 'temizlik_oz_baglanti: %.%', p_tablo, r.kol;"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|execute format('delete from %s where %s', p_tablo, p_kosul);"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|perform public.temizlik_derin_sil(r.cocuk, v_alt, p_derinlik + 1);"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|execute format('update %s set %I = null where %s', r.cocuk, r.kol, v_alt);"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|join pg_attribute a  on a.attrelid  = c.conrelid  and a.attnum  = c.conkey[1]"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|join pg_attribute af on af.attrelid = c.confrelid and af.attnum = c.confkey[1]"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|where c.contype = 'f' and c.confrelid = p_tablo and array_length(c.conkey, 1) = 1"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|if p_derinlik > 8 then raise exception 'temizlik_derinlik_asildi: %', p_tablo; end if;"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|select c.conrelid::regclass as cocuk, a.attname::text as kol, af.attname::text as hedef_kol,"
+   ],
+   [
+    "govde",
+    "temizlik_derin_sil|v_alt := format('%I in (select %I from %s where %s)', r.kol, r.hedef_kol, p_tablo, p_kosul);"
+   ]
+  ]
  ]
 ]

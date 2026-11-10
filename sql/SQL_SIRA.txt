@@ -1,3 +1,15 @@
+SQL SIRASI - 10 Kasim 2026 (21. tur) - YAYIN ONCESI TEMIZLIK - 350'den SONRA
+
+  0) TEMIZLIK_ENVANTER.sql  (SALT OKUNUR, ONCE BU)
+       -> Her hesabin sinifi (fikstur / .test / example.com / inceleme / diger) ve icerigi.
+          Sonucu Claude'a ilet; 351'in EK_SIL listesi buna gore kesinlesir.
+  1) 351_yayin_oncesi_test_verisi_temizligi.sql  (KALICI SILME - envanterden SONRA)
+       -> *.test, @example.com ve EK_SIL hesaplari tamamen silinir (auth dahil).
+          Kurucu + inceleme hesabi DURUR, icerikleri (ilan, seyahat, istek, mesaj, baglanti,
+          bildirim) silinir. Kaliba uymayan hesaba DOKUNULMAZ. ll-vitrin-tazele kaldirilir.
+       Dogrulama: 4 satir, hepsi tamam = true.
+
+---------------------------------------------------------------------------
 SQL SIRASI - 9 Kasim 2026 aksam (20. tur) - YENI: 350 - 349'dan SONRA
 
   1) 350_rehber_187_ve_inceleme_vitrini.sql
