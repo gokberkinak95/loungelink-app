@@ -8,6 +8,11 @@ SQL SIRASI - 10 Kasim 2026 (21. tur) - YAYIN ONCESI TEMIZLIK - 350'den SONRA
           Kurucu + inceleme hesabi DURUR, icerikleri (ilan, seyahat, istek, mesaj, baglanti,
           bildirim) silinir. Kaliba uymayan hesaba DOKUNULMAZ. ll-vitrin-tazele kaldirilir.
        Dogrulama: 4 satir, hepsi tamam = true.
+  2) 352_lansman_nakit_odulleri_beklemede.sql
+       -> Nakit maliyetli oduller (kahve, eSIM, hediye karti, otel, mil) stok 0: gorunur ama
+          alinamaz. Kendi urunumuz olanlar acik. Eski stok tezgah.odul_stok_352'de; geri acma
+          komutu dosyanin basinda.
+       Dogrulama: 2 satir, tamam = true.
 
 ---------------------------------------------------------------------------
 SQL SIRASI - 9 Kasim 2026 aksam (20. tur) - YENI: 350 - 349'dan SONRA
