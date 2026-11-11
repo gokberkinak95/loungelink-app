@@ -100,7 +100,7 @@ def kare(p, alt, son=False):
     yazi = ""
     if son:
         yazi = (f'<text x="{W/2}" y="1200" text-anchor="middle" font-family="J" font-size="40" fill="#1A2B4C">'
-                f'Havalimanında üç saat, yalnız geçmek zorunda değil.</text>'
+                f'Havalimanındaki üç saat, yalnız geçmek zorunda değil.</text>'
                 f'<text x="{W/2}" y="1300" text-anchor="middle" font-family="J" font-size="30" fill="#41557E" letter-spacing="8">YAKINDA</text>'
                 + "".join(f'<rect x="{x}" y="1340" width="250" height="74" rx="37" fill="#FFFFFF" fill-opacity=".55" stroke="#1A2B4C" stroke-opacity=".35" stroke-width="2"/>'
                           f'<text x="{x+125}" y="1388" text-anchor="middle" font-family="J" font-size="28" fill="#1A2B4C">{ad}</text>'

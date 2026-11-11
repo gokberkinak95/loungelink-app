@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<!-- 11 Kasım 2026 · Instagram hikâyesi (1080x1920): yayın öncesi geri sayım (?h=1) ve yayın anı (?h=2).
+     Geri sayım çıkartması Instagram'da elle eklenir; ?h=1 ona boş bir yer bırakır (y≈1180–1460).
+     Aynı cam pano dili: posts.html p3. Instagram'ın üst (≈250px) ve alt (≈340px) arayüz bandı boş. -->
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#p{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:J;color:#1A2B4C}
+.k{position:absolute;left:0;top:0}
+</style></head><body>
+<div id="p"></div>
+<script src="veri.js"></script>
+<script>
+const H = new URLSearchParams(location.search).get("h") || "1";
+const $ = (i) => document.getElementById(i);
+const kanat = (renk, w = 74) => `<svg width="${w}" height="${w * 29 / 62}" viewBox="76 117.5 62 29"><path d="${VERI.kanat}" fill="${renk}"/></svg>`;
+const logo = (renk, fs = 30) => `<div style="display:flex;align-items:center;gap:${fs * .6}px">${kanat(renk, fs * 2.4)}
+  <span style="font-size:${fs}px;letter-spacing:.46em;margin-right:-.46em;color:${renk}">LOUNGELINK</span></div>`;
+function gok() {
+  return `<div class="k" style="width:1080px;height:1920px;background:radial-gradient(circle at 72% 80%, rgba(255,240,214,.95), rgba(255,226,184,0) 30%), linear-gradient(180deg,#6E93C8 0%,#A9C0E0 40%,#F3D7BE 74%,#FBEADB 100%)"></div>
+    ${[[180, 1420, 380, 70, .55], [900, 1520, 440, 80, .5], [560, 1760, 680, 120, .7], [820, 470, 280, 40, .35], [230, 600, 240, 34, .3]].map(([x, y, rx, ry, o]) =>
+      `<div style="position:absolute;left:${x - rx}px;top:${y - ry}px;width:${rx * 2}px;height:${ry * 2}px;border-radius:50%;background:#fff;filter:blur(32px);opacity:${o}"></div>`).join("")}`;
+}
+function kapak(m, x, y, renk = "#1A2B4C") {
+  return `<div style="position:absolute;left:${x}px;top:${y}px;display:flex;gap:7px">` + [...m].map(c =>
+    `<div style="position:relative;width:76px;height:116px;border-radius:11px;background:${c === " " ? "rgba(255,255,255,.28)" : "rgba(255,255,255,.9)"};box-shadow:0 6px 14px rgba(26,43,76,.12);font-size:74px;line-height:116px;text-align:center;color:${renk}">${c === " " ? "&nbsp;" : c}
+     <div style="position:absolute;left:0;right:0;top:57px;height:2px;background:rgba(26,43,76,.14)"></div></div>`).join("") + `</div>`;
+}
+function pano(durum, durumRenk, nokta, s1, s2, renk2) {
+  const w = 10 * 83, x = (1080 - w) / 2 + 4;
+  return `<div style="position:absolute;left:90px;top:380px;width:900px;height:470px;border-radius:40px;background:rgba(255,255,255,.42);border:2px solid rgba(255,255,255,.75);box-shadow:0 40px 100px rgba(26,43,76,.22);backdrop-filter:blur(18px)">
+       <div style="position:absolute;left:52px;top:44px">${logo("#1A2B4C", 26)}</div>
+       <div style="position:absolute;right:52px;top:52px;display:flex;align-items:center;gap:12px;font-size:24px;letter-spacing:.2em;color:${durumRenk}"><span style="width:14px;height:14px;border-radius:50%;background:${nokta};box-shadow:0 0 0 6px ${nokta}33"></span>${durum}</div>
+       <div style="position:absolute;left:52px;right:52px;top:118px;height:2px;background:rgba(26,43,76,.12)"></div></div>` +
+    kapak(s1, x, 548) + kapak(s2, x, 682, renk2);
+}
+function h1() {   // yayın öncesi · geri sayım
+  $("p").innerHTML = gok() + pano("YARIN", "#8A6D3B", "#E2B867", "LOUNGE'DA ", "BULUŞALIM ") +
+    `<div class="k" style="width:1080px;top:930px;text-align:center;font-size:64px;line-height:1.15;color:#1A2B4C">Yarın 10:00'da<br>App Store'da.</div>
+     <div class="k" style="width:1080px;top:1110px;text-align:center;font-family:JR;font-size:32px;color:#2C4374">Hatırlatıcıyı kur, yayına girdiği an haber verelim.</div>
+     <div class="k" style="width:1080px;top:1560px;text-align:center;font-size:24px;letter-spacing:.3em;color:#5A6A8A">#MEETMEINTHELOUNGE</div>`;
+}
+function h2() {   // yayın anı · App Store'da
+  $("p").innerHTML = gok() + pano("YAYINDA", "#2E7D6B", "#4FB6A0", "LOUNGE'DA ", "BULUŞALIM ") +
+    `<div class="k" style="width:1080px;top:930px;text-align:center;font-size:64px;line-height:1.15;color:#1A2B4C">LoungeLink<br>App Store'da.</div>
+     <div class="k" style="width:1080px;top:1110px;text-align:center;font-family:JR;font-size:32px;color:#2C4374">Uçuşuna saatler varsa, kapı önünde bekleme.</div>
+     <div class="k" style="width:1080px;top:1300px;display:flex;justify-content:center">
+       <div style="display:inline-flex;align-items:center;gap:14px;height:96px;padding:0 46px;border-radius:48px;font-size:34px;color:#fff;background:#1A2B4C;border:2px solid #A87B32;
+         box-shadow:0 0 0 8px rgba(226,184,103,.22),0 0 48px rgba(226,184,103,.55),0 18px 36px rgba(26,43,76,.28)">
+         <svg viewBox="0 0 24 24" style="width:40px;height:40px"><path d="${VERI.apple}" fill="#fff"/></svg>App Store'dan indir</div></div>
+     <div class="k" style="width:1080px;top:1430px;text-align:center;font-size:22px;letter-spacing:.14em;color:#5A6A8A">GOOGLE PLAY · YAKINDA</div>
+     <div class="k" style="width:1080px;top:1490px;text-align:center;font-family:JR;font-size:26px;color:#8A6D3B">Bağlantı aşağıda ↓</div>`;
+}
+({ "1": h1, "2": h2 })[H]();
+</script></body></html>

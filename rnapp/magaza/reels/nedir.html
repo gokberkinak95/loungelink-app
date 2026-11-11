@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<!-- "LoungeLink nedir?" kaydırmalı gönderi (7 kare, 1080x1350). ?p=0..6
+     Görünüm posts.html rehber serilerinden (m/h) kopyalandı; üçüncü renk ailesi: fildişi/şampanya zemin + lacivert.
+     Kalıcı gönderi: "yakında" / "yayında" ifadesi YOK. ÖNİZLEME, onay bekliyor (11 Kasım 2026). -->
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#p{position:relative;width:1080px;height:1350px;overflow:hidden;font-family:J;color:#1A2B4C}
+.k{position:absolute;left:0;top:0}
+.tel{position:absolute;width:300px;height:649px;border-radius:44px;background:linear-gradient(135deg,#2A3040,#0B0E16 40%,#1C2230);
+     box-shadow:0 2px 0 1px rgba(255,255,255,.08) inset,0 0 0 1.5px rgba(0,0,0,.6)}
+.tel .e{position:absolute;left:9px;top:9px;right:9px;bottom:9px;border-radius:36px;overflow:hidden;background:#F7F4EE}
+.tel .e img{width:100%;display:block}
+.tel .a{position:absolute;left:50%;top:17px;width:84px;height:24px;margin-left:-42px;border-radius:12px;background:#05070D}
+</style></head><body>
+<div id="p"></div>
+<script src="veri.js"></script>
+<script>
+const P = Number(new URLSearchParams(location.search).get("p") || "0");
+const $ = (i) => document.getElementById(i);
+const kanat = (renk, w = 74) => `<svg width="${w}" height="${w * 29 / 62}" viewBox="76 117.5 62 29"><path d="${VERI.kanat}" fill="${renk}"/></svg>`;
+const logo = (renk, fs = 30) => `<div style="display:flex;align-items:center;justify-content:center;gap:${fs * .6}px">${kanat(renk, fs * 2.4)}
+  <span style="font-size:${fs}px;letter-spacing:.46em;margin-right:-.46em;color:${renk}">LOUNGELINK</span></div>`;
+const tel = (ek, x, y, rot, s = 1, golge) =>
+  `<div class="tel" style="left:${x}px;top:${y}px;transform:rotate(${rot}deg) scale(${s});box-shadow:${golge}, 0 2px 0 1px rgba(255,255,255,.08) inset"><div class="e"><img src="ekran/${ek}.jpg"></div><div class="a"></div></div>`;
+function desen(renk, op) {
+  let s = "";
+  for (let r = -1; r < 16; r++) for (let c = -1; c < 10; c++) {
+    const x = c * 130 + (r % 2) * 65, y = r * 92;
+    s += `<g transform="translate(${x},${y}) rotate(-18) scale(1.25) translate(-107,-132)"><path d="${VERI.kanat}" fill="${renk}"/></g>`;
+  }
+  return `<svg class="k" width="1080" height="1350" style="opacity:${op}">${s}</svg>`;
+}
+function telNokta(x, y, s, rot, fx, fy) {
+  const lx = 9 + fx * 282 - 150, ly = 9 + fy * 610 - 324.5;
+  const r = rot * Math.PI / 180;
+  return [x + 150 + (lx * Math.cos(r) - ly * Math.sin(r)) * s, y + 324.5 + (lx * Math.sin(r) + ly * Math.cos(r)) * s];
+}
+function kesitKart(ek, y0, y1, w, maxH, vurgu) {
+  const H = 1341 / 620;
+  let ww = w, h = (y1 - y0) * H * ww;
+  if (h > maxH) { ww = w * maxH / h; h = maxH; }
+  return { html: `<div id="cagri" style="width:${ww}px;height:${h}px;border-radius:24px;overflow:hidden;background:url(ekran/${ek}.jpg) 0 ${-y0 * H * ww}px/${ww}px auto no-repeat;
+    box-shadow:0 30px 60px rgba(26,43,76,.28),0 0 0 4px rgba(255,255,255,.95),0 0 0 9px ${vurgu}55"></div>`, w: ww, h };
+}
+
+// ---------------------------------------------------------------- renk ailesi: fildişi/şampanya + lacivert
+const S = {
+  zemin: "linear-gradient(160deg,#FBF7EF,#F4EAD6 62%,#ECDDBF)",
+  yazi: "#1A2B4C", ikinci: "rgba(26,43,76,.86)", vurgu: "#A87B32", hale: "#E2B867",
+  golge: "0 60px 100px rgba(26,43,76,.32)",
+};
+const KARE = [
+  // 11 Kasım revize: metin sahibin kopyası (koordinatör düzeltmeli). Kapak ekranı Selin B. (gerçek isim yok).
+  { kapak: true, ek: "12_ana_host", e: "HAVALİMANI DENEYİMİNİ DEĞİŞTİR", t: "Uçağa 3 saat var.<br>Kapıda yer yok.",
+    s: "Oysa hemen yanındaki yolcunun kartında boş bir lounge hakkı duruyor. Tanışın: LoungeLink." },
+  { e: "KART SAHİPLERİNE", t: "O misafir hakkı yıl sonunda yanmasın.", ek: "17c_rol_host", kesit: "17c_rol_host", y: [.339, .524],
+    s: "Kredi kartın ya da mil statün sana +1 misafir hakkı veriyor ama çoğu zaman tek uçuyorsun. Boş duran bu ayrıcalığı değerli bir yol arkadaşına ve LoungePuan'a dönüştür." },
+  { e: "YOLCULARA", t: "Kalabalıkta priz aramaya son.", ek: "17b_rol_misafir", kesit: "17b_rol_misafir", y: [.447, .632],
+    s: "Lounge hakkın olmayabilir ama uçuş öncesi konfor senin de hakkın. Aynı havalimanındaki bir host ile eşleş, sessizliğe ve ikramlara adım at." },
+  { e: "3 ADIMDA SALONDASIN", t: "Uçuşunu seç. Eşleş. İçeri geç.", ek: "71_akis_nehir_istek", kesit: "71_akis_nehir_istek", y: [.385, .74],
+    s: "Havalimanını ve saatini gir, aynı uçuştaki ya da terminaldeki host'ları gör. İsteğin kabul edilince kapıda buluşup birlikte içeri girin." },
+  { e: "SÜRPRİZLERE YER YOK", t: "Kapıdan dönme devri bitti.", ek: "03_kural", kesit: "03_kural", y: [.515, .782],
+    s: "Kural motorumuz kartını, uçuşunu ve salonun şartlarını sen daha evden çıkmadan kontrol eder. Uyumu önceden görürsün." },
+  { e: "ÖNCE GÜVEN", t: "Numara paylaşmak yok.", ek: "06_sohbet", kesit: "06_sohbet", y: [.0, .215],
+    s: "Doğrulanmış profillerle uygulama içinden yazış. Biniş kartının görseli telefonundan hiç çıkmaz; barkod cihazında okunur." },
+  { son: true },
+];
+
+function ciz(i) {
+  const k = KARE[i], top = KARE.length;
+  const zemin = `<div class="k" style="width:1080px;height:1350px;background:${S.zemin}"></div>`;
+  const ust = `${desen("#1A2B4C", .05)}
+    <div class="k" style="left:64px;top:62px">${logo(S.yazi, 22).replace("justify-content:center", "justify-content:flex-start")}</div>
+    <div class="k" style="left:auto;right:56px;top:52px;padding:10px 22px;border-radius:26px;background:rgba(26,43,76,.08);color:${S.yazi};font-size:26px">${i + 1}/${top}</div>`;
+  const hale = (x, y, r) => `<div class="k" style="left:${x - r}px;top:${y - r}px;width:${2 * r}px;height:${2 * r}px;border-radius:50%;background:radial-gradient(circle, ${S.hale}66, transparent 65%)"></div>`;
+
+  if (k.kapak) {
+    $("p").innerHTML = zemin + ust + hale(800, 1050, 440) + `<div class="k" style="left:70px;width:940px;top:190px">
+        <div style="font-size:26px;letter-spacing:.3em;color:${S.vurgu}">${k.e}</div>
+        <div style="margin-top:22px;font-size:92px;line-height:1.04;color:${S.yazi};letter-spacing:-.02em">${k.t}</div>
+        <div style="margin-top:30px;font-family:JR;font-size:38px;line-height:1.36;color:${S.ikinci};max-width:900px">${k.s.replace("LoungeLink.", `<b style="font-family:J;color:${S.yazi}">LoungeLink.</b>`)}</div></div>
+      ${tel(k.ek, 690, 885, 7, 1.12, S.golge)}
+      <div class="k" style="left:70px;top:1100px;font-size:34px;color:${S.yazi};display:flex;align-items:center;gap:14px">Kaydır <span style="font-size:46px;color:${S.vurgu}">→</span></div>`;
+    return;
+  }
+  if (k.son) {
+    $("p").innerHTML = zemin + ust + hale(540, 640, 520) + `
+      <div class="k" style="width:1080px;top:300px">${logo(S.yazi, 40)}</div>
+      <div class="k" style="left:110px;width:860px;top:430px;text-align:center;font-size:70px;line-height:1.08;color:${S.yazi};letter-spacing:-.015em">Bir sonraki uçuşunda salonda görüşelim<span style="color:${S.vurgu}">.</span></div>
+      <div class="k" style="left:60px;width:960px;top:630px;text-align:center;font-family:JR;font-size:32px;line-height:1.36;color:${S.ikinci}">Kurucu çembere katılmak için profildeki bağlantıya dokun.</div>
+      <div class="k" style="width:1080px;top:790px;text-align:center;font-size:40px;color:${S.vurgu}">#MeetMeInTheLounge</div>
+      <div class="k" style="width:1080px;top:900px;text-align:center;font-size:36px;letter-spacing:.06em;color:${S.yazi}">loungelink.co</div>
+      <div class="k" style="left:140px;width:800px;top:1080px;text-align:center;font-family:JR;font-size:23px;line-height:1.4;color:rgba(26,43,76,.62)">LoungeLink lounge erişimi satmaz ve hiçbir lounge işletmecisiyle bağlantılı değildir; salona giriş kararı her zaman salonundur.</div>`;
+    return;
+  }
+  // adım karesi (rehber düzeni): metin üstte, sağda taşan telefon, sol altta büyütülmüş kesit + altın bağlantı
+  const TX = 640, TS = 1.12, TR = 7;
+  const fyO = k.fy != null ? k.fy : (k.y[0] + k.y[1]) / 2;
+  const TY = Math.max(700, Math.min(980, 1010 - 324.5 - (9 + fyO * 610 - 324.5) * TS));
+  const kart = kesitKart(k.kesit, k.y[0], k.y[1], 520, 330, S.vurgu);
+  const [px, py] = telNokta(TX, TY, TS, TR, 0.5, fyO);
+  $("p").innerHTML = zemin + ust + hale(860, 1180, 470) + `
+    <div class="k" style="left:72px;width:936px;top:150px">
+      <div style="font-size:26px;letter-spacing:.3em;color:${S.vurgu}">${k.e}</div>
+      <div style="margin-top:18px;font-size:68px;line-height:1.06;color:${S.yazi};letter-spacing:-.015em">${k.t}</div>
+      <div id="madde" style="margin-top:26px;font-family:JR;font-size:35px;line-height:1.38;color:${S.ikinci}">${k.s}</div></div>
+    ${tel(k.ek, TX, TY, TR, TS, S.golge)}
+    <svg id="bag" class="k" width="1080" height="1350"></svg>
+    <div class="k" id="cagriKap" style="left:64px">${kart.html}</div>`;
+  const mad = $("madde").parentElement.getBoundingClientRect();
+  const ky = Math.max(mad.bottom + 46, 760), kap = $("cagriKap");
+  const kh = Math.min(kart.h, 1350 - 60 - ky);
+  kap.style.top = ky + "px";
+  if (kh < kart.h) $("cagri").style.height = kh + "px";
+  const ax = 64 + kart.w, ay = ky + Math.min(kart.h, kh) / 2;
+  $("bag").innerHTML = `<path d="M ${ax + 8} ${ay} C ${ax + 80} ${ay} ${px - 80} ${py} ${px} ${py}" fill="none" stroke="${S.vurgu}" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round"/>
+    <circle cx="${px}" cy="${py}" r="16" fill="none" stroke="${S.vurgu}" stroke-width="4"/><circle cx="${px}" cy="${py}" r="6" fill="${S.vurgu}"/>`;
+}
+ciz(P);
+</script>
+</body></html>

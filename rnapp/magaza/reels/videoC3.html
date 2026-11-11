@@ -34,7 +34,7 @@ html,body{margin:0;padding:0;background:#000}
 .ro{display:flex;align-items:center;gap:14px;height:84px;padding:0 34px;border-radius:42px;background:rgba(255,255,255,.62);
     border:2px solid rgba(26,43,76,.35);font-size:30px;color:#1A2B4C}
 .ro svg{width:36px;height:36px}
-#slogan{position:absolute;left:0;width:1080px;top:1180px;text-align:center;font-size:42px}
+#slogan{position:absolute;left:0;width:1080px;top:1180px;text-align:center;font-size:38px}
 #cam{position:absolute;border-radius:40px;background:rgba(255,255,255,.42);border:2px solid rgba(255,255,255,.75);
      box-shadow:0 40px 100px rgba(26,43,76,.22), inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(18px)}
 </style></head><body>
@@ -53,6 +53,7 @@ html,body{margin:0;padding:0;background:#000}
 </div>
 <script src="veri.js"></script>
 <script src="lansman_cta.js"></script>
+<script src="yildizlar.js"></script>
 <script>
 const $ = (i) => document.getElementById(i);
 const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -71,7 +72,7 @@ const SAH = [];
 let tt = 0;
 const ekle = (o, sure) => { SAH.push({ ...o, a: tt, b: tt + sure }); tt += sure; };
 ekle({ ek: null, an: "", s: ["Uçuşuna 3 saat mi var?"], alt: "Kapı önünde mi bekleyeceksin, <span class=altin>lounge'da</span> mı?" }, 4.6);
-ekle({ ek: null, an: "IST", s: ["Bu havalimanında, kartıyla seni lounge'a misafir götürebilecek biri var."] }, 4.8);
+ekle({ ek: null, an: "IST", s: ["Bu havalimanında seni lounge'da ağırlayabilecek biri var."] }, 4.8);
 ekle({ ek: "02_kesfet", an: "KEŞFET", s: ["Aynı saatte havalimanında olan doğrulanmış yolcuları gör."] }, D);
 ekle({ ek: "05_tanis", an: "TANIŞ", s: ["Aynı uçuştaki yolcularla tanış."], alt: "Bir kahve, bir iş bağlantısı, belki bir yol arkadaşı." }, D);
 ekle({ ek: "50_istek_gonder", an: "İSTEK", s: ["Beğendiğin host'a tek dokunuşla istek gönder."] }, D);
@@ -223,9 +224,10 @@ function telefon(sc, i, t) {
     if (h > 2.0) { const p2 = 0.55 + 0.45 * Math.sin((h - 2) * 5); ust.innerHTML += `<div style="position:absolute;left:330px;top:978px;width:160px;height:40px;border-radius:20px;box-shadow:0 0 0 3px rgba(201,168,110,${p2}),0 0 24px rgba(226,184,103,${p2 * .5})"></div>`; }
   }
   if (sc.ek === "88_oturum_puanla") {
-    // 1) ekrandaki gerçek +100 kutusu parlar  2) telefon döner, ödül mağazası
+    // 0) beş yıldız tek tek dolar  1) ekrandaki gerçek +100 kutusu parlar  2) telefon döner, ödül mağazası
     if (h < 2.6) { const pa = 0.55 + 0.45 * Math.sin(h * 5);
-      if (h > 0.4) ust.innerHTML = `<div style="position:absolute;left:20px;top:942px;width:246px;height:88px;border-radius:20px;box-shadow:0 0 0 4px rgba(201,168,110,${pa}),0 0 30px rgba(226,184,103,${pa * .55})"></div>`; }
+      ust.innerHTML = yildizlar(h, 0.15);
+      if (h > 0.95) ust.innerHTML += `<div style="position:absolute;left:20px;top:942px;width:246px;height:88px;border-radius:20px;box-shadow:0 0 0 4px rgba(201,168,110,${pa}),0 0 30px rgba(226,184,103,${pa * .55})"></div>`; }
     const f = ar(h, 2.5, 3.1);
     if (f > 0 && f < 1) tel.style.transform += ` perspective(1600px) rotateY(${Math.sin(f * Math.PI) * 75}deg)`;
     if (f >= 1) $("imgSimdi").style.transform = `translateY(${-es(ar(h, 3.2, 4.4)) * 140}px)`;
@@ -363,7 +365,7 @@ function kapanis(t) {
   } else yumAci = null;
   $("kalem").innerHTML = DEFS + s;
   const sp = eo(ar(t, t0 + 3.9, t0 + 4.5));
-  $("slogan").innerHTML = `<span style="display:inline-block;opacity:${sp};transform:translateY(${(1 - sp) * 20}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</span>`;
+  $("slogan").innerHTML = `<span style="display:inline-block;opacity:${sp};transform:translateY(${(1 - sp) * 20}px)">Havalimanındaki üç saat, yalnız geçmek zorunda değil.</span>`;
   const rb = t0 + 4.3, p1 = eo(ar(t, rb, rb + 0.4)), p2 = geri(ar(t, rb + 0.25, rb + 0.75)), p3 = geri(ar(t, rb + 0.4, rb + 0.9)), p4 = eo(ar(t, rb + 0.9, rb + 1.4));
   if (LANSMAN_SONRA) $("rozet").innerHTML = lansmanCTA(t, rb, false); else
   $("rozet").innerHTML = `<div class="yakinda" style="opacity:${p1};transform:translateY(${(1 - p1) * 16}px)">YAKINDA</div>

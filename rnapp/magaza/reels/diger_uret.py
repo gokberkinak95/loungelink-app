@@ -67,7 +67,7 @@ def isik(adim, alt):
         orta = (f'<circle cx="540" cy="880" r="240" fill="url(#hale)"/>'
                 f'<g transform="translate(540,880) scale(5.2) translate(-107,-132)" filter="url(#p)">{kanat_ic}</g>'
                 f'<text x="540" y="1170" text-anchor="middle" font-family="J" font-size="74" fill="#1A2B4C" letter-spacing="22">LOUNGELINK</text>'
-                f'<text x="540" y="1250" text-anchor="middle" font-family="JR" font-size="36" fill="#41557E">Havalimanında üç saat, yalnız geçmek zorunda değil.</text>')
+                f'<text x="540" y="1250" text-anchor="middle" font-family="JR" font-size="36" fill="#41557E">Havalimanındaki üç saat, yalnız geçmek zorunda değil.</text>')
         plan = f'<g opacity=".25">{plan}</g>'; salon = ""; kapilar = ""
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}"><defs>{FONT}'
             f'<linearGradient id="zc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F6FA"/><stop offset="1" stop-color="#F3EDE4"/></linearGradient>'

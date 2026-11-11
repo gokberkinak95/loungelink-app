@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<!-- Editoryal illustrasyon gonderileri ONIZLEME (11 Kasim 2026). ?p=1|2|3 (tekil) · k0..k6 (kaydirmali: kapak, 01-05, kapanis)
+     Cizimler elle yazilmis katmanli SVG: duz sekiller, yumusak gradyan, kagit grenı; isik hep sagdan/pencereden. Marka/logo yok. -->
+<style>
+@font-face{font-family:J;src:url(jakarta-semibold.woff2)}
+@font-face{font-family:JR;src:url(jakarta-regular.woff2)}
+html,body{margin:0;padding:0;background:#000}
+#p{position:relative;width:1080px;height:1350px;overflow:hidden;font-family:J;color:#13213C;background:#F5EFE3}
+.k{position:absolute;left:0;top:0}
+#bas{position:absolute;left:64px;top:150px;width:952px}
+#bas h1{margin:0;font-weight:normal;font-size:88px;line-height:1.0;letter-spacing:-.025em;white-space:nowrap}
+#bas .cubuk{width:118px;height:12px;border-radius:6px;background:#C9A25E;margin-top:30px}
+#bas .alt{margin-top:28px;font-family:JR;font-size:32px;line-height:1.36;color:#3A4A66;max-width:820px}
+</style></head><body>
+<div id="p"></div>
+<script src="veri.js"></script>
+<script>
+const P = new URLSearchParams(location.search).get("p") || "1";
+const $ = (i) => document.getElementById(i);
+// ------------------------------------------------------------------ RENK
+const R = { lac: "#13213C", lac2: "#22365F", lac3: "#2E4573", arduaz: "#41557E", gok1: "#6E93C8", gok2: "#A9C0E0", gok3: "#DCE6F2",
+  seftali: "#F3D7BE", krem: "#FBEADB", fil: "#F5EFE3", altin: "#C9A25E", altin2: "#E7D3AC", kiremit: "#C2745A", ada: "#8FB7A5", ada2: "#5E8C74",
+  karamel: "#B9814F", ceviz: "#8A5A3B" };
+function ton(hex, a) {   // a<0 koyulaştır, a>0 açıklaştır
+  const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  const f = (c) => Math.round(a < 0 ? c * (1 + a) : c + (255 - c) * a);
+  return "#" + [f(r), f(g), f(b)].map(c => Math.max(0, Math.min(255, c)).toString(16).padStart(2, "0")).join("");
+}
+const TEN = ["#F2C9A8", "#E0A884", "#B97B57", "#7A4B33", "#5A3626"];
+const kanat = (renk, w) => `<svg width="${w}" height="${w * 29 / 62}" viewBox="76 117.5 62 29"><path d="${VERI.kanat}" fill="${renk}"/></svg>`;
+const cizgi = (d, renk, w) => `<path d="${d}" fill="none" stroke="${renk}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+// ------------------------------------------------------------------ İNSANLAR (sağa bakar; yon=-1 aynalar)
+function bas(o, hx, hy) {
+  const s = o.sac || "#2A1E1A", t = o.ten;
+  let arka = "", on = "";
+  switch (o.stil) {
+    case "kisa": on = `<path d="M-22,-2 C-25,-22 -10,-31 6,-30 C19,-29 26,-20 23,-9 C14,-14 4,-15 -2,-9 L-5,8 C-14,11 -21,6 -22,-2Z" fill="${s}"/>`; break;
+    case "topuz": on = `<circle cx="-19" cy="-19" r="11.5" fill="${s}"/><path d="M-22,4 C-27,-20 -8,-32 8,-30 C20,-28 26,-18 23,-9 C12,-15 1,-14 -4,-6 L-6,12 C-16,15 -22,11 -22,4Z" fill="${s}"/>`; break;
+    case "uzun": arka = `<path d="M-20,-6 C-30,10 -30,40 -22,58 L4,56 C0,40 -2,20 0,4Z" fill="${s}"/>`;
+      on = `<path d="M-22,2 C-27,-21 -8,-32 8,-30 C20,-28 26,-18 23,-9 C12,-15 2,-14 -2,-6 L-2,20 C-12,24 -22,14 -22,2Z" fill="${s}"/>`; break;
+    case "kivircik": on = [[-15, -17, 13], [0, -24, 13], [14, -22, 10], [-21, -1, 12], [-17, 13, 10], [-6, -12, 9]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${s}"/>`).join(""); break;
+    case "kel": on = `<path d="M-21,-4 C-22,-14 -16,-20 -8,-22 C-14,-12 -14,-2 -10,8 C-16,8 -21,4 -21,-4Z" fill="${s}"/>`; break;
+    case "ortu": on = `<path d="M14,-22 C4,-33 -16,-31 -24,-16 C-31,-2 -28,22 -22,36 C-16,50 0,58 22,58 L30,50 C20,44 14,34 12,22 C10,10 10,-4 14,-22Z" fill="${s}"/><path d="M13,-21 C18,-26 24,-22 24,-14 L22,-8 C18,-14 15,-16 13,-21Z" fill="${s}"/>`; break;
+  }
+  const kulak = (o.stil === "ortu" || o.stil === "uzun") ? "" : `<ellipse cx="-3" cy="2" rx="4.5" ry="6.5" fill="${ton(t, -.12)}"/>`;
+  const sakal = o.sakal ? `<path d="M2,8 C4,22 16,28 24,14 L23,6 C16,12 8,12 2,8Z" fill="${o.sakal}"/>` : "";
+  const gozluk = o.gozluk ? `<path d="M12,-6 L24,-6" stroke="${R.lac}" stroke-width="2.4"/><rect x="13" y="-9" width="9" height="7" rx="2" fill="none" stroke="${R.lac}" stroke-width="2"/>` : "";
+  return `<g transform="translate(${hx},${hy}) rotate(${o.egik || 0})">${arka}<ellipse cx="2" cy="0" rx="21" ry="25" fill="${t}"/>
+    <path d="M21,-6 Q28,1 21,7Z" fill="${t}"/>${sakal}${on}${kulak}${gozluk}
+    <path d="M-12,-2 C-10,10 2,24 20,20 C10,26 -6,22 -12,8Z" fill="${ton(t, -.08)}" opacity=".5"/></g>`;
+}
+function ayakta(o) {
+  const t = o.ten, ust = o.ust, alt = o.alt, ay = o.ayk || "#1E2230", yuru = o.poz === "yuru" || o.poz === "bavul";
+  const bacakA = yuru ? "M-4,-165 L-26,-10" : "M-4,-165 L-12,-8", bacakO = yuru ? "M8,-165 L32,-10" : "M8,-165 L20,-8";
+  let s = "";
+  if (o.sirt) s += `<rect x="-56" y="-286" width="34" height="104" rx="12" fill="${o.sirt}"/><rect x="-50" y="-240" width="22" height="34" rx="6" fill="${ton(o.sirt, -.15)}"/>`;
+  s += cizgi(bacakA, ton(alt, -.18), 30) + cizgi(bacakO, alt, 31);
+  const aA = yuru ? [-26, -10] : [-12, -8], aO = yuru ? [32, -10] : [20, -8];
+  s += `<ellipse cx="${aA[0] + 7}" cy="${aA[1] + 4}" rx="19" ry="8" fill="${ton(ay, -.1)}"/><ellipse cx="${aO[0] + 8}" cy="${aO[1] + 4}" rx="19" ry="8" fill="${ay}"/>`;
+  // arka kol
+  s += cizgi(o.poz === "yuru" ? "M0,-284 L-20,-226 L-30,-176" : "M0,-284 L-12,-222 L-10,-170", ton(ust, -.2), 21);
+  const boy = o.uzunManto ? -96 : -158;
+  s += `<path d="M-31,${boy} C-35,-215 -33,-262 -19,-292 Q2,-303 25,-292 C39,-262 41,-215 ${o.uzunManto ? 40 : 35},${boy} Z" fill="${ust}"/>`;
+  s += `<path d="M-31,${boy} C-35,-215 -33,-262 -19,-292 Q-8,-298 -2,-296 C-10,-250 -8,-200 -4,${boy}Z" fill="${ton(ust, -.14)}" opacity=".55"/>`;
+  if (o.yaka) s += `<path d="M-4,-296 L10,-262 L22,-294Z" fill="${o.yaka}"/>`;
+  if (o.sirt) s += cizgi("M-14,-292 L-28,-250", ton(o.sirt, -.25), 7);
+  s += `<rect x="-6" y="-314" width="16" height="26" rx="5" fill="${ton(t, -.06)}"/>`;
+  // ön kol
+  const kol = { dur: "M8,-284 L18,-222 L22,-168", yuru: "M8,-284 L30,-228 L44,-184", telefon: "M8,-284 L28,-232 L36,-266",
+    bavul: "M8,-284 L24,-226 L40,-176", uzat: "M8,-284 L42,-246 L82,-246", buyutec: "M8,-284 L46,-266 L72,-296", selam: "M8,-284 L40,-250 L76,-262" }[o.poz || "dur"];
+  const el = kol.split("L").pop().split(",").map(Number);
+  if (o.poz === "bavul") {
+    const b = o.bavulRenk || R.lac2;
+    s += cizgi(`M${el[0] + 2},${el[1]} L${el[0] + 26},${el[1] + 72}`, "#4A4F5C", 5) + `<g transform="translate(${el[0] + 20},${el[1] + 66}) rotate(14)">
+      <rect x="0" y="0" width="72" height="104" rx="12" fill="${b}"/><rect x="0" y="0" width="72" height="104" rx="12" fill="url(#bavulIsik)"/>
+      <path d="M18,8 L18,96 M54,8 L54,96" stroke="${ton(b, -.2)}" stroke-width="4"/><circle cx="12" cy="110" r="7" fill="#1E2230"/><circle cx="60" cy="110" r="7" fill="#1E2230"/></g>`;
+  }
+  s += cizgi(kol, ust, 22) + `<circle cx="${el[0]}" cy="${el[1]}" r="9.5" fill="${t}"/>`;
+  if (o.poz === "telefon") s += `<rect x="${el[0] - 2}" y="${el[1] - 26}" width="14" height="24" rx="3" fill="${R.lac}"/>`;
+  if (o.poz === "uzat") s += `<g transform="translate(${el[0] + 4},${el[1] - 20}) rotate(-8)"><rect width="60" height="28" rx="3" fill="${R.fil}"/><rect width="16" height="28" fill="${R.lac2}"/><rect x="22" y="9" width="30" height="4" rx="2" fill="${R.arduaz}"/><rect x="22" y="17" width="20" height="3" rx="1.5" fill="${R.altin}"/></g>`;
+  if (o.poz === "buyutec") s += `<g transform="translate(${el[0]},${el[1]})">${cizgi("M0,0 L22,-26", R.ceviz, 9)}<circle cx="44" cy="-52" r="34" fill="rgba(220,235,245,.35)" stroke="${R.altin}" stroke-width="7"/><path d="M28,-70 Q40,-78 54,-72" stroke="#fff" stroke-width="4" fill="none" opacity=".7"/></g>`;
+  s += bas(o, 4, -336);
+  return `<g transform="translate(${o.x},${o.y}) scale(${(o.s || 1) * (o.yon || 1)},${o.s || 1})">${s}</g>`;
+}
+function oturan(o) {   // kalça (0,0), oturma yüzeyi y=0
+  const t = o.ten, ust = o.ust, alt = o.alt, ay = o.ayk || "#1E2230";
+  let s = "";
+  if (o.bacak === "capraz") {
+    s += cizgi("M0,-6 L92,-10 L104,98", ton(alt, -.18), 30) + `<ellipse cx="116" cy="102" rx="18" ry="8" fill="${ton(ay, -.1)}"/>`;
+    s += cizgi("M6,-4 L96,-24 L150,46", alt, 32) + `<ellipse cx="160" cy="52" rx="18" ry="8" transform="rotate(40 160 52)" fill="${ay}"/>`;
+  } else {
+    s += cizgi("M0,-6 L92,-10 L106,98", ton(alt, -.18), 30) + `<ellipse cx="118" cy="102" rx="18" ry="8" fill="${ton(ay, -.1)}"/>`;
+    s += cizgi("M6,2 L98,-2 L96,106", alt, 32) + `<ellipse cx="108" cy="110" rx="19" ry="8" fill="${ay}"/>`;
+  }
+  const lean = o.egim || 0;
+  let g = "";
+  g += cizgi("M2,-136 L-4,-78 L22,-56", ton(ust, -.2), 20);
+  g += `<path d="M-31,4 C-37,-52 -35,-108 -18,-146 Q4,-157 25,-146 C38,-112 40,-55 33,4Z" fill="${ust}"/>`;
+  g += `<path d="M-31,4 C-37,-52 -35,-108 -18,-146 Q-8,-152 -2,-150 C-12,-100 -10,-50 -4,4Z" fill="${ton(ust, -.14)}" opacity=".55"/>`;
+  if (o.yaka) g += `<path d="M-2,-150 L10,-118 L22,-148Z" fill="${o.yaka}"/>`;
+  if (o.atki) g += `<path d="M-14,-150 C-4,-136 16,-136 26,-150 L22,-124 C14,-116 2,-116 -8,-122Z" fill="${o.atki}"/>`;
+  g += `<rect x="-5" y="-170" width="16" height="26" rx="5" fill="${ton(t, -.06)}"/>`;
+  const kol = { fincan: "M10,-138 L30,-78 L62,-98", konus: "M10,-138 L38,-86 L74,-124", dinlen: "M10,-138 L30,-76 L70,-62",
+    kitap: "M10,-138 L34,-82 L66,-92", telefon: "M10,-138 L32,-80 L58,-110" }[o.poz || "dinlen"];
+  const el = kol.split("L").pop().split(",").map(Number);
+  if (o.poz === "kitap") g += `<g transform="translate(${el[0] - 8},${el[1] - 34}) rotate(-14)"><rect width="46" height="34" rx="3" fill="${o.kitapRenk || R.kiremit}"/><rect x="4" y="3" width="38" height="28" rx="2" fill="${R.fil}"/><path d="M23,3 L23,31" stroke="${ton(R.fil, -.15)}" stroke-width="2"/></g>`;
+  g += cizgi(kol, ust, 21) + `<circle cx="${el[0]}" cy="${el[1]}" r="9.5" fill="${t}"/>`;
+  if (o.poz === "fincan") g += `<path d="M${el[0] - 8},${el[1] - 22} L${el[0] + 12},${el[1] - 22} L${el[0] + 10},${el[1] - 2} L${el[0] - 6},${el[1] - 2}Z" fill="${R.fil}"/><path d="M${el[0] + 11},${el[1] - 18} q8,2 6,9 q-2,4 -7,3" fill="none" stroke="${R.fil}" stroke-width="3"/>`;
+  if (o.poz === "konus") g += `<ellipse cx="${el[0] + 6}" cy="${el[1] - 8}" rx="8" ry="12" transform="rotate(20 ${el[0] + 6} ${el[1] - 8})" fill="${t}"/>`;
+  if (o.poz === "telefon") g += `<rect x="${el[0] - 4}" y="${el[1] - 26}" width="14" height="24" rx="3" fill="${R.lac}"/>`;
+  g += bas(o, 6, -190);
+  s += `<g transform="rotate(${lean})">${g}</g>`;
+  return `<g transform="translate(${o.x},${o.y}) scale(${(o.s || 1) * (o.yon || 1)},${o.s || 1})">${s}</g>`;
+}
+// ------------------------------------------------------------------ EŞYALAR
+function koltuk(x, y, s, renk, yon = 1, onKol = true) {   // kişinin kalçası (x,y); sağa bakan
+  const k = ton(renk, -.18), a = ton(renk, .12);
+  const arka = `<g transform="translate(${x},${y}) scale(${s * yon},${s})"><ellipse cx="30" cy="96" rx="96" ry="10" fill="rgba(19,33,60,.16)"/>
+    <rect x="-34" y="60" width="6" height="34" fill="${R.altin}"/><rect x="92" y="60" width="6" height="34" fill="${R.altin}"/>
+    <rect x="-64" y="-150" width="46" height="196" rx="22" fill="${k}" transform="rotate(-9 -40 40)"/>
+    <rect x="-50" y="-4" width="160" height="66" rx="22" fill="${renk}"/><rect x="-50" y="-4" width="160" height="18" rx="9" fill="${a}" opacity=".6"/></g>`;
+  const on = onKol ? `<g transform="translate(${x},${y}) scale(${s * yon},${s})"><rect x="-58" y="-48" width="132" height="40" rx="20" fill="${ton(renk, -.06)}"/><rect x="-58" y="-48" width="132" height="12" rx="6" fill="${a}" opacity=".5"/>
+    <rect x="-58" y="-30" width="34" height="90" rx="14" fill="${ton(renk, -.06)}"/></g>` : "";
+  return { arka, on };
+}
+function sehpa(x, y, s, ust = "#EDE6DA") {
+  return `<g transform="translate(${x},${y}) scale(${s})"><ellipse cx="0" cy="150" rx="64" ry="9" fill="rgba(19,33,60,.16)"/><rect x="-5" y="0" width="10" height="146" fill="${R.lac2}"/>
+    <ellipse cx="0" cy="146" rx="40" ry="8" fill="${R.lac2}"/><ellipse cx="0" cy="6" rx="86" ry="18" fill="${ton(ust, -.14)}"/><ellipse cx="0" cy="0" rx="86" ry="18" fill="${ust}"/></g>`;
+}
+function fincan(x, y, s = 1, renk = "#FFFFFF") {
+  return `<g transform="translate(${x},${y}) scale(${s})"><ellipse cx="0" cy="0" rx="22" ry="5" fill="${ton(renk, -.12)}"/><path d="M-13,-2 L13,-2 L11,-24 L-11,-24Z" fill="${renk}"/>
+    <ellipse cx="0" cy="-24" rx="11" ry="3" fill="#6B4430"/><path d="M12,-20 q9,1 7,9 q-2,5 -9,3" fill="none" stroke="${renk}" stroke-width="3"/></g>`;
+}
+function bitki(x, y, s, saksi = R.lac2) {
+  const y1 = [[-40, -150, -30], [30, -170, 25], [-10, -210, -5], [55, -120, 50], [-60, -110, -55], [15, -120, 10]];
+  return `<g transform="translate(${x},${y}) scale(${s})"><ellipse cx="0" cy="4" rx="50" ry="8" fill="rgba(19,33,60,.16)"/>` +
+    y1.map(([dx, dy, r], i) => `${cizgi(`M0,-60 Q${dx * .4},${dy * .5} ${dx},${dy}`, R.ada2, 4)}<ellipse cx="${dx}" cy="${dy}" rx="20" ry="44" transform="rotate(${r} ${dx} ${dy})" fill="${i % 2 ? R.ada : R.ada2}"/>`).join("") +
+    `<path d="M-38,-70 L38,-70 L30,0 L-30,0Z" fill="${saksi}"/><rect x="-42" y="-76" width="84" height="12" rx="4" fill="${ton(saksi, .1)}"/></g>`;
+}
+function lamba(x, y, s) {
+  return `<g transform="translate(${x},${y}) scale(${s})"><ellipse cx="0" cy="2" rx="36" ry="7" fill="rgba(19,33,60,.16)"/><rect x="-26" y="-6" width="52" height="8" rx="4" fill="${R.lac2}"/>
+    ${cizgi("M0,-4 L0,-300 Q0,-340 60,-344", R.lac2, 6)}<path d="M36,-340 L90,-340 L104,-300 L22,-300Z" fill="${R.altin}"/>
+    <ellipse cx="63" cy="-300" rx="41" ry="7" fill="#FFF3D6"/><path d="M22,-300 L104,-300 L170,-60 L-40,-60Z" fill="url(#lambaIsik)" opacity=".55"/></g>`;
+}
+function ucak(x, y, s, gece = false, yon = 1) {   // burun solda (yon=1)
+  const g = gece ? "#3B4A6A" : "#F4F1EA", gol = gece ? "#2A3754" : "#D9D3C7", kuy = gece ? "#1A2440" : R.lac2, cam = gece ? "#F7D98A" : R.lac2;
+  let w = ""; for (let i = 0; i < 26; i++) w += `<rect x="${118 + i * 15}" y="-27" width="7" height="9" rx="3" fill="${cam}" opacity="${gece ? .85 : .7}"/>`;
+  return `<g transform="translate(${x},${y}) scale(${s * yon},${s})">
+    <ellipse cx="320" cy="62" rx="300" ry="12" fill="rgba(19,33,60,${gece ? .3 : .12})"/>
+    <path d="M300,-6 L420,58 L470,58 L360,-6Z" fill="${gece ? "#25314D" : "#BDB6AA"}"/>
+    <rect x="96" y="6" width="5" height="44" fill="#5A5F6B"/><rect x="380" y="10" width="6" height="40" fill="#5A5F6B"/><rect x="430" y="10" width="6" height="40" fill="#5A5F6B"/>
+    <circle cx="98" cy="52" r="8" fill="#22252E"/><circle cx="383" cy="52" r="9" fill="#22252E"/><circle cx="433" cy="52" r="9" fill="#22252E"/>
+    <path d="M0,2 C0,-24 34,-44 92,-46 L560,-46 C590,-46 612,-62 632,-104 L668,-104 L650,-40 C644,-8 624,6 582,8 L80,12 C30,12 0,10 0,2Z" fill="${g}"/>
+    <path d="M6,6 C40,12 70,12 90,12 L582,8 C620,6 640,-6 648,-30 L652,-26 C646,0 626,14 584,16 L80,20 C36,20 8,14 6,6Z" fill="${gol}"/>
+    <path d="M574,-46 L632,-160 L676,-160 L650,-46Z" fill="${kuy}"/><path d="M600,-50 L700,-62 L700,-50 L606,-36Z" fill="${kuy}"/>
+    <path d="M18,-14 C24,-24 36,-30 50,-31 L52,-20 C40,-20 28,-18 18,-14Z" fill="${gece ? "#F7D98A" : R.lac}"/>${w}
+    <path d="M260,-2 L330,62 L392,62 L352,-2Z" fill="${gece ? "#2F3C5C" : "#CFC8BC"}"/>
+    <rect x="300" y="22" width="92" height="34" rx="16" fill="${gece ? "#24304A" : "#B9B2A6"}"/><ellipse cx="300" cy="39" rx="8" ry="16" fill="${gece ? "#151C2E" : "#7D776D"}"/>
+    ${gece ? `<circle cx="652" cy="-160" r="5" fill="#FF6B5A"/><circle cx="652" cy="-160" r="14" fill="#FF6B5A" opacity=".3"/><circle cx="390" cy="62" r="5" fill="#7CF0B0"/><circle cx="390" cy="62" r="16" fill="#7CF0B0" opacity=".25"/>` : ""}</g>`;
+}
+function bulut(x, y, rx, ry, o) { return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" opacity="${o}" filter="url(#yumusak)"/>`; }
+// pencere: dışarı (gök + apron + uçak) ve kayıtlar
+function disari(x, y, w, h, gece, ic) {
+  const ufuk = y + h * .7;
+  let s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${gece ? "gokGece" : "gokGun"})"/>`;
+  if (!gece) s += `<circle cx="${x + w * .72}" cy="${ufuk - 30}" r="${h * .55}" fill="url(#gunes)"/>` + bulut(x + w * .2, y + h * .3, 160, 22, .55) + bulut(x + w * .75, y + h * .18, 120, 16, .4) + bulut(x + w * .5, ufuk - 40, 260, 24, .6);
+  else { let st = ""; for (let i = 0; i < 40; i++) st += `<circle cx="${x + rnd(i) * w}" cy="${y + rnd(i + 99) * h * .55}" r="${1 + rnd(i + 7) * 1.6}" fill="#fff" opacity="${.35 + rnd(i + 3) * .5}"/>`;
+    s += st + `<circle cx="${x + w * .8}" cy="${y + h * .2}" r="30" fill="#F6E7C2"/><circle cx="${x + w * .8 + 12}" cy="${y + h * .2 - 8}" r="28" fill="#1A2B4C"/>`; }
+  // uzak terminal / kule
+  const uz = gece ? "#22325A" : "#B7C3D8";
+  s += `<path d="M${x},${ufuk} L${x},${ufuk - 26} L${x + w * .18},${ufuk - 26} L${x + w * .2},${ufuk - 40} L${x + w * .46},${ufuk - 40} L${x + w * .48},${ufuk - 22} L${x + w * .7},${ufuk - 22} L${x + w * .7},${ufuk - 70} L${x + w * .72},${ufuk - 90} L${x + w * .74},${ufuk - 70} L${x + w * .74},${ufuk - 22} L${x + w},${ufuk - 22} L${x + w},${ufuk}Z" fill="${uz}"/>`;
+  if (gece) for (let i = 0; i < 18; i++) s += `<rect x="${x + w * .2 + i * 14}" y="${ufuk - 34}" width="6" height="4" fill="#F7D98A" opacity="${.4 + rnd(i) * .5}"/>`;
+  s += `<rect x="${x}" y="${ufuk}" width="${w}" height="${y + h - ufuk}" fill="url(#${gece ? "apronGece" : "apronGun"})"/>`;
+  s += `<path d="M${x},${ufuk + (h * .3) * .55} L${x + w},${ufuk + (h * .3) * .35}" stroke="${gece ? "#C9A25E" : "#E2C27E"}" stroke-width="3" opacity=".7"/>`;
+  return `<g clip-path="url(#k_${Math.round(x)}_${Math.round(y)})"><clipPath id="k_${Math.round(x)}_${Math.round(y)}"><rect x="${x}" y="${y}" width="${w}" height="${h}"/></clipPath>${s}${ic || ""}</g>`;
+}
+function kayit(x, y, w, h, xs, renk = R.lac2) {
+  return xs.map(xx => `<rect x="${xx - 6}" y="${y}" width="12" height="${h}" fill="${renk}"/>`).join("") +
+    `<rect x="${x}" y="${y - 10}" width="${w}" height="14" fill="${renk}"/><rect x="${x}" y="${y + h - 4}" width="${w}" height="18" fill="${renk}"/><rect x="${x}" y="${y + h + 14}" width="${w}" height="10" fill="${ton(renk, .25)}"/>`;
+}
+function rnd(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+const DEFS = `<defs>
+  <linearGradient id="gokGun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E93C8"/><stop offset=".45" stop-color="#A9C0E0"/><stop offset=".72" stop-color="#F3D7BE"/><stop offset="1" stop-color="#FBEADB"/></linearGradient>
+  <linearGradient id="gokGece" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C1428"/><stop offset=".6" stop-color="#1A2B4C"/><stop offset="1" stop-color="#34497A"/></linearGradient>
+  <radialGradient id="gunes"><stop offset="0" stop-color="#FFF4DE" stop-opacity=".95"/><stop offset=".35" stop-color="#FFE2B8" stop-opacity=".55"/><stop offset="1" stop-color="#FFE2B8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="apronGun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D8CFC2"/><stop offset="1" stop-color="#BFB4A5"/></linearGradient>
+  <linearGradient id="apronGece" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E2A47"/><stop offset="1" stop-color="#131C33"/></linearGradient>
+  <linearGradient id="isikZemin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4DE" stop-opacity=".75"/><stop offset="1" stop-color="#FFF4DE" stop-opacity="0"/></linearGradient>
+  <linearGradient id="lambaIsik" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7B0" stop-opacity=".9"/><stop offset="1" stop-color="#FFE7B0" stop-opacity="0"/></linearGradient>
+  <linearGradient id="bavulIsik" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".18"/></linearGradient>
+  <filter id="yumusak" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="golge" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="10" dy="16" stdDeviation="10" flood-color="#13213C" flood-opacity=".28"/></filter>
+  <filter id="gren" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" stitchTiles="stitch"/>
+    <feColorMatrix values="0 0 0 0 .08  0 0 0 0 .1  0 0 0 0 .16  0 0 0 .55 0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .16"/></feComponentTransfer></filter>
+  <filter id="kagit" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="3" seed="9"/>
+    <feColorMatrix values="0 0 0 0 .55  0 0 0 0 .45  0 0 0 0 .3  0 0 0 .5 -.1"/><feComponentTransfer><feFuncA type="table" tableValues="0 .07"/></feComponentTransfer></filter></defs>`;
+
+// ------------------------------------------------------------------ SAHNELER (yerel kutu 1080 × 790)
+const S = {};
+// 1 · kalabalık kapı (arkada, soğuk) | sakin lounge penceresi (önde, sıcak)
+S.p1 = () => {
+  let s = "";
+  // KAPI tarafı
+  s += `<rect x="0" y="0" width="500" height="790" fill="#C7D0DC"/><rect x="0" y="470" width="500" height="320" fill="#AEB8C6"/>`;
+  s += `<rect x="0" y="0" width="500" height="120" fill="#B3BECE"/>` + [0, 1, 2].map(i => `<rect x="${30 + i * 160}" y="40" width="120" height="12" rx="6" fill="#F4F7FB"/><path d="M${30 + i * 160},52 L${150 + i * 160},52 L${170 + i * 160},300 L${10 + i * 160},300Z" fill="#fff" opacity=".12"/>`).join("") +
+    [0, 1].map(i => `<rect x="${290 + i * 100}" y="150" width="86" height="56" rx="6" fill="#2A3550"/>` + [0, 1, 2].map(j => `<rect x="${300 + i * 100}" y="${162 + j * 13}" width="${40 + rnd(i * 3 + j) * 24}" height="6" rx="3" fill="${j === 0 ? "#F0B35E" : "#6F7F9E"}"/>`).join("")).join("");
+  s += `<rect x="40" y="300" width="232" height="64" rx="8" fill="#2A3550"/><text x="58" y="343" font-family="J" font-size="28" fill="#E8EDF4" letter-spacing="2">KAPI B12</text>
+        <text x="252" y="342" text-anchor="end" font-family="J" font-size="22" fill="#F0B35E">14:20</text><rect x="150" y="270" width="4" height="30" fill="#7D8AA0"/>`;
+  const sol = ["#8E99AB", "#7D889B", "#9EA8B8", "#6F7A8E", "#A7B0BF", "#858FA2"];
+  // koltuk sırası
+  s += `<rect x="20" y="540" width="460" height="16" rx="6" fill="#5E6B80"/>` + [0, 1, 2, 3, 4].map(i => `<rect x="${30 + i * 90}" y="470" width="70" height="74" rx="12" fill="#6B788D"/><rect x="${58 + i * 90}" y="556" width="10" height="60" fill="#5E6B80"/>`).join("");
+  s += oturan({ x: 74, y: 528, s: .62, ten: "#C9CFD9", sac: "#6C7587", stil: "kisa", ust: sol[1], alt: sol[3], poz: "telefon", ayk: "#545F73" });
+  s += oturan({ x: 254, y: 528, s: .62, ten: "#C9CFD9", sac: "#6C7587", stil: "uzun", ust: sol[2], alt: sol[5], poz: "dinlen", ayk: "#545F73", egim: -6 });
+  s += oturan({ x: 344, y: 528, s: .62, ten: "#C9CFD9", sac: "#6C7587", stil: "ortu", ust: sol[0], alt: sol[3], poz: "kitap", kitapRenk: "#7D889B", ayk: "#545F73" });
+  // ayaktaki kalabalık
+  const ay = [[40, 760, .95, "kisa", 1, "telefon"], [120, 780, 1.02, "topuz", -1, "dur"], [205, 765, .98, "kel", 1, "dur"], [290, 790, 1.05, "kivircik", -1, "telefon"], [380, 770, .96, "uzun", 1, "dur"], [455, 792, 1.0, "kisa", -1, "dur"]];
+  ay.forEach(([x, y, k, st, yon, poz], i) => { s += ayakta({ x, y, s: k, yon, ten: "#BFC6D2", sac: "#5F687B", stil: st, ust: sol[i % 6], alt: sol[(i + 3) % 6], poz, ayk: "#4D576B", sirt: i % 2 ? sol[(i + 2) % 6] : null }); });
+  s += `<rect x="0" y="0" width="500" height="790" fill="#C7D0DC" opacity=".18"/>`;
+  // CAM bölme
+  s += `<rect x="496" y="0" width="34" height="790" fill="rgba(255,255,255,.55)"/><rect x="494" y="0" width="5" height="790" fill="${R.altin}"/><rect x="528" y="0" width="3" height="790" fill="rgba(255,255,255,.9)"/>`;
+  // LOUNGE tarafı
+  s += `<rect x="531" y="0" width="549" height="790" fill="#EFE2CE"/>` + disari(600, 30, 480, 450, false, ucak(640, 400, .62)) + kayit(600, 30, 520, 450, [600, 790, 980]);
+  s += `<rect x="531" y="504" width="549" height="286" fill="#D9BC97"/><path d="M640,504 L1080,504 L1080,790 L520,790Z" fill="url(#isikZemin)" opacity=".7"/>`;
+  s += `<path d="M531,${504 + 70} L1080,${504 + 70} M531,${504 + 160} L1080,${504 + 160}" stroke="#CDAE88" stroke-width="2"/>`;
+  s += bitki(590, 650, .9);
+  const k = koltuk(790, 640, 1.05, R.kiremit, 1);
+  s += k.arka + oturan({ x: 790, y: 630, s: 1.05, ten: TEN[2], sac: "#2A1E1A", stil: "kivircik", ust: "#F2E8D8", alt: R.lac2, poz: "fincan", egim: -8, ayk: R.ceviz }) + k.on;
+  s += sehpa(1010, 600, .7) + fincan(990, 596, 1) + `<rect x="1012" y="586" width="34" height="8" rx="2" fill="${R.lac}" transform="rotate(-8 1029 590)"/>`;
+  s += `<g transform="translate(660,694)"><rect x="0" y="0" width="70" height="96" rx="12" fill="${R.lac2}"/><rect x="0" y="0" width="70" height="96" rx="12" fill="url(#bavulIsik)"/>${cizgi("M18,0 L18,-34 L52,-34 L52,0", "#4A4F5C", 5)}<rect x="0" y="40" width="70" height="8" fill="${R.altin}"/></g>`;
+  return s;
+};
+// 2 · iki yolcu, masa, pencere, uçak
+S.p2 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#EFE2CE"/>`;
+  s += disari(0, 0, 1080, 470, false, ucak(330, 400, .78) + `<g transform="translate(860,140) rotate(-12)">${ucak(0, 0, .12)}</g>`) + kayit(0, 0, 1080, 470, [190, 540, 890]);
+  s += `<rect x="0" y="494" width="1080" height="296" fill="#D9BC97"/><path d="M0,494 L1080,494 L1080,790 L0,790Z" fill="url(#isikZemin)" opacity=".55"/>`;
+  s += `<path d="M0,580 L1080,580 M0,690 L1080,690" stroke="#CDAE88" stroke-width="2"/>`;
+  s += lamba(70, 760, .8) + bitki(1010, 700, .85);
+  const kl = koltuk(300, 600, 1.05, R.ada, 1), kr = koltuk(780, 600, 1.05, R.lac3, -1);
+  s += kl.arka + kr.arka;
+  s += oturan({ x: 300, y: 590, s: 1.05, ten: TEN[1], sac: "#2A1E1A", stil: "kisa", sakal: "#2A1E1A", ust: R.lac2, alt: "#3B3F4A", poz: "konus", yaka: "#F2E8D8", ayk: "#2A1E1A", egim: 4 });
+  s += oturan({ x: 780, y: 590, s: 1.05, yon: -1, ten: TEN[0], sac: R.kiremit, stil: "ortu", ust: "#F2E8D8", alt: R.ceviz, poz: "fincan", egim: -6, ayk: R.ceviz });
+  s += sehpa(540, 560, 1) + fincan(500, 556, 1.1) + `<ellipse cx="575" cy="556" rx="34" ry="7" fill="#fff"/><path d="M556,550 C562,532 592,532 598,550Z" fill="#E0A35A"/><path d="M566,548 L572,538 M580,548 L584,536" stroke="#B9783B" stroke-width="2"/>`;
+  s += kl.on + kr.on;
+  s += `<g transform="translate(900,690)"><rect x="0" y="0" width="74" height="100" rx="12" fill="${R.kiremit}"/><rect x="0" y="0" width="74" height="100" rx="12" fill="url(#bavulIsik)"/>${cizgi("M20,0 L20,-40 L54,-40 L54,0", "#4A4F5C", 5)}<path d="M18,10 L18,90 M56,10 L56,90" stroke="${ton(R.kiremit, -.2)}" stroke-width="4"/></g>`;
+  return s;
+};
+// 3 · masa üstten: kart, biniş kartı, pasaport, kahve, takvim
+S.p3 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#C99C6E"/>`;
+  for (let i = 0; i < 9; i++) s += `<rect x="0" y="${i * 92 + rnd(i) * 20}" width="1080" height="${10 + rnd(i + 5) * 26}" fill="${i % 2 ? "#BE9163" : "#D3A87A"}" opacity=".55"/>`;
+  s += `<path d="M0,0 L560,0 L1080,520 L1080,790 L860,790 L0,-40Z" fill="#FFF1DA" opacity=".18"/>`;
+  // pasaport
+  s += `<g transform="translate(40,90) rotate(-14)" filter="url(#golge)"><rect width="270" height="370" rx="16" fill="${R.lac2}"/><rect x="16" y="16" width="238" height="338" rx="10" fill="none" stroke="${R.altin}" stroke-opacity=".55" stroke-width="2"/>
+    <circle cx="135" cy="150" r="52" fill="none" stroke="${R.altin}" stroke-width="4"/><path d="M83,150 L187,150 M135,98 C110,120 110,180 135,202 C160,180 160,120 135,98Z" fill="none" stroke="${R.altin}" stroke-width="3"/>
+    <text x="135" y="300" text-anchor="middle" font-family="J" font-size="24" letter-spacing="7" fill="${R.altin}">PASAPORT</text></g>`;
+  // kart (markasız)
+  s += `<g transform="translate(560,70) rotate(-9)" filter="url(#golge)"><rect width="360" height="226" rx="20" fill="url(#kartZemin)"/>
+    <rect x="34" y="70" width="58" height="44" rx="8" fill="${R.altin2}"/><path d="M34,92 L92,92 M63,70 L63,114" stroke="${R.altin}" stroke-width="2"/>
+    <path d="M118,80 q10,12 0,24 M130,74 q16,18 0,36 M142,68 q22,24 0,48" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="3"/>
+    <text x="34" y="170" font-family="J" font-size="24" letter-spacing="5" fill="rgba(255,255,255,.85)">•••• 4821</text>
+    <rect x="34" y="190" width="120" height="8" rx="4" fill="rgba(255,255,255,.35)"/><circle cx="292" cy="44" r="16" fill="${R.altin}" opacity=".8"/><circle cx="312" cy="44" r="16" fill="${R.altin2}" opacity=".7"/></g>`;
+  // biniş kartı
+  s += `<g transform="translate(300,330) rotate(5)" filter="url(#golge)"><rect width="580" height="222" rx="16" fill="#F7F1E6"/><rect width="580" height="54" rx="16" fill="${R.lac2}"/><rect y="38" width="580" height="16" fill="${R.lac2}"/>
+    <text x="26" y="36" font-family="J" font-size="20" letter-spacing="5" fill="${R.altin2}">BİNİŞ KARTI</text>
+    <text x="26" y="130" font-family="J" font-size="62" fill="${R.lac}">IST</text><text x="250" y="130" font-family="J" font-size="62" fill="${R.lac}">LHR</text>
+    <path d="M162,108 L228,108" stroke="${R.altin}" stroke-width="3" stroke-dasharray="6 6"/>
+    <text x="26" y="180" font-family="J" font-size="20" letter-spacing="3" fill="#6B7285">KAPI B12 · 14:20 · KOLTUK 3A</text>
+    <line x1="430" y1="66" x2="430" y2="210" stroke="#C9BFAF" stroke-width="2" stroke-dasharray="4 7"/>
+    ${Array.from({ length: 22 }, (_, i) => `<rect x="${450 + i * 5}" y="84" width="${i % 3 ? 2 : 4}" height="110" fill="${R.lac}"/>`).join("")}</g>`;
+  // takvim yaprağı: 31 ARALIK
+  s += `<g transform="translate(890,330) rotate(10)" filter="url(#golge)"><rect width="150" height="170" rx="10" fill="#FBF7EF"/><rect width="150" height="44" rx="10" fill="${R.kiremit}"/><rect y="30" width="150" height="14" fill="${R.kiremit}"/>
+    <text x="75" y="31" text-anchor="middle" font-family="J" font-size="20" letter-spacing="3" fill="#FBF7EF">ARALIK</text><text x="75" y="130" text-anchor="middle" font-family="J" font-size="80" fill="${R.lac}">31</text>
+    <circle cx="75" cy="102" r="52" fill="none" stroke="${R.kiremit}" stroke-width="4" opacity=".8"/></g>`;
+  // kahve
+  s += `<g transform="translate(800,640)" filter="url(#golge)"><circle r="104" fill="#F4EFE6"/><circle r="100" fill="none" stroke="#E2DACB" stroke-width="3"/><rect x="74" y="-18" width="82" height="36" rx="18" fill="#EDE6DA" transform="rotate(28)"/>
+    <circle r="70" fill="#FFFFFF"/><circle r="58" fill="#5A3826"/><circle r="58" fill="url(#krema)"/><ellipse cx="-14" cy="-16" rx="20" ry="13" fill="#E6C49A" opacity=".55"/></g>
+    <rect x="640" y="700" width="16" height="96" rx="8" fill="#D8D1C5" transform="rotate(-36 648 748)"/>`;
+  // güneş gözlüğü
+  s += `<g transform="translate(110,680) rotate(-12)" filter="url(#golge)"><ellipse cx="0" cy="0" rx="62" ry="46" fill="#2A2F3E"/><ellipse cx="140" cy="0" rx="62" ry="46" fill="#2A2F3E"/>
+    <path d="M58,-10 Q70,-24 82,-10" stroke="#C9A25E" stroke-width="7" fill="none"/><ellipse cx="-18" cy="-14" rx="18" ry="10" fill="#fff" opacity=".18"/><ellipse cx="122" cy="-14" rx="18" ry="10" fill="#fff" opacity=".18"/>
+    ${cizgi("M-58,-14 L-30,-40 L60,-44", R.altin, 6)}${cizgi("M198,-14 L170,-40 L84,-44", R.altin, 6)}</g>`;
+  return s;
+};
+// k0 · kapak: terminal koridoru, sıcak ışıklı lounge girişi, yolcu bavulla yürür
+S.k0 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#C9D3E1"/><rect x="0" y="0" width="1080" height="110" fill="#B6C2D4"/>`;
+  for (let i = 0; i < 6; i++) s += `<rect x="${i * 190 + 20}" y="40" width="150" height="14" rx="7" fill="#F5F8FC" opacity=".8"/>`;
+  s += `<rect x="0" y="560" width="1080" height="230" fill="#9DAABE"/><path d="M0,560 L1080,560 L1080,790 L0,790Z" fill="url(#isikZemin)" opacity=".25"/>`;
+  // giriş
+  s += `<rect x="480" y="150" width="440" height="420" fill="#2A3B63"/><path d="M520,570 L520,300 C520,220 580,180 700,180 C820,180 880,220 880,300 L880,570Z" fill="#F6DDB2"/>
+    <path d="M520,570 L520,300 C520,220 580,180 700,180 C820,180 880,220 880,300 L880,570Z" fill="url(#ici)"/>
+    <path d="M520,570 L520,300 C520,220 580,180 700,180 C820,180 880,220 880,300 L880,570" fill="none" stroke="${R.altin}" stroke-width="10"/>
+    <rect x="590" y="100" width="220" height="40" rx="6" fill="${R.lac}"/><text x="700" y="128" text-anchor="middle" font-family="J" font-size="22" letter-spacing="10" fill="${R.altin2}">LOUNGE</text>`;
+  s += `<rect x="600" y="440" width="200" height="130" rx="6" fill="${R.ceviz}"/><rect x="600" y="440" width="200" height="14" fill="${R.altin}"/><rect x="640" y="400" width="14" height="40" fill="${R.lac2}"/><path d="M628,404 L666,404 L660,384 L634,384Z" fill="#FFE7B0"/>`;
+  s += `<path d="M520,570 L880,570 L1000,790 L400,790Z" fill="#FFE7B0" opacity=".35"/>`;
+  s += bitki(450, 576, 1) + bitki(950, 576, 1);
+  // ekran
+  s += `<rect x="90" y="190" width="250" height="150" rx="10" fill="${R.lac}"/>` + [0, 1, 2, 3].map(i => `<rect x="110" y="${212 + i * 30}" width="${120 + rnd(i) * 80}" height="12" rx="6" fill="${i === 1 ? R.altin : "#5D6F93"}"/>`).join("");
+  // yolcular
+  s += ayakta({ x: 150, y: 720, s: .8, ten: TEN[3], sac: "#1E1712", stil: "kisa", ust: "#7D889B", alt: "#545F73", poz: "telefon", ayk: "#3B4152" });
+  s += ayakta({ x: 330, y: 790, s: 1.35, ten: TEN[0], sac: "#B98B5E", stil: "uzun", ust: R.kiremit, alt: R.lac2, poz: "bavul", bavulRenk: R.lac, ayk: R.ceviz, uzunManto: true });
+  return s;
+};
+// k1 · dev kart + büyüteçli yolcu
+S.k1 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#DCE6F2"/><circle cx="820" cy="140" r="260" fill="#fff" opacity=".35" filter="url(#yumusak)"/>`;
+  s += `<rect x="0" y="600" width="1080" height="190" fill="#C9B79C"/><ellipse cx="660" cy="606" rx="360" ry="22" fill="rgba(19,33,60,.18)"/>`;
+  s += `<g transform="translate(380,120) rotate(-4)" filter="url(#golge)"><rect width="600" height="380" rx="34" fill="url(#kartZemin)"/>
+    <rect x="56" y="110" width="96" height="74" rx="12" fill="${R.altin2}"/><path d="M56,147 L152,147 M104,110 L104,184" stroke="${R.altin}" stroke-width="3"/>
+    <text x="56" y="260" font-family="J" font-size="34" letter-spacing="7" fill="rgba(255,255,255,.85)">•••• 4821</text>
+    <rect x="56" y="292" width="240" height="10" rx="5" fill="rgba(255,255,255,.3)"/><rect x="56" y="314" width="190" height="10" rx="5" fill="rgba(255,255,255,.3)"/>
+    <rect x="320" y="184" width="210" height="8" rx="4" fill="rgba(255,255,255,.3)"/><rect x="320" y="202" width="170" height="8" rx="4" fill="rgba(255,255,255,.3)"/></g>`;
+  s += ayakta({ x: 250, y: 740, s: 1.3, ten: TEN[2], sac: "#1E1712", stil: "topuz", ust: R.altin, alt: R.lac2, poz: "buyutec", ayk: R.lac, gozluk: true });
+  s += `<rect x="100" y="640" width="70" height="98" rx="12" fill="${R.ada2}"/>${cizgi("M118,640 L118,606 L152,606 L152,640", "#4A4F5C", 5)}`;
+  return s;
+};
+// k2 · iki kapı: biri açık (yeşil), biri kapalı (amber), arada yolcu
+S.k2 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#E9DCC6"/><rect x="0" y="590" width="1080" height="200" fill="#C9AD86"/>`;
+  const kapi = (x, acik, ad) => `<rect x="${x}" y="110" width="320" height="480" rx="8" fill="${R.lac2}"/>
+    <path d="M${x + 30},590 L${x + 30},230 C${x + 30},170 ${x + 90},140 ${x + 160},140 C${x + 230},140 ${x + 290},170 ${x + 290},230 L${x + 290},590Z" fill="${acik ? "#F6DDB2" : "#33456D"}"/>
+    ${acik ? `<path d="M${x + 30},590 L${x + 30},230 C${x + 30},170 ${x + 90},140 ${x + 160},140 C${x + 230},140 ${x + 290},170 ${x + 290},230 L${x + 290},590Z" fill="url(#ici)"/><path d="M${x + 30},590 L${x + 290},590 L${x + 360},790 L${x - 40},790Z" fill="#FFE7B0" opacity=".4"/>` :
+      `<path d="M${x + 160},150 L${x + 160},590" stroke="#22365F" stroke-width="4"/><circle cx="${x + 140}" cy="380" r="7" fill="${R.altin}"/><circle cx="${x + 180}" cy="380" r="7" fill="${R.altin}"/>`}
+    <rect x="${x + 90}" y="60" width="140" height="36" rx="6" fill="${R.lac}"/><text x="${x + 160}" y="85" text-anchor="middle" font-family="J" font-size="19" letter-spacing="4" fill="${R.altin2}">${ad}</text>
+    <circle cx="${x + 270}" cy="78" r="12" fill="${acik ? "#4FB6A0" : "#E39A3B"}"/><circle cx="${x + 270}" cy="78" r="22" fill="${acik ? "#4FB6A0" : "#E39A3B"}" opacity=".3"/>`;
+  s += kapi(60, true, "SALON A") + kapi(700, false, "SALON B");
+  s += `<rect x="720" y="520" width="10" height="90" fill="${R.altin}"/><rect x="990" y="520" width="10" height="90" fill="${R.altin}"/><path d="M730,532 Q860,580 990,532" stroke="${R.kiremit}" stroke-width="10" fill="none"/>`;
+  s += bitki(1030, 610, .8);
+  s += ayakta({ x: 500, y: 760, s: 1.3, ten: TEN[4], sac: "#1E1712", stil: "kivircik", ust: R.ada2, alt: "#3B3F4A", poz: "telefon", ayk: R.ceviz, sirt: R.kiremit, yon: -1 });
+  return s;
+};
+// k3 · kalkış panosu + bekleyen yolcu + pencerede kalkan uçak
+S.k3 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#E7DCCB"/><rect x="0" y="560" width="1080" height="230" fill="#CDB491"/>`;
+  s += disari(760, 60, 320, 430, false, `<g transform="translate(830,340) rotate(-14)">${ucak(0, 0, .34)}</g>`) + kayit(760, 60, 340, 430, [760, 920]);
+  s += `<rect x="50" y="30" width="680" height="350" rx="24" fill="${R.lac}"/><text x="88" y="80" font-family="J" font-size="22" letter-spacing="6" fill="${R.altin2}">KALKIŞ</text>
+    <text x="692" y="80" text-anchor="end" font-family="J" font-size="22" fill="${R.altin2}">11:20</text>`;
+  const sat = [["14:20", "LHR", "B12", "3 SAAT VAR", true], ["15:05", "CDG", "A04", "ZAMANINDA"], ["15:40", "DXB", "C21", "ZAMANINDA"], ["16:10", "FCO", "B03", "ERTELENDİ"]];
+  sat.forEach(([sa, yer, kp, du, vurgu], i) => {
+    const y = 108 + i * 64;
+    const kap = (m, x, w) => [...m].map((c, j) => `<rect x="${x + j * (w + 4)}" y="${y}" width="${w}" height="50" rx="5" fill="${vurgu ? "#2C4374" : "#1D2C4E"}"/><text x="${x + j * (w + 4) + w / 2}" y="${y + 38}" text-anchor="middle" font-family="J" font-size="30" fill="${vurgu ? "#FFE3A8" : "#E8EDF4"}">${c}</text>`).join("");
+    s += kap(sa, 84, 28) + kap(yer, 262, 28) + kap(kp, 376, 28);
+    s += `<text x="694" y="${y + 36}" text-anchor="end" font-family="J" font-size="20" letter-spacing="2" fill="${vurgu ? "#7FD6BC" : du === "ERTELENDİ" ? "#F0B35E" : "#9FB2D2"}">${du}</text>`;
+  });
+  s += `<rect x="80" y="650" width="520" height="22" rx="8" fill="${R.lac2}"/><rect x="110" y="672" width="12" height="80" fill="${R.lac2}"/><rect x="560" y="672" width="12" height="80" fill="${R.lac2}"/>`;
+  s += oturan({ x: 240, y: 646, s: 1.15, ten: TEN[1], sac: "#9AA0A8", stil: "kel", ust: R.lac3, alt: "#C9BCA8", poz: "kitap", kitapRenk: R.altin, ayk: R.ceviz, gozluk: true, egim: -4 });
+  s += oturan({ x: 450, y: 646, s: 1.15, ten: TEN[0], sac: "#5B3A29", stil: "uzun", ust: R.ada, alt: R.lac2, poz: "telefon", ayk: R.lac, egim: 6 });
+  s += `<g transform="translate(650,696)"><rect width="70" height="94" rx="12" fill="${R.altin}"/>${cizgi("M18,0 L18,-32 L52,-32 L52,0", "#4A4F5C", 5)}</g>`;
+  return s;
+};
+// k4 · karşılama masası: host masa arkasında, misafir biniş kartını uzatır
+S.k4 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#EADFCB"/>`;
+  s += `<rect x="560" y="40" width="460" height="420" rx="210" fill="#E0CFB3"/><path d="M600,460 L600,250 C600,140 700,80 790,80 C880,80 980,140 980,250 L980,460Z" fill="#F3E6D0"/>`;
+  s += `<rect x="0" y="560" width="1080" height="230" fill="#C9AD86"/>` + bitki(1010, 580, 1);
+  s += lamba(930, 560, .7);
+  s += ayakta({ x: 760, y: 560, s: 1.15, yon: -1, ten: TEN[3], sac: "#1E1712", stil: "topuz", ust: R.lac2, alt: R.lac, poz: "selam", yaka: R.altin2 });
+  s += `<rect x="540" y="430" width="440" height="200" rx="10" fill="${R.ceviz}"/><rect x="540" y="430" width="440" height="22" rx="6" fill="${R.altin}"/>
+    <path d="M560,470 L960,470 M560,520 L960,520 M560,570 L960,570" stroke="${ton(R.ceviz, -.12)}" stroke-width="3"/>
+    <rect x="600" y="400" width="80" height="34" rx="4" fill="${R.lac}" transform="rotate(-10 640 417)"/><rect x="830" y="374" width="10" height="58" fill="${R.lac2}"/><path d="M816,378 L854,378 L848,356 L822,356Z" fill="#FFE7B0"/>`;
+  s += ayakta({ x: 420, y: 760, s: 1.3, ten: TEN[1], sac: "#2A1E1A", stil: "kisa", sakal: "#2A1E1A", ust: R.kiremit, alt: "#3B3F4A", poz: "uzat", sirt: R.lac2, ayk: "#2A1E1A" });
+  return s;
+};
+// k5 · dev telefon: kredi iade bildirimi; yolcu bavulun üstünde rahat
+S.k5 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#DCE6F2"/><circle cx="640" cy="300" r="300" fill="#fff" opacity=".4" filter="url(#yumusak)"/><rect x="0" y="610" width="1080" height="180" fill="#C9B79C"/>`;
+  s += `<ellipse cx="640" cy="616" rx="230" ry="18" fill="rgba(19,33,60,.2)"/><g transform="translate(470,40)" filter="url(#golge)"><rect width="340" height="580" rx="52" fill="#1A2030"/><rect x="14" y="14" width="312" height="552" rx="40" fill="#F5EFE3"/>
+    <rect x="128" y="30" width="84" height="22" rx="11" fill="#1A2030"/>
+    <rect x="34" y="110" width="272" height="150" rx="24" fill="#FFFFFF"/><circle cx="80" cy="160" r="26" fill="#4FB6A0"/><path d="M68,160 L77,170 L94,150" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="118" y="154" font-family="J" font-size="22" fill="${R.lac}">Kredin iade edildi</text><text x="118" y="182" font-family="JR" font-size="17" fill="#6B7285">Kapıda alınmadın;</text><text x="118" y="204" font-family="JR" font-size="17" fill="#6B7285">krediyi geri verdik.</text>
+    <text x="270" y="244" text-anchor="end" font-family="J" font-size="26" fill="#2E9C84">+1</text>
+    <rect x="34" y="290" width="272" height="16" rx="8" fill="#E4DCCD"/><rect x="34" y="322" width="200" height="16" rx="8" fill="#E4DCCD"/><rect x="34" y="380" width="272" height="120" rx="20" fill="#EDE5D6"/></g>`;
+  s += `<g transform="translate(900,200)"><circle r="56" fill="${R.altin}"/><circle r="44" fill="none" stroke="${R.altin2}" stroke-width="4"/><text y="16" text-anchor="middle" font-family="J" font-size="46" fill="${R.lac}">1</text></g>
+    <path d="M900,280 C900,380 860,420 820,420" stroke="${R.altin}" stroke-width="6" fill="none" stroke-dasharray="3 14" stroke-linecap="round"/><path d="M834,404 L816,420 L838,434" stroke="${R.altin}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+  s += `<g transform="translate(170,560)"><rect width="120" height="150" rx="16" fill="${R.lac2}"/><rect width="120" height="150" rx="16" fill="url(#bavulIsik)"/><rect y="60" width="120" height="10" fill="${R.altin}"/><circle cx="20" cy="156" r="9" fill="#1E2230"/><circle cx="100" cy="156" r="9" fill="#1E2230"/></g>`;
+  s += oturan({ x: 220, y: 560, s: 1.2, ten: TEN[2], sac: "#1E1712", stil: "ortu", ust: R.altin2, alt: R.lac2, poz: "telefon", ayk: R.ceviz, egim: -10 }).replace(/#1E1712/, R.ada2);
+  return s;
+};
+// k6 · kapanış: gece aktarması, pist ışıkları, battaniyeli okuyan yolcu
+S.k6 = () => {
+  let s = `<rect x="0" y="0" width="1080" height="790" fill="#1B2747"/>`;
+  let pist = ""; for (let r = 0; r < 3; r++) for (let i = 0; i < 16; i++) { const t = i / 15, y = 400 + t * 70 + r * 6, x0 = 80 + r * 30; pist += `<circle cx="${lerp(x0, 1040, t)}" cy="${y}" r="${1.5 + t * 2.6}" fill="${r === 1 ? "#F7D98A" : "#9FD2FF"}" opacity=".9"/>`; }
+  s += disari(0, 0, 1080, 500, true, pist + ucak(520, 420, .5, true)) + kayit(0, 0, 1080, 500, [270, 640, 1010], "#0E1630");
+  s += `<rect x="0" y="524" width="1080" height="266" fill="#24335A"/>`;
+  s += `<path d="M300,780 L470,300 L640,780Z" fill="#FFE7B0" opacity=".12"/>` + lamba(300, 790, .9).replace('opacity=".55"', 'opacity=".9"');
+  const k = koltuk(520, 650, 1.05, R.lac3, 1);
+  s += k.arka + oturan({ x: 520, y: 640, s: 1.05, ten: TEN[2], sac: "#1E1712", stil: "kisa", ust: "#C9BCA8", alt: R.lac2, poz: "kitap", kitapRenk: R.altin, ayk: "#2A1E1A", bacak: "capraz", egim: -12 });
+  s += `<path d="M470,640 C520,610 640,600 700,640 L700,700 L470,700Z" fill="${R.kiremit}" opacity=".95"/><path d="M490,650 L690,650" stroke="${R.altin2}" stroke-width="3" stroke-dasharray="6 8"/>` + k.on;
+  s += sehpa(820, 620, .65, "#3A4A72") + fincan(805, 616, .9, "#F2E8D8");
+  return s;
+};
+const lerp = (a, b, t) => a + (b - a) * t;
+
+// ------------------------------------------------------------------ SAYFA
+const SAYFA = {
+  "1": { h: ["Kapıda değil,", "lounge'da bekle."], alt: "Kartındaki misafir hakkıyla aynı uçuştaki biri seni içeri alabilir.", y0: 560 },
+  "2": { h: ["Üç saatlik aktarma,", "bir sohbet."], alt: "Aynı salonda, aynı saatte, doğru insanla.", y0: 560 },
+  "3": { h: ["Misafir hakkın", "yanmasın."], alt: "Kartında yazıyor ama çoğu yıl kullanılmadan bitiyor.", y0: 560 },
+  k0: { h: ["Lounge'a misafir", "girmeden önce", "bilmen gereken 5 şey."], alt: "Kaydır, tek tek anlatalım <span style='color:#C9A25E'>→</span>", y0: 610, fs: 80 },
+  k1: { n: "01.", h: ["Hak kartta", "yazar."], alt: "Misafir hakkı kartına, statüne ya da üyeliğine bağlı; herkesinki farklı.", y0: 560 },
+  k2: { n: "02.", h: ["Her salonun", "kuralı ayrı."], alt: "Aynı kart bir salonda geçer, diğerinde geçmeyebilir.", y0: 560 },
+  k3: { n: "03.", h: ["Saat penceresi", "önemli."], alt: "Çoğu salon uçuşundan birkaç saat öncesine kadar alır.", y0: 560 },
+  k4: { n: "04.", h: ["Biniş kartı", "yanında olsun."], alt: "Kapıda ilk sorulan şey o.", y0: 560 },
+  k5: { n: "05.", h: ["Kapıda ret =", "kredin geri."], alt: "İçeri alınmazsan kredin hesabına geri döner.", y0: 560 },
+  k6: { kapanis: true, y0: 560 },
+};
+const sp = SAYFA[P], KAR = P[0] === "k", TOP = 7;
+const sahne = S[P === "1" || P === "2" || P === "3" ? "p" + P : P]();
+let ust = `<div class="k" style="left:64px;top:62px;display:flex;align-items:center;gap:14px">${kanat(R.lac, 50)}<span style="font-size:21px;letter-spacing:.42em;color:${R.lac}">LOUNGELINK</span></div>`;
+if (!sp.kapanis) ust += `<div class="k" style="left:auto;right:60px;top:66px;display:flex;align-items:center;gap:10px;font-size:19px;letter-spacing:.06em;color:#41557E">
+  <span style="width:10px;height:10px;border-radius:50%;background:#4FB6A0;box-shadow:0 0 0 4px rgba(79,182,160,.22)"></span>App Store'da · Google Play yakında</div>`;
+if (KAR && !sp.kapanis) ust += `<div class="k" style="left:auto;right:60px;top:104px;font-size:18px;letter-spacing:.12em;color:#8A93A6">${Number(P.slice(1)) + 1}/${TOP}</div>`;
+let metin = "";
+if (sp.kapanis) {
+  metin = `<div class="k" style="width:1080px;top:190px;text-align:center"><div style="display:flex;justify-content:center;align-items:center;gap:26px">${kanat(R.lac, 120)}<span style="font-size:46px;letter-spacing:.42em;margin-right:-.42em;color:${R.lac}">LOUNGELINK</span></div>
+    <div style="margin:44px auto 0;width:118px;height:12px;border-radius:6px;background:#C9A25E"></div>
+    <div style="margin-top:36px;font-size:64px;letter-spacing:-.02em">Lounge'da buluşalım.</div>
+    <div style="margin-top:22px;display:flex;justify-content:center;align-items:center;gap:10px;font-family:JR;font-size:26px;color:#41557E"><span style="width:11px;height:11px;border-radius:50%;background:#4FB6A0"></span>App Store'da · Google Play yakında</div></div>`;
+} else {
+  metin = `<div id="bas"><h1 style="${sp.fs ? `font-size:${sp.fs}px` : ""}">${sp.h.map((l, i) => (i === 0 && sp.n ? `<span style="color:#C9A25E">${sp.n}</span> ` : "") + l).join("<br>")}</h1><div class="cubuk"></div><div class="alt">${sp.alt}</div></div>`;
+}
+$("p").innerHTML = `<svg class="k" width="1080" height="1350">${DEFS}<defs>
+    <linearGradient id="kartZemin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E4573"/><stop offset=".6" stop-color="#1A2B4C"/><stop offset="1" stop-color="#13213C"/></linearGradient>
+    <radialGradient id="krema" cx=".4" cy=".4" r=".7"><stop offset="0" stop-color="#C99A62"/><stop offset=".45" stop-color="#8A5630"/><stop offset="1" stop-color="#3B2213"/></radialGradient>
+    <radialGradient id="ici" cx=".5" cy=".75" r=".8"><stop offset="0" stop-color="#FFF4DE"/><stop offset=".6" stop-color="#F3D29C"/><stop offset="1" stop-color="#D9A86A"/></radialGradient></defs>
+  <rect width="1080" height="1350" fill="#F5EFE3"/><g transform="translate(0,${sp.y0})">${sahne}</g>
+  <rect width="1080" height="1350" filter="url(#kagit)"/><rect width="1080" height="1350" filter="url(#gren)"/></svg>${ust}${metin}`;
+// ölçüm: metin bloğu alt sınırı + taşma
+const b = $("bas");
+if (b) {
+  const h1 = b.querySelector("h1"); let fs = parseFloat(getComputedStyle(h1).fontSize);
+  const gen = () => { const rg = document.createRange(); rg.selectNodeContents(h1); return Math.max(...[...rg.getClientRects()].map(x => x.right)) - 64; };
+  while (gen() > 952 && fs > 56) { fs -= 2; h1.style.fontSize = fs + "px"; }
+  const r = b.getBoundingClientRect();
+  document.body.dataset.olcum = JSON.stringify({ alt: Math.round(r.bottom), y0: sp.y0, fs, genis: Math.round(gen()), altMetin: Math.round(b.querySelector(".alt").getBoundingClientRect().right) });
+} else document.body.dataset.olcum = JSON.stringify({ kapanis: 1 });
+</script>
+</body></html>

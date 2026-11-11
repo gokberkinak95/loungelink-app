@@ -38,7 +38,7 @@ html,body{margin:0;padding:0;background:#000}
 .ro{display:flex;align-items:center;gap:14px;height:84px;padding:0 34px;border-radius:42px;background:rgba(255,255,255,.62);
     border:2px solid rgba(26,43,76,.35);font-size:30px;color:#1A2B4C}
 .ro svg{width:36px;height:36px}
-#slogan{position:absolute;left:0;width:1080px;top:1180px;text-align:center;font-size:42px}
+#slogan{position:absolute;left:0;width:1080px;top:1180px;text-align:center;font-size:38px}
 </style></head><body>
 <div id="s">
   <div id="zemin" class="k"></div>
@@ -56,6 +56,7 @@ html,body{margin:0;padding:0;background:#000}
 </div>
 <script src="veri.js"></script>
 <script src="lansman_cta.js"></script>
+<script src="yildizlar.js"></script>
 <script>
 const TEMA = (new URLSearchParams(location.search).get("tema") || "A").toUpperCase();
 const $ = (i) => document.getElementById(i);
@@ -70,7 +71,7 @@ function rnd(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x -
 // ------------------------------------------------------------------ SAHNELER
 const SAH = [
   { a: 0,  b: 3,  ek: null, an: "03:00",   s: ["Uçuşuna 3 saat var."], alt: "Kapı önünde mi bekleyeceksin, <span class=altin>lounge'da</span> mı?" },
-  { a: 3,  b: 6,  ek: null, an: "IST",     s: ["Bu havalimanında, kartıyla seni lounge'a misafir götürebilecek biri var."] },
+  { a: 3,  b: 6,  ek: null, an: "IST",     s: ["Bu havalimanında seni lounge'da ağırlayabilecek biri var."] },
   { a: 6,  b: 9,  ek: "02_kesfet", an: "KEŞFET", s: ["Aynı saatte aynı havalimanında olan doğrulanmış yolcuları keşfet."] },
   { a: 9,  b: 12, ek: "05_tanis", an: "TANIŞ",  s: ["Aynı uçuşu paylaştığın insanlarla tanış."], alt: "Bir kahve, yeni bir iş bağlantısı, bir yol arkadaşı." },
   { a: 12, b: 15, ek: "50_istek_gonder", an: "İSTEK", s: ["Tek dokunuşla istek gönder, gerisini host'a bırak."] },
@@ -78,7 +79,7 @@ const SAH = [
   { a: 18, b: 21, ek: "87_oturum_canli", an: "LOUNGE", s: ["Rahat bir koltuk, sıcak bir kahve, sessiz bir köşe."], alt: "Kalkışa kadar keyfini çıkar." },
   { a: 21, b: 24, ek: "88_oturum_puanla", an: "PUAN", s: ["Her buluşma LoungePuan kazandırır."], alt: "Puanların eSIM'e, otel konaklamasına, hediye kartına dönüşsün." },
 ];
-const SON = TEMA === "C" ? 29.5 : 28.5;
+const SON = { A: 30.3, B: 29.9, C: 31.3 }[TEMA] || 30.3;   // kalem yazısı + mağaza + ~1.5 sn tam duruş (eskisi 28.5/29.5: yazı son kareye kadar sürüyordu)
 
 // ------------------------------------------------------------------ ZEMİN
 function zemin(t) {
@@ -202,6 +203,7 @@ function telefon(sc, t) {
       <div id="kapiL" style="transform:translateX(${-p * 264}px)"></div><div id="kapiR" style="transform:translateX(${p * 264}px)"></div>`;
   }
   if (sc.ek === "88_oturum_puanla") {
+    if (g < 1.5) ust.innerHTML = yildizlar(g, 0.55);
     if (g > 1.6) { if (simdikiEk !== "22c_market_jetset") { img.src = "ekran/22c_market_jetset.jpg"; simdikiEk = "22c_market_jetset"; } }
     const f = ar(g, 1.45, 1.75);
     if (f > 0 && f < 1) tel.style.transform += ` perspective(1600px) rotateY(${Math.sin(f * Math.PI) * 70}deg)`;
@@ -334,7 +336,7 @@ function rozetler(t, bas, top = 1290, koyu = false) {
 }
 function slogan(t, bas, top = 1180) {
   const p = eo(ar(t, bas, bas + 0.6)); const s = $("slogan"); s.style.top = top + "px";
-  s.innerHTML = `<span style="display:inline-block;opacity:${p};transform:translateY(${(1 - p) * 20}px)">Havalimanında üç saat, yalnız geçmek zorunda değil.</span>`;
+  s.innerHTML = `<span style="display:inline-block;opacity:${p};transform:translateY(${(1 - p) * 20}px)">Havalimanındaki üç saat, yalnız geçmek zorunda değil.</span>`;
 }
 function kapanisA(t) {
   $("kalem").innerHTML = DEFS + kalemSahne(24.1, t);
