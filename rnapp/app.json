@@ -37,7 +37,7 @@
       },
       "supabaseUrl": "https://wgprynisnriyblccxuhq.supabase.co",
       "supabaseAnonKey": "sb_publishable_UDlDQ7369xubMMYeuZRzNQ_jvY4Kfv9",
-      "_backofficeUrl_aciklama": "BOS BIRAKIN. v2.71'den beri gerekli degil: backoffice acildiginda kendi adresini Supabase'e yazar (SQL 205) ve uygulama service_endpoints() ile okur. Buraya bir deger yazarsaniz o KAZANIR â€” yalnizca kendi sunucunuza bakmak istediginizde doldurun.",
+      "_backofficeUrl_aciklama": "BOS BIRAKIN. v2.71'den beri gerekli degil: backoffice acildiginda kendi adresini Supabase'e yazar (SQL 205) ve uygulama service_endpoints() ile okur. Buraya bir deger yazarsaniz o KAZANIR - yalnizca kendi sunucunuza bakmak istediginizde doldurun.",
       "backofficeUrl": "",
       "_revenuecat_aciklama": "RevenueCat > Project settings > API keys: 'Public app-specific API key'. iOS anahtari appl_ ile, Android goog_ ile baslar. Bossa uygulamada satin alma kapali kalir (eski davranis).",
       "revenuecat": {
