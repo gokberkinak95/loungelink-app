@@ -67,24 +67,21 @@ function p1() {
     <radialGradient id="fincan" cx="40%" cy="38%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DCD6CC"/></radialGradient>
     <filter id="gol" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="14" dy="22" stdDeviation="16" flood-color="#000" flood-opacity=".5"/></filter></defs>
     <rect width="1080" height="1350" fill="#5A3A24"/><rect width="1080" height="1350" filter="url(#ah)"/>
-    <!-- pasaport (kadrajdan taşar) -->
-    <g transform="translate(-150,-60) rotate(-14)" filter="url(#gol)"><rect width="300" height="420" rx="18" fill="#1A2B4C"/>
+    <!-- pasaport (ters konur: yazılı ucu kadraj dışında kalır, harf kesilmez) -->
+    <g transform="translate(250,253) rotate(166)" filter="url(#gol)"><rect width="300" height="420" rx="18" fill="#1A2B4C"/>
       <rect x="18" y="18" width="264" height="384" rx="10" fill="none" stroke="#C9A86E" stroke-opacity=".5" stroke-width="2"/>
+      <g transform="translate(150,190)" fill="none" stroke="#C9A86E" stroke-width="2.5" stroke-opacity=".7"><circle r="38"/><ellipse rx="16" ry="38"/><path d="M -38 0 H 38 M -33 -19 H 33 M -33 19 H 33"/></g>
       <text x="150" y="360" text-anchor="middle" font-family="J" font-size="26" letter-spacing="8" fill="#C9A86E">PASSPORT</text></g>
     <!-- fincan -->
     <g transform="translate(985,1215)" filter="url(#gol)"><circle r="150" fill="#EFEAE2"/><circle r="148" fill="none" stroke="#D9D2C6" stroke-width="3"/>
       <rect x="92" y="-24" width="92" height="48" rx="24" fill="#EAE4DA" transform="rotate(28)"/>
       <circle r="102" fill="url(#fincan)"/><circle r="84" fill="url(#kahve)"/>
       <ellipse cx="-18" cy="-22" rx="34" ry="22" fill="#E9C99A" opacity=".55"/></g>
-    <!-- biniş kartı -->
+    <!-- biniş kartı: ters (arka yüzü) konur, kadraj kenarında yarım kelime kalmaz -->
     <g transform="translate(-120,1105) rotate(-7)" filter="url(#gol)">
-      <rect width="560" height="210" rx="16" fill="#F7F1E6"/><rect width="560" height="56" rx="16" fill="#1A2B4C"/><rect y="40" width="560" height="16" fill="#1A2B4C"/>
-      <text x="26" y="37" font-family="J" font-size="20" letter-spacing="5" fill="#E7D3AC">BOARDING PASS · BİNİŞ KARTI</text>
-      <text x="26" y="128" font-family="J" font-size="62" fill="#1A2B4C">IST</text><text x="250" y="128" font-family="J" font-size="62" fill="#1A2B4C">LHR</text>
-      <path d="M 160 106 L 225 106" stroke="#C9A86E" stroke-width="3" stroke-dasharray="6 6"/>
-      <text x="26" y="176" font-family="J" font-size="20" letter-spacing="3" fill="#6B7285">KAPI B12 · 14:20 · KOLTUK 3A</text>
-      <line x1="420" y1="66" x2="420" y2="200" stroke="#C9BFAF" stroke-width="2" stroke-dasharray="4 7"/>
-      ${Array.from({ length: 22 }, (_, i) => `<rect x="${440 + i * 5}" y="80" width="${i % 3 ? 2 : 4}" height="110" fill="#1A2B4C"/>`).join("")}</g>
+      <rect width="560" height="210" rx="16" fill="#F2EBDD"/><rect x="0" y="154" width="560" height="56" rx="16" fill="#1A2B4C"/><rect y="154" width="560" height="16" fill="#1A2B4C"/>
+      <rect x="14" y="14" width="532" height="128" rx="10" fill="none" stroke="#C9A86E" stroke-opacity=".45" stroke-width="2"/>
+      <line x1="140" y1="22" x2="140" y2="134" stroke="#C9BFAF" stroke-width="2" stroke-dasharray="4 7"/></g>
     <rect width="1080" height="1350" fill="url(#vin)"/><rect width="1080" height="1350" filter="url(#tane)"/></svg>`;
   const g = "0 50px 70px rgba(0,0,0,.55), 0 16px 22px rgba(0,0,0,.4)";
   $("p").innerHTML = ahsap +
@@ -156,7 +153,7 @@ function p5() {
     `<svg class="k" width="1080" height="1350"><defs><filter id="iz"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1A2B4C" flood-opacity=".18"/></filter></defs>
       <g transform="translate(0,-700)"><path d="${d}" fill="none" stroke="#1A2B4C" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" filter="url(#iz)"/>
       <g transform="translate(${K[K.length - 1][K[K.length - 1].length - 1][0] - 70},${K[K.length - 1][K[K.length - 1].length - 1][1] - 150}) rotate(-1) scale(2.5) translate(-76,-129.6)"><path d="${VERI.kanat}" fill="#1A2B4C"/></g></g></svg>
-    <div class="k" style="width:1080px;top:400px;text-align:center;font-size:40px;color:#1A2B4C">Havalimanında üç saat, yalnız geçmek zorunda değil.</div>
+    <div class="k" style="width:1080px;top:400px;text-align:center;font-size:40px;color:#1A2B4C">Havalimanındaki üç saat, yalnız geçmek zorunda değil.</div>
     ${tel("87_oturum_canli", 390, 470, 0, 0.92, "0 50px 90px rgba(26,43,76,.35)")}
     <div class="k" style="width:1080px;top:${LANSMAN ? 1098 : 1180}px;text-align:center">${LANSMAN ? ctaLansman(false) : YAYINDA ? durumYay("#41557E", 18) + rozetYay("#1A2B4C", "rgba(255,255,255,.45)", "rgba(26,43,76,.3)", "#1A2B4C", "#FFFFFF")
       : `<div style="font-size:26px;letter-spacing:.32em;color:#41557E;margin-bottom:18px">YAKINDA</div>${rozet("#1A2B4C", "rgba(255,255,255,.62)", "rgba(26,43,76,.35)")}`}</div>`;
@@ -168,64 +165,64 @@ const REH = {
     { kapak: true, ek: "02_kesfet", b1: "Uçuşuna saatler mi var?", b2: "Lounge'a misafir olarak gir.",
       alt: "Kartında misafir hakkı olan yolcularla tanış, kalkışa kadar aynı salonda ağırlan. Altı adımda anlattık." },
     { n: 1, t: "Kayıt ol, yolunu seç", ek: "17b_rol_misafir", y: [.447, .632], m: [
-      "Hesabını birkaç dakikada aç.",
-      "<b>Lounge'a girmek istiyorum</b>'u seç; uygulama sana misafir yolunu açar.",
-      "Hoş geldin hediyemiz hazır: <b>1 kredin bizden</b>. İlk lounge deneyimin için cebinden tek kuruş çıkmaz."] },
+      "Birkaç dakikada hesabını aç, ilk seyahatini ekle.",
+      "<b>Lounge'a girmek istiyorum</b>'u seç; misafir yolun önüne serilsin.",
+      "Hoş geldin hediyen hazır: <b>1 kredi bizden</b>. İlk lounge deneyimin için cebinden tek kuruş çıkmaz."] },
     { n: 2, t: "Seyahatini ekle", ek: "40b_konum_bulundu", y: [.74, .92], m: [
-      "Havalimanını, tarihi, saat aralığını ve uçuş numaranı gir.",
-      "Zaten havalimanındaysan <b>Bulunduğum havalimanı</b>'na dokun, gerisini konumun halletsin. Konumun telefonundan çıkmaz.",
-      "Uçuş numaran, seni aynı uçuştaki yolcularla buluşturur."] },
+      "Havalimanını, tarihi, saat aralığını ve uçuş numaranı gir; seyahatin hazır.",
+      "Havalimanındaysan <b>Bulunduğum havalimanı</b>'na dokun, gerisini konumun halletsin. Konumun telefonundan çıkmaz.",
+      "Uçuş numaran, seni aynı uçağa binecek yolcularla buluşturur."] },
     { n: 3, t: "Host'unu keşfet", ek: "02_kesfet", y: [.447, .741], m: [
-      "<b>Keşfet</b>, aynı saatte havalimanında olan ve kartında misafir hakkı bulunan host'ları önüne getirir.",
-      "<b>Kural motoru</b>, kartın ve uçuşunla o salona birlikte girip giremeyeceğinizi sen sormadan kontrol eder.",
-      "Doğrulama rozetleri ve güven puanı, doğru kişiyi seçmeni kolaylaştırır."] },
+      "<b>Keşfet</b>'i aç: aynı saatte havalimanında olan, kartında misafir hakkı bulunan host'lar karşında.",
+      "Sormana gerek yok: <b>kural motoru</b>, kartın ve uçuşunla o salona birlikte girip giremeyeceğinizi önceden kontrol eder.",
+      "Doğrulama rozetlerine ve güven puanına bak, sana en uygun host'u seç."] },
     { n: 4, t: "İsteğini gönder", ek: "50_istek_gonder", y: [.36, .60], m: [
-      "Lounge hakkı olan bir host'a gönderdiğin her istek için <b>1 kredi</b> harcanır.",
-      "Host reddederse, 72 saat içinde yanıt vermezse ya da kapıda içeri alınmazsan <b>kredin hesabına geri döner</b>.",
-      "Yani kredin yalnızca gerçekleşen bir lounge buluşmasına harcanır."] },
+      "Lounge hakkı olan bir host'a gönderdiğin her istek <b>1 kredi</b> eder.",
+      "İçin rahat olsun: host reddederse, 72 saat içinde yanıt vermezse ya da kapıda içeri alınmazsan <b>kredin hesabına geri döner</b>.",
+      "Kısacası kredin, yalnızca gerçekleşen bir lounge buluşmasına harcanır."] },
     { n: 5, t: "Sohbet et, kapıda buluş", ek: "06_sohbet", y: [.0, .215], m: [
-      "İsteğin kabul edildiği an sohbet açılır; buluşma noktasını birlikte belirlersiniz.",
-      "Dilediğin gibi yaz ya da hazır mesajlarla tek dokunuşta cevap ver: “Güvenlikten geçtim, geliyorum.”",
-      "Telefon ve iletişim bilgileri sohbette otomatik gizlenir.",
+      "İsteğin kabul edildiği an sohbet açılır; buluşma noktasını birlikte seçin.",
+      "İstersen yaz, istersen hazır mesajla tek dokunuşta haber ver: “Güvenlikten geçtim, geliyorum.”",
+      "Numara paylaşmak yok: telefon ve iletişim bilgileri sohbette otomatik gizlenir.",
       "LoungeLink bir lounge hakkı satış platformu değildir: kimseye ödeme yapma, kimseden ödeme isteme."] },
     { n: 6, t: "Puanla, kazan, öne çık", ek: "22c_market_jetset", y: [.33, .58], m: [
-      "Buluşmadan sonra birbirinizi puanlayın. Güven puanın yükseldikçe sıralamalarda öne çıkar, yalnızca güvenilir yolculara açılan ilanlara da başvurabilirsin.",
-      "Her lounge buluşmasında üyelik planına göre <b>LoungePuan</b> kazanırsın: Yolcu planında 100, Sık Uçan'da 250, Jetset'te 500 puan.",
-      "Puanların uçuş miline, otel konaklamasına, hediye kartına ve yurt dışı eSIM'e dönüşür. Bir sonraki yolculuğun puanlarınla başlasın."] },
+      "Birbirinizi puanlayın: güven puanın yükseldikçe öne çıkar, güvenilir yolculara açık ilanlara başvurursun.",
+      "Her lounge buluşması, üyelik planına göre <b>LoungePuan</b> kazandırır: Yolcu planında 100, Sık Uçan'da 250, Jetset'te 500 puan.",
+      "Puanlarını ilan öne çıkarmaya, ek istek kredisine ya da plan ayına çevir; yeni ödüller yolda."] },
     { son: true } ] },
   h: { zemin: "linear-gradient(160deg,#2C4374,#1A2B4C 65%,#121E38)", vurgu: "#E2B867", ad: "HOST", kareler: [
     { kapak: true, ek: "71_akis_nehir_istek", b1: "Kartında misafir hakkı mı var?", b2: "Boşa gitmesin.",
       alt: "Yıl sonunda yanacak hakkını değerlendir: misafir ağırla, puan ve kredi kazan. Altı adımda anlattık." },
     { n: 1, t: "Kayıt ol, host olarak başla", ek: "17c_rol_host", y: [.339, .524], m: [
-      "Hesabını aç ve <b>Kartımda misafir hakkı var</b>'ı seç.",
-      "Misafir hakkını veren kaynağını bildir: kredi kartı, havayolu statüsü ya da lounge üyeliği.",
-      "Misafir hakkın onaylandığında ilk ilanını açmaya hazırsın.",
-      "İlk 100 host, kalıcı <b>Kurucu Host</b> rozetini alır.*"], dip: "* Rozet bir teşekkürdür; uygulamada ek bir hak ya da öncelik sağlamaz." },
+      "Hesabını aç, <b>Kartımda misafir hakkı var</b>'ı seç.",
+      "Kredi kartın, mil statün ya da lounge üyeliğin… Sana misafir hakkı veren kaynağı seç.",
+      "Misafir hakkın onaylandığında ilk ilanın seni bekliyor.",
+      "İlk 100 host, kalıcı <b>Kurucu Host</b> rozetini taşır.*"], dip: "* Rozet bir teşekkürdür; uygulamada ek bir hak ya da öncelik sağlamaz." },
     { n: 2, t: "İlanını aç", ek: "65_ilan_ekle", y: [.30, .65], m: [
-      "Havalimanını, salonu ve orada olacağın saat aralığını seç.",
-      "Kaç misafir alabileceğini ve ilanının kimlere görüneceğini sen belirlersin.",
-      "İlanın, o saatte havalimanında olan yolcuların Keşfet ekranında yerini alır."] },
+      "Havalimanını, salonu ve orada olacağın saatleri seç.",
+      "Kaç misafir ağırlayacağına ve ilanını kimlerin göreceğine sen karar ver.",
+      "İlanın, o saatte havalimanında olan yolcuların Keşfet ekranında belirir."] },
     { n: 3, t: "Misafirini sen seç", ek: "71_akis_nehir_istek", y: [.385, .72], m: [
-      "Gelen her istekte yolcunun profilini, doğrulamalarını ve güven puanını görürsün.",
-      "İstekler sana uyumuna göre sıralanır; kabul et ya da reddet, son söz her zaman senin.",
-      "Kabul ettiğin an sohbet açılır."] },
+      "İstek gönderen yolcunun profilini ve güven puanını incele. Kimi ağırlayacağına sen karar ver.",
+      "İstekler uyumuna göre sıralanır; kabul etmek de reddetmek de tek dokunuş.",
+      "Kabul ettiğin an sohbet başlar."] },
     { n: 4, t: "Sohbet et, kapıda buluş", ek: "06_sohbet", y: [.0, .215], m: [
-      "Buluşma noktasını sohbette birlikte belirlersiniz.",
-      "Dilediğin gibi yaz ya da hazır mesajlarla tek dokunuşta cevap ver.",
-      "Telefon ve iletişim bilgileri sohbette otomatik gizlenir.",
+      "Buluşma noktasını sohbette birlikte seçin.",
+      "İstersen yaz, istersen hazır mesajlarla tek dokunuşta cevap ver.",
+      "Numara paylaşmak yok: telefon ve iletişim bilgileri sohbette otomatik gizlenir.",
       "LoungeLink bir lounge hakkı satış platformu değildir: misafirinden ödeme isteme, kimseye ödeme yapma."] },
     { n: 5, t: "Birlikte içeri girin", ek: "87_oturum_canli", y: [.29, .59], m: [
-      "Salona birlikte girdiğinizde oturum uygulamada başlar.",
-      "Çıkışta ikiniz de oturumun tamamlandığını onaylarsınız.",
-      "Birbirinizi puanlayın; güven puanın her buluşmayla büyür."] },
+      "Salona birlikte adım attığınızda oturum uygulamada başlar.",
+      "Salondan çıkarken ikiniz de oturumun tamamlandığını onaylayın.",
+      "Birbirinizi puanlayın; güven puanın her buluşmayla biraz daha büyür."] },
     { n: 6, t: "Ağırla, kazan", ek: "12_ana_host", y: [.52, .60], m: [
-      "Her lounge buluşmasında üyelik planına göre <b>LoungePuan</b> kazanırsın: Yolcu planında 100, Sık Uçan'da 250, Jetset'te 500 puan.",
-      "Sık Uçan ve Jetset'te her ağırlama hesabına <b>1 kredi</b> ekler; Yolcu planında ilk ağırlaman 1 kredi kazandırır.",
+      "Her lounge buluşması, üyelik planına göre <b>LoungePuan</b> kazandırır: Yolcu planında 100, Sık Uçan'da 250, Jetset'te 500 puan.",
+      "Sık Uçan ve Jetset'te her ağırlama hesabına <b>1 kredi</b> ekler; Yolcu planında ilk ağırlaman 1 kredi getirir.",
       "30 gün içinde 3 misafir ağırla, <b>Sık Uçan üyeliğin 1 ay bizden</b>."] },
     { ust: "BONUS", t: "Sıra sende: misafir ol", ek: "14b_seyahatler_host", y: [.32, .55], m: [
-      "Host olman, misafir olmana engel değil.",
-      "Kartının geçmediği bir salona mı gidiyorsun? Seyahatini ekle, o saatte havalimanındaki host'ları keşfet.",
-      "Ağırlayarak kazandığın krediyle başka bir host'a istek gönder; bu kez misafir sen ol."] },
+      "Host olmak, misafir olmana engel değil.",
+      "Kartının geçmediği bir salona mı yolun düştü? Seyahatini ekle, o saatte havalimanındaki host'ları keşfet.",
+      "Ağırlayarak kazandığın krediyle başka bir host'a istek gönder; bu kez ağırlanan sen ol."] },
     { son: true } ] },
 };
 // Telefon (300×649 taban; ekran 282 px genişlik, 610 px görüntü yüksekliği) içindeki bir noktanın sayfa koordinatı
