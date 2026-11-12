@@ -36804,5 +36804,146 @@
  [
   "353_aktif_odul_stok_10.sql",
   []
+ ],
+ [
+  "354_inceleme_vitrini_gizli.sql",
+  [
+   [
+    "tetikleyici",
+    "trg_gizli_test_hedefi"
+   ],
+   [
+    "tetikleyici",
+    "trg_gizli_test_hedefi"
+   ],
+   [
+    "fonksiyon",
+    "trg_gizli_test_hedefi"
+   ],
+   [
+    "fonksiyon",
+    "inceleme_vitrin_tazele"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|if public.test_hesabi_gizli_mi(new.host_id) then return new; end if;"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|availability_not_found"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|inceleme@loungelink.co"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|talep_bildirim_ara_saat"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|connection_requests"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|a354a354-0000-4000-8000-000000000001"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|Beklediğin gün için ilan açıldı"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|if tg_table_name = 'requests' then"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|where id = r.id;"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|'availability', new.id);"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|if auth.uid() is null then return new; end if;"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|v_sey := 'eklendi';"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|and t.user_id <> new.host_id"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|elsif tg_table_name = 'connection_requests' then"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|update availabilities"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|values (r.user_id, 'system',"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|if public.test_hesabi_gizli_mi(new.to_id) then raise exception 'user_not_found'; end if;"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|v_ilan := v_ilan + 1;"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|and (t.son_bildirim_at is null"
+   ],
+   [
+    "govde",
+    "trg_gizli_test_hedefi|if public.test_hesabi_gizli_mi(new.host_id) then raise exception 'availability_not_found'; end if;"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|v_sey := 'hizalandi';"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|'Beklediğin gün için ilan açıldı',"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|exception when others then"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|and t.airport_code = new.airport_code"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|order by a.avail_date limit 1;"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|where key='talep_bildirim_ara_saat'), 12);"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|exception when others then null;"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|select t.id, t.user_id from talep_kayitlari t"
+   ],
+   [
+    "govde",
+    "inceleme_vitrin_tazele|and a.avail_date >= current_date"
+   ],
+   [
+    "govde",
+    "trg_talep_haber_ver|and new.avail_date between t.tarih_bas and t.tarih_bit"
+   ]
+  ]
  ]
 ]

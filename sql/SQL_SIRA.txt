@@ -1,9 +1,17 @@
-SQL SIRASI - 12 Kasim 2026 (22. tur) - LANSMAN GUNU
+SQL SIRASI - 12 Kasim 2026 (22. tur) - LANSMAN GUNU · 353, 354
 
   1) 353_aktif_odul_stok_10.sql
        -> Aktif oduller stok 10 (sinirsiz olanlar dahil). Stok = KALAN adet; artirinca
           aninda gecerli. Eski degerler tezgah.odul_stok_353'te; geri alma komutu dosyada.
        Dogrulama: son satir tamam = true.
+  2) 354_inceleme_vitrini_gizli.sql  (1.0.1 INCELEMESINDEN ONCE)
+       -> Canlida acik ilan 0'di: Apple incelemecisi Kesfet'i bos gorur. 2 gizli vitrin host
+          (@vitrin.loungelink.test) + IST'de 2 ilan + inceleme hesabina eslesen seyahat.
+          GERCEK KULLANICI GORMEZ (Kesfet, Tanis, arama, radar, nabiz, ozet, tablo/API) ve
+          istek/baglanti GONDEREMEZ. "Haber ver" bildirimi vitrin ilani icin gitmez.
+          Her gece 03:40 ll-inceleme-vitrin tarihleri ileri alir.
+          Kaldirma komutlari dosyanin sonunda (yayin onayindan sonra istege bagli).
+       Dogrulama: son satir - ilk 4 sutun true, son sutun 0.
 
 SQL SIRASI - 10 Kasim 2026 (21. tur) - YAYIN ONCESI TEMIZLIK - 350'den SONRA
 

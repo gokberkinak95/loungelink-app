@@ -1938,5 +1938,10 @@
   "353_aktif_odul_stok_10.sql",
   null,
   null
+ ],
+ [
+  "354_inceleme_vitrini_gizli.sql",
+  null,
+  null
  ]
 ]
