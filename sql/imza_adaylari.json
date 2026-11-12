@@ -36945,5 +36945,98 @@
     "trg_talep_haber_ver|and new.avail_date between t.tarih_bas and t.tarih_bit"
    ]
   ]
+ ],
+ [
+  "355_tanis_esik_ve_test_profil.sql",
+  [
+   [
+    "ayar_deger",
+    "profil_trusted_esik=24"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if public.test_hesabi_gizli_mi(p_target) then return false; end if;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|profil_trusted_esik"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|or exists (select 1 from requests r"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|return coalesce(v_puan, 0) >= v_esik;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|and c.status in ('pending','accepted'))"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|from profiles where user_id = p_target;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|where key = 'profil_trusted_esik'), 40);"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if v_ben is null then return false; end if;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if v_gor is null then return false; end if;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if p_target = v_ben then return true; end if;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if exists (select 1 from connection_requests c"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|or (c.to_id = v_ben and c.from_id = p_target))"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if v_gor = 'Everyone' then return true; end if;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|where ((c.from_id = v_ben and c.to_id = p_target)"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|or (r.host_id = v_ben and r.guest_id = p_target))"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|where (r.guest_id = v_ben and r.host_id = p_target)"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|if v_gor = 'Connections' then return false; end if;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|select coalesce(profile_visibility::text, 'Everyone') into v_gor"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|select score into v_puan from trust_scores where user_id = v_ben;"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|v_esik := coalesce((select (value #>> '{}')::int from beta_settings"
+   ],
+   [
+    "govde",
+    "profil_gorunur_mu|declare v_ben uuid := auth.uid(); v_gor text; v_esik int; v_puan int;"
+   ]
+  ]
  ]
 ]

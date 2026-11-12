@@ -1,3 +1,15 @@
+SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355
+
+  1) 355_tanis_esik_ve_test_profil.sql  (APP SURUMU GEREKMEZ)
+       -> Tanis bos geliyordu: e-posta + telefon = 24 puan, "guvenilir uye" esigi 25'ti
+          (345 puanlari degistirdi, esik guncellenmedi). Esik 24: e-posta + telefon goren olur.
+          Test hesaplari profil olarak da gercek kullaniciya kapali. Inceleme hesabi
+          (inceleme@loungelink.co) gercek kullanicinin Tanis/arama/Radar'inda gorunmez.
+          Her gercek kullanicinin gozunden ONCE ve SONRA olcer (tezgah.olcum_355).
+       Dogrulama: son tablo - 'gercek' satirlarinda vitrin_* ve herhangi_test_hesabi_goren 0,
+          '2_sonra / gercek' satirinda inceleme_hesabini_goren 0, olcum_hatasi 0,
+          tanis_bos_kullanici 1_once'den dusuk. Tabloyu Claude'a ilet.
+
 SQL SIRASI - 12 Kasim 2026 (22. tur) - LANSMAN GUNU · 353, 354
 
   1) 353_aktif_odul_stok_10.sql

@@ -2045,6 +2045,7 @@ export const D = {
     ppAbout: "HAKKINDA",
     ppSessions: "Oturum",
     ppLocked: "adlı kişiyle bağlantı kurunca tam biyografi, diller ve ortak seyahatleri görebilirsin.",
+    ppLockedAnon: "Bu kişiyle bağlantı kurunca tam biyografi, diller ve ortak seyahatleri görebilirsin.",
     // ══════════════════════════════════════════════════════════════
     // 🔴 30 Ağu · 7. tur — BAĞLANTIYI KALDIRMA. Gökberk: "rahatsız
     // olduğu bir bağlantıyı kaldırabilmeli de."
@@ -4315,6 +4316,7 @@ export const D = {
     ppAbout: "ABOUT",
     ppSessions: "Sessions",
     ppLocked: "to see full bio, languages and shared trips.",
+    ppLockedAnon: "Connect with this person to see their full bio, languages and shared trips.",
     ppRemoveConn: "Remove connection",
     ppRemoveTitle: "Remove this connection?",
     ppRemoveBody: "Your chat closes and this person leaves your connections. {ad} is NOT notified. You can connect again later if you want.",

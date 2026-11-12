@@ -1943,5 +1943,10 @@
   "354_inceleme_vitrini_gizli.sql",
   null,
   null
+ ],
+ [
+  "355_tanis_esik_ve_test_profil.sql",
+  null,
+  null
  ]
 ]

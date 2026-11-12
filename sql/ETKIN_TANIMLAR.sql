@@ -1,6 +1,6 @@
 -- ============================================================
 -- LoungeLink · ETKIN TANIMLAR (otomatik uretildi)
--- Uretim tarihi: 2026-11-12
+-- Uretim tarihi: 2026-11-13
 --
 -- Her fonksiyonun CANLIDAKI (son tanimlanan) hali. Bir fonksiyonu
 -- degistirmeden once BURADAN oku - dosya avina gerek yok.
@@ -10,7 +10,7 @@
 -- ============================================================
 
 -- Toplam fonksiyon: 568
--- Birden cok dosyada tanimli (dikkat!): 178
+-- Birden cok dosyada tanimli (dikkat!): 179
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
 --   active_campaigns             -> etkin: 049_discovery_safety_phone_delete.sql  (ayrica: 048_promo_campaigns.sql)
@@ -113,6 +113,7 @@
 --   phone_in_use                 -> etkin: 253_guvenlik_kapanisi.sql  (ayrica: 049_discovery_safety_phone_delete.sql)
 --   plan_hediyelerini_bitir      -> etkin: 337_jetset_puan_kredi_kurulus.sql  (ayrica: 236_ust_plan_bir_ay_ucretsiz.sql)
 --   plan_kredisi_yerlestir       -> etkin: 334_ekonomi_ve_icerik_suzgeci.sql  (ayrica: 225_planin_sozu_tutulsun.sql, 236_ust_plan_bir_ay_ucretsiz.sql)
+--   profil_gorunur_mu            -> etkin: 355_tanis_esik_ve_test_profil.sql  (ayrica: 253_guvenlik_kapanisi.sql)
 --   push_kanali                  -> etkin: 278_push_kanali_enum.sql  (ayrica: 276_push_kanallari.sql)
 --   rate_session                 -> etkin: 078_trust_single_writer.sql  (ayrica: 008_chat_sessions.sql, 068_fix_rate_session.sql)
 --   rc_olay_isle                 -> etkin: 347_guvenlik_fraud_kapanisi.sql  (ayrica: 332_revenuecat_satin_alma.sql)
@@ -24818,15 +24819,20 @@ select '258 OLMAYAN KOLONLAR' as sonuc,
          where table_name='requests' and column_name='decision_note') as req_decision_note;
 
 -- ----------------------------------------------------------------------
--- profil_gorunur_mu   [etkin kaynak: 253_guvenlik_kapanisi.sql]
+-- profil_gorunur_mu   [etkin kaynak: 355_tanis_esik_ve_test_profil.sql]
+-- ⚠ Bu fonksiyon 2 dosyada tanimli. Degistirirken drift_check.py calistir.
 -- ----------------------------------------------------------------------
 create or replace function public.profil_gorunur_mu(p_target uuid)
 returns boolean
-language plpgsql stable security definer set search_path = public as $pg253$
+language plpgsql stable security definer set search_path = public as $pg355$
 declare v_ben uuid := auth.uid(); v_gor text; v_esik int; v_puan int;
 begin
   if v_ben is null then return false; end if;
   if p_target = v_ben then return true; end if;
+
+  -- 355 · test hesapları (vitrin dahil) gerçek kullanıcıya profil olarak da kapalı.
+  -- Keşfet/Tanış/arama zaten gizliyordu; profil satırı kimliği bilen API çağrısına açıktı.
+  if public.test_hesabi_gizli_mi(p_target) then return false; end if;
 
   -- Aramızda gerçek bir ilişki varsa görünürlük tercihi devreye girmez:
   -- bir isteği kabul etmiş ya da göndermiş kişi zaten karşılaşmıştır.
@@ -24852,69 +24858,47 @@ begin
                        where key = 'profil_trusted_esik'), 40);
   select score into v_puan from trust_scores where user_id = v_ben;
   return coalesce(v_puan, 0) >= v_esik;
-end $pg253$;
+end $pg355$;
 
 grant execute on function public.profil_gorunur_mu(uuid) to authenticated;
 grant execute on function public.profil_gorunur_mu(uuid) to service_role;
 
-drop policy if exists profiles_read_auth on profiles;
-create policy profiles_read_auth on profiles for select to authenticated
-  using (public.profil_gorunur_mu(user_id));
 
-drop policy if exists trust_read_auth on trust_scores;
-create policy trust_read_auth on trust_scores for select to authenticated
-  using (public.profil_gorunur_mu(user_id));
+-- §3 · vitrin hostlarının profili açık (yalnız inceleme hesabı ve istisnalar görebilir — §2)
+update profiles set profile_visibility = 'Everyone'
+ where user_id in ('a354a354-0000-4000-8000-000000000001', 'a354a354-0000-4000-8000-000000000002');
 
--- ════════════════════════════════════════════════════════════════════════
--- §7 — `chat_channels` POLİTİKASI KENDİNİ DELİYORDU
---
--- `chat_companion_read` ifadesi `(connection_id IS NULL) OR (...)` diye
--- başlıyordu. İstek tabanlı kanallarda `connection_id` HER ZAMAN NULL —
--- yani ilk dal her giriş yapana bütün kanalları açıyordu. RLS politikaları
--- OR'landığı için doğru yazılmış ikinci politika bunu telafi etmiyor.
---
--- 🆕 SINIF: "AYNI TABLODA ÜÇ POLİTİKA, BİRİNİN DİĞERİNİ DELMESİNİ
--- KAÇINILMAZ KILAR — ÇÜNKÜ RLS ONLARI 'VEYA' İLE BİRLEŞTİRİR."
--- ════════════════════════════════════════════════════════════════════════
+-- §3b · mağaza inceleme hesabı gerçek kullanıcının hiçbir listesinde görünmesin.
+--   Tanış/arama show_on_discovery'ye, Radar location_sharing'e, profil 'Connections'a uyar.
+--   İnceleme hesabının kendi akışı (Keşfet, vitrin ilanına istek) etkilenmez; isteği alan
+--   vitrin host aradaki istek sayesinde profili görür (profil_gorunur_mu ilişki dalı).
+update profiles
+   set show_on_discovery = false, location_sharing = false, profile_visibility = 'Connections'
+ where user_id in (select u.id from users u where lower(u.email) = 'inceleme@loungelink.co');
 
-drop policy if exists chat_companion_read on chat_channels;
-drop policy if exists chan_parties on chat_channels;
--- 🔴 KENDİ ADINI DA DÜŞÜR: tekrar kurulumda "already exists" verirdi.
--- Bir dosya yalnız boş veritabanında çalışıyorsa, migration değil kurulumdur.
-drop policy if exists chat_taraf_okur on chat_channels;
-create policy chat_taraf_okur on chat_channels for select to authenticated
-  using (
-    (connection_id is not null and exists (
-       select 1 from connection_requests c
-        where c.id = chat_channels.connection_id
-          and (c.from_id = auth.uid() or c.to_id = auth.uid())))
-    or
-    (request_id is not null and exists (
-       select 1 from requests r
-        where r.id = chat_channels.request_id
-          and (r.guest_id = auth.uid() or r.host_id = auth.uid())))
-  );
+-- §4 · sonra
+select tezgah.olc_355('2_sonra') as olculen_kullanici;
 
--- ════════════════════════════════════════════════════════════════════════
--- §8 — `phone_in_use` NUMARA TARAMA SERVİSİ OLMAKTAN ÇIKIYOR
---
--- Sınırsız çağrılabilen bir "bu numara kayıtlı mı" ucu, elindeki numara
--- listesinin hangilerinin kullanıcımız olduğunu söyler. Bu, KVKK açısından
--- "bir kişinin belirli bir hizmeti kullandığı" bilgisidir.
--- ════════════════════════════════════════════════════════════════════════
+-- §5 · SONUÇ (beklenen: 'gercek' satırlarında vitrin_* ve herhangi_test_hesabi_goren = 0 ·
+--      'sonra' satırında inceleme_hesabini_goren = 0 · tanis_bos_kullanici 'sonra'da düşer · olcum_hatasi 0. 'istisna' = test_gorunurlugu listesi, görmesi normal)
+select asama, tur,
+       count(*)                                         as kullanici,
+       sum(greatest(vitrin_kesfet, 0))                  as vitrin_kesfet_goren,
+       sum(greatest(vitrin_tanis, 0))                   as vitrin_tanis_goren,
+       sum(vitrin_profil)                               as vitrin_profil_goren,
+       sum(greatest(test_kesfet, 0) + greatest(test_tanis, 0) + test_profil + greatest(test_radar, 0)) as herhangi_test_hesabi_goren,
+       count(*) filter (where tanis_kisi = 0)           as tanis_bos_kullanici,
+       round(avg(nullif(tanis_kisi, -1)), 1)            as tanis_ort_kisi,
+       sum(greatest(inceleme_goren, 0))                 as inceleme_hesabini_goren,
+       count(*) filter (where vitrin_kesfet = -1 or tanis_kisi = -1 or test_radar = -1 or inceleme_goren = -1) as olcum_hatasi,
+       count(*) filter (where coalesce(puan, 0) < 24)   as puan_24_alti,
+       count(*) filter (where puan = 24)                as puan_tam_24
+  from tezgah.olcum_355
+ group by asama, tur
+ order by tur, asama;
 
-do $pin253$
-declare v_tanim text;
-begin
-  select pg_get_functiondef(p.oid) into v_tanim
-    from pg_proc p where p.oid = to_regprocedure('public.phone_in_use(text)');
-  if v_tanim is null then
-    raise notice '253 §8: phone_in_use YOK — dokunulmadi.'; return;
-  end if;
-  if v_tanim like '%rate_limits%' then
-    raise notice '253 §8: hiz siniri zaten var — dokunulmadi.'; return;
-  end if;
-end $pin253$;
+-- GERİ ALMA (gerekirse): eşik 25
+--   update beta_settings set value = to_jsonb(25) where key = 'profil_trusted_esik';
 
 -- ----------------------------------------------------------------------
 -- bildirim_tercihlerim   [etkin kaynak: 345_kyc_kapanisi_dogrulanmis_profil_kvkk.sql]

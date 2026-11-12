@@ -3329,7 +3329,7 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
         ) : (
           <View style={[S.card, { alignItems: "center", padding: ARA[18] }]}>
             <Ikon ad="kilit" boy={22} renk={C.mutedAA} />
-            <Text style={{ fontSize: FS.sm, color: C.mut, textAlign: "center", lineHeight: 19 }}>{firstName} {t.ppLocked}</Text>
+            <Text style={{ fontSize: FS.sm, color: C.mut, textAlign: "center", lineHeight: 19 }}>{firstName ? `${firstName} ${t.ppLocked}` : (t.ppLockedAnon || t.ppLocked)}</Text>
             {/* MVP: kilit kutusunun İÇİNDE doğrudan "Bağla →" çıkışı */}
             {/* 🔴 v1.75 (Gokberk): kilit kutusundaki "Bağla" düğmesi KALDIRILDI —
                 sayfanın altındaki "Bağlantı Kur" ile birebir aynı işi yapıyordu,

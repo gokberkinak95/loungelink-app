@@ -141,9 +141,22 @@ async function tokenKaydet() {
       Constants?.easConfig?.projectId ||
       Constants?.manifest?.extra?.eas?.projectId ||
       undefined;
-    const token = (await Notifications.getExpoPushTokenAsync(
-      projectId ? { projectId } : undefined,
-    )).data;
+    // 🔴 13 KASIM (Gökberk, canlı 1.0.1 iOS) — izni İLK verdiği anda "cihaz kaydı
+    // tamamlanamadı", "Yeniden dene" ile düzeldi. iOS izin verildiği an APNs cihaz
+    // kimliğini henüz üretmemiş olabiliyor; ilk jeton isteği düşüyor. Firebase/FCM
+    // eksikliği dışındaki hatada 2 kez daha (1,5 sn · 3 sn) denenir.
+    let token = null;
+    for (let deneme = 0; deneme < 3 && !token; deneme++) {
+      try {
+        token = (await Notifications.getExpoPushTokenAsync(
+          projectId ? { projectId } : undefined,
+        )).data;
+      } catch (e) {
+        const m = String(e && e.message ? e.message : e);
+        if (deneme === 2 || /FirebaseApp|google-services|FCM|Firebase/i.test(m)) throw e;
+        await new Promise(r => setTimeout(r, 1500 * (deneme + 1)));
+      }
+    }
     if (!token) { _tokenNeden = "bilinmiyor"; return false; }
     const { error } = await supabase.rpc("save_push_token", {
       p_token: token, p_platform: Platform.OS,

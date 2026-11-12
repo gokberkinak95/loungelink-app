@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-11-12 uretildi · 398 dosya · son: 354)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-11-13 uretildi · 399 dosya · son: 355)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,8 +21,8 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 389 dosyanın 30 tanesi için ayırt edici imza
--- bulundu (%8). Kalan 359 tanesi BİLİNMİYOR olarak
+-- ÖLÇÜM: 390 dosyanın 30 tanesi için ayırt edici imza
+-- bulundu (%8). Kalan 360 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
 -- ════════════════════════════════════════════════════════════════════════
@@ -609,6 +609,7 @@ select z.dosya, 'tespit'
   (387, '352_lansman_nakit_odulleri_beklemede.sql', '', ''),
   (388, '353_aktif_odul_stok_10.sql', '', ''),
   (389, '354_inceleme_vitrini_gizli.sql', '', ''),
+  (390, '355_tanis_esik_ve_test_profil.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -1016,6 +1017,7 @@ with imza(sira, dosya, tip, ad) as (
   (387, '352_lansman_nakit_odulleri_beklemede.sql', '', ''),
   (388, '353_aktif_odul_stok_10.sql', '', ''),
   (389, '354_inceleme_vitrini_gizli.sql', '', ''),
+  (390, '355_tanis_esik_ve_test_profil.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
