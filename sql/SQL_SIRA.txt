@@ -1,4 +1,14 @@
-SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355
+SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356
+
+  0) TELEFON_OLCUM.sql  (SALT OKUNUR, istege bagli) -> SMS isteyen / dogrulayan / yarida kalan.
+  2) 356_profil_varsayilan_herkese_acik.sql  (355'ten SONRA · APP SURUMU GEREKMEZ)
+       -> 355 olcumu: 14 gercek kullanicinin 12'si 24 puanin altinda, Tanis 12 kiside bos.
+          Sebep varsayilan profil gorunurlugu 'Trusted+'. Varsayilan 'Everyone'; mevcut
+          gercek kullanicilarin 'Trusted+'i 'Everyone' (eski deger tezgah.gorunurluk_356).
+          Ayarlar'daki secenekler calismaya devam eder. Islem kapilari (telefon dogrulamasi,
+          host rolu, seyahat, kredi) DEGISMEZ. Geri alma komutu dosyanin sonunda.
+       Dogrulama: son tablo - 'gercek' satirlarinda herhangi_test_hesabi_goren 0,
+          inceleme_hesabini_goren 0, olcum_hatasi 0; tanis_bos_kullanici 4_356_sonra'da duser.
 
   1) 355_tanis_esik_ve_test_profil.sql  (APP SURUMU GEREKMEZ)
        -> Tanis bos geliyordu: e-posta + telefon = 24 puan, "guvenilir uye" esigi 25'ti

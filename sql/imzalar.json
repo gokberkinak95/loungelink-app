@@ -1948,5 +1948,10 @@
   "355_tanis_esik_ve_test_profil.sql",
   null,
   null
+ ],
+ [
+  "356_profil_varsayilan_herkese_acik.sql",
+  null,
+  null
  ]
 ]

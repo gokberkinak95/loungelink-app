@@ -37038,5 +37038,9 @@
     "profil_gorunur_mu|declare v_ben uuid := auth.uid(); v_gor text; v_esik int; v_puan int;"
    ]
   ]
+ ],
+ [
+  "356_profil_varsayilan_herkese_acik.sql",
+  []
  ]
 ]
