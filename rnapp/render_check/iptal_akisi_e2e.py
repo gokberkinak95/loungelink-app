@@ -16,6 +16,9 @@ NEDEN VAR:
   dolu sayısı · misafirin kredi bakiyesi (iade tam mı) · karşı tarafa giden
   bildirimin metni · iptal sonrası mesaj yazılamaması (RLS, gerçek rol ile).
 """
+import sys as _s0, pathlib as _p0
+_s0.path.insert(0, str(_p0.Path(__file__).resolve().parent))
+import win_e2e  # noqa: F401,E402  (Windows: stdout/stderr UTF-8, auth.users)
 import os, re, json, shutil, pathlib, subprocess, pgserver
 BIN = pathlib.Path(pgserver.__file__).parent / 'pginstall' / 'bin'
 ENV = {'PATH': f'{BIN}:/usr/bin:/bin', 'HOME': '/tmp'}
@@ -126,13 +129,16 @@ def sonraki():
     return None, None, None, None
 
 
+# 12 Kasım 2026 — 347/4 "ilan saatinden 1 saatten önce başlatılamaz" (session_too_early).
+# Bu testin ilanları ileri tarihli; başlatmalar tam_akis_e2e gibi TEST KİPİNDE yapılır
+# (ll.test_mode). Kapının kendisini tam_akis_e2e #7 ölçüyor.
 # ── S1 · md.5: misafir TEK TARAFLI başlattı → host kabulü geri alabilmeli ──
 av, host, rid, once = sonraki()
 if not rid:
     chk('S0. Senaryo için kabul edilebilir ilan bulundu', False, 'aday kalmadı')
 else:
     d0 = dolu(av)
-    sql(f"select public.start_session_request('{rid}')", GUEST)
+    sql(f"select set_config('ll.test_mode','on',false); select public.start_session_request('{rid}')", GUEST)
     st = sql(f"select status::text || '/' || (guest_started_at is not null)::text from sessions where request_id='{rid}'")[0]
     chk('S1.1 Misafir tek taraflı başlattı → oturum hâlâ "bekliyor"', st == 'pending/true', st)
     out, err, rc = sql(f"select public.respond_request('{rid}','decline')", host)
@@ -148,8 +154,8 @@ else:
 av, host, rid, once = sonraki()
 if rid:
     d0 = dolu(av)
-    sql(f"select public.start_session_request('{rid}')", GUEST)
-    sql(f"select public.start_session_request('{rid}')", host)
+    sql(f"select set_config('ll.test_mode','on',false); select public.start_session_request('{rid}')", GUEST)
+    sql(f"select set_config('ll.test_mode','on',false); select public.start_session_request('{rid}')", host)
     sid = sql(f"select id from sessions where request_id='{rid}'")[0]
     chk('S2.1 İki taraf da başlattı → oturum aktif', sql(f"select status from sessions where id='{sid}'")[0] == 'active')
     _, err, rc = sql(f"select public.respond_request('{rid}','decline')", host)
@@ -169,7 +175,7 @@ if rid:
 av, host, rid, once = sonraki()
 if rid:
     d0 = dolu(av)
-    sql(f"select public.start_session_request('{rid}')", host)
+    sql(f"select set_config('ll.test_mode','on',false); select public.start_session_request('{rid}')", host)
     out, err, rc = sql(f"select public.respond_request('{rid}','cancel')", GUEST)
     chk('S3.1 Misafir tek taraflı başlatılmış buluşmayı iptal edebiliyor', rc == 0, (err or out)[:90])
     chk('S3.2 Oturum satırı kapandı', sql(f"select status from sessions where request_id='{rid}'")[0] == 'cancelled')
@@ -190,6 +196,58 @@ if rid:
     b = son_bildirim(GUEST)
     chk('S4.4 Misafire "ilanını kaldırdı" bildirimi', 'ilanını kaldırdı' in b, b)
     chk('S4.5 İlan pasif', sql(f"select active from availabilities where id='{av}'")[0] == 'f')
+
+# ── S8 · 12 Kasım (Gökberk): host KABUL ETTİĞİ misafiri olan ilanı iptal eder ──
+# Oturum başlamamış, istek 'accepted'. Beklenen: ilan pasif, istek kapandı, misafirin
+# kredisi TAM iade, misafire bildirim, slot boşaldı. Ekrandaki "Sil" bu çağrıyı yapar
+# (screens.js · cancel_availability p_force=true).
+av, host, rid, once = sonraki()
+if not rid:
+    chk('S8.0 Kabul edilmiş istekli ilan bulundu', False, 'aday kalmadı')
+else:
+    st0 = sql(f"select status from requests where id='{rid}'")[0]
+    tutulan = sql(f"select coalesce(-sum(delta),0) from credit_ledger where ref_id='{rid}' and delta < 0")[0]
+    chk('S8.0 İstek gönderilince misafirin kredisi düştü (iade ölçümü anlamlı)', bakiye(GUEST) < once, f'{once} → {bakiye(GUEST)} · bu istek için tutulan: {tutulan}')
+    out, err, rc = sql(f"select public.cancel_availability('{av}', true)", host)
+    chk('S8.1 Kabul edilmiş misafirli ilan hatasız iptal edildi', rc == 0 and st0 == 'accepted', f'{st0} · ' + (err or out)[:80])
+    st = sql(f"select status from requests where id='{rid}'")[0]
+    chk('S8.2 Misafirin isteği kapandı (artık accepted değil)', st in ('declined', 'cancelled'), st)
+    chk('S8.3 Misafirin kredisi TAM iade', bakiye(GUEST) == once, f'{once} → {bakiye(GUEST)}')
+    b = son_bildirim(GUEST)
+    chk('S8.4 Misafire "ilanını kaldırdı" bildirimi', 'ilanını kaldırdı' in b, b)
+    chk('S8.5 İlan pasif', sql(f"select active from availabilities where id='{av}'")[0] == 'f')
+    chk('S8.6 Slot boşaldı (dolu = 0)', dolu(av) == 0, dolu(av))
+    out, err, rc = sql(f"select public.cancel_availability('{av}', true)", host)
+    chk('S8.7 Aynı ilanı ikinci kez iptal: kredi İKİ KEZ iade edilmez', bakiye(GUEST) == once, f'rc={rc} · {once} → {bakiye(GUEST)}')
+
+# ── S9 · 12 Kasım (Gökberk): SEYAHAT SİLME ──
+print("=== SEYAHAT SİLME ===")
+av, host, rid, once = sonraki()
+if not rid:
+    chk('S9.0 Başvurulu seyahat senaryosu kuruldu', False, 'aday kalmadı')
+else:
+    vis = sql(f"select coalesce(visit_id::text,'') from requests where id='{rid}'")[0]
+    if not vis:
+        chk('S9.0 İstek bir seyahate bağlı (visit_id)', False, 'visit_id boş')
+    else:
+        out, err, rc = sql(f"select public.seyahat_sil('{vis}')", GUEST)
+        chk('S9.1 Açık (kabul edilmiş) başvurusu olan seyahat SİLİNMEZ', rc != 0 and 'seyahat_silinemez_basvuru_var' in err, (err or out)[:80])
+        chk('S9.2 Seyahat duruyor', sql(f"select count(*) from visits where id='{vis}'")[0] == '1')
+        out, err, rc = sql(f"select public.respond_request('{rid}','cancel')", GUEST)
+        chk('S9.3 Misafir isteğini iptal edebiliyor', rc == 0, (err or out)[:80])
+        chk('S9.4 İptalde kredi iade', bakiye(GUEST) == once, f'{once} → {bakiye(GUEST)}')
+        out, err, rc = sql(f"select public.seyahat_sil('{vis}')", GUEST)
+        chk('S9.5 Başvuru kapandıktan sonra seyahat hatasız silinir', rc == 0, (err or out)[:80])
+        chk('S9.6 Seyahat gerçekten silindi', sql(f"select count(*) from visits where id='{vis}'")[0] == '0')
+        chk('S9.7 Geçmiş istek kaydı korunur (silinmez)', sql(f"select count(*) from requests where id='{rid}'")[0] == '1')
+    bos = sql(f"select v.id from visits v where v.user_id='{GUEST}' and public.seyahate_bagli_basvuru(v.id) = 0 order by v.visit_date limit 1")[0]
+    if bos:
+        out, err, rc = sql(f"select public.seyahat_sil('{bos}')", GUEST)
+        chk('S9.8 Başvurusu olmayan seyahat hatasız silinir', rc == 0, (err or out)[:80])
+    baska = sql(f"select v.id from visits v where v.user_id <> '{GUEST}' limit 1")[0]
+    if baska:
+        out, err, rc = sql(f"select public.seyahat_sil('{baska}')", GUEST)
+        chk('S9.9 Başkasının seyahati silinemez', rc != 0 and 'not_your_visit' in err, (err or out)[:60])
 
 # ── S5 · md.2/3/10: soru bir bağlantı DEĞİL ──
 print("=== SORU AKIŞI ===")

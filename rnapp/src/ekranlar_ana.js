@@ -6757,7 +6757,7 @@ export function EditTrip({ t, visit, onBack, onDone }) {
         title={t.cancelTripTitle}
         body={visit ? (visit.airport_code + (visit.destination ? " \u2192 " + visit.destination : "") + " \u00b7 " + visit.visit_date + " \u2014 " + t.cancelTripBody) : ""}
         confirmLabel={t.cancelTripConfirm}
-        cancelLabel={t.confirmNo}
+        cancelLabel={t.keepTrip}
         danger busy={busy}
         onCancel={() => setIptalSor(false)}
         onConfirm={async () => {

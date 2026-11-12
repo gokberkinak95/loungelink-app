@@ -149,10 +149,14 @@ export function VitrinKarti({ t, m, rw, en, fark, sahip, bakiye, mesgul, onAl, o
             </View>
             {!!altSatir && <Text style={{ fontSize: FS.micro + 0.5, color: C.gokMavi, marginTop: ARA[2] }}>{altSatir}</Text>}
           </View>
-          {!rw.alabilir ? (
-            <Btn v="ust" sm label={t.odulPlanlariGor} onPress={onPlanlar} style={{ flexShrink: 0 }} />
-          ) : sahip ? (
+          {/* 12 Kasım (1.0.1) — sahibi önce (aldığını görsün), sonra TÜKENDİ (plan satılmaz,
+              basılmaz), sonra erken erişim, sonra al/yetmez. Izgara kartıyla aynı sıra. */}
+          {sahip ? (
             <Text style={{ flexShrink: 0, fontSize: FS.sm, color: C.foto.bag }}>{t.shopOwned || t.redeemed}</Text>
+          ) : rw.stock === 0 ? (
+            <Btn v="ust" sm disabled label={t.rewardSoldOut} style={{ flexShrink: 0 }} />
+          ) : !rw.alabilir ? (
+            <Btn v="ust" sm label={t.odulPlanlariGor} onPress={onPlanlar} style={{ flexShrink: 0 }} />
           ) : (
             <Btn v={yetmez ? "ust" : "gold"} sm disabled={yetmez || mesgul} busy={mesgul} onPress={onAl}
               label={yetmez ? (t.shopShort || t.notEnoughPoints) : (t.shopRedeem || t.redeem)} style={{ flexShrink: 0 }} />

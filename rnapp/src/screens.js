@@ -78,6 +78,13 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
   // soruluyordu. Aynı veri, iki kullanıcıya iki farklı davranış.
   const [purpose, setPurpose] = useState("");
   const [err, setErr] = useState("");
+  // 12 Kasım (1.0.1, Gökberk) — SEYAHAT KARTINDAN SİLME geri geldi. v6.3 biniş kartı
+  // tasarımında karttan düşmüştü; silme yalnız Düzenle ekranının en altında kalmıştı ve
+  // kullanıcı bulamadı. Sunucu kuralı aynı: `seyahat_sil` bağlı açık başvuru varsa reddeder
+  // (seyahat_silinemez_basvuru_var); hata KARTIN içinde gösterilir.
+  const [seyahatSilAdayi, setSeyahatSilAdayi] = useState(null);
+  const [seyahatSilBusy, setSeyahatSilBusy] = useState(false);
+  const [seyahatSilHata, setSeyahatSilHata] = useState(null);   // { id, metin }
   const [busy, setBusy] = useState(false);
   // Var olan bir seyahate sonradan amaç yazarken hangi kartın beklediği
   const [purpBusy, setPurpBusy] = useState(null);
@@ -297,6 +304,14 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
                       <Btn v="gold" cip label={t.bkFindHost} a11yLabel={t.findHost} onPress={git} />
                     </View>
                   </View>
+                  {seyahatSilHata && seyahatSilHata.id === r.id ? (
+                    <Text style={{ color: C.redInk, fontSize: FS.xs, lineHeight: 16, marginTop: ARA[8] }}>{seyahatSilHata.metin}</Text>
+                  ) : null}
+                  <TouchableOpacity hitSlop={TAP.slop} onPress={() => { setSeyahatSilHata(null); setSeyahatSilAdayi(r); }}
+                    accessibilityRole="button" accessibilityLabel={t.a11yCancelTrip}
+                    style={{ alignSelf: "flex-start", minHeight: TAP.minHeight, justifyContent: "center", marginTop: ARA[4] }}>
+                    <Text style={{ color: C.mutedAA, fontSize: FS.sm, textDecorationLine: "underline" }}>{t.cancelTripConfirm}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
               );
@@ -340,6 +355,23 @@ export function Trips({ t, session, onDiscover, onAddTrip, onEditTrip, lang, bnt
           🆕 SINIF: "BİR HATA SATIRINI KOŞULLU BİR BLOĞUN İÇİNE KOYARSAN,
           O KOŞUL DIŞINDAKİ HER HATA SESSİZ OLUR — HATA MESAJI, HATAYI
           ÜRETEN HER DURUMDA GÖRÜNÜR OLMALIDIR." */}
+      <ConfirmModal
+        visible={!!seyahatSilAdayi}
+        title={t.cancelTripTitle}
+        body={seyahatSilAdayi ? (seyahatSilAdayi.airport_code + (seyahatSilAdayi.destination ? " → " + seyahatSilAdayi.destination : "") + " · " + fmtLongDate(seyahatSilAdayi.visit_date, lang) + " — " + t.cancelTripBody) : ""}
+        confirmLabel={t.cancelTripConfirm}
+        cancelLabel={t.keepTrip}
+        danger busy={seyahatSilBusy}
+        onCancel={() => setSeyahatSilAdayi(null)}
+        onConfirm={async () => {
+          const v = seyahatSilAdayi; if (!v) return;
+          setSeyahatSilBusy(true);
+          const { error: eSil } = await supabase.rpc("seyahat_sil", { p_id: v.id });
+          setSeyahatSilBusy(false); setSeyahatSilAdayi(null);
+          if (eSil) { logError("seyahat_sil", eSil); setSeyahatSilHata({ id: v.id, metin: mapErr(t, eSil.message) }); return; }
+          load();
+        }}
+      />
       {!!err && !adding && <View style={S.err}><Text style={{ color: C.redInk, fontSize: FS.sm }}>{err}</Text></View>}
       {adding && (
         <>

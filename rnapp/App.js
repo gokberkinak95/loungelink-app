@@ -528,6 +528,8 @@ function AppInner() {
           yapmış bir kullanıcının 2. sekmesiydi.
           Boş bir pazaryerinde arz sıfırken bile bir SORUYA cevap veren
           tek ekran bu. Değer önce, kayıt sonra. */}
+      {/* 12 Kasım (1.0.1) — bu girişsiz rehber yoluna açılıştan bağlantı KALMADI ("Önce dene"
+          kaldırıldı). Dal bilerek duruyor: kampanya/derin bağlantıyla geri açılabilir. Silinmedi. */}
       {screen === "guide" && (
         <LoungeGuide t={t} girisYok
           onBack={() => setScreen("splash")}
@@ -1872,9 +1874,9 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
       </TouchableOpacity>
       <TouchableOpacity hitSlop={TAP.slop} onPress={toggleLang}
       accessibilityRole="button"
-      accessibilityLabel={lang === "tr" ? "Switch to English" : "Türkçeye geç"}
+      accessibilityLabel={t.langBtnA11y}
       style={{ borderColor: C.gold, borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
-        <Text style={{ color: C.gold, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "EN" : "TR"}</Text>
+        <Text style={{ color: C.gold, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "TR" : "EN"}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -2555,10 +2557,14 @@ function IconField({ icon, children }) {
   );
 }
 
-function LangBtn({ lang, toggleLang }) {
+// 12 Kasım (1.0.1, Gökberk) — düğme BULUNDUĞUN dili yazar (TR iken TR). Eskiden geçilecek
+// dili yazıyordu; kullanıcı "EN"i şu anki dil sandı.
+function LangBtn({ t, lang, toggleLang }) {
   return (
-    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={toggleLang} style={{ borderColor: GECE_ALTIN(), borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
-      <Text style={{ color: temaModu() === "v7" ? C.goldBtn : C.goldInk, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "EN" : "TR"}</Text>
+    <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={toggleLang}
+      accessibilityLabel={t.langBtnA11y}
+      style={{ borderColor: GECE_ALTIN(), borderWidth: 1, borderRadius: R.sm, paddingVertical: ARA[2], paddingHorizontal: SP[2] }}>
+      <Text style={{ color: temaModu() === "v7" ? C.goldBtn : C.goldInk, fontWeight: "600", fontSize: FS.xs }}>{lang === "tr" ? "TR" : "EN"}</Text>
     </TouchableOpacity>
   );
 }
@@ -2663,7 +2669,7 @@ function SplashV7({ t, go, lang, toggleLang }) {
         <Image source={require("./assets/v7_acilis_perde.png")} resizeMode="stretch" style={{ width: "100%", height: "100%" }} />
       </View>
       <View style={{ position: "absolute", right: ARA[22], top: TOPPAD + ARA[20], zIndex: 2 }}>
-        <LangBtn lang={lang} toggleLang={toggleLang} />
+        <LangBtn t={t} lang={lang} toggleLang={toggleLang} />
       </View>
       <View style={{ paddingTop: TOPPAD + ARA[26], paddingHorizontal: ARA[28] }}>
         <Text style={{ fontSize: FS.xs, fontWeight: "700", letterSpacing: 4.6, color: C.foto.marka }}>LOUNGELINK</Text>
@@ -2687,17 +2693,9 @@ function SplashV7({ t, go, lang, toggleLang }) {
         </View>
       </View>
       <View style={{ paddingHorizontal: ARA[22], paddingBottom: ARA[40], gap: ARA[10] }}>
-        {/* Cam satır (bağlantı satırı, eylem düğmesi değil): dokunma kabı saydam, yüzey içte. */}
-        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button" accessibilityLabel={t.splashGuide}
-          onPress={() => go("guide")}>
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-                         backgroundColor: C.camYuzey, borderRadius: R.lg, paddingHorizontal: ARA[18], minHeight: 52,
-                         shadowColor: C.golgeRenk, shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
-                         elevation: Platform.OS === "android" ? 1 : 0 }}>
-            <Text style={{ color: C.ink, fontSize: FS.sm, fontWeight: "600", flex: 1 }}>{t.splashGuide}</Text>
-            <Ikon ad="sag" boy={16} renk={C.goldText} />
-          </View>
-        </TouchableOpacity>
+        {/* 12 Kasım (1.0.1, Gökberk) — "Önce dene: hangi salona girebilirim?" satırı kaldırıldı:
+            ilk kullanıcılar onu üçüncü bir giriş yolu sandı, kafa karıştırdı. Salon Rehberi
+            girişten sonra Keşfet'te duruyor. */}
         <Btn v="gold" full label={t.start} onPress={basla} />
         <Btn v="ghost" full label={t.haveAcc} onPress={() => go("login")} />
       </View>
@@ -2774,7 +2772,7 @@ function SplashKoyu({ t, go, lang, toggleLang }) {
           hepsi ortalı. Dil düğmesi sağ üstte kalıyor (tasarımda yok; giriş
           öncesi dil değiştirmenin tek yeri burası). */}
       <View style={{ position: "absolute", right: ARA[28], top: TOPPAD + 8, zIndex: 2 }}>
-        <LangBtn lang={lang} toggleLang={toggleLang} />
+        <LangBtn t={t} lang={lang} toggleLang={toggleLang} />
       </View>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -2862,19 +2860,7 @@ function SplashKoyu({ t, go, lang, toggleLang }) {
             go(seen ? "register" : "onboarding");   // #3: Basla -> tutorial -> kayit
           }} />
 
-        {/* 🔴 v3.6 — "ÖNCE DENE" YOLU. Kayıt duvarını değerin arkasına
-            koyuyor: kullanıcı kartını seçiyor, hangi salona girebileceğini
-            ve o havalimanında kaç kişinin onu içeri alabileceğini GÖRÜYOR,
-            sonra kayıt isteniyor. */}
-        <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button"
-          accessibilityLabel={t.splashGuide} style={{ marginTop: SP[4], alignItems: "center" }}
-          onPress={() => go("guide")}>
-          <Text style={{ color: C.foto.baslik, fontSize: FS.sm, fontWeight: "700",
-                         textDecorationLine: "underline",
-                         textShadowColor: "rgba(10,6,6,0.8)",
-                         textShadowOffset: { width: 0, height: 1 },
-                         textShadowRadius: 6 }}>{t.splashGuide}</Text>
-        </TouchableOpacity>
+        {/* 12 Kasım (1.0.1) — "Önce dene" bağlantısı kaldırıldı (v7 açılışıyla aynı karar). */}
 
         <TouchableOpacity hitSlop={TAP.slop} accessibilityRole="button"
           accessibilityLabel={t.haveAcc} style={{ marginTop: SP[3], alignItems: "center" }}
@@ -3347,7 +3333,7 @@ function Auth({ mode, t, go, lang, toggleLang }) {
   if (verifyWait) {
     return (
       <View style={{ flex: 1 }}>
-        <Hdr t={t} brandRight={<LangBtn lang={lang} toggleLang={toggleLang} />}
+        <Hdr t={t} brandRight={<LangBtn t={t} lang={lang} toggleLang={toggleLang} />}
           title={t.verifySentTitle} onBack={() => { setVerifyWait(false); go("login"); }} />
         <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: SP[5], paddingTop: ARA[20] }}>
           <View style={{ backgroundColor: C.tealTint, borderWidth: 1, borderColor: "transparent",

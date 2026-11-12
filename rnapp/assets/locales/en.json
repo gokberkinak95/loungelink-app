@@ -1,4 +1,6 @@
 {
   "NSPhotoLibraryUsageDescription": "Photo library access lets you pick a profile photo or a screenshot of your boarding pass. The profile photo is uploaded to our server and shown at the visibility you choose; the boarding pass image never leaves your device.",
-  "NSUserTrackingUsageDescription": "LoungeLink does not track you across apps."
+  "NSCameraUsageDescription": "The camera is used to scan the barcode on your boarding pass. The image never leaves your device and is not sent to any server.",
+  "NSLocationWhenInUseUsageDescription": "Your approximate location is read so you can pick the airport you are at in the trip form. Your location never leaves your phone and is not stored.",
+  "NSMotionUsageDescription": "Your phone's tilt is read for the light effect on the card screen. Motion data never leaves your device and is not stored."
 }

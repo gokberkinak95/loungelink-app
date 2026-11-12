@@ -119,12 +119,9 @@ GIRIS_YOLU = [
     ("Splash → Giriş Yap",      "dokun", "Giriş Yap", "Kaldığın yerden devam et"),
 ]
 
-# ⚠️ ÜÇÜNCÜ KAPI: splash'teki İKİNCİ bağlantı ("Önce dene…"). Kayıt
-# düğmesi çalışırken bunun ölü kalması mümkündür — ayrı yol, ayrı kanıt.
-DENE_YOLU = [
-    ("Splash → Önce dene",      "dokun", "Önce dene: hangi salona girebilirim?", "Salon Rehberi"),
-    ("Salon Rehberi → Geri",    "dokun", "Geri",                                  "Önce dene: hangi salona"),   # v7: iki splash'te de ortak iz · 8 Kasım: düğme artık <Ikon sol> + "Geri" (metindeki ‹ 6 Kasım'da kalktı, çift çiziliyordu)
-]
+# 12 Kasım 2026 (1.0.1, Gökberk) — splash'teki "Önce dene" bağlantısı KALDIRILDI (ilk kullanıcılar
+# üçüncü bir giriş yolu sandı). Üçüncü kapı artık yok; yol listesi boş, döngüden çıkarıldı.
+DENE_YOLU = []
 
 
 class Sessiz(http.server.SimpleHTTPRequestHandler):
@@ -210,8 +207,7 @@ def main():
         with sync_playwright() as p:
             b = p.chromium.launch(executable_path=exe)
             for ad, yol in (("A · Kayıt yolu", YOL),
-                            ("B · Giriş yolu", GIRIS_YOLU),
-                            ("C · Önce dene yolu", DENE_YOLU)):
+                            ("B · Giriş yolu", GIRIS_YOLU)):
                 ctx = b.new_context(viewport={"width": 390, "height": 844},
                                     device_scale_factor=2, is_mobile=True,
                                     has_touch=True, locale="tr-TR")

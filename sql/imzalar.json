@@ -1928,5 +1928,15 @@
   "351_yayin_oncesi_test_verisi_temizligi.sql",
   null,
   null
+ ],
+ [
+  "352_lansman_nakit_odulleri_beklemede.sql",
+  null,
+  null
+ ],
+ [
+  "353_aktif_odul_stok_10.sql",
+  null,
+  null
  ]
 ]

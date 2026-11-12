@@ -36720,6 +36720,10 @@
     "tezgah"
    ],
    [
+    "tablo",
+    "tezgah"
+   ],
+   [
     "fonksiyon",
     "temizlik_derin_sil"
    ],
@@ -36792,5 +36796,13 @@
     "temizlik_derin_sil|v_alt := format('%I in (select %I from %s where %s)', r.kol, r.hedef_kol, p_tablo, p_kosul);"
    ]
   ]
+ ],
+ [
+  "352_lansman_nakit_odulleri_beklemede.sql",
+  []
+ ],
+ [
+  "353_aktif_odul_stok_10.sql",
+  []
  ]
 ]

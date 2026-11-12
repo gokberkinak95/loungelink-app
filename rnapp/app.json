@@ -2,7 +2,7 @@
   "expo": {
     "name": "LoungeLink",
     "slug": "loungelink",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "co.loungelink.app",
-      "versionCode": 307,
+      "versionCode": 308,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/monochrome-icon.png",
@@ -93,28 +93,28 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Profil fotoÄŸrafÄ±nÄ± ya da biniÅŸ kartÄ±nÄ±n ekran gÃ¶rÃ¼ntÃ¼sÃ¼nÃ¼ seÃ§men iÃ§in galeri eriÅŸimi gerekiyor. Profil fotoÄŸrafÄ± sunucumuza yÃ¼klenir ve senin seÃ§tiÄŸin gÃ¶rÃ¼nÃ¼rlÃ¼kte gÃ¶sterilir; biniÅŸ kartÄ± gÃ¶rÃ¼ntÃ¼sÃ¼ cihazÄ±ndan Ã§Ä±kmaz.",
-          "cameraPermission": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor.",
+          "photosPermission": "Profil fotoğrafını ya da biniş kartının ekran görüntüsünü seçmen için galeri erişimi gerekiyor. Profil fotoğrafı sunucumuza yüklenir ve senin seçtiğin görünürlükte gösterilir; biniş kartı görüntüsü cihazından çıkmaz.",
+          "cameraPermission": "Biniş kartındaki barkodu okumak için kamera gerekiyor.",
           "microphonePermission": false
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor.",
+          "cameraPermission": "Biniş kartındaki barkodu okumak için kamera gerekiyor.",
           "recordAudioAndroid": false
         }
       ],
       [
         "expo-sensors",
         {
-          "motionPermission": "Kart ekranÄ±ndaki Ä±ÅŸÄ±k efekti iÃ§in telefonunun eÄŸimi okunur. Hareket verisi cihazÄ±ndan Ã§Ä±kmaz ve kaydedilmez."
+          "motionPermission": "Kart ekranındaki ışık efekti için telefonunun eğimi okunur. Hareket verisi cihazından çıkmaz ve kaydedilmez."
         }
       ],
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "BulunduÄŸun havalimanÄ±nÄ± seyahat formunda seÃ§ebilmek iÃ§in yaklaÅŸÄ±k konumun okunur. Konumun telefonundan Ã§Ä±kmaz ve kaydedilmez.",
+          "locationWhenInUsePermission": "Bulunduğun havalimanını seyahat formunda seçebilmek için yaklaşık konumun okunur. Konumun telefonundan çıkmaz ve kaydedilmez.",
           "isIosBackgroundLocationEnabled": false,
           "isAndroidBackgroundLocationEnabled": false,
           "isAndroidForegroundServiceEnabled": false
@@ -123,13 +123,14 @@
     ],
     "ios": {
       "bundleIdentifier": "co.loungelink.app",
-      "buildNumber": "301",
+      "buildNumber": "302",
       "supportsTablet": false,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Profil fotoÄŸrafÄ±nÄ± ya da biniÅŸ kartÄ±nÄ±n ekran gÃ¶rÃ¼ntÃ¼sÃ¼nÃ¼ seÃ§men iÃ§in galeri eriÅŸimi gerekiyor. Profil fotoÄŸrafÄ± sunucumuza yÃ¼klenir ve senin seÃ§tiÄŸin gÃ¶rÃ¼nÃ¼rlÃ¼kte gÃ¶sterilir; biniÅŸ kartÄ± gÃ¶rÃ¼ntÃ¼sÃ¼ cihazÄ±ndan Ã§Ä±kmaz.",
+        "NSPhotoLibraryUsageDescription": "Profil fotoğrafını ya da biniş kartının ekran görüntüsünü seçmen için galeri erişimi gerekiyor. Profil fotoğrafı sunucumuza yüklenir ve senin seçtiğin görünürlükte gösterilir; biniş kartı görüntüsü cihazından çıkmaz.",
         "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": ["remote-notification"],
         "CFBundleAllowMixedLocalizations": true,
-        "NSCameraUsageDescription": "BiniÅŸ kartÄ±ndaki barkodu okumak iÃ§in kamera gerekiyor. GÃ¶rÃ¼ntÃ¼ cihazÄ±ndan Ã§Ä±kmaz, hiÃ§bir sunucuya gÃ¶nderilmez."
+        "NSCameraUsageDescription": "Biniş kartındaki barkodu okumak için kamera gerekiyor. Görüntü cihazından çıkmaz, hiçbir sunucuya gönderilmez."
       },
       "usesAppleSignIn": true,
       "privacyManifests": {

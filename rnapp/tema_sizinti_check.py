@@ -74,7 +74,12 @@ RGBA = re.compile(r'"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s
 
 ATLA_KLASOR = {"node_modules", ".git", "android", "ios", ".expo", "web_sahne",
                "assets", "brand", "tasarim_kaynak", "ekranlar_oneri", "dist",
-               "dist_dbg", "render_check", "ekranlar_render", "__pycache__"}
+               "dist_dbg", "render_check", "ekranlar_render", "__pycache__",
+               # 12 Kasım 2026 — magaza/: mağaza ve Instagram görsellerinin üreticileri
+               # (reels/*.html + yardımcı .js). Uygulama paketine girmez, hiçbir ekran
+               # içe aktarmaz (grep: App.js/src'de 'magaza/' importu yok); pazarlama
+               # paleti (şampanya parıltısı, gök mavisi) bilerek uygulamanın dışında.
+               "magaza"}
 ATLA_DOSYA = {"theme.js"}
 
 

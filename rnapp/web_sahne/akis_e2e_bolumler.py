@@ -32,19 +32,11 @@ def _yeni_eposta(on="e2e"):
 def giris(b, port, k):
     B = "Açılış/Giriş/Kayıt"
 
-    # 1.1 Açılış ekranı: üç kapı
+    # 1.1 Açılış ekranı: iki kapı. 12 Kasım 2026 (1.0.1) — "Önce dene" kaldırıldı; artık GÖRÜNMEMELİ.
     e = Ekran(b, port, "")
-    _dene(k, B, "Açılış: Başla · Giriş Yap · Önce dene görünür", "ziyaretçi", "happy",
-          "Üç eylem de ekranda", lambda: (all(e.var(x) for x in ["Başla", "Giriş Yap", "Önce dene"]), e.metin()[:120]))
-
-    # 1.2 Önce dene → Salon Rehberi (giriş yapmadan) → geri → açılış
-    def onceden():
-        e.dokun("Önce dene: hangi salona girebilirim?", tam=False)
-        a = e.var("Salon Rehberi")
-        e.dokun("‹ Geri")
-        return a and e.var("Başla"), "rehber=%s" % a
-    _dene(k, B, "Önce dene → Salon Rehberi kayıtsız açılır, Geri açılışa döner", "ziyaretçi", "alternate",
-          "Rehber açılır; geri açılış", onceden)
+    _dene(k, B, "Açılış: Başla · Giriş Yap görünür, Önce dene YOK", "ziyaretçi", "happy",
+          "İki eylem ekranda, üçüncü bağlantı yok",
+          lambda: (all(e.var(x) for x in ["Başla", "Giriş Yap"]) and not e.var("Önce dene"), e.metin()[:120]))
 
     # 1.3 Başla → 5 tanıtım → kart ekranı → Başla → kayıt formu
     def tanitim():

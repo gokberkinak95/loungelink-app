@@ -111,7 +111,10 @@ export function AcilisSahnesi({ slogan, onBitti }) {
 
   return (
     <Animated.View style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, zIndex: 9999, opacity: cik,
-                            elevation: Platform.OS === "android" ? 1000 : undefined }}
+                            elevation: Platform.OS === "android" ? 1000 : undefined,
+                            // elevation burada GÖLGE değil ÇİZİM SIRASI (Android'de zIndex'i ezer). iOS
+                            // karşılığı bilerek "gölge yok": parite denetimi ikisinin birlikte yazılmasını ister.
+                            shadowOpacity: 0 }}
       onLayout={(e) => { const { width: w, height: h } = e.nativeEvent.layout;
                          if (w > 0 && h > 0 && (!olcu || Math.abs(olcu.w - w) > 0.5 || Math.abs(olcu.h - h) > 0.5)) setOlcu({ w, h }); }}
       accessibilityElementsHidden importantForAccessibility="no-hide-descendants">

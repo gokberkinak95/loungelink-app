@@ -1,5 +1,5 @@
 -- ============================================================================
--- LoungeLink · KURULUM_TABLOSU.sql        (2026-11-10 uretildi · 395 dosya · son: 351)
+-- LoungeLink · KURULUM_TABLOSU.sql        (2026-11-12 uretildi · 397 dosya · son: 353)
 --
 -- "HANGİ SQL'LERİ ÇALIŞTIRDIM?" — TEK SORGU, TAM LİSTE
 --
@@ -21,8 +21,8 @@
 -- 🆕 SINIF: **"TESPİT EDİLEMEYEN ŞEYİ 'YOK' DİYE RAPORLAMAK, ÖLÇMEDEN
 -- TEŞHİS VERMEKTİR."** Tabloda üçüncü bir durum var: **BİLİNMİYOR**.
 --
--- ÖLÇÜM: 386 dosyanın 30 tanesi için ayırt edici imza
--- bulundu (%8). Kalan 356 tanesi BİLİNMİYOR olarak
+-- ÖLÇÜM: 388 dosyanın 30 tanesi için ayırt edici imza
+-- bulundu (%8). Kalan 358 tanesi BİLİNMİYOR olarak
 -- raporlanıyor.
 --
 -- ════════════════════════════════════════════════════════════════════════
@@ -606,6 +606,8 @@ select z.dosya, 'tespit'
   (384, '349_create_availability_geri.sql', '', ''),
   (385, '350_rehber_187_ve_inceleme_vitrini.sql', '', ''),
   (386, '351_yayin_oncesi_test_verisi_temizligi.sql', '', ''),
+  (387, '352_lansman_nakit_odulleri_beklemede.sql', '', ''),
+  (388, '353_aktif_odul_stok_10.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),
@@ -1010,6 +1012,8 @@ with imza(sira, dosya, tip, ad) as (
   (384, '349_create_availability_geri.sql', '', ''),
   (385, '350_rehber_187_ve_inceleme_vitrini.sql', '', ''),
   (386, '351_yayin_oncesi_test_verisi_temizligi.sql', '', ''),
+  (387, '352_lansman_nakit_odulleri_beklemede.sql', '', ''),
+  (388, '353_aktif_odul_stok_10.sql', '', ''),
   (901, 'SEED_KURAL_SENARYOLARI.sql', 'satir', 'users.email=kmisafir1@seed.loungelink.test'),
   (902, 'SEED2_KAYNAK_SENARYOLARI.sql', 'satir', 'users.email=kaynak1@seed.loungelink.test'),
   (903, 'SEED3_UCTAN_UCA.sql', 'satir', 'users.email=host1@seed.loungelink.test'),

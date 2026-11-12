@@ -169,7 +169,8 @@ export function abonelikYonet() {
 const bekle = (ms) => new Promise(r => setTimeout(r, ms));
 
 // Webhook gelene kadar bakiyeyi izler. Döner: yeni bakiye (arttıysa) ya da null (süre doldu).
-export async function bekleKredi(uid, onceki, sureMs = 30000) {
+// 12 Kasım (1.0.1) — 30 sn → 60 sn. Ölçülen webhook gecikmesi: kredi 9 sn, ilk abonelik 43 sn.
+export async function bekleKredi(uid, onceki, sureMs = 60000) {
   const son = Date.now() + sureMs;
   while (Date.now() < son) {
     await bekle(2000);
@@ -182,7 +183,8 @@ export async function bekleKredi(uid, onceki, sureMs = 30000) {
 }
 
 // Webhook gelene kadar satın alınan planı izler. Döner: true (plan yansıdı) / false.
-export async function beklePlan(plan, sureMs = 30000) {
+// 12 Kasım (1.0.1) — 30 sn → 90 sn: ilk abonelik webhook'u 43 sn sürdü, ekran "gecikti" diyordu.
+export async function beklePlan(plan, sureMs = 90000) {
   const son = Date.now() + sureMs;
   while (Date.now() < son) {
     await bekle(2000);

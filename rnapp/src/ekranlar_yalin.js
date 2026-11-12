@@ -45,6 +45,7 @@ import { Ikon, IkonMetin, BilgiRozeti } from "./ikon";
 import { KalkisHalkasi, TakimyildizPuan, GeceKarti } from "./hareket";
 import { VitrinKarti, MiniErken, MiniFiyat, IndirimBandi, bantMetni } from "./odul_magaza";
 import { yerelGun } from "./zaman";
+import { magazaDegerlendirmesiIste } from "./degerlendirme_istegi";
 import { odemeVar, krediPaketleri, abonelikPaketleri, satinAl, geriYukle, abonelikYonet, bekleKredi, beklePlan } from "./odeme";
 
 export const timeOk = s => /^\d{2}:\d{2}$/.test(s);
@@ -1198,6 +1199,7 @@ export function Chat({ t, session, request, otherName, onBack, onSafety, onRefer
     // hiçbir yerde çizilmiyordu. Çizilseydi kullanıcıya cüzdanında
     // görmeyeceği bir kazanç vaat etmiş olurduk.
     setRated(true);
+    magazaDegerlendirmesiIste(stars);   // 12 Kasım (1.0.1): 4-5 yıldızdan sonra, 120 günde bir
   }
 
   useEffect(() => {
@@ -3396,9 +3398,12 @@ export function Marketplace({ t, session, onBack, onPlans, lang }) {
       })()}
       {rewards.filter(r => (cat === "all" || r.category === cat) && !r.vitrin).map(rw => {
         const has = mine[rw.id];
-        const can = bal >= rw.fiyat && rw.alabilir;
+        // 12 Kasım (1.0.1) — stok 0 ise düğme "Tükendi" der ve basılmaz. Eskiden kullanıcı
+        // basıyor, sunucudan "Stokta yok." dönüyordu. Stok SAYISI hiçbir yerde gösterilmez.
+        const tukendi = rw.stock === 0;
+        const can = bal >= rw.fiyat && rw.alabilir && !tukendi;
         return (
-          <View key={rw.id} style={{ width: "48.5%", backgroundColor: C.card, borderWidth: 1, borderColor: C.line, borderRadius: R.sm, padding: SP[3], marginBottom: SP[2], opacity: (can || has || !rw.alabilir) ? 1 : 0.6, ...ELEV.card }}>
+          <View key={rw.id} style={{ width: "48.5%", backgroundColor: C.card, borderWidth: 1, borderColor: C.line, borderRadius: R.sm, padding: SP[3], marginBottom: SP[2], opacity: has || ((can || !rw.alabilir) && !tukendi) ? 1 : 0.6, ...ELEV.card }}>
             <Ikon ad={icon[rw.category] || "davet"} boy={26} renk={C.goldText} stil={{ marginBottom: SP[2] }} />
             <MiniErken t={t} rw={rw} fark={fark} onYenile={load} />
             <Text style={{ fontWeight: "600", color: C.ink, fontSize: FS.sm, marginBottom: SP[1], lineHeight: 16 }}>{rw.title}</Text>
@@ -3412,10 +3417,10 @@ export function Marketplace({ t, session, onBack, onPlans, lang }) {
               {has ? (
                 <Text style={{ fontSize: FS.xs, fontWeight: "600", color: C.greenInk }}>{t.redeemed}</Text>
               ) : <MiniFiyat t={t} m={magaza} rw={rw} en={en} />}
-              {!has && (rw.alabilir ? (
+              {!has && (rw.alabilir || tukendi ? (
                 <Btn v={can ? "gold" : "muted"} mini onPress={() => redeem(rw)}
                   disabled={!can || busy === rw.id} busy={busy === rw.id}
-                  label={can ? t.redeem : t.notEnoughPoints} />
+                  label={tukendi ? t.rewardSoldOut : can ? t.redeem : t.notEnoughPoints} />
               ) : (
                 <Btn v="ghost" mini onPress={onPlans} label={t.odulPlanlariGor} />
               ))}
@@ -3511,6 +3516,38 @@ export function Plans({ t, session, onBack, lang }) {
     setDurum(mp && mp.known ? mp : null);
   }, [uid, lang]);
   useEffect(() => { load(); }, [load]);
+  // 12 Kasım (1.0.1) — uygulamaya dönüldüğünde (ör. Ayarlar'dan abonelik yönetiminden) plan yeniden okunur.
+  useEffect(() => {
+    const abone = AppState.addEventListener("change", (d) => { if (d === "active") load(); });
+    return () => abone.remove();
+  }, [load]);
+  // 12 Kasım (1.0.1) — 90 sn içinde yansımayan satın alma için arka plan takibi: 10 sn arayla
+  // 5 dk daha bakar; plan gelince ekran KENDİLİĞİNDEN güncellenir (eskiden kullanıcı sayfayı
+  // kapatıp açmadıkça "gecikti" yazısı kalıyordu). Sayfadan çıkılınca durur.
+  // Sayfa kapanınca (ya da yeni satın alma başlayınca) zincir HER noktada durur: setTimeout
+  // öncesi ve await sonrası `acik` bakılır; `nesil` eski zincirin yeni mesajı ezmesini önler.
+  const takip = useRef(null);
+  const acik = useRef(true);
+  const nesil = useRef(0);
+  const tRef = useRef(t);
+  tRef.current = t;
+  useEffect(() => { acik.current = true; return () => { acik.current = false; if (takip.current) clearTimeout(takip.current); takip.current = null; }; }, []);
+  function takibiDurdur() { nesil.current += 1; if (takip.current) clearTimeout(takip.current); takip.current = null; }
+  function planTakibi(plan, ad, kalan, benim) {
+    if (kalan <= 0 || !acik.current || benim !== nesil.current) return;
+    takip.current = setTimeout(async () => {
+      const { data, error } = await supabase.rpc("my_plan");
+      if (error) logError("plan_takibi", error);
+      if (!acik.current || benim !== nesil.current) return;
+      if (data && data.satin_alinan === plan) {
+        takip.current = null;
+        setOkMsg(String(tRef.current.odemePlanAktif).replace("{plan}", ad));
+        load();
+        return;
+      }
+      planTakibi(plan, ad, kalan - 1, benim);
+    }, 10000);
+  }
 
   // 🔴 v2.99 — `change_plan` İSTEMCİDEN KALDIRILDI. İKİ SEBEP, İKİSİ DE AĞIR:
   //
@@ -3532,6 +3569,7 @@ export function Plans({ t, session, onBack, lang }) {
   // "ağırlayan kişi para ödemez" kuralı görünüyor. Yükseltme, ödeme
   // entegrasyonu (Stripe/IAP) bağlanana kadar destek üzerinden.
   async function choose(plan) {
+    takibiDurdur();
     setMsg(""); setOkMsg("");
     if (!odemeAcik) { setMsg(t.plansUpgradeSoon); return; }
     const pk = rc && rc[plan] && rc[plan][yillik ? "yillik" : "aylik"];
@@ -3542,11 +3580,14 @@ export function Plans({ t, session, onBack, lang }) {
     if (sonuc.bekliyor) { setBusy(null); setOkMsg(t.odemeBekliyor); return; }
     if (sonuc.hata) { setBusy(null); setMsg(t.odemeHata); return; }
     setOkMsg(t.odemeIsleniyor);
+    const benim = nesil.current;
     const yansidi = await beklePlan(plan);
+    if (!acik.current) return;   // bekleme sırasında sayfadan çıkıldı
     setBusy(null);
     const ad = ((plans || []).find(x => x.plan === plan) || {}).ad || "";
     setOkMsg(yansidi ? String(t.odemePlanAktif).replace("{plan}", ad) : t.odemeGecikti);
     load();
+    if (!yansidi) planTakibi(plan, ad, 30, benim);
   }
 
   async function restore() {
