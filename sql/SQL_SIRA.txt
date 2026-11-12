@@ -1,3 +1,10 @@
+SQL SIRASI - 12 Kasim 2026 (22. tur) - LANSMAN GUNU
+
+  1) 353_aktif_odul_stok_10.sql
+       -> Aktif oduller stok 10 (sinirsiz olanlar dahil). Stok = KALAN adet; artirinca
+          aninda gecerli. Eski degerler tezgah.odul_stok_353'te; geri alma komutu dosyada.
+       Dogrulama: son satir tamam = true.
+
 SQL SIRASI - 10 Kasim 2026 (21. tur) - YAYIN ONCESI TEMIZLIK - 350'den SONRA
 
   0) TEMIZLIK_ENVANTER.sql  (SALT OKUNUR, ONCE BU)
