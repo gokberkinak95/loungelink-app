@@ -1,6 +1,6 @@
 {
- "tarih": "2026-11-09T00:51:13",
- "kaynak_ozeti": "e7d162b52eb9262f",
+ "tarih": "2026-11-12T12:28:34",
+ "kaynak_ozeti": "80b2b90f02a45ac7",
  "dusen": 0,
  "adimlar": [
   "Splash → Başla",
@@ -9,8 +9,6 @@
   "Tanıtım 3 → Devam",
   "Tanıtım 4 → Devam",
   "Kart ekranı → Başla",
-  "Splash → Giriş Yap",
-  "Splash → Önce dene",
-  "Salon Rehberi → Geri"
+  "Splash → Giriş Yap"
  ]
 }
