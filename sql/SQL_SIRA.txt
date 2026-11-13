@@ -1,4 +1,13 @@
-SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356, 357, 358
+SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356, 357, 358, 359
+
+  5) 359_ayni_ucus_kesin_engel.sql  (358'den SONRA · APP SURUMU GEREKMEZ)
+       -> "Ayni ucus" sartli salon (DragonPass md.7.15.7): iki ucus numarasi da biliniyor ve
+          kesin farkliysa (ayni havayolu farkli numara, ya da ucus onbellegi iki seferi de biliyor)
+          istek KESIN ENGEL - kart, gonderme ekrani, kural satiri ve sunucu ayni seyi der.
+          Numara yoksa ya da havayollari farkliysa (kod paylasimli ayni sefer olabilir): eskisi
+          gibi uyari + onay, ama sart artik ilk cumlede yaziyor. Yazim farki (TK01985=TK1985) ayni ucus.
+          Metinler TR+EN sunucudan; yeni hata kodu yok. Bekleyen isteklere dokunmaz (sayar).
+       Dogrulama: son tablo, 11 satirin hepsi tamam = true; son satir bekleyen istek sayisi (bilgi).
 
   4) 358_kural_motoru_katman_esitligi.sql  (APP SURUMU GEREKMEZ)
        -> Kart, gonderme ekrani (on kontrol), kural satirlari ve sunucu ayni karari verir.

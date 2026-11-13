@@ -298,7 +298,7 @@ print(f"  koşulan kombinasyon: {n} · {time.time() - t0:.0f} sn")
 
 rows = q("""select g::text, av::text, varyant, gorunur, host_id::text, slots, filled, guest_policy, d_blocks, has_trip,
                    rozet_engel, rozet_etiket, pre_can, pre_gate, pre_ack, pre_head, kk_yok, kk, srv, hata from mat_sonuc""")
-KURAL = {"party_too_big", "scope_mismatch", "quota_exhausted", "cabin_required", "children_not_allowed",
+KURAL = {"blocked_by_rule", "party_too_big", "scope_mismatch", "quota_exhausted", "cabin_required", "children_not_allowed",
          "guests_not_allowed", "guest_carrier_mismatch", "arrival_only", "stay_too_long", "no_access_source",
          "serves_mismatch", "stay_limit_exceeded"}
 MISAFIRE_OZEL = {"insufficient_credits", "hosting_same_slot", "too_many_open_requests", "open_request_cap",
@@ -326,11 +326,8 @@ for r in rows:
     if kart and ((s in KURAL) or (pcan is False and pg in KURAL)):
         sinif["M5 kart açık, kural sebebiyle red"].append(ozet)
     if (kky or 0) > 0 and srv_ok:
-        kapilar = [x.split(':')[0] for x in (kk or '').split(',') if x.endswith(':yok:kapi')]
-        if kapilar and all(k == 'ucus_bagi' for k in kapilar):
-            sinif["K · 'aynı uçuş' kuralı uyarı seviyesinde (karar bekliyor)"].append(ozet)
-        else:
-            sinif["M6a kural satırında 'yok' var, sunucu kabul eder"].append(ozet)
+        # 359: 'aynı uçuş' istisnası kalktı — satır 'yok' yalnız kesin farklı uçuşta, sunucu da reddeder
+        sinif["M6a kural satırında 'yok' var, sunucu kabul eder"].append(ozet)
     if (kky or 0) == 0 and s in KURAL:
         sinif["M6b kural satırları temiz, sunucu kural reddi"].append(ozet)
     if not gor and srv_ok:
@@ -350,8 +347,10 @@ for ad in ["M2 ön kontrol olur, sunucu reddeder", "M3 ön kontrol olmaz, sunucu
            "M8 eşleşen seyahat var ama kart 'seyahat yok' der"]:
     L = sinif.get(ad, [])
     chk(f"{ad}: 0", not L, f"{len(L)} adet · örnek: {L[:4]}")
-K = sinif.get("K · 'aynı uçuş' kuralı uyarı seviyesinde (karar bekliyor)", [])
-print(f"  bilgi · 'aynı uçuş' kuralı (veri: uyarı) — farklı uçuştaki misafir onay kutusuyla başvurabiliyor: {len(K)} kombinasyon · ilanlar {sorted({o[1] for o in K})}")
+ay = Counter((r[2], r[18]) for r in rows if 'ucus_bagi:yok:kapi' in (r[17] or ''))
+print(f"  bilgi · 359 'aynı uçuş' kesin farklı uçuş (satır 'yok'): {sum(ay.values())} kombinasyon · sunucu sonucu {dict(Counter(k[1] for k in ay.elements()))}")
+chk("359 · kesin farklı uçuşta sunucu hep reddeder", all(k[1] != 'ok' for k in ay), ay.most_common(6))
+exec(open(pathlib.Path(__file__).with_name('kural_ayni_ucus_bolum.py'), encoding='utf-8').read())
 VARP = {}
 for m in secim:
     for (avid, ap, tf, tt, host) in ilan:

@@ -265,6 +265,12 @@ def main():
             r"select[^;]{0,400}?from\s+beta_settings[^;]{0,200}?key\s*=\s*'([a-z0-9_]+)'",
             sql_hepsi, re.I | re.S):
         gercek_okuma.add(m.group(1))
+    # 359 · `public.metin('X')` / `rule_notice('X')` de beta_settings okumasıdır (250: TR anahtar X,
+    # EN anahtar X_en). Bu desen sayılmadığı için metin() ile okunan anahtarlar "ölü" görünüyordu
+    # (head_carrier_bad_en, ayni_ucus_baslik_farkli).
+    for m in re.finditer(r"(?:metin|rule_notice)\(\s*'([a-z0-9_]+)'\s*\)", sql_hepsi, re.I):
+        gercek_okuma.add(m.group(1))
+        gercek_okuma.add(m.group(1) + "_en")
     for k in yazilan:
         if k in js:
             gercek_okuma.add(k)

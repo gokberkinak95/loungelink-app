@@ -37288,5 +37288,154 @@
     "kural_kosullari|elsif coalesce(d ->> 'flight_coupling','any') in ('any','none') and (d ->> 'carrier_known') is null then"
    ]
   ]
+ ],
+ [
+  "359_ayni_ucus_kesin_engel.sql",
+  [
+   [
+    "ayar",
+    "ayni_ucus_baslik_eksik"
+   ],
+   [
+    "ayar",
+    "ayni_ucus_detay_farkli"
+   ],
+   [
+    "ayar",
+    "ayni_ucus_baslik_farkli"
+   ],
+   [
+    "ayar",
+    "ayni_ucus_baslik_belirsiz"
+   ],
+   [
+    "ayar",
+    "ayni_ucus_baslik_eksik_en"
+   ],
+   [
+    "ayar",
+    "ayni_ucus_baslik_farkli_en"
+   ],
+   [
+    "ayar",
+    "ayni_ucus_baslik_belirsiz_en"
+   ],
+   [
+    "fonksiyon",
+    "ucus_no_norm"
+   ],
+   [
+    "fonksiyon",
+    "ucus_tasiyici"
+   ],
+   [
+    "fonksiyon",
+    "ayni_ucus_durumu"
+   ],
+   [
+    "govde",
+    "ucus_no_norm|^([A-Z0-9]{2})([0-9]{1,5})([A-Z]?)$"
+   ],
+   [
+    "govde",
+    "ucus_tasiyici|^([A-Z0-9]{2})[0-9]{1,5}[A-Z]?$"
+   ],
+   [
+    "govde",
+    "ayni_ucus_durumu|return 'farkli';"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_v6|and coalesce(d ->>"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|same_flight_block"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|same_flight_state"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|same_flight_state"
+   ],
+   [
+    "govde",
+    "kural_kosullari|same_flight_state"
+   ],
+   [
+    "govde",
+    "ucus_no_norm|if x = '' then return null; end if;"
+   ],
+   [
+    "govde",
+    "ucus_tasiyici|'^([A-Z0-9]{2})[0-9]{1,5}[A-Z]?$'))[1];"
+   ],
+   [
+    "govde",
+    "ayni_ucus_durumu|return 'belirsiz';"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_v6|, btrim(replace(coalesce(d ->>"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|raise exception 'blocked_by_rule';"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|, nullif(v_detail,"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|same_flight_block"
+   ],
+   [
+    "govde",
+    "kural_kosullari|Aynı uçuş şartı var · host uçuşunu girmedi"
+   ],
+   [
+    "govde",
+    "ucus_no_norm|if m is null then return x; end if;"
+   ],
+   [
+    "govde",
+    "ucus_tasiyici|select (regexp_match(upper(regexp_replace(coalesce(p, ''), '[^A-Za-z0-9]', '', 'g')),"
+   ],
+   [
+    "govde",
+    "ayni_ucus_durumu|from flight_cache fc"
+   ],
+   [
+    "govde",
+    "lounge_access_decision_v6|same_flight_state"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|if coalesce((v_dec ->> 'same_flight_block')::boolean, false) then"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|ayni_ucus_baslik_farkli"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|rule_same_flight"
+   ],
+   [
+    "govde",
+    "kural_kosullari|upper(v_av.flight_number), upper(v_flight))"
+   ],
+   [
+    "govde",
+    "ucus_no_norm|m := regexp_match(x, '^([A-Z0-9]{2})([0-9]{1,5})([A-Z]?)$');"
+   ],
+   [
+    "govde",
+    "ayni_ucus_durumu|h_op text; g_op text;"
+   ]
+  ]
  ]
 ]
