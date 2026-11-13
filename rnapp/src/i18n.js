@@ -4315,7 +4315,7 @@ export const D = {
     ppTitle: "Profile",
     ppAbout: "ABOUT",
     ppSessions: "Sessions",
-    ppLocked: "to see full bio, languages and shared trips.",
+    ppLocked: "· connect to see their full bio, languages and shared trips.",
     ppLockedAnon: "Connect with this person to see their full bio, languages and shared trips.",
     ppRemoveConn: "Remove connection",
     ppRemoveTitle: "Remove this connection?",
