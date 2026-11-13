@@ -105,6 +105,12 @@ if temel:
     # önbellek iki seferi de biliyor, ikisi de kendi uçağı → kesin farklı
     S["onbellek_farkli"] = ozet(kos("TK1985", "PC2010", [
         {"no": "TK1985", "cs": None, "op": "TK", "al": "TK"}, {"no": "PC2010", "cs": None, "op": "PC", "al": "PC"}]))
+    # önbellekte yalnız host'un seferi var: aynı havayolu farklı numara yine kesin farklı
+    S["tek_onbellek_ayni_hy"] = ozet(kos("TK1985", "TK2000", [{"no": "TK1985", "cs": None, "op": "TK", "al": "TK"}]))
+    # önbellekte yalnız host'un seferi var, misafir başka havayolu: kod paylaşımı olabilir → uyarı
+    S["tek_onbellek_farkli_hy"] = ozet(kos("TK1985", "LH6543", [{"no": "TK1985", "cs": None, "op": "TK", "al": "TK"}]))
+    # ICAO yazımı (THY1985): havayolu kodu çözülemez → engel YOK, uyarı
+    S["icao"] = ozet(kos("TK1985", "THY1985"))
     S["en_farkli"]   = ozet(kos("TK1985", "TK2000", dil='en'))
     S["en_belirsiz"] = ozet(kos("TK1985", "PC2010", dil='en'))
     for k_, v_ in S.items():
@@ -139,6 +145,10 @@ if temel:
     chk("kod paylaşımı (LH6543 = TK1985 seferi, önbellekten): aynı uçuş, açık",
         acik(S["kod_paylasimi"]) and S["kod_paylasimi"]["durum"] == "ayni", S["kod_paylasimi"])
     chk("önbellek iki seferi de biliyor ve farklı: dört katman KAPALI", kapali(S["onbellek_farkli"]), S["onbellek_farkli"])
+    chk("önbellekte yalnız host var, aynı havayolu farklı numara: KAPALI", kapali(S["tek_onbellek_ayni_hy"]), S["tek_onbellek_ayni_hy"])
+    chk("önbellekte yalnız host var, başka havayolu: açık + onay (kod paylaşımı olabilir)",
+        acik(S["tek_onbellek_farkli_hy"], ack=True) and S["tek_onbellek_farkli_hy"]["durum"] == "belirsiz", S["tek_onbellek_farkli_hy"])
+    chk("ICAO yazımı (THY1985): engellenmez, açık + onay", acik(S["icao"], ack=True), S["icao"])
     chk("EN: kesin engel başlığı İngilizce", S["en_farkli"]["bas"] == "You're not on the same flight"
         and S["en_farkli"]["rozet"] == "Not on the same flight" and kapali(S["en_farkli"]), S["en_farkli"])
     chk("EN: belirsiz uyarı İngilizce", S["en_belirsiz"]["bas"] == "Your flight numbers differ" and acik(S["en_belirsiz"], ack=True),

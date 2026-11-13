@@ -26622,6 +26622,7 @@ begin
       'can_request',
 
         not (coalesce(d ->> 'guest_policy','') = 'not_allowed'
+             or coalesce((d ->> 'same_flight_block')::boolean, false)   -- 359: kart dalı da sunucuyla aynı
 
              or (coalesce(d ->> 'severity','') = 'block'
 
@@ -29270,6 +29271,7 @@ begin
       'can_request',
 
         not (coalesce(d ->> 'guest_policy','') = 'not_allowed'
+             or coalesce((d ->> 'same_flight_block')::boolean, false)   -- 359: kart dalı da sunucuyla aynı
 
              or (coalesce(d ->> 'severity','') = 'block'
 
@@ -29977,6 +29979,7 @@ begin
       'can_request',
 
         not (coalesce(d ->> 'guest_policy','') = 'not_allowed'
+             or coalesce((d ->> 'same_flight_block')::boolean, false)   -- 359: kart dalı da sunucuyla aynı
 
              or (coalesce(d ->> 'severity','') = 'block'
 
@@ -37350,8 +37353,9 @@ begin
    order by fc.flight_date desc limit 1;
   if coalesce(h_op, h) = coalesce(g_op, g) then return 'ayni'; end if;
   if h_op is not null and g_op is not null then return 'farkli'; end if;
-  if public.ucus_tasiyici(h) is not null and public.ucus_tasiyici(h) = public.ucus_tasiyici(g)
-     and h_op is null and g_op is null then
+  -- aynı havayolunun iki numarası aynı sefer olamaz (kod paylaşımı eşitliği yukarıda soruldu);
+  -- önbellekte yalnız biri olsa da kesin farklıdır
+  if public.ucus_tasiyici(h) is not null and public.ucus_tasiyici(h) = public.ucus_tasiyici(g) then
     return 'farkli';
   end if;
   return 'belirsiz';
@@ -37939,6 +37943,7 @@ begin
       'can_request',
 
         not (coalesce(d ->> 'guest_policy','') = 'not_allowed'
+             or coalesce((d ->> 'same_flight_block')::boolean, false)   -- 359: kart dalı da sunucuyla aynı
 
              or (coalesce(d ->> 'severity','') = 'block'
 
