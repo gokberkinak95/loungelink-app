@@ -640,14 +640,20 @@ chk("13. bağlantı kaldırıldı", r[0], kod(r))
 
 # ── 14 · Bildir + ENGELLE (301) ────────────────────────────────────
 print("\n--- 14 · BİLDİR · ENGELLE")
+# 13 Kasım (SQL 358): ağır şikâyet hostu gölge kısıta alır (Keşfet'ten düşer) ve 358'den beri
+# gölge kısıtlı hosta YENİ istek gitmez. Bu yüzden açık istek şikâyetten ÖNCE kuruluyor.
+r4 = rpc(G3, "create_request", p_avail_id=AV2, p_type="lounge", p_intro=None, p_idem=None)
+R14 = (r4[1] or {}).get("id") if r4[0] else None
+chk("14. engellenecek host'a açık istek var", bool(R14), kod(r4))
 r = rpc(G3, "create_report", p_target=H, p_type="harassment", p_description="Rahatsız edici mesajlar", p_session=None)
 if not r[0] and "invalid input value for enum" in r[1]:
     tip = q("select enumlabel from pg_enum e join pg_type t on t.oid=e.enumtypid where t.typname='report_type' order by enumsortorder limit 1", tek=True)
     r = rpc(G3, "create_report", p_target=H, p_type=tip, p_description="Rahatsız edici mesajlar", p_session=None)
 chk("14. bildirim oluşturuldu", r[0], kod(r))
-r4 = rpc(G3, "create_request", p_avail_id=AV2, p_type="lounge", p_intro=None, p_idem=None)
-R14 = (r4[1] or {}).get("id") if r4[0] else None
-chk("14. engellenecek host'a açık istek var", bool(R14), kod(r4))
+chk("14. ağır şikâyetle gölge kısıta düşen hostun ilanı başkasına artık istek açık DEĞİL (358)",
+    q("select public.ilan_misafire_acik_mi(%s, %s)", (AV1, G2), tek=True) is False)
+# Yönetici incelemesi kısıtı kaldırdı varsayımı — engelleme senaryosu bundan sonra aynı host üzerinde sürüyor.
+q("update users set shadow_limited = false, restricted_until = null, kisit_inceleme_bekliyor = false where id = %s", (H,))
 g3_once = bakiye(G3)
 r = rpc(G3, "engelle", p_user=H, p_sebep="taciz")
 chk("14. ENGELLE çalışıyor", r[0], kod(r))

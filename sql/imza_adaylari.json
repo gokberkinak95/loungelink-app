@@ -37159,5 +37159,134 @@
     "trg_apple_adi_bos_ac|select au.email, au.raw_app_meta_data->>'provider', coalesce(au.raw_user_meta_data, '{}'::jsonb)"
    ]
   ]
+ ],
+ [
+  "358_kural_motoru_katman_esitligi.sql",
+  [
+   [
+    "fonksiyon",
+    "ilan_misafire_acik_mi"
+   ],
+   [
+    "govde",
+    "ilan_misafire_acik_mi|where a.id = p_av"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|or coalesce(v_dec ->>"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|Bu ilanın saatinde o havalimanında seyahatin yok"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|children_not_allowed"
+   ],
+   [
+    "govde",
+    "kural_kosullari|and (d ->> 'block_code') is null then"
+   ],
+   [
+    "govde",
+    "ilan_misafire_acik_mi|from availabilities a"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|, case when coalesce(v_dec ->>"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|availability_not_found"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|if v_kod is not null then"
+   ],
+   [
+    "govde",
+    "kural_kosullari|and v.time_from < v_av.time_to and v_av.time_from < v.time_to"
+   ],
+   [
+    "govde",
+    "ilan_misafire_acik_mi|and (hu.role = 'host'"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|if (v_dec ->> 'severity') = 'block'"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|and v.time_from < a2.time_to and a2.time_from < v.time_to)"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|v_kod := d ->> 'block_code';"
+   ],
+   [
+    "govde",
+    "kural_kosullari|order by (v.flight_number is not null) desc, v.created_at desc"
+   ],
+   [
+    "govde",
+    "ilan_misafire_acik_mi|join users hu on hu.id = a.host_id"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|then 'guest_carrier_mismatch' else 'guests_not_allowed' end;"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|if not public.ilan_misafire_acik_mi(p_avail_id, v_uid) then"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|into v_flight, v_carrier, v_vid"
+   ],
+   [
+    "govde",
+    "kural_kosullari|if (d ->> 'fits') = 'false' and (d ->> 'severity') = 'block' and (d ->> 'enforcement') = 'block'"
+   ],
+   [
+    "govde",
+    "ilan_misafire_acik_mi|and (not coalesce(hu.is_staff, false)"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|and ((v_dec ->> 'enforcement') = 'block' or coalesce(v_dec ->> 'charter', 'false') = 'true') then"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|and v.time_from < v_av.time_to and v_av.time_from < v.time_to"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|v_carrier text; v_vid uuid; v_kod text;"
+   ],
+   [
+    "govde",
+    "kural_kosullari|metin := format('Uçuşun bu salonun havayolu kuralına uymuyor · %s', coalesce(upper(v_flight), '?'));"
+   ],
+   [
+    "govde",
+    "ilan_misafire_acik_mi|left join profiles p on p.user_id = a.host_id"
+   ],
+   [
+    "govde",
+    "create_request_impl_preflag|select v.flight_number, coalesce(v.carrier_code, public.carrier_from_flight(v.flight_number)), v.id"
+   ],
+   [
+    "govde",
+    "request_precheck_pregate|'headline', 'Bu ilanın saatinde o havalimanında seyahatin yok',"
+   ],
+   [
+    "govde",
+    "discovery_rule_badges|if v_kod is not null then v_block := true; end if;"
+   ],
+   [
+    "govde",
+    "kural_kosullari|elsif coalesce(d ->> 'flight_coupling','any') in ('any','none') and (d ->> 'carrier_known') is null then"
+   ]
+  ]
  ]
 ]

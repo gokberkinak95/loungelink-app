@@ -1,4 +1,11 @@
-SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356, 357
+SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356, 357, 358
+
+  4) 358_kural_motoru_katman_esitligi.sql  (APP SURUMU GEREKMEZ)
+       -> Kart, gonderme ekrani (on kontrol), kural satirlari ve sunucu ayni karari verir.
+          Sunucu artik on kontrolun "kesin kural / charter" engelini ve Kesfet'in gorunurluk
+          suzgecini (host rolu, golge kisit, kadin guvenlik modu, gizli/baglantilara ozel ilan)
+          uygular; kart rozeti v6 ile karar verir (kisi sayisi, hat, cocuk, kota, kabin).
+       Dogrulama: son tablo, 6 satirin hepsi tamam = true.
 
   3) 357_apple_adi_kaybolmasin.sql  (APP SURUMU GEREKMEZ)
        -> Apple ile kayitta ad e-postadan yaziliyordu; uygulama dolu sandigi icin Apple'in verdigi
