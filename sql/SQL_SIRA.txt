@@ -1,4 +1,10 @@
-SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356
+SQL SIRASI - 13 Kasim 2026 (23. tur) - 1.0.1 YAYINDA · 355, 356, 357
+
+  3) 357_apple_adi_kaybolmasin.sql  (APP SURUMU GEREKMEZ)
+       -> Apple ile kayitta ad e-postadan yaziliyordu; uygulama dolu sandigi icin Apple'in verdigi
+          gercek adi yazmiyordu. Artik Apple kaydinda ad bos acilir, uygulama gercek adi yazar.
+          Apple ad vermezse 10 dk sonra 'Gezgin' (gizli adres) ya da @ oncesi. Mevcut hesaplara dokunmaz.
+       Dogrulama: tetikleyici_kurulu true, zamanli_is_kurulu true, eposta_adli_gercek_hesap satirlari.
 
   0) TELEFON_OLCUM.sql  (SALT OKUNUR, istege bagli) -> SMS isteyen / dogrulayan / yarida kalan.
   2) 356_profil_varsayilan_herkese_acik.sql  (355'ten SONRA · APP SURUMU GEREKMEZ)

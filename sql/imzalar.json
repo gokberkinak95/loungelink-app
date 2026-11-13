@@ -1953,5 +1953,10 @@
   "356_profil_varsayilan_herkese_acik.sql",
   null,
   null
+ ],
+ [
+  "357_apple_adi_kaybolmasin.sql",
+  null,
+  null
  ]
 ]

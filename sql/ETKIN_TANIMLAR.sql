@@ -9,7 +9,7 @@
 --    icin numarali dosyalar SIRAYLA calistirilir.
 -- ============================================================
 
--- Toplam fonksiyon: 568
+-- Toplam fonksiyon: 571
 -- Birden cok dosyada tanimli (dikkat!): 179
 --   access_source_summary        -> etkin: 162_source_truth_and_founder_badge.sql  (ayrica: 121_source_summary.sql, 155_member_cost_visible.sql)
 --   acik_istek_tavanim           -> etkin: 274_istek_tavani_kilidi.sql  (ayrica: 246_ekonomi_ayari.sql)
@@ -34396,3 +34396,87 @@ select
 -- select cron.unschedule('ll-inceleme-vitrin');
 -- select public.temizlik_derin_sil('public.users', $$email like '%@vitrin.loungelink.test'$$);
 -- delete from auth.users where email like '%@vitrin.loungelink.test';
+
+-- ----------------------------------------------------------------------
+-- trg_apple_adi_bos_ac   [etkin kaynak: 357_apple_adi_kaybolmasin.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.trg_apple_adi_bos_ac()
+returns trigger language plpgsql security definer set search_path = public as $ab357$
+declare v_email text; v_saglayici text; v_meta jsonb;
+begin
+  select au.email, au.raw_app_meta_data->>'provider', coalesce(au.raw_user_meta_data, '{}'::jsonb)
+    into v_email, v_saglayici, v_meta
+    from auth.users au where au.id = new.user_id;
+  if v_saglayici = 'apple'
+     and coalesce(nullif(trim(v_meta->>'name'), ''), nullif(trim(v_meta->>'full_name'), '')) is null
+     and v_email is not null
+     and new.name = split_part(v_email, '@', 1) then
+    new.name := '';
+  end if;
+  return new;
+end $ab357$;
+
+drop trigger if exists apple_adi_bos_ac on profiles;
+create trigger apple_adi_bos_ac before insert on profiles
+  for each row execute function public.trg_apple_adi_bos_ac();
+
+-- §2 · güvenlik ağı: 10 dakikadır boş kalan ad
+
+-- ----------------------------------------------------------------------
+-- bos_adlari_doldur   [etkin kaynak: 357_apple_adi_kaybolmasin.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.bos_adlari_doldur()
+returns int language plpgsql security definer set search_path = public as $bd357$
+declare n int;
+begin
+  if auth.uid() is not null then raise exception 'not_authorized'; end if;
+  update profiles p
+     set name = case when u.email ilike '%@privaterelay.appleid.com' or coalesce(u.email, '') = ''
+                     then 'Gezgin' else split_part(u.email, '@', 1) end
+    from users u
+   where u.id = p.user_id
+     and btrim(coalesce(p.name, '')) = ''
+     and u.created_at < now() - interval '10 minutes';
+  get diagnostics n = row_count;
+  return n;
+end $bd357$;
+revoke all on function public.bos_adlari_doldur() from public, anon, authenticated;
+
+do $c357$
+begin
+  if exists (select 1 from pg_namespace where nspname = 'cron') then
+    if exists (select 1 from cron.job where jobname = 'll-bos-ad-doldur') then
+      perform cron.unschedule('ll-bos-ad-doldur');
+    end if;
+    perform cron.schedule('ll-bos-ad-doldur', '*/10 * * * *', 'select public.bos_adlari_doldur()');
+  end if;
+end $c357$;
+
+-- yardımcı: cron şeması olmayan ortamda da düşmeden sorar
+
+-- ----------------------------------------------------------------------
+-- cron_isi_var_mi_357   [etkin kaynak: 357_apple_adi_kaybolmasin.sql]
+-- ----------------------------------------------------------------------
+create or replace function public.cron_isi_var_mi_357(p_ad text)
+returns text language plpgsql security definer set search_path = public as $cv357$
+declare v boolean;
+begin
+  if to_regclass('cron.job') is null then return 'cron yok'; end if;
+  execute 'select exists (select 1 from cron.job where jobname = $1)' into v using p_ad;
+  return v::text;
+end $cv357$;
+revoke all on function public.cron_isi_var_mi_357(text) from public, anon, authenticated;
+
+-- §3 · SONUÇ: tetikleyici + iş kurulu mu, ve e-postadan türetilmiş adla duran gerçek hesaplar
+select 'tetikleyici_kurulu' as kontrol,
+       exists (select 1 from pg_trigger where tgname = 'apple_adi_bos_ac' and not tgisinternal)::text as deger
+union all
+select 'zamanli_is_kurulu', public.cron_isi_var_mi_357('ll-bos-ad-doldur')
+union all
+select 'eposta_adli_gercek_hesap: ' || coalesce(au.raw_app_meta_data->>'provider', '?'), count(*)::text
+  from profiles p join users u on u.id = p.user_id join auth.users au on au.id = u.id
+ where p.name = split_part(u.email, '@', 1)
+   and not public.seed_test_hesabi(u.email)
+   and not coalesce(u.is_staff, false)
+   and u.deleted_at is null
+ group by au.raw_app_meta_data->>'provider';

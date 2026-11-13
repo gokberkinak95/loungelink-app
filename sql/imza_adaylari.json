@@ -37042,5 +37042,122 @@
  [
   "356_profil_varsayilan_herkese_acik.sql",
   []
+ ],
+ [
+  "357_apple_adi_kaybolmasin.sql",
+  [
+   [
+    "tetikleyici",
+    "apple_adi_bos_ac"
+   ],
+   [
+    "fonksiyon",
+    "bos_adlari_doldur"
+   ],
+   [
+    "fonksiyon",
+    "cron_isi_var_mi_357"
+   ],
+   [
+    "fonksiyon",
+    "trg_apple_adi_bos_ac"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|, coalesce(au.raw_user_meta_data,"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|else split_part(u.email,"
+   ],
+   [
+    "govde",
+    "cron_isi_var_mi_357|) is null then return"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|), nullif(trim(v_meta->>"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|update profiles p"
+   ],
+   [
+    "govde",
+    "cron_isi_var_mi_357|select exists (select 1 from cron.job where jobname = $1)"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|and v_email is not null"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|where u.id = p.user_id"
+   ],
+   [
+    "govde",
+    "cron_isi_var_mi_357|declare v boolean;"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|if v_saglayici = 'apple'"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|get diagnostics n = row_count;"
+   ],
+   [
+    "govde",
+    "cron_isi_var_mi_357|if to_regclass('cron.job') is null then return 'cron yok'; end if;"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|into v_email, v_saglayici, v_meta"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|and btrim(coalesce(p.name, '')) = ''"
+   ],
+   [
+    "govde",
+    "cron_isi_var_mi_357|execute 'select exists (select 1 from cron.job where jobname = $1)' into v using p_ad;"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|from auth.users au where au.id = new.user_id;"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|and u.created_at < now() - interval '10 minutes';"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|and new.name = split_part(v_email, '@', 1) then"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|then 'Gezgin' else split_part(u.email, '@', 1) end"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|declare v_email text; v_saglayici text; v_meta jsonb;"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|if auth.uid() is not null then raise exception 'not_authorized'; end if;"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|and coalesce(nullif(trim(v_meta->>'name'), ''), nullif(trim(v_meta->>'full_name'), '')) is null"
+   ],
+   [
+    "govde",
+    "bos_adlari_doldur|set name = case when u.email ilike '%@privaterelay.appleid.com' or coalesce(u.email, '') = ''"
+   ],
+   [
+    "govde",
+    "trg_apple_adi_bos_ac|select au.email, au.raw_app_meta_data->>'provider', coalesce(au.raw_user_meta_data, '{}'::jsonb)"
+   ]
+  ]
  ]
 ]
