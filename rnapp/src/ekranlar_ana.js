@@ -2380,6 +2380,7 @@ export { ConfirmModal };
 // Artık Toggle TEK yerden gelir: ./ui. Ölü ikizler kaldırıldı.
 export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFilter, onClearRadar, onRequestListing, onVerify, onAddTrip, filtersOpen: filtersOpenProp, setFiltersOpen: setFiltersOpenProp, altSekme, setAltSekme, bnt, onPlans}) {
   const [bagHak, setBagHak] = useState(null);   // 334 · haftalık bağlantı hakkı (BaglantiHakki doldurur)
+  const [dogrulaGerek, setDogrulaGerek] = useState(false);   // 20 Kasım · contact_not_verified → "Telefonu doğrula"
   // 🔴 Canlı APP 18: Meet, onOpenChat'i NESNE ile çağırıyordu ama App.js
   // (channelId, name) bekliyor → companion sohbet HİÇ açılmıyordu.
   // Doğrusu: kabul edilmiş bağlantının kanalını bul (yoksa oluştur), sonra aç.
@@ -2620,12 +2621,17 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
   useEffect(() => { load(); }, [load]);
 
   async function send() {
-    setErr(""); setBusy(true);
+    setErr(""); setDogrulaGerek(false); setBusy(true);
     const { error } = await supabase.rpc("send_connection", {
       p_to: target.user_id, p_intent: intent, p_intro: intro.trim() || null,
     });
     setBusy(false);
-    if (error) { const k = "e_" + (error.message||"").split(" ")[0].replace(/[^a-z_]/g,""); return setErr(t[k] || mapErr(t, error.message)); }
+    if (error) {
+      const kod = (error.message||"").split(" ")[0].replace(/[^a-z_]/g,"");
+      // 20 Kasım · doğrulanmamış hesapta hatanın altında Keşfet'teki "Telefonu doğrula" (gateVerifyNow)
+      if (kod === "contact_not_verified") setDogrulaGerek(true);
+      return setErr(t["e_" + kod] || mapErr(t, error.message));
+    }
     setTarget(null); setIntent(null); setIntro(""); load();
   }
   async function respond(id, action) {
@@ -3149,6 +3155,10 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
 
             <BaglantiHakki t={t} onPlans={onPlans ? () => { setTarget(null); onPlans(); } : null} onDurum={setBagHak} />
             {!!err && <View style={S.err}><Text style={{ color: C.red, fontSize: FS.sm }}>{err}</Text></View>}
+            {dogrulaGerek && onVerify && (
+              <Btn v="gold" sm sagAd="sag" label={t.gateVerifyNow} a11yLabel={t.gateVerifyNow}
+                onPress={() => { setTarget(null); setDogrulaGerek(false); setErr(""); onVerify(); }} style={{ marginTop: SP[2] }} />
+            )}
             <Btn v="purple" label={t.connSend} sagAd="sag" a11yLabel={t.connSend} onPress={send}
               disabled={busy || !intent || (bagHak && !bagHak.sinirsiz && Number(bagHak.kalan) <= 0)} busy={busy} style={{ marginTop: SP[3] }} />
           </ScrollView>
@@ -3158,7 +3168,8 @@ export function Meet({ t, lang, session, rol, onOpenProfile, onOpenChat, radarFi
     </Kaydirma>
   );
 }
-export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onReport, onPlans }) {
+export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onReport, onPlans, onVerify }) {
+  const [dogrulaGerek, setDogrulaGerek] = useState(false);   // 20 Kasım · contact_not_verified → "Telefonu doğrula"
   const [bagHak, setBagHak] = useState(null);   // 334 · haftalık bağlantı hakkı
   const uid = session?.user?.id;
   const [d, setD] = useState(null);
@@ -3255,11 +3266,14 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
   // boş bir istek gönderiyordu (intro yok, hata mesajı ham). MVP'de bağlantı
   // daveti NOT ile gönderilir. Artık modal açılıyor.
   async function doConnect() {
-    setErr(""); setConnBusy(true);
+    setErr(""); setDogrulaGerek(false); setConnBusy(true);
     const { error } = await supabase.rpc("send_connection", {
       p_to: targetId, p_intent: connIntent, p_intro: connIntro.trim() || null });
     setConnBusy(false);
-    if (error) return setErr(mapErr(t, error.message));
+    if (error) {
+      if (/contact_not_verified/.test(error.message || "")) setDogrulaGerek(true);
+      return setErr(mapErr(t, error.message));
+    }
     setConnOpen(false); setConnIntro("");
     setRel("sent");
   }
@@ -3440,6 +3454,10 @@ export function PublicProfile({ t, session, targetId, onBack, onOpenChat, onRepo
               <Text style={{ color: C.dim, fontSize: FS.xs, textAlign: "right", marginTop: SP[1] }}>{connIntro.length}/140</Text>
               <BaglantiHakki t={t} onPlans={onPlans ? () => { setConnOpen(false); onPlans(); } : null} onDurum={setBagHak} />
               {!!err && <Text style={{ color: C.redInk, fontSize: FS.sm, marginTop: SP[2] }}>{err}</Text>}
+              {dogrulaGerek && onVerify && (
+                <Btn v="gold" sm sagAd="sag" label={t.gateVerifyNow} a11yLabel={t.gateVerifyNow}
+                  onPress={() => { setConnOpen(false); setDogrulaGerek(false); setErr(""); onVerify(); }} style={{ marginTop: SP[2] }} />
+              )}
               <Btn label={`${t.connSend}`} sagAd="sag" onPress={doConnect}
                 disabled={connBusy || (bagHak && !bagHak.sinirsiz && Number(bagHak.kalan) <= 0)} busy={connBusy} style={{ marginTop: ARA[10] }} />
               <TouchableOpacity accessibilityRole="button" hitSlop={TAP.slop} onPress={() => setConnOpen(false)} style={{ alignItems: "center", paddingVertical: SP[3] }}>

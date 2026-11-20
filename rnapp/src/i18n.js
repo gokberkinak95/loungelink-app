@@ -5076,8 +5076,18 @@ export function mapErr(t, msg) {
   return t.errGeneric || "Bir şeyler ters gitti. Lütfen tekrar dene.";
 }
 
+// 20 Kasım (Google Play testçi raporu md.2): uygulama telefonun dili ne olursa olsun Türkçe
+// açılıyordu. Kullanıcı bir dil SEÇMEDİYSE telefonun dili: Türkçe → "tr", diğer her dil → "en".
+// Seçtiyse (ll_lang) o korunur. Cihaz dili okunamazsa eskisi gibi "tr".
+export function cihazDili() {
+  try {
+    const loc = String((Intl && Intl.DateTimeFormat && Intl.DateTimeFormat().resolvedOptions().locale) || "");
+    if (!loc) return "tr";
+    return /^tr\b|^tr[-_]/i.test(loc) ? "tr" : "en";
+  } catch { return "tr"; }
+}
 export async function getLang() {
-  try { return (await AsyncStorage.getItem("ll_lang")) || "tr"; } catch { return "tr"; }
+  try { return (await AsyncStorage.getItem("ll_lang")) || cihazDili(); } catch { return cihazDili(); }
 }
 export async function setLang(l) {
   try { await AsyncStorage.setItem("ll_lang", l); } catch {}

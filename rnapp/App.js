@@ -459,6 +459,16 @@ function AppInner() {
       if (error) logError("dili_ayarla", error);
     } catch (e) { /* ağ yoksa ekran dili yine değişsin */ }
   }, []);
+  // 20 Kasım · dil artık telefonun dilinden de gelebiliyor (getLang → cihazDili). Kullanıcı hiç
+  // seçmediyse sunucu tercihi boş kalır ve kural cümleleri Türkçe gelirdi. Oturum açılınca ekranda
+  // görünen dil sunucuya bir kez yazılır (ekran ve sunucu aynı dili konuşsun).
+  const dilYazilanUid = useRef(null);
+  useEffect(() => {
+    const uid = session && session.user && session.user.id;
+    if (!uid || screen === "boot" || dilYazilanUid.current === uid) return;
+    dilYazilanUid.current = uid;
+    dilSunucuyaYaz(lang);
+  }, [session, screen, lang, dilSunucuyaYaz]);
   async function applyLang(l) {
     dilAyarla(l);   // v2.99: BUYUK() etkin dile gore calissin
     await setLang(l);
@@ -669,6 +679,7 @@ export function CompleteOnboarding({ t, session, onDone, onLogout }) {
 // ============================================================
 export function SetNewPassword({ t, onDone }) {
   const [p1, setP1] = useState("");
+  const [showPw, setShowPw] = useState(false);   // 20 Kasım · Play testçi raporu md.3: göz ikonu
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [ok, setOk] = useState(false);
@@ -708,8 +719,16 @@ export function SetNewPassword({ t, onDone }) {
           <>
             <Text style={st.label}>{t.pass}</Text>
             <IconField icon={<Ikon ad="kilit" boy={15} renk={C.muted} />}>
-              <TextInput style={st.inputBare} value={p1} onChangeText={setP1} secureTextEntry
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput style={[st.inputBare, { flex: 1 }]} value={p1} onChangeText={setP1} secureTextEntry={!showPw}
+                autoCapitalize="none" autoCorrect={false}
                 placeholder={t.pwMinPh} accessibilityLabel={t.pass} placeholderTextColor={C.mut} />
+              <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={TAP.slop}
+                accessibilityRole="button" accessibilityLabel={showPw ? t.pwHide : t.pwShow}
+                style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
+                <Ikon ad={showPw ? "gozKapali" : "goz"} boy={17} renk={C.muted} />
+              </TouchableOpacity>
+              </View>
             </IconField>
             {!!err && <View style={st.errBox}><Text style={st.errText}>{err}</Text></View>}
             <Btn label={t.setNewPassBtn} onPress={save} disabled={busy} busy={busy} style={{ marginTop: ARA[14] }} />
@@ -1641,7 +1660,7 @@ export function Main({ t, lang, toggleLang, setLangGlobal, session, bakiyeTazele
         if (r && r.request_id) setChat({ req: { id: r.request_id }, name: r.other_name, openPanel: true }); }} />),
     live: () => (<LiveStatus t={t} session={session} onBack={() => setShowLive(false)}
       onGoSession={(req) => { setShowLive(false); if (req) setChat({ req, name: null }); }} />),
-    pub: () => (<PublicProfile t={t} session={session} targetId={pubProfile} onPlans={() => setShowPlans(true)} onBack={() => setPubProfile(null)}
+    pub: () => (<PublicProfile t={t} session={session} targetId={pubProfile} onPlans={() => setShowPlans(true)} onVerify={() => { setPubProfile(null); setShowVerify(true); }} onBack={() => setPubProfile(null)}
       onOpenChat={(id, name) => { companionAc(id, name, () => setPubProfile(null)); }}
       onReport={(id, name) => { setPubProfile(null); setReport({ targetId: id, targetName: name, sessionId: null }); }} />),
     verify: () => (<VerifyPhone t={t} session={session} onDone={() => setShowVerify(false)} onBack={() => setShowVerify(false)}

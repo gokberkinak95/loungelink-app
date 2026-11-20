@@ -2187,6 +2187,7 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
   const [editor, setEditor] = useState(null);   // password | phone | email | visibility
   const [draft, setDraft] = useState("");
   const [draft2, setDraft2] = useState("");
+  const [showPw, setShowPw] = useState(false);   // 20 Kasım · Play testçi raporu md.3: göz ikonu
   const [toast, setToast] = useState("");
   // 🔴 v2.99 — BU DÖRT ANAHTAR HİÇBİR YERE YAZMIYORDU.
   // Ölçüm: `notifs` yalnız iki yerde geçiyordu — bildirimi ve çizimi.
@@ -2578,9 +2579,18 @@ export function Settings({ t, lang, setLang, session, onBack, onEditProfile, onV
             style={{ ...POPUP_YUZEY(), borderRadius: R.md, padding: ARA[18], width: "100%", maxWidth: 340 }}>
             {editor === "password" && <>
               <Text style={{ fontSize: FS.lg, fontWeight: "700", color: C.ink, marginBottom: SP[3] }}>{t.stChangePw}</Text>
-              <TextInput secureTextEntry placeholder={t.stPwPlaceholder} value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
-                style={[S.input, { marginBottom: SP[2] }]} />
-              <TextInput secureTextEntry placeholder={t.stPwRepeat} value={draft2} onChangeText={setDraft2} placeholderTextColor={C.dimAA}
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: SP[2] }}>
+                <TextInput secureTextEntry={!showPw} autoCapitalize="none" autoCorrect={false}
+                  placeholder={t.stPwPlaceholder} value={draft} onChangeText={setDraft} placeholderTextColor={C.dimAA}
+                  style={[S.input, { flex: 1 }]} />
+                <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={TAP.slop}
+                accessibilityRole="button" accessibilityLabel={showPw ? t.pwHide : t.pwShow}
+                style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
+                <Ikon ad={showPw ? "gozKapali" : "goz"} boy={17} renk={C.mutedAA} />
+              </TouchableOpacity>
+              </View>
+              <TextInput secureTextEntry={!showPw} autoCapitalize="none" autoCorrect={false}
+                placeholder={t.stPwRepeat} value={draft2} onChangeText={setDraft2} placeholderTextColor={C.dimAA}
                 style={[S.input, { marginBottom: SP[3] }]} />
               <Btn v="gold" sm label={busy ? "…" : t.stPwSave} onPress={savePassword} disabled={busy} a11yLabel={t.stPwSave} />
             </>}
