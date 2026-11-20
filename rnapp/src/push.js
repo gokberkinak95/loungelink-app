@@ -154,7 +154,9 @@ async function tokenKaydet() {
       } catch (e) {
         const m = String(e && e.message ? e.message : e);
         if (deneme === 2 || /FirebaseApp|google-services|FCM|Firebase/i.test(m)) throw e;
-        await new Promise(r => setTimeout(r, 1500 * (deneme + 1)));
+        // Test düzeneği (mount_test) beklemeyi kısaltır; üretimde globalThis.__LL_PUSH_BEKLE_MS yok → 1500.
+        const adim = (typeof globalThis !== "undefined" && globalThis.__LL_PUSH_BEKLE_MS != null) ? globalThis.__LL_PUSH_BEKLE_MS : 1500;
+        await new Promise(r => setTimeout(r, adim * (deneme + 1)));
       }
     }
     if (!token) { _tokenNeden = "bilinmiyor"; return false; }

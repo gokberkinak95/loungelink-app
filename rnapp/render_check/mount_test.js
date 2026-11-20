@@ -203,6 +203,8 @@ function rnTaklit(k) {
     if (k === "Alert") return { alert: () => {} };
     if (k === "Keyboard") return { dismiss: () => {}, addListener: () => ({ remove() {} }) };
     if (k === "BackHandler") return { addEventListener: () => ({ remove() {} }) };
+    // 20 Kasım — Plans (ekranlar_yalin) AppState.addEventListener kullanıyor; taklitte yoktu → "çöktü" yalanı.
+    if (k === "AppState") return { currentState: "active", addEventListener: () => ({ remove() {} }) };
     if (k === "Linking") return { openURL: async () => {}, addEventListener: () => ({ remove() {} }), getInitialURL: async () => null };
     // 🔴 v3.4 — `Animated` TAKLİDİ EKSİKTİ VE BU BİR ÜRÜN ÇÖKMESİ GİBİ
     // GÖRÜNDÜ. Marka yükleyicisi `Animated.loop`, `Animated.Image` ve
@@ -738,6 +740,7 @@ for (const [name, Comp, props, bekle] of CASES) {
   }
   globalThis.__IZIN = (bekle && bekle.izin) || null;
   globalThis.__JETON_HATA = (bekle && bekle.jeton) || null;
+  globalThis.__LL_PUSH_BEKLE_MS = 0;   // 20 Kasım · push.js 3 denemeli jeton alma (13 Kasım) testte beklemesin
   // Ambiyans kuşağı saate bağlı (bkz. atmosfer.js). Testi saate bağlı
   // bırakmak, gece koşan bir CI ile gündüz koşan bir geliştiricinin
   // farklı sonuç görmesi demekti.
@@ -757,6 +760,13 @@ for (const [name, Comp, props, bekle] of CASES) {
       for (let k = 0; k < 6; k++) await Promise.resolve();
       await new Promise((r) => setTimeout(r, 0));
     });
+    // 20 Kasım · beklenen metin varsa kısa süre daha bekle: push.js jeton alma 3 deneme yapıyor (testte 0 ms
+    // aralıkla), sonuç birkaç zamanlayıcı turu sonra çiziliyor. En çok 30 tur.
+    if (bekle && bekle.icermeli) {
+      for (let i = 0; i < 30 && JSON.stringify(tree.toJSON()).indexOf(String(bekle.icermeli)) < 0; i++) {
+        await renderer.act(async () => { await new Promise((r) => setTimeout(r, 5)); });
+      }
+    }
     const json = tree.toJSON();
     if (REACT_HATA.length) {
       const kim = REACT_HATA.splice(0).join(", ");

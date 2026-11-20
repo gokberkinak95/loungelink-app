@@ -796,7 +796,8 @@ export function Cip({ etiket, ton = "gold", secili, onPress, onLongPress, stil, 
   // #1F1C19; yazı da iki hâlde altın. Seçim VARDI, GÖRÜNMÜYORDU. Seçili çip
   // artık ana düğmenin dili: şampanya zemin + sayfa zemini renginde yazı
   // (iki temada da yüksek kontrast).
-  const bantta = useContext(BantBaglami) && temaModu() === "v7";
+  const bantBaglami = useContext(BantBaglami);   // hook koşulsuz, ayrı satırda (audit_hooks)
+  const bantta = bantBaglami && temaModu() === "v7";
   if (bantta) {
     // v7.2 (Gökberk 3 Ekim: "seyahatlerim / ilanlarım sekmelerini prompta göre iyileştir")
     // Bant içinde: seçili = şampanya sikke (gradyan + üst 1px ışık + alt bronz kenar),

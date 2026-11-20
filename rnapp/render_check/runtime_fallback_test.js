@@ -180,6 +180,13 @@ async function run() {
   const App = require("../App.js").default;
   let m = null, hata = null;
   try { m = await mount(App, {}); } catch (e) { hata = e; }
+  // 20 Kasım · açılışta ağ beklemeleri var (oturum yarışı 2,5 sn, tekrar denemeler); tek "tick" ana ekranı
+  // göremiyordu, test açılış logosuna (L·O·U·N·G·E) bakıp "sekme çubuğu yok" diyordu. En çok 6 sn bekle.
+  if (m) {
+    for (let i = 0; i < 60 && !m.texts().includes(D.tr.navHome); i++) {
+      await renderer.act(async () => { await new Promise(r => setTimeout(r, 100)); });
+    }
+  }
   chk("C1. App mount oldu (istisna yok)", !hata, hata ? String(hata.message).split("\n")[0] : "temiz");
   if (m) {
     const json = m.tree.toJSON();
@@ -215,7 +222,8 @@ async function run() {
   await RT.runtimeTazele();
   chk("E1. Sunucu bayrağı VARSAYILANI EZDİ", RT.bayrak("marketplace") === false,
       "marketplace: true → " + RT.bayrak("marketplace"));
-  chk("E2. Riskli bayrak sunucudan AÇILABİLDİ", RT.bayrak("day_pass") === true,
+  // 17 Ekim (Apple 2.3.1): sunucu bayrağı yalnız KAPATIR, varsayılanı kapalı özelliği AÇAMAZ (runtime.js bayrak()).
+  chk("E2. Riskli bayrak sunucudan AÇILAMADI (Apple 2.3.1 kuralı)", RT.bayrak("day_pass") === false,
       "day_pass: false → " + RT.bayrak("day_pass"));
   chk("E3. Metin düzeltmesi sözlüğe BİNDİ", RT.sozluk("tr").navHome === "ANA ÜS",
       "\"" + D.tr.navHome + "\" → \"" + RT.sozluk("tr").navHome + "\"");

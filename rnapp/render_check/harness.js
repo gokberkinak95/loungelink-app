@@ -35,10 +35,16 @@ babelRegister({
   cache: false,
 });
 
+// 20 Kasım · React Native her cihazda `__DEV__` tanımlar; yoksa ikon katmanı (@expo/vector-icons) "__DEV__ is not defined"
+// ile çöküyor, App ana ekrana geçerken hata ekranına düşüyordu (runtime_fallback C4).
+if (typeof globalThis.__DEV__ === "undefined") globalThis.__DEV__ = false;
+
 // ---- AsyncStorage: gerçek davranışa yakın bellek içi sürüm ----
 const memStore = {};
 const AsyncStorageStub = {
+  __esModule: true,   // 20 Kasım · babel interop: `import AsyncStorage` → .default (yoksa getItem "not a function")
   default: {
+    getAllKeys: async () => Object.keys(memStore),   // 20 Kasım · getLang (1.0.2) eski kurulumu anahtarlardan tanır
     getItem: async (k) => (k in memStore ? memStore[k] : null),
     setItem: async (k, v) => { memStore[k] = String(v); },
     removeItem: async (k) => { delete memStore[k]; },
@@ -48,7 +54,7 @@ const AsyncStorageStub = {
 
 const STUBS = {
   "expo-constants": { default: { expoConfig: { extra: {} } } },
-  "expo-font": { useFonts: () => [true, null], loadAsync: async () => {} },
+  "expo-font": { useFonts: () => [true, null], loadAsync: async () => {}, isLoaded: () => true, isLoading: () => false, processFontFamily: (f) => f, getLoadedFonts: () => [] },
   "expo-notifications": {
     getPermissionsAsync: async () => ({ status: "granted" }),
     requestPermissionsAsync: async () => ({ status: "granted" }),
@@ -98,7 +104,27 @@ STUBS["react-native"] = new Proxy({}, {
     if (k === "Keyboard") return { dismiss: () => {}, addListener: () => ({ remove() {} }) };
     if (k === "BackHandler") return { addEventListener: () => ({ remove() {} }) };
     if (k === "Linking") return { openURL: async () => {}, addEventListener: () => ({ remove() {} }), getInitialURL: async () => null };
-    if (k === "Animated") return { View: h("View"), Text: h("Text"), timing: () => ({ start: (cb) => cb && cb() }), Value: function () { this.setValue = () => {}; } };
+    // 20 Kasım — mount_test'in tam Animated/Easing taklidi buraya da (interpolate/bezier eksikti → kart_oneri, runtime_fallback çöküyordu)
+    if (k === "Animated") return {
+      View: h("View"), Text: h("Text"), Image: h("Image"), ScrollView: h("ScrollView"),
+      event: () => () => {},
+      timing: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
+      spring: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
+      multiply: (a) => a,
+      sequence: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
+      parallel: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
+      loop: () => ({ start: () => {}, stop: () => {} }),
+      stagger: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
+      delay: () => ({ start: (cb) => cb && cb({ finished: true }), stop: () => {} }),
+      Value: function () { this.setValue = () => {}; this.interpolate = () => 0; this.addListener = () => "1"; this.removeListener = () => {}; },
+    };
+    if (k === "Easing") return {
+      linear: (x) => x, ease: (x) => x, quad: (x) => x, cubic: (x) => x, sin: (x) => x,
+      out: (f) => (f || ((x) => x)), in: (f) => (f || ((x) => x)),
+      inOut: (f) => (f || ((x) => x)), bezier: () => ((x) => x), poly: () => ((x) => x), back: () => ((x) => x),
+    };
+    if (k === "PanResponder") return { create: () => ({ panHandlers: {} }) };
+    if (k === "useWindowDimensions") return () => ({ width: 390, height: 844, scale: 3, fontScale: 1 });
     if (k === "Appearance") return { getColorScheme: () => "light", addChangeListener: () => ({ remove() {} }) };
     // 🔴 BU SATIR BİR ÖLÇÜMLE EKLENDİ, TAHMİNLE DEĞİL.
     // İlk koşuda App.js mount edilirken ErrorBoundary devreye girdi ve
@@ -124,6 +150,8 @@ STUBS["react-native"] = new Proxy({}, {
 const origResolve = Module._resolveFilename;
 Module._resolveFilename = function (req, ...rest) {
   if (STUBS[req]) return "STUB:" + req;
+  // 20 Kasım — ikon fontu (.ttf) Node'da kod sanılıp açılıyordu; audit_metin/kart_oneri/runtime_fallback yüklenemiyordu.
+  if (/\.(png|jpe?g|gif|webp|svg|ttf|otf)$/i.test(req)) return require("path").join(__dirname, "stub_asset.js");
   return origResolve.call(this, req, ...rest);
 };
 const origLoad = Module._load;

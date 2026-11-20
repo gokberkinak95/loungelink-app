@@ -5086,8 +5086,18 @@ export function cihazDili() {
     return /^tr\b|^tr[-_]/i.test(loc) ? "tr" : "en";
   } catch { return "tr"; }
 }
+// ⚠️ Telefon dili YALNIZ YENİ KURULUMDA. 1.0.2'den önce uygulamayı kullanmış biri (tanıtımı geçmiş
+// ya da oturum açmış) dil seçmemiş olsa da Türkçe görüyordu; güncellemeyle birden İngilizceye dönmesin.
+// Bu kişiler için "tr" bir kez kaydedilir (sonraki açılışlar da aynı).
 export async function getLang() {
-  try { return (await AsyncStorage.getItem("ll_lang")) || cihazDili(); } catch { return cihazDili(); }
+  try {
+    const kayitli = await AsyncStorage.getItem("ll_lang");
+    if (kayitli) return kayitli;
+    const anahtarlar = (await AsyncStorage.getAllKeys()) || [];
+    const eskiKurulum = anahtarlar.includes("ll_onb") || anahtarlar.some(k => /^sb-.*-auth-token$/.test(k));
+    if (eskiKurulum) { try { await AsyncStorage.setItem("ll_lang", "tr"); } catch {} return "tr"; }
+    return cihazDili();
+  } catch { return "tr"; }
 }
 export async function setLang(l) {
   try { await AsyncStorage.setItem("ll_lang", l); } catch {}
